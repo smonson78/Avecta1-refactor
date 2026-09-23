@@ -2,9 +2,6 @@
 int sell(npc)
 int npc;
 {
-char rumdata[][157],*obj[],curmon[][60],selllist[][4],pname[];
-char invtrig[],invnpc[][20];
-int row,col,hold,usedline,crum,police;
 int done = 0,num = 1,i = rumdata[crum][27],j,amount;
 char *c = curmon[npc],*h = curmon[0],str[6],temp[3];
 rumdata[crum][26] = 0;
@@ -201,7 +198,6 @@ return(1);
 int wander(npc)
 int npc;
 {
-char curmon[][60],crumobj[][9];
 char *c = curmon[npc],*o;
 int i,j,k,l,x = crumobj[*(c+48)][6],y = crumobj[*(c+48)][7];
 int ex = crumobj[*(c+48)][3];

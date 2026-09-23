@@ -2,8 +2,6 @@
 int i9(pc)
 int pc;
 {
-int outside,winker;
-char pname[],*name[],zline[16][8][7],crumobj[][9],curmon[][60];
 char *c = curmon[pc],*z,*w = (pc == 0 ? pname : name[*(c+3)]);
 int i,j,x,y,ret,quit = 0;
 if(pc > 0 && pc < 4 && curmon[0][15] != 9) {
@@ -90,10 +88,6 @@ return(1);
 int o9(pc)
 int pc;
 {
-int crum,mode,storbuf[][130];
-char rumdata[][157],pname[],curmon[][60],crumobj[][9],zline[16][8][7];
-char monbuf[];
-long int addr;
 char *c = curmon[pc];
 int i,x = *(c+24), y = *(c+25);
 char *z = zline[x][y];

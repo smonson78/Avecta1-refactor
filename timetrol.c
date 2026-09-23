@@ -4,9 +4,6 @@
 
 int timetrol()
 {
-int crum;
-char specbuf[40],zline[16][8][7],rumdata[][157];
-char *wordmod[],pname[],*name[],curmon[][60];
 char *c,*w,*z;
 int i,j,x,y;
 for(i=0;i<12;i++) {

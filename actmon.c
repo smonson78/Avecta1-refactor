@@ -6,8 +6,6 @@
 int actmon(type,nm,x,y)
 int type,nm,x,y;
 {
-char zline[16][8][7],crumobj[][9],curmon[][60],permon[][23];
-int mode,crum,bitmap[][65],storbuf[][130];
 long int addr;
 char *z,*c,*p;
 int adder,i,j=0,k,l;

@@ -1,9 +1,4 @@
 int switchrum() {
-int fromout,outside,winroom,dungeon,crum,mode,pursuit[3];
-int off(),vbl(),bitmap[][65],storbuf[][130];
-char zline[16][8][7],*rummsg[],rumdata[][157],crumobj[][9],curmon[][60];
-char *msg[],specbuf[40];
-long int addr;
 int d,i,j,x,y,xn,yn,oldrum;
 char *c,*p = curmon[0],*r = rumdata[crum],pan[12];
 if(crum != *(p+30) && crum != -1 && !outside) {
@@ -125,8 +120,6 @@ return(0);
 
 int stormon()
 {
-char monbuf[],zline[16][8][7],rumdata[][157],curmon[][60];
-int crum;
 char *r = monbuf,*c;
 int i,j = 1;
 for(i=4;i<12;i++) {
@@ -150,9 +143,6 @@ for(i=4;i<12;i++) {
 int getmon(room)
 int room;
 {
-char monbuf[],zline[16][8][7],curmon[][60],permon[][23],rumdata[][157];
-int mode,bitmap[][65],storbuf[][130];
-long int addr;
 char *r = monbuf,*c,*p;
 int i,j,k,type,count=0,x,y;
 for(i=1;i<320;i += 4) {

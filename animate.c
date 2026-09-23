@@ -1,8 +1,5 @@
 int animate()
 {
-int outside,crum,grflist[],prev,time,handle,bitmap[][65],storbuf[][130];
-long int addr;
-char specbuf[],rumdata[][157],curmon[][60],zline[16][8][7];
 int m,n,j;
 int x,y;
 char *c,*z;

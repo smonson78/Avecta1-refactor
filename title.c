@@ -29,7 +29,7 @@ int title() {
     } while (i != 114 && i != 110 && i != 113);
   vs_curaddress(handle,1,1);
   v_eeos(handle);
-  Setpallete(newpal);
+  Setpalette(newpal);
   i = ( i>110 ? 2*(i-113) : 1); 
   return(i);
   }

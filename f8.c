@@ -1,7 +1,6 @@
 int i8(pc)
 int pc;
 {
-char curmon[][60];
 char *c = curmon[pc];
 *(c+16) = 4;
 *(c+15) = 8;
@@ -12,8 +11,6 @@ return(1);
 int o8(pc)
 int pc;
 {
-char curmon[][60];
-int mode;
 char *c = curmon[pc];
 if(pc < 4)
   *(c+18) = 8;

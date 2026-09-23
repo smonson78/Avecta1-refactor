@@ -1,8 +1,6 @@
 int i15(pc)
 int pc;
 {
-int outside,winker;
-char zline[16][8][7],curmon[][60],pname[];
 int x,y,ret,tar;
 char *c = curmon[pc];
 if(outside)
@@ -34,8 +32,6 @@ return(1);
 int o15(pc)
 int pc;
 {
-char curmon[][60],pname[],*name[];
-int act;
 char *c = curmon[curmon[pc][7]];
 curmon[pc][8] = curmon[pc][9] = 0;
 if(*(c+38)) {

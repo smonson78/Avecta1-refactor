@@ -2,8 +2,6 @@
 int setlite(pc,dx,dy)
 int pc,dx,dy;
 {
-int crum,vbl(),off();
-char rumdata[][157],curmon[][60];
 char *c = curmon[pc];
 int x,y;
 if(rumdata[crum][30])
@@ -26,8 +24,6 @@ xbios_38_vbl();
 int litetrol(x,y,s)
 int x,y,s;
 {
-int crum;
-char curmon[][60],rumdata[][157],zline[16][8][7];
 int i,j,k,a,flag,l;
 char *c;
 if(rumdata[crum][30]) /* if room is naturally lit */
@@ -87,9 +83,6 @@ for(i = -2;i <= 2;i++) { /* do that funny shaped pattern around square */
 int drawsq(x,y)
 int x,y;
 {
-int bitmap[][65],storbuf[][130];
-char zline[16][8][7],crumobj[][9],curmon[][60];
-long int addr;
 char *z = zline[x][y],*c;
 int i,pc;
 if(*z == 1)
@@ -124,8 +117,6 @@ if(*(z+6) != 0)
 drawman(pc,x,y)
 int pc,x,y;
 {
-int crum;
-char zline[16][8][7],curmon[][60],rumdata[][157];
 char *c = curmon[pc];
 if(pc < 4 && *(c+41) > 0) 
   litetrol(x,y,1);

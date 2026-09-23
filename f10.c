@@ -8,8 +8,6 @@
 int i10(pc)
 int pc;
 {
-int outside,winker;
-char crumobj[][9],curmon[][60],zline[16][8][7],pname[],*name[];
 int obj,x,y,ret;
 char *c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
 if(outside)
@@ -47,8 +45,6 @@ return(1);
 int o10(pc)
 int pc;
 {
-char curmon[][60],zline[16][8][7],*name[],*obj[],pname[];
-char crumobj[][9],rumdata[][157],permon[][23];
 int x,y,object,flag=0;
 char *c = curmon[pc],*o,*r,*w = (pc == 0 ? pname : name[*(c+3)]);
 x = *(c+5);

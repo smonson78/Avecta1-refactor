@@ -45,8 +45,6 @@ int undomsg() {
 }
 
 int init(int flag) {
-  int hold,usedline,col,dungeon,outside,row,handle,crum,pursuit[3];
-  char pname[],curmon[][60],invnpc[][20];
   int i,j;
   char str[15],*c,val[3];
   vs_curaddress(handle,1,1);
@@ -113,7 +111,7 @@ int ruminit()
   for (i=0;i<660;*(c+(i++)) = 0);
   if (!loadnew()) {
     raton();
-    Setpallete(oldpal);
+    Setpalette(oldpal);
     xbios_37();
     form_alert(1,"[1][There are data files missing!][OK]");
     rausmaus();
@@ -146,8 +144,6 @@ int savpal() {
 }
 
 int console() {
-  char curmon[][60],specbuf[];
-  int crum,dungeon,new,police,handle,newpal[];
   int i;
   char *c = curmon[0];
   for(i=1;i<17;i++) {
@@ -183,7 +179,7 @@ int console() {
 
   specbuf[28] = 1;
   rausmaus();
-  Setpallete(newpal);
+  Setpalette(newpal);
   xbios_37();
   init(2);
 
@@ -236,10 +232,6 @@ int congratulate() {
 
 
 int loadnew() {
-  int lev,police,new;
-  int crum,bitmap[][65],fillpic[][65],winroom,dismax,dungeon;
-  char rumdata[][157],putbuf[],monbuf[],trigval[][6],specbuf[];
-  char selllist[][4],invtrig[],curmon[][60],*savname[];
   char *c = curmon[0];
   int fhandle,i,j,old,d1=0,d2=0,d3=0,flag = 0;
   old = dungeon;

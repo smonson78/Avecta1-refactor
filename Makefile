@@ -19,7 +19,7 @@ LDFLAGS=-m68000 -nostdlib -Wl,--relocatable -L..
 
 TARGET=avecta
 EXT=prg
-OBJS=start.o
+OBJS=start.o globals.o f14.o
 LIBGCC:=$(shell $(CXX) $(CFLAGS) --print-libgcc-file-name)
 
 all: $(TARGET).$(EXT)
@@ -36,7 +36,7 @@ clean:
 
 $(TARGET).elf: $(OBJS)
 	@# Run linker, generate a relocatable object file of the whole project
-	$(CXX) -T../atari.ld $(LDFLAGS) $^ $(LDLIBS) -o $(TARGET)1.elf
+	$(CXX) -Tatari.ld $(LDFLAGS) $^ $(LDLIBS) -o $(TARGET)1.elf
 	$(OBJCOPY) --set-section-flags .data=ALLOC,READONLY,DATA \
 		--set-section-flags .text*=ALLOC,CODE \
 		$(TARGET)1.elf $@

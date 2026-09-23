@@ -7,10 +7,6 @@
 int i5(pc)
 int pc;
 {
-char weight[],invnpc[][20],curmon[][60],*name[],pname[];
-char zline[16][8][7],crumobj[][9];
-int outside,winker,handle,mode;
-long int addr;
 int self = 0,i,j = 0,k,ret,time;
 int object,top=0,bot=0,type,x,y,oldy;
 char *c = curmon[pc],*z,scratch[18],*w = (pc == 0 ? pname : name[*(c+3)]);
@@ -111,8 +107,6 @@ return(1);
 int o5(pc)
 int pc;
 {
-char eats[],*obj[],pname[],zline[16][8][7],curmon[][60],crumobj[14][9];
-char invnpc[][20],rumdata[][157],weight[],*name[],triglist[],invtrig[];
 char *z,*c = curmon[pc],*w,*w1 = (pc == 0 ? &pname[0] : name[*(c+3)]);
 int storbuf[][130],bitmap[][65],crum;
 long int addr;
@@ -208,8 +202,6 @@ textsix(1,260 + 6*i,1,strlen(string),string);
 int prhand(pc)
 int pc;
 {
-int handle;
-char curmon[][60],*obj[];
 char scratch[12],*c = curmon[pc];
 int i;
 v_rvon(handle);
@@ -231,7 +223,6 @@ return(1);
 int handman(pc,inv,rum,flag)
 int pc,inv,rum,flag;
 {
-char crumobj[][9],*obj[],curmon[][60],pname[],*name[];
 char *c = curmon[pc],*w1 = (pc == 0 ? pname : name[*(c+3)]);
 int l;	
 if(rum != 0 || (flag == 1 && inv != *(c+45) && inv != *(c+46)) ) {

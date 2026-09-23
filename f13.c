@@ -1,8 +1,6 @@
 int i13(pc)
 int pc;
 {
-int outside,winker;
-char curmon[][60],zline[16][8][7],pname[],*name[];
 char *c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
 int x,y,ret,tar;
 if(outside)
@@ -36,9 +34,6 @@ return(1);
 int o13(pc)
 int pc;
 {
-int crum;
-char rumdata[][157],curmon[][60],zline[16][8][7],pname[],*obj[],*name[];
-char crumobj[][9];
 char *c = curmon[pc],*t,*wt,*z,*w = (pc == 0 ? pname : name[*(c+3)]);
 int tar = *(c+7),x,y,d,miss,i,j,k;
 t = curmon[tar];

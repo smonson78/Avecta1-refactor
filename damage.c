@@ -1,11 +1,6 @@
 int damage(pc,level)
 int pc,level;
 {
-char rumdata[][157],pname[],*name[],curmon[][60],zline[16][8][7];
-int mode,combat,handle,crum,vbl(),off(),bitmap[][65],storbuf[][130];
-int police,dungeon;
-long int addr;
-char *mod[],crumobj[][9],invnpc[][20],*wordmod[],specbuf[];
 char *c = curmon[pc],scratch[4],*z,*z1,*w = (pc == 0 ? pname : name[*(c+3)]);
 int newpolice = 1,flag,old,light,i,j,k,l,hp = *(c+2),x = *(c+24),y = *(c+25);
 if(police)

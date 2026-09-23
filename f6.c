@@ -1,8 +1,6 @@
 int i6(pc)
 int pc;
 {
-int outside;
-char curmon[][60];
 char *c = curmon[pc];
 if(outside)
   return(0);
@@ -15,10 +13,6 @@ return(1);
 int o6(pc)
 int pc;
 {
-char *name[],crumobj[14][9],zline[16][8][7],curmon[][60],pname[],*obj[];
-char rumdata[][157],putbuf[];
-int crum,mode,bitmap[][65];
-long int addr;
 char *c  = curmon[pc],*z,*o,*w = ( pc == 0 ? &pname[0] : name[*(c+3)]);
 char *r = putbuf;
 int x = *(c+24), y = *(c+25);

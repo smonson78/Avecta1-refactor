@@ -1,9 +1,4 @@
 int rumdraw(char *pan) {
-char zline[16][8][7],rumdata[][157],crumobj[][9],triglist[];
-char specbuf[40],invnpc[][20],invtrig[],curmon[][60],*rummsg[];
-int vxy[],lxy[],mode,handle,crum,objnum,bitmap[][65],storbuf[][130];
-long int addr;
-int outside;
 int top,i,j,k,xold,yold,x,y,x1,y1,x2,y2,stepx,stepy,open;
 char *c,*z,*r =  rumdata[crum];
 for(i=0;i<13;i++) {

@@ -1,11 +1,6 @@
 int trapres(pc,type,x,y)
 int pc,type;
 {
-char crumobj[][9],*rummsg[],pname[],*com[],*msg[],*name[],curmon[][60];
-char specbuf[],zline[16][8][7],*specword[],*obj[],rumdata[][157];
-int hold,usedline,new,lev,crum,col,row,mode,bitmap[][65],storbuf[][130];
-int monster,dungeon,police,grflist[],outside,fromout;
-long int addr;
 char permon[][23],invnpc[][20];
 char *c = curmon[pc],*s1,*s2,*z = zline[x][y],str[20];
 int flag,flag2,flag3,i,j;

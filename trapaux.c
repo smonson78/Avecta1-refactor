@@ -1,9 +1,6 @@
 int destroy(type,num)
 int type,num;
 {
-char rumdata[][157],crumobj[][9],curmon[][60],zline[16][8][7];
-int storbuf[][130],crum,bitmap[][65];
-long int addr;
 int x,y,i;
 char *c,*z;
 if(type == 1) {
@@ -107,8 +104,6 @@ return(1);
 int untrap(num)
 int num;
 {
-char crumobj[][9],triglist[];
-int i,trap;
 crumobj[num][2] = 0;
 triglist[num] = 0;
 triglist[0]--;
@@ -134,9 +129,6 @@ return(1);
 int blowup(x,y)
 int x,y;
 {
-char zline[16][8][7],crumobj[][9],curmon[][60];
-int storbuf[][130];
-long int addr;
 char *z = zline[x][y],*c;
 int i;
 for(i=0;i<5;i++)
@@ -206,7 +198,6 @@ return(j);
 
 int thief(pc)
 {
-char curmon[][60];
 if(pc > 3)
   return(0);
 if(curmon[pc][37] > rnd(100))

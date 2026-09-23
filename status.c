@@ -5,9 +5,6 @@
 
 int status(pc)
 {
-int off(),vbl(),handle;
-char invnpc[][20],curmon[][60],*wepname[],*name[],*statword[],*obj[];
-char pname[];
 int i,j,ret,flag;
 char scratch[3],*w,*c = curmon[pc];
 long int point;
@@ -101,8 +98,6 @@ int listinv(pc,scratch)
 int pc;
 char *scratch;
 {
-int handle,vbl(),off();
-char curmon[][60],invnpc[][20],*obj[];
 int j,bot=1;
 char word[3],*o = invnpc[pc];
 xbios_37();

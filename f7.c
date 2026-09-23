@@ -6,9 +6,6 @@
 int i7(pc)
 int pc;
 {
-char invnpc[][20],crumobj[14][9],zline[16][8][7],curmon[][60];
-int outside,mode,winker;
-char pname[],*name[];
 char *z,*c = curmon[pc],scratch[15],*w = (pc == 0 ? pname : name[*(c+3)]);
 int object,x,y,j,k,l,self,num=0,bot=0,top1=3,type,ret=0;
 if(outside)
@@ -110,11 +107,6 @@ else { /* this is a drop out of inventory */
 int o7(pc)
 int pc;
 {
-char invnpc[][20];
-char *obj[],curmon[][60],crumobj[14][9],zline[16][8][7],pname[];
-char rumdata[][157],trigval[][6],*name[],invtrig[],triglist[];
-int crum,bitmap[][65],storbuf[][130];
-long int addr;
 char *z,*c = curmon[pc],*t,*w,*w1 = (pc == 0 ? pname : name[*(c+3)]);
 int i,k,l,inv = *(c+8),r = *(c+9),x = *(c+5),y = *(c+6),j = *(c+10),id;
 *(c+18) = 7;

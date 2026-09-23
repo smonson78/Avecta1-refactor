@@ -1,7 +1,6 @@
 int i4(pc)
 int pc;
 {
-char curmon[][60];
 char *c = curmon[pc];
 int x,y;
 *(c+22) = *(c+24);
@@ -20,10 +19,6 @@ return(1);
 int o4(pc)
 int pc;
 {
-char *name[],pname[],crumobj[][9],curmon[][60],zline[16][8][7];
-long int addr;
-char rumdata[][157];
-int outside,crum,off(),vbl(),bitmap[][65],storbuf[][130];
 char *c = curmon[pc],*z,id,*d,*w;
 int flag,xroll,yroll,i,xnow = *(c+24),ynow = *(c+25),x = *(c+28),y = *(c+29);
 int j,light = rumdata[crum][30];

@@ -9,9 +9,6 @@
 int i2(pc)
 int pc;
 {
-char spelinfo[][3],crumobj[][9],zline[16][8][7],*spell[],curmon[][60];
-int outside,handle,mode,vbl(),off(),winker;
-char invnpc[][20],pname[],*name[];
 int i,j,k,numb,x,y,status,ret;
 char *z,*c = curmon[pc],scratch[3],*w = (pc == 0 ? pname : name[*(c+3)]);
 if(outside)
@@ -130,11 +127,6 @@ return(1);
 int o2(pc)
 int pc;
 {
-char spelinfo[][3],zline[16][8][7],curmon[][60],crumobj[][9],triglist[];
-char *name[],*spell[],pname[],rumdata[][157];
-char *obj[],invnpc[][20],specbuf[40],putbuf[],junk[];
-int crum,handle,mode,bitmap[][65],vbl(),off(),dismax,storbuf[][130];
-int pursuit[];
 long int addr;
 char *z,*p,*c = curmon[pc],*t,*w,*wt;
 int k,m,flag=0,dam,j,trap,num,target,type,i,x,y;
@@ -458,7 +450,7 @@ for(i=0;i<30;i++) {
     }
   xbios_37();
   }
-Setpallete(newpal);
+Setpalette(newpal);
 xbios_37();
 xbios_38_vbl();
 }
@@ -466,7 +458,6 @@ xbios_38_vbl();
 losespel(pc)
 int pc;
 {
-char pname[],*name[],curmon[][60],*rummsg[],*msg[];
 char *c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
 char *n = (pc < 4 ? rummsg[0] : msg[0]);
 if( *(c+21) != 0) {
@@ -479,7 +470,6 @@ if( *(c+21) != 0) {
 int savthrow(npc,mag)
 int npc,mag;
 {
-char curmon[][60],*name[],pname[];
 char *c = curmon[npc],*w = (npc == 0 ? pname : name[*(c+3)]);
 if(rnd(100) < (*(c+51) - mag)*8 || *(c+54) > 0) {
   if(npc < 4 || curmon[npc][3] == 10)

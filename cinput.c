@@ -1,10 +1,6 @@
 #include "osbind.h"
 
 int input(int pc) {
-  char crumobj[][9],zline[16][8][7],pname[],*verblist[],curmon[][60];
-  int vxy[],usedline,hold,winker,combat,handle,off(),vbl();
-  long int addr;
-  char *name[];
   int i,j,x,y,ret;
   char *z,*c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
   if(pc > 3)
@@ -113,9 +109,6 @@ int clrinp() {
   int pc;
   {
   long int addr;
-  char *obj[],curmon[][60],zline[16][8][7];
-  int winker,handle,combat,crum;
-  char pname[],*name[],*wordmod[],*att[][4],*posture[];
   char *c = curmon[pc],scratch[3],*c1 = curmon[*(c+39)];
   char *w = (pc == 0 ? pname : name[*(c+3)]);
   int i,j,x,y,ret,n;

@@ -1,8 +1,6 @@
 
 int dorep()
 {
-int handle,vbl(),off(),mode,crum;
-char *mod[],*name[],curmon[][60],rumdata[][157];
 int i,j,k,pxy[10],x=256,y=127,w=62,h=72;
 char *c,scratch[13];
 pxy[0]=256;

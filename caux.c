@@ -4,9 +4,6 @@ int *x,*y,type,top1,bot,*ret;
 {
 int oldline = -1,newline=0,newx,newy,oldx = -1,oldy=0,i,j,k,status=1;
 int light,keybd = 0,keystk = 0,mflag=0,rflag=0,tflag= 0,inrflag,intflag;
-long int addr;
-char *posture[],rumdata[][157],*verblist[],curmon[][60],zline[16][8][7];
-int mode,handle,toggle(),crum,winker;
 char *z,*c;
 char *string,letter;
 if(winker != 0)
@@ -273,8 +270,6 @@ do {
 int lom(pc,x,y)
 int x,y,pc;
 {
-int crum;
-char rumdata[][157],zline[16][8][7],curmon[][60],crumobj[14][9];
 int x2,y2,h,i,j,q;
 long register k,l,m,n,p;
 char *z,z1,*c0 = curmon[pc];
@@ -326,8 +321,6 @@ return(1);  /* if it makes it all the way through then los is open */
 int los(pc,x,y)
 int x,y,pc;
 {
-int crum;
-char rumdata[][157],zline[16][8][7],curmon[][60],crumobj[14][9];
 int x2,y2,h,i,j,q;
 long register k,l,m,n,p;
 char *z,z1,*c0 = curmon[pc];
@@ -467,7 +460,6 @@ return(rand()%max);
 int adjac(pc,x,y)
 int pc,x,y;
 {
-char curmon[][60];
 int xnow,ynow;
 xnow = curmon[pc][24];
 ynow = curmon[pc][25];
@@ -487,9 +479,6 @@ else
 int move(obj,flag,x,y)
 int obj,flag,x,y;
 {
-char zline[16][8][7],crumobj[][9],curmon[][60],rumdata[][157];
-int crum,bitmap[][65];
-long int addr;
 char *c = crumobj[obj],*z;
 int done,i,j,light = rumdata[crum][30];
 if(flag) {
@@ -560,7 +549,6 @@ return(1);
 int putaway(pc,thing)
 int pc,thing;
 {
-char curmon[][60],invnpc[][20];
 char *i = invnpc[pc];
 int j = 1;
 if(thing == 0)
@@ -652,9 +640,6 @@ return(1);
 
 int status(pc)
 {
-int winker,off(),vbl(),handle;
-char invnpc[][20],curmon[][60],*wepname[],*name[],*statword[],*obj[];
-char pname[];
 int i,j,ret,flag = 0;
 char scratch[3],*c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
 long int point;
@@ -759,8 +744,6 @@ int listinv(pc,scratch)
 int pc;
 char *scratch;
 {
-int handle,vbl(),off();
-char curmon[][60],invnpc[][20],*obj[],*wepname[];
 int j,bot=0;
 char word[3],*o = invnpc[pc],*c = curmon[pc];
 xbios_37();

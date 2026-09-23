@@ -1,7 +1,6 @@
 int trigtrol(pc)
 int pc;                  /* pc = character in room which triggered trap */
 {
-char invnpc[][20],triglist[],trigval[][6],curmon[][60];
 int j,k,l,flag,type,trapvec,i,x1,y1,hold = 0,x,y;
 char *t,*c = curmon[pc],*inv;
 if(triglist[0] == 0) /* triglist[0] gives the number of traps in room */

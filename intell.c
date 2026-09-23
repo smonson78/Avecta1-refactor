@@ -3,9 +3,6 @@
 int intell(npc)
 int npc;
 {
-int crum,mode,police;
-char zline[16][8][7];
-char *name[],curmon[][60];
 char *c = curmon[npc],*t;
 int done = 0; /* this will give the ith step in the intelligence routine */
 char type = *(c+31),step;
@@ -122,8 +119,6 @@ return(1);
 int morale(npc)
 int npc;
 {
-char *name[],*obj[],curmon[][60];
-int crum;
 char *c = curmon[npc],*d;
 int level,num,i,j,dam,top,bot;
 if(*(c+36) == 1 || *c == 0) {
@@ -182,7 +177,6 @@ else
 int setflee(npc)
 int npc;
 {
-char curmon[][60],crumobj[][9];
 int i,x,y;
 char *d,*c = curmon[npc];
 *(c+36) = 1;
@@ -220,9 +214,6 @@ return(0);
 int setmove(npc,flag)
 int npc,flag;
 {
-char curmon[][60],crumobj[14][9],zline[16][8][7];
-char rumdata[][157],weight[];
-int crum;
 char *t,*c = curmon[npc],*z,*c1;
 int top,bot,i,j,l,m,n,k=0,xdes,ydes,x,y,buddy=0,tar = *(c+39);
 t = curmon[tar];
@@ -389,7 +380,6 @@ do {
 int pass(npc)
 int npc;
 {
-char curmon[][60];
 char *c = curmon[npc];
 *(c+15) = 8;
 *(c+16) = 4;
@@ -399,8 +389,6 @@ return(1);
 int target(npc)
 int npc;
 {
-int crum;
-char curmon[][60];
 int i,j = curmon[npc][39];
 char *c;
 if( ( (npc > 3 && curmon[npc][38]) || npc < 4 )  && j == 0)
@@ -422,8 +410,6 @@ return(1);
 int settarg(npc)
 int npc;
 {
-int crum;
-char curmon[][60];
 char *t,*c = curmon[npc];
 int j,list[12];
 int top,bot;
@@ -482,9 +468,7 @@ return(1);
 int matt(npc)
 int npc;
 {
-int combat;
-char invnpc[][20],spelinfo[][3],spelunit[],curmon[][60];
-char *a = curmon[npc],scratch[3];
+char *a = curmon[npc];
 int i,j,k,sp;
 *(a+26) = curmon[*(a+39)][24];
 *(a+27) = curmon[*(a+39)][25];
@@ -538,7 +522,6 @@ return(1);
 int alert(npc)
 int npc;
 {
-char curmon[][60];
 int i;
 char *c;
 for(i=1;i<7;i++) {
@@ -552,7 +535,6 @@ for(i=1;i<7;i++) {
 int setatt(npc)
 int npc;
 {
-char curmon[][60];
 char *a = curmon[npc],*t = curmon[*(a+39)];
 int d = dist(*(a+24),*(a+25),0,*(t+24),*(t+25),0);
 if(!los(npc,*(t+24),*(t+25)))
@@ -562,121 +544,116 @@ if(d == 1 || *(a+14) > 0  || (npc < 4 && *(a+45) == 45 && *(a+39) != 0) )
 return(1);
 }
 
-int friend(npc)
-int npc;
+int friend(int npc)
 {
-int crum,mode;
-char invnpc[][20],*name[],rumdata[][157],curmon[][60];
-char *c = curmon[npc];
-int i,j,x = curmon[0][24],y = curmon[0][25];
-if(npc < 4 && rumdata[crum][30] == 0 && *(c+41) < 3 && *(c+42) > 0) {
-   *(c+10) = 1;
-   *(c+15) = 12;
-   *(c+16) = 6;
-   return(1);
-   }
-if(mode) {
-  if(npc < 4 && ( *(c+45) > 45 || *(c+45) < 41) ) {
-    if(*(c+45) > 0)
-       putaway(npc,*(c+45));
-    if(*(c+32) > 40 && *(c+32) < 46) {
-      takeout(npc,*(c+32));
-      *(c+45) = *(c+32);
-      }
-    else {
-      for(i=0;i<invnpc[npc][0];i++) {
-         if( (j = invnpc[npc][i+1]) > 40 && j < 46) {
-            takeout(npc,j);
-            *(c+45) = j;
-            *(c+32) = j;
-            break;
-            }
-         }
-      }
-    }
-  if( npc < 4 && (*(c+45) > 45 || *(c+45) < 41)) {
-     if(*(c+53) == 0)
-       prnt("-> %s yells, 'I don't have a weapon! Give me one quick!'",
-           name[*(c+3)]);
-     pass(npc);
-     j = *(c+53);
-     *(c+53) = (j == 5 ? 0 : ++j );
-     return(1);
-     }
-  if(!morale(npc)) {
-     if(!adjac(npc,x,y)) {
-        *(c+26) = x;
-        *(c+27) = y;
-        if(!setmove(npc,0))
-           pass(npc);
-        return(1);       
+  char *c = curmon[npc];
+  int i,j,x = curmon[0][24],y = curmon[0][25];
+  if (npc < 4 && rumdata[crum][30] == 0 && *(c+41) < 3 && *(c+42) > 0) {
+    *(c+10) = 1;
+    *(c+15) = 12;
+    *(c+16) = 6;
+    return(1);
+  }
+  if(mode) {
+    if(npc < 4 && ( *(c+45) > 45 || *(c+45) < 41) ) {
+      if(*(c+45) > 0)
+        putaway(npc,*(c+45));
+      if(*(c+32) > 40 && *(c+32) < 46) {
+        takeout(npc,*(c+32));
+        *(c+45) = *(c+32);
         }
-     else 
-        *(c+36) = 0;
-     }
-  if(!target(npc) && !settarg(npc)) {
-     *(c+39) = 0;
-     if(!setmove(npc,1))
+      else {
+        for(i=0;i<invnpc[npc][0];i++) {
+          if( (j = invnpc[npc][i+1]) > 40 && j < 46) {
+              takeout(npc,j);
+              *(c+45) = j;
+              *(c+32) = j;
+              break;
+              }
+          }
+        }
+      }
+    if( npc < 4 && (*(c+45) > 45 || *(c+45) < 41)) {
+      if(*(c+53) == 0)
+        prnt("-> %s yells, 'I don't have a weapon! Give me one quick!'",
+            name[*(c+3)]);
+      pass(npc);
+      j = *(c+53);
+      *(c+53) = (j == 5 ? 0 : ++j );
+      return(1);
+      }
+    if(!morale(npc)) {
+      if(!adjac(npc,x,y)) {
+          *(c+26) = x;
+          *(c+27) = y;
+          if(!setmove(npc,0))
             pass(npc);
-     return(1);
-     }
-  switch(setatt(npc)) {
-    case 0:
-       matt(npc);
-       break;
-    case 1:
-       if(!setmove(npc,1))
-         pass(npc);
-       break;
-    default:
-       break;
-    }              
-  }
-if(!mode) {
-  *(c+36) = 0;
-  if(curmon[0][15] == 4 || npc > 3 || !los(npc,x,y) || 
-     dist(*(c+24),*(c+25),0,x,y,0) > 3) {
-      *(c+39) = 0;
-      if(dist(*(c+24),*(c+25),0,x,y,0) < 4 - rnd(2) && los(npc,x,y) ) {
-        pass(npc);
-        return(1);
-        }
-      else {
-         if(!los(npc,x,y) && *(c+24) == *(c+26) && *(c+25) == *(c+27)) {
-            *(c+26) = x;
-            *(c+27) = y;
-            }
-         if(!setmove(npc,1))
-           pass(npc);
-         return(1);
-         }
-      }  
-  else {
-      if(rnd(100) < 4) {
-        sillymsg(npc);
-        pass(npc);
-        return(1);
-        }
-      if(*(c+15) != 6) {
-        i6(npc);
-        return(1);
-        }
-      else {
-        do {
-          *(c+26) = rnd(16);
-          *(c+27) = rnd(8);
-          } while(!i4(npc));
-        }
+          return(1);       
+          }
+      else 
+          *(c+36) = 0;
       }
+    if(!target(npc) && !settarg(npc)) {
+      *(c+39) = 0;
+      if(!setmove(npc,1))
+              pass(npc);
+      return(1);
+      }
+    switch(setatt(npc)) {
+      case 0:
+        matt(npc);
+        break;
+      case 1:
+        if(!setmove(npc,1))
+          pass(npc);
+        break;
+      default:
+        break;
+      }              
+    }
+  if(!mode) {
+    *(c+36) = 0;
+    if(curmon[0][15] == 4 || npc > 3 || !los(npc,x,y) || 
+      dist(*(c+24),*(c+25),0,x,y,0) > 3) {
+        *(c+39) = 0;
+        if(dist(*(c+24),*(c+25),0,x,y,0) < 4 - rnd(2) && los(npc,x,y) ) {
+          pass(npc);
+          return(1);
+          }
+        else {
+          if(!los(npc,x,y) && *(c+24) == *(c+26) && *(c+25) == *(c+27)) {
+              *(c+26) = x;
+              *(c+27) = y;
+              }
+          if(!setmove(npc,1))
+            pass(npc);
+          return(1);
+          }
+        }  
+    else {
+        if(rnd(100) < 4) {
+          sillymsg(npc);
+          pass(npc);
+          return(1);
+          }
+        if(*(c+15) != 6) {
+          i6(npc);
+          return(1);
+          }
+        else {
+          do {
+            *(c+26) = rnd(16);
+            *(c+27) = rnd(8);
+            } while(!i4(npc));
+          }
+        }
   }
-return(1);
+  return(1);
 }
 
 int sillymsg(npc)
 int npc;
 {
-char pname[],rumdata[][157],curmon[][60],*name[];
-int crum;
 char *c = curmon[npc],*w = name[*(c+3)];
 if(*(c+47) > 0) {
   prnt("-> %s says `The room spins.  I am poisoned.'",w);

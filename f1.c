@@ -3,8 +3,6 @@
 int i1(pc)
 int pc;
 {
-int outside,combat;
-char curmon[][60],zline[16][8][7];
 char *c = curmon[pc],*t = curmon[*(c+39)];
 int x = *(t+24),y = *(t+25);
 if(outside)
@@ -33,9 +31,6 @@ return(1);
 int o1(pc) 
 int pc;
 {
-char curmon[][60],zline[16][8][7];
-char wepmatx[4][4],weapon[][3],pname[],*name[];
-int row,col,crum;
 char *a = curmon[pc],*t = curmon[*(a+39)],*w;
 int bonus = 0,base,roll,dam,armor,wepchanz,i;
 if(*t == 0 || *(t+30) != crum)

@@ -6,8 +6,6 @@
 int i3(pc)
 int pc;
 {
-char invnpc[][20],curmon[][60],zline[16][8][7],pname[],*name[];
-int winker,handle;
 int i,bot=0,top1=0,type,x,y,ret;
 char *c = curmon[pc],z1,z2,scratch[15];
 char *w = (pc == 0 ? pname : name[*(c+3)]);
@@ -87,9 +85,6 @@ return(1);
 int o3(pc)
 int pc;
 {
-char curmon[][60],crumobj[14][9],zline[16][8][7],pname[],*name[];
-char rumdata[][157],*obj[],*msg[],*monmsg[];
-int mode,crum,dungeon,outside,fromout;
 char *c = curmon[pc],*t,*w,*w1,scratch[10];
 int flag,i,type,x= *(c+24),y= *(c+25),object,mess;
 type = *(c+10);

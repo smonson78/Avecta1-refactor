@@ -32,11 +32,6 @@ int xmon(int room, int bit, int x, int y) {
 
 
 int tacmode() {
-  char zline[16][8][7],rumdata[][157],*msg[],curmon[][60],crumobj[14][9];
-  char permon[][23];
-  int mode,crum,pursuit[3],bitmap[][65],(*inverb[])(),(*outverb[])();
-  int monster,police,outside,dungeon,fromout,combat,handle,storbuf[][130];
-  long int addr;
   int flag,i,j,k,l,m,n,p,timer=0,x,y;
   int actlist[13];
   int grflist[];

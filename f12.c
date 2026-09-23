@@ -5,8 +5,6 @@
 int i12(pc)
 int pc;
 {
-int outside;
-char curmon[][60];
 char *c = curmon[pc];
 if(outside)
   return(0);
@@ -28,7 +26,6 @@ return(1);
 int o12(pc)
 int pc;
 {
-char curmon[][60],pname[],*name[];
 char *c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
 if(*(c+10) == 0) {
   *(c+41) = 0;
