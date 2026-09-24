@@ -2,20 +2,29 @@
 /* I2() initializes the use of magic.                                         */
 /******************************************************************************/
 
+#include <xbios.h>
+
+#include "globals.h"
 #include "osbind.h"
 #include "gemdefs.h"
+#include "words.h"
+#include "startaux.h"
+#include "caux.h"
+#include "trapaux.h"
 
-
-int i2(pc)
-int pc;
+int i2(int pc)
 {
-int i,j,k,numb,x,y,status,ret;
-char *z,*c = curmon[pc],scratch[3],*w = (pc == 0 ? pname : name[*(c+3)]);
-if(outside)
-  return(0);
-if(*(c+14) <= 0) {
-  error(13);
-  return(0);
+  int i,j,k,numb,x,y,status,ret;
+  uint8_t *c = curmon[pc];
+  char *z,scratch[3],*w = (pc == 0 ? pname : name[*(c+3)]);
+
+  if(outside) {
+    return(0);
+  }
+
+  if(*(c+14) <= 0) {
+    error(13);
+    return(0);
   }
 top(1);
 clrinp();
@@ -124,12 +133,44 @@ if(numb == 13) { /* asshole wants to blink */
 return(1);
 }  
 
-int o2(pc)
-int pc;
+void losespel(int pc)
+{
+  uint8_t *c = curmon[pc];
+  char *w = (pc == 0 ? pname : name[*(c+3)]);
+  char *n = (pc < 4 ? rummsg[0] : msg[0]);
+  if (*(c+21) != 0) {
+        prnt("-> The original spell on %s%s was lost!", n, w, NULL, NULL, NULL, NULL, NULL);  
+        *(c + *(c+19)) = *(c+20);
+        *(c+21) = 0;
+  }
+}
+
+void flash()
+{
+  int i, j;
+  int16_t funk[3];
+  xbios_37();
+  xbios_38_off();
+  for (i=0;i<30;i++) {
+    for (j=2;j<15;j++) {
+      funk[0] = rnd(1000);
+      funk[1] = rnd(1000);
+      funk[2] = rnd(1000);
+      vs_color(handle, j, funk);
+    }
+    xbios_37();
+  }
+  Setpalette(newpal);
+  xbios_37();
+  xbios_38_vbl();
+}
+
+int o2(int pc)
 {
 long int addr;
-char *z,*p,*c = curmon[pc],*t,*w,*wt;
-int k,m,flag=0,dam,j,trap,num,target,type,i,x,y;
+uint8_t *c = curmon[pc];
+char *z,*p,*t,*w,*wt;
+int k,m,flag=0,dam,j,trap,num,target,i,x,y;
 w = (pc == 0 ? pname :  name[*(c+3)]);
 if(pc > 3) {
    if(*(c+58) != 16) {
@@ -432,51 +473,21 @@ I still live! I do not wish to know the ensorcelment used to do this.'");
           *(c+30) = k;
           }
         }
-   }
-return(1);
-}
-
-int flash()
-{
-int i,j,funk[3];
-xbios_37();
-xbios_38_off();
-for(i=0;i<30;i++) {
-  for(j=2;j<15;j++) {
-    funk[0] = rnd(1000);
-    funk[1] = rnd(1000);
-    funk[2] = rnd(1000);
-    vs_color(handle,j,funk);
-    }
-  xbios_37();
   }
-Setpalette(newpal);
-xbios_37();
-xbios_38_vbl();
-}
-
-losespel(pc)
-int pc;
-{
-char *c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
-char *n = (pc < 4 ? rummsg[0] : msg[0]);
-if( *(c+21) != 0) {
-       prnt("-> The original spell on %s%s was lost!",n,w);  
-       *(c + *(c+19)) = *(c+20);
-       *(c+21) = 0;
-       }
-}
-
-int savthrow(npc,mag)
-int npc,mag;
-{
-char *c = curmon[npc],*w = (npc == 0 ? pname : name[*(c+3)]);
-if(rnd(100) < (*(c+51) - mag)*8 || *(c+54) > 0) {
-  if(npc < 4 || curmon[npc][3] == 10)
-    prnt("-> %s resists the spell!",w);
-  else
-    prnt("-> The %s resists the spell!",w);
   return(1);
-  }
-return(0);
+}
+
+
+int savthrow(int npc, int mag)
+{
+  uint8_t *c = curmon[npc];
+  char *w = (npc == 0 ? pname : name[*(c+3)]);
+  if(rnd(100) < (*(c+51) - mag)*8 || *(c+54) > 0) {
+    if(npc < 4 || curmon[npc][3] == 10)
+      prnt("-> %s resists the spell!", w, NULL, NULL, NULL, NULL, NULL, NULL);
+    else
+      prnt("-> The %s resists the spell!", w, NULL, NULL, NULL, NULL, NULL, NULL);
+    return(1);
+    }
+  return(0);
 }

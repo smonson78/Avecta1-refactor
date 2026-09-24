@@ -1,6 +1,22 @@
 #include "globals.h"
 
+#include "f0.h"
+#include "f1.h"
+#include "f2.h"
+#include "f3.h"
+#include "f4.h"
+#include "f5.h"
+#include "f6.h"
+#include "f7.h"
+#include "f8.h"
+#include "f9.h"
+#include "f10.h"
+#include "f11.h"
+#include "f12.h"
+#include "f13.h"
 #include "f14.h"
+#include "f15.h"
+#include "f16.h"
 
 // Screen VDI handle
 int16_t handle;
@@ -28,7 +44,7 @@ int grflist[13];
 int winroom;
 int (*inverb[])()  = {i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14};
 int (*outverb[])() = {o0,o1,o2,o3,o4,o5,o6,o7,o8,o9,o10,o11,o12,o13,o14};
-int winker = 0, winktime = 0,combat = 0;
+int winker = 0, winktime = 0, combat = 0;
 char *posture[] = {"All Out","Standard","Defensive","Fall Back"};
 char *wordmod[] = {"None","Low","Medium","Severe","Dead","Panicked"};
                       /* chance,damage,weight */
@@ -50,7 +66,7 @@ char *statword[] = {"Points","Spell","Good Hand",
 long int saddr;
 int fillpic[41][65];
 int mode = 0,dismax;
-int pursuit[] = {0,0,0};
+int pursuit[] = {0, 0, 0};
 char trigval[80][6];
 char invtrig[20];
 char *path = "a:*.SAV";
@@ -66,7 +82,7 @@ char *name[] = {"goblin","skeleton","spider","firewolf","ghost","thrang",
                 "ghoul","snake","vampire","gork","Melkthrop","merchant",
                 "bat","Eirik","guard","pedestrian","Mage Leveth",
                 "orc","crusher","flamer","rat","bartender","rogue"};
-char curmon[12][60] = { {1,4,50,0,81,5,60,8,0,0,0,4,3,90,10} };
+uint8_t curmon[12][60] = { {1,4,50,0,81,5,60,8,0,0,0,4,3,90,10} };
 char invnpc[4][20]; 
 char permon[][23] = {
   {0,0},
@@ -178,12 +194,17 @@ char *com[] = {"the ",
                "   item",
                "   item"};
 char fname[] = "grafx.dat\0";
+
+// Player name (?)
 char pname[20];
+
 /* load the collection of trees into memory */
 char *verblist[] = {"Cast ","Examine","Drag/Eat","Search","Take/Drop","Wait",
                     "X-it","Rook/Snoop","Fire Arrow","Burn/Snuff","Give",
                     "Voice","Quit/File"};
-char zline[16][8][7], rumdata[80][157], triglist[25], crumobj[18][9];
+
+char zline[16][8][7], rumdata[80][157], triglist[25];
+uint8_t crumobj[18][9];
 char *att[][4] = {
   {"","","",""},
   /* spidey*/        {"","bite/all","",""},

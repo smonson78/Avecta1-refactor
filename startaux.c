@@ -133,7 +133,6 @@ int error(int i) {
   return i;
 }
 
-
 int savpal() {
   int *j;
   int i;
@@ -188,8 +187,6 @@ int console() {
 
 // Endgame
 int congratulate() {
-  int handle;
-  char pname[];
   int i,rgb[3];
 
   xbios_37();

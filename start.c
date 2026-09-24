@@ -16,11 +16,6 @@
 #include "raton.h"
 #include "rausmaus.h"
 
-int i0(),i1(),i2(),i3(),i4(),i5(),i6(),i7(),i8(),i9();
-int i10(),i11(),i12(),i13(),i14();
-int o0(),o1(),o2(),o3(),o4(),o5(),o6(),o7(),o8(),o9();
-int o10(),o11(),o12(),o13(),o14();
-
 int stinit();
 
 int main()

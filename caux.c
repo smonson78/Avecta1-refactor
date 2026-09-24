@@ -1,368 +1,373 @@
-int sgetxy(x,y,type,top1,bot,ret)
-int *x,*y,type,top1,bot,*ret;
+#include "globals.h"
 
+int sgetxy(int *x, int *y, int type, int top1, int bot, int *ret)
 {
-int oldline = -1,newline=0,newx,newy,oldx = -1,oldy=0,i,j,k,status=1;
-int light,keybd = 0,keystk = 0,mflag=0,rflag=0,tflag= 0,inrflag,intflag;
-char *z,*c;
-char *string,letter;
-if(winker != 0)
-  c = curmon[winker-1];
-light = rumdata[crum][30];
-while( (int)gemdos(0xb) != 0) {
-     gemdos(0x8);
-     }
-do {
-   vq_mouse(handle,&status,x,y);
-   } while(status != 0);
-if(top1 == 3 && bot == 15)
-  keybd = 13;
-if(top1 ==  8 && bot == 11)
-  keybd = 4;
-xbios_37();
-raton();
-do {
-   if((int)gemdos(0xb) == -1) {
-      keystk = 1;
-      letter = gemdos(0x8);
+   int oldline = -1,newline=0,newx,newy,oldx = -1,oldy=0,i,j,k,status=1;
+   int light,keybd = 0,keystk = 0,mflag=0,rflag=0,tflag= 0,inrflag,intflag;
+   char *z,*c;
+   char *string,letter;
+   if(winker != 0)
+   c = curmon[winker-1];
+   light = rumdata[crum][30];
+   while( (int)gemdos(0xb) != 0) {
+      gemdos(0x8);
       }
-   if(keybd != 0 && keystk) {
-     keystk = 0;
-     for(i=0;i<keybd;i++) {
-        if(keybd == 13)
-          string = verblist[i];
-        else
-          string = posture[i];
-        if( letter == ' ' || *string == letter || *string == (letter-32) ) {
-            rausmaus();
-            top(1);
-            clrinp();
-            if(rflag) {
-              xbios_37();
-              zline[oldx][oldy][4] = 0;
-              for(j=0;j<2;j++) 
-                 for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
-              if(mflag>0 && mode) {
-                 toggle(32,mflag,7,addr);
-                 mflag = 0;
-                 }
-              }
-            if(keybd == 13) {
-              if(letter == ' ')
-                 *ret = 16;
-              else
-                 *ret = i+3;
-              }
-            else {
-              if(letter == ' ')
-                *ret = 12;
-              else
-                *ret = 8 + i;
-              }
-            return(1);  
+   do {
+      vq_mouse(handle,&status,x,y);
+      } while(status != 0);
+   if(top1 == 3 && bot == 15)
+   keybd = 13;
+   if(top1 ==  8 && bot == 11)
+   keybd = 4;
+   xbios_37();
+   raton();
+   do {
+      if((int)gemdos(0xb) == -1) {
+         keystk = 1;
+         letter = gemdos(0x8);
+         }
+      if(keybd != 0 && keystk) {
+      keystk = 0;
+      for(i=0;i<keybd;i++) {
+         if(keybd == 13)
+            string = verblist[i];
+         else
+            string = posture[i];
+         if( letter == ' ' || *string == letter || *string == (letter-32) ) {
+               rausmaus();
+               top(1);
+               clrinp();
+               if(rflag) {
+               xbios_37();
+               zline[oldx][oldy][4] = 0;
+               for(j=0;j<2;j++) 
+                  for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+               if(mflag>0 && mode) {
+                  toggle(32,mflag,7,addr);
+                  mflag = 0;
+                  }
+               }
+               if(keybd == 13) {
+               if(letter == ' ')
+                  *ret = 16;
+               else
+                  *ret = i+3;
+               }
+               else {
+               if(letter == ' ')
+                  *ret = 12;
+               else
+                  *ret = 8 + i;
+               }
+               return(1);  
+               }
             }
-         }
-     }
-   vq_mouse(handle,&status,x,y);  /* sample mouse state */
-   newx = (*x)/16;
-   newy = (*y)/16;
-   newline = (*y)/8;
-   if(newx < 16 && newy < 8)
-        inrflag = 1;
-   else
-        inrflag = 0;
-   if(type == 0 && (newx > 15 || newy > 7) ) {
-      if(rflag) { 
-         xbios_37();
-         for(j=0;j<2;j++) 
-             for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
-         zline[oldx][oldy][4] = 0;
-         if(mflag>0 && mode) {
-             toggle(32,mflag,7,addr);
-             mflag = 0;
-             }
-         rflag = 0;
-         }
-      oldx = newx;
-      continue;
       }
-   if(type == 1) {
+      vq_mouse(handle,&status,x,y);  /* sample mouse state */
+      newx = (*x)/16;
+      newy = (*y)/16;
+      newline = (*y)/8;
       if(newx < 16 && newy < 8)
-        inrflag = 1;
+         inrflag = 1;
       else
-        inrflag = 0;
-      if(newx > 15 && newline >= top1 && newline <= bot)
-        intflag = 1;
-      else
-        intflag = 0;
-      if(tflag && !intflag) {
-        xbios_37();
-        rausmaus();
-        tflag = 0;
-        toggle(32,oldline,7,addr);
-        raton();
-        }
-      if(rflag && !inrflag) {
-         xbios_37();
-         for(j=0;j<2;j++) 
-             for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
-         zline[oldx][oldy][4] = 0;
-         if(mflag > 0 && mode) {
-            toggle(32,mflag,7,addr);
-            mflag = 0;
+         inrflag = 0;
+      if(type == 0 && (newx > 15 || newy > 7) ) {
+         if(rflag) { 
+            xbios_37();
+            for(j=0;j<2;j++) 
+               for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+            zline[oldx][oldy][4] = 0;
+            if(mflag>0 && mode) {
+               toggle(32,mflag,7,addr);
+               mflag = 0;
+               }
+            rflag = 0;
             }
-         rflag = 0;
-         }
-      if(!intflag)
-         oldline = newline;
-      if(!inrflag) {  
-        if(!intflag)
-          oldx = newx;
-        oldy = newy;
-        }
-      if(!intflag && !inrflag) 
+         oldx = newx;
          continue;
-      }
-   if(type == 2 && (newx < 16 || newline < top1 || newline > bot ) ) {
+         }
+      if(type == 1) {
+         if(newx < 16 && newy < 8)
+         inrflag = 1;
+         else
+         inrflag = 0;
+         if(newx > 15 && newline >= top1 && newline <= bot)
+         intflag = 1;
+         else
+         intflag = 0;
+         if(tflag && !intflag) {
+         xbios_37();
+         rausmaus();
+         tflag = 0;
+         toggle(32,oldline,7,addr);
+         raton();
+         }
+         if(rflag && !inrflag) {
+            xbios_37();
+            for(j=0;j<2;j++) 
+               for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+            zline[oldx][oldy][4] = 0;
+            if(mflag > 0 && mode) {
+               toggle(32,mflag,7,addr);
+               mflag = 0;
+               }
+            rflag = 0;
+            }
+         if(!intflag)
+            oldline = newline;
+         if(!inrflag) {  
+         if(!intflag)
+            oldx = newx;
+         oldy = newy;
+         }
+         if(!intflag && !inrflag) 
+            continue;
+         }
+      if(type == 2 && (newx < 16 || newline < top1 || newline > bot ) ) {
+         if(tflag) {
+         tflag = 0;
+         xbios_37();
+         rausmaus();
+         toggle(32,oldline,7,addr);
+         raton();
+         } 
+         oldline = newline;
+         oldx = newx;
+         continue;
+         }
+      if(type == 0 || (type == 1 && inrflag) ) {
+      z = zline[newx][newy];
       if(tflag) {
-        tflag = 0;
-        xbios_37();
-        rausmaus();
-        toggle(32,oldline,7,addr);
-        raton();
-        } 
-      oldline = newline;
-      oldx = newx;
-      continue;
+         tflag = 0;
+         xbios_37();
+         rausmaus();
+         toggle(32,oldline,7,addr);
+         raton();
+         } 
+      if(newx < 16 && newy < 8 && (*z == 1 || (*z == 2 && *(z+1) != 0 ) ) ) {
+         if(newx != oldx || newy != oldy) {
+            xbios_37();
+            if(tflag) {
+               tflag = 0;
+               toggle(32,oldline,7,addr);
+               } 
+            rausmaus();
+            if(oldx != -1 && rflag) {
+               xbios_37();
+               for(j=0;j<2;j++) 
+                  for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+               zline[oldx][oldy][4] = 0;
+               if(mflag > 0 && mode) {
+                  toggle(32,mflag,7,addr);
+                  mflag = 0;
+                  }
+               rflag = 0;
+               }
+            if(*(z+5) > 0 || light || (*(z+2) > 0 && *(z+2) < 4) || 
+                  (winker > 0 && *(c+24) == newx && *(c+25) == newy) ) {
+               xbios_37();
+               for(j=0;j<2;j++) 
+                  for(k=0;k<2;toggle(2*newx+j,2*newy+(k++),0,addr));
+               *(z+4) = 1;
+               rflag = 1;
+               }
+            oldx = newx;
+            oldy = newy;
+            if( mflag == 0 && mode && *(z+2) > 3 && (*(z+5) > 0 || light) 
+                  && curmon[*(z+2)][31] < 4 ) {
+               mflag = curmon[*(z+2)][33];
+               xbios_37();
+               toggle(32,mflag,7,addr);             
+               }
+            raton();
+            }
+         }
+      else {
+         if(rflag) {
+            rausmaus();
+            xbios_37();
+            for(j=0;j<2;j++) 
+               for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+            zline[oldx][oldy][4] = 0;
+            if(mflag > 0 && mode) {
+               toggle(32,mflag,7,addr);
+               mflag = 0;
+               }
+            raton();
+            rflag = 0;
+            }
+         oldx = newx;
+         oldy = newy;
+         }
       }
-   if(type == 0 || (type == 1 && inrflag) ) {
-     z = zline[newx][newy];
-     if(tflag) {
-        tflag = 0;
-        xbios_37();
-        rausmaus();
-        toggle(32,oldline,7,addr);
-        raton();
-        } 
-     if(newx < 16 && newy < 8 && (*z == 1 || (*z == 2 && *(z+1) != 0 ) ) ) {
-        if(newx != oldx || newy != oldy) {
-           xbios_37();
-           if(tflag) {
-            tflag = 0;
+      if(type == 2 || (type == 1 && intflag)) {
+         if(rflag) {
+            rausmaus();
+            xbios_37();
+            for(j=0;j<2;j++) 
+               for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+            zline[oldx][oldy][4] = 0;
+            if(mflag > 0 && mode) {
+               toggle(32,mflag,7,addr);
+               mflag = 0;
+               }
+            raton();
+            rflag = 0;
+            oldx = newx;
+            oldy = newy;
+            }
+      if(newx > 15 && newline >= top1 && newline <= bot) {
+         if(newline != oldline || oldx < 16) {
+            xbios_37();
+            rausmaus();
+            if(oldline != -1 && tflag && oldx > 15) 
+               toggle(32,oldline,7,addr);
+            toggle(32,newline,7,addr);
+            tflag = 1;
+            oldline = newline;
+            oldx = newx;
+            raton();
+            }
+         }
+      else {
+         if(tflag) {
+            xbios_37();
+            rausmaus();
             toggle(32,oldline,7,addr);
-            } 
-           rausmaus();
-           if(oldx != -1 && rflag) {
-             xbios_37();
-             for(j=0;j<2;j++) 
-                for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
-             zline[oldx][oldy][4] = 0;
-             if(mflag > 0 && mode) {
-                toggle(32,mflag,7,addr);
-                mflag = 0;
-                }
-             rflag = 0;
-             }
-           if(*(z+5) > 0 || light || (*(z+2) > 0 && *(z+2) < 4) || 
-               (winker > 0 && *(c+24) == newx && *(c+25) == newy) ) {
-             xbios_37();
-             for(j=0;j<2;j++) 
-                 for(k=0;k<2;toggle(2*newx+j,2*newy+(k++),0,addr));
-             *(z+4) = 1;
-             rflag = 1;
-             }
-           oldx = newx;
-           oldy = newy;
-           if( mflag == 0 && mode && *(z+2) > 3 && (*(z+5) > 0 || light) 
-               && curmon[*(z+2)][31] < 4 ) {
-             mflag = curmon[*(z+2)][33];
-             xbios_37();
-             toggle(32,mflag,7,addr);             
-             }
-           raton();
-           }
-        }
-     else {
-        if(rflag) {
-          rausmaus();
-          xbios_37();
-          for(j=0;j<2;j++) 
-             for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
-          zline[oldx][oldy][4] = 0;
-          if(mflag > 0 && mode) {
-              toggle(32,mflag,7,addr);
-              mflag = 0;
-              }
-          raton();
-          rflag = 0;
-          }
-        oldx = newx;
-        oldy = newy;
-        }
-     }
-   if(type == 2 || (type == 1 && intflag)) {
+            tflag = 0;
+            raton();
+            }
+         oldline = newline;
+         oldx = newx;
+         oldy = newy;
+         }
+      }
+      if(status != 0 && (rflag || tflag || 
+      (inrflag && winker > 0 && lom(winker-1,oldx,oldy)) ) ) {
+      rausmaus();
+      xbios_37();
       if(rflag) {
-          rausmaus();
-          xbios_37();
-          for(j=0;j<2;j++) 
-             for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
-          zline[oldx][oldy][4] = 0;
-          if(mflag > 0 && mode) {
-              toggle(32,mflag,7,addr);
-              mflag = 0;
-              }
-          raton();
-          rflag = 0;
-          oldx = newx;
-          oldy = newy;
-          }
-     if(newx > 15 && newline >= top1 && newline <= bot) {
-        if(newline != oldline || oldx < 16) {
-           xbios_37();
-           rausmaus();
-           if(oldline != -1 && tflag && oldx > 15) 
-             toggle(32,oldline,7,addr);
-           toggle(32,newline,7,addr);
-           tflag = 1;
-           oldline = newline;
-           oldx = newx;
-           raton();
-           }
-        }
-     else {
-        if(tflag) {
-           xbios_37();
-           rausmaus();
-           toggle(32,oldline,7,addr);
-           tflag = 0;
-           raton();
-           }
-        oldline = newline;
-        oldx = newx;
-        oldy = newy;
-        }
-     }
-   if(status != 0 && (rflag || tflag || 
-     (inrflag && winker > 0 && lom(winker-1,oldx,oldy)) ) ) {
-     rausmaus();
-     xbios_37();
-     if(rflag) {
-       zline[oldx][oldy][4] = 0;
-       for(j=0;j<2;j++) 
-          for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
-       }
-     if(tflag) 
-       toggle(32,oldline,7,addr);
-     if(mflag > 0 && mode) 
-       toggle(32,mflag,7,addr);
-     *x = oldx;
-     *y = oldy;
-     if(tflag)
-       *ret = oldline;
-     else
-       *ret = 0;
-     return(1);
-     }
+         zline[oldx][oldy][4] = 0;
+         for(j=0;j<2;j++) 
+            for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+         }
+      if(tflag) 
+         toggle(32,oldline,7,addr);
+      if(mflag > 0 && mode) 
+         toggle(32,mflag,7,addr);
+      *x = oldx;
+      *y = oldy;
+      if(tflag)
+         *ret = oldline;
+      else
+         *ret = 0;
+      return(1);
+      }
    } while (1);
 }
 
 
-int lom(pc,x,y)
-int x,y,pc;
+int lom(int pc, int x, int y)
 {
-int x2,y2,h,i,j,q;
-long register k,l,m,n,p;
-char *z,z1,*c0 = curmon[pc];
-x2 = *(c0+24); /* fetch the x-coordinate of the PC */
-y2 = *(c0+25); /* fetch the y-coordinate of the PC */
-i = (x2-x);            /* find difference between target and PC */
-j = (y2-y);            
-k = abs(i);   /* take absolute value of i and j */
-l = abs(j);
-if(k < 2 && l < 2)  /* always adjacent will make it through */
-  return(1);
-if(!zline[x][y][5] && !rumdata[crum][30] && pc < 4) /* the square is dark */
-  return(0);
-if (i != 0)
-   i = ( i/k ); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
-if (j != 0)
-   j = ( j/l );  /* j is +1 if y2>y and j is -1 if y2<y, else = 0  */
-m = k;      /* m is the temporary value of x separation,called roll variable */
-n = l;      /* n is the temporary value of y separation, called roll variable */
-q = 0;
-while ( (x != x2) || (y != y2) ) {
-   if (q == 1) {
-      z = zline[x][y];
-      z1 = crumobj[*(z+1)][0];
-      if(*(z+1) != 0 ) {
-         if(z1 < 41 && z1 > 1)
-           return(0);
+   int x2,y2,h,i,j,q;
+   long register k,l,m,n,p;
+   char *z,z1,*c0 = curmon[pc];
+   x2 = *(c0+24); /* fetch the x-coordinate of the PC */
+   y2 = *(c0+25); /* fetch the y-coordinate of the PC */
+   i = (x2-x);            /* find difference between target and PC */
+   j = (y2-y);            
+   k = abs(i);   /* take absolute value of i and j */
+   l = abs(j);
+   if(k < 2 && l < 2)  /* always adjacent will make it through */
+   return(1);
+   if(!zline[x][y][5] && !rumdata[crum][30] && pc < 4) /* the square is dark */
+   return(0);
+   if (i != 0)
+      i = ( i/k ); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
+   if (j != 0)
+      j = ( j/l );  /* j is +1 if y2>y and j is -1 if y2<y, else = 0  */
+   m = k;      /* m is the temporary value of x separation,called roll variable */
+   n = l;      /* n is the temporary value of y separation, called roll variable */
+   q = 0;
+   while ( (x != x2) || (y != y2) ) {
+      if (q == 1) {
+         z = zline[x][y];
+         z1 = crumobj[*(z+1)][0];
+         if(*(z+1) != 0 ) {
+            if(z1 < 41 && z1 > 1)
+            return(0);
+            }
+         if (*(z+2) != 0 || *z == 0 || ( *z == 2 && z1 == 0))
+            return(0);    
+         q = 0;  /* all this is stored in zline array  for each room     */
          }
-      if (*(z+2) != 0 || *z == 0 || ( *z == 2 && z1 == 0))
-         return(0);    
-      q = 0;  /* all this is stored in zline array  for each room     */
+      --m;         /* decrement each roll variable */
+      --n;
+      if (m<0) {   /* if x separation variable is 0 then roll y */
+         y += j;
+         q = 1;    /* alert system to check if los is blocked   */
+         m = k;
+         }
+      if (n<0) {   /* same for y separation variable            */
+         x += i;
+         q = 1;
+         n = l;
+         }
       }
-   --m;         /* decrement each roll variable */
-   --n;
-   if (m<0) {   /* if x separation variable is 0 then roll y */
-      y += j;
-      q = 1;    /* alert system to check if los is blocked   */
-      m = k;
-      }
-   if (n<0) {   /* same for y separation variable            */
-      x += i;
-      q = 1;
-      n = l;
-      }
-   }
-return(1);  /* if it makes it all the way through then los is open */         
+   return(1);  /* if it makes it all the way through then los is open */         
 }
 
-int los(pc,x,y)
-int x,y,pc;
+int los(int pc, int x, int y)
 {
-int x2,y2,h,i,j,q;
-long register k,l,m,n,p;
-char *z,z1,*c0 = curmon[pc];
-x2 = *(c0+24); /* fetch the x-coordinate of the PC */
-y2 = *(c0+25); /* fetch the y-coordinate of the PC */
-i = (x2-x);            /* find difference between target and PC */
-j = (y2-y);            
-k = abs(i);   /* take absolute value of i and j */
-l = abs(j);
-if(k < 2 && l < 2)  /* always adjacent will make it through */
-  return(1);
-if(!zline[x][y][5] && !rumdata[crum][30] && pc < 4) /* the square is dark */
-  return(0);
-if (i != 0)
-   i = ( i/k ); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
-if (j != 0)
-   j = ( j/l );  /* j is +1 if y2>y and j is -1 if y2<y, else = 0  */
-m = k;      /* m is the temporary value of x separation,called roll variable */
-n = l;      /* n is the temporary value of y separation, called roll variable */
-q = 0;
-while ( (x != x2) || (y != y2) ) {
-   if(q == 1) {
-      z = zline[x][y];
-      z1 = crumobj[*(z+1)][0];
-      if(*z != 1 || ( *(z+1) != 0 && z1 == 1) )
-         return(0);    
-      q = 0;  /* all this is stored in zline array  for each room     */
+   int x2,y2,h,i,j,q;
+   long register k,l,m,n,p;
+   char *z,z1,*c0 = curmon[pc];
+   x2 = *(c0+24); /* fetch the x-coordinate of the PC */
+   y2 = *(c0+25); /* fetch the y-coordinate of the PC */
+   i = (x2-x);            /* find difference between target and PC */
+   j = (y2-y);            
+   k = abs(i);   /* take absolute value of i and j */
+   l = abs(j);
+
+   if (k < 2 && l < 2) {
+      /* always adjacent will make it through */
+      return(1);
+   }
+
+   if (!zline[x][y][5] && !rumdata[crum][30] && pc < 4) {
+      /* the square is dark */
+      return(0);
+   }
+
+   if (i != 0)
+      i = ( i/k ); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
+   if (j != 0)
+      j = ( j/l );  /* j is +1 if y2>y and j is -1 if y2<y, else = 0  */
+   m = k;      /* m is the temporary value of x separation,called roll variable */
+   n = l;      /* n is the temporary value of y separation, called roll variable */
+   q = 0;
+   while ( (x != x2) || (y != y2) ) {
+      if (q == 1) {
+         z = zline[x][y];
+         z1 = crumobj[*(z+1)][0];
+         if(*z != 1 || ( *(z+1) != 0 && z1 == 1) )
+            return(0);    
+         q = 0;  /* all this is stored in zline array  for each room     */
       }
-   --m;         /* decrement each roll variable */
-   --n;
-   if (m<0) {   /* if x separation variable is 0 then roll y */
-      y += j;
-      q = 1;    /* alert system to check if los is blocked   */
-      m = k;
+      --m;         /* decrement each roll variable */
+      --n;
+      if (m<0) {   /* if x separation variable is 0 then roll y */
+         y += j;
+         q = 1;    /* alert system to check if los is blocked   */
+         m = k;
       }
-   if (n<0) {   /* same for y separation variable            */
-      x += i;
-      q = 1;
-      n = l;
+      if (n<0) {   /* same for y separation variable            */
+         x += i;
+         q = 1;
+         n = l;
       }
    }
-return(1);  /* if it makes it all the way through then los is open */         
+   return(1);  /* if it makes it all the way through then los is open */         
 }
 
 /*****************************************************************************/
@@ -449,26 +454,26 @@ while ( (xlo != xhi) || (ylo != yhi) ) {
 return(0);  /* if it makes it all the way through then it's NOT in line */     
 }
 
-int rnd(max)
-int max;
+int rnd(int max)
 {
-if(max == 0 || max == 1)
-  return(0);
-return(rand()%max);
+   if (max == 0 || max == 1) {
+      return 0;
+   }
+   return rand() % max;
 }
 
-int adjac(pc,x,y)
-int pc,x,y;
+int adjac(int pc, int x, int y)
 {
-int xnow,ynow;
-xnow = curmon[pc][24];
-ynow = curmon[pc][25];
-x = abs(xnow-x);
-y = abs(ynow-y);
-if(x <= 1 && y <= 1)
-  return(1);
-else
-  return(0);
+   int xnow,ynow;
+   xnow = curmon[pc][24];
+   ynow = curmon[pc][25];
+   x = abs(xnow-x);
+   y = abs(ynow-y);
+   if(x <= 1 && y <= 1) {
+      return(1);
+   } else {
+      return(0);
+   }
 }	
 
 /*****************************************************************************/
@@ -476,56 +481,59 @@ else
 /* x,y.  If flag is zero then it moves the object to x,y.                    */
 /*****************************************************************************/
 
-int move(obj,flag,x,y)
-int obj,flag,x,y;
+int move(int obj, int flag, int x, int y)
 {
-char *c = crumobj[obj],*z;
-int done,i,j,light = rumdata[crum][30];
-if(flag) {
-  done = 0;
-  for(i = -1;i <= 1;i++) {
-     for(j = -1;j <= 1;j++) {
-        if(i == 0 && j == 0)
-            continue;
-        z = zline[x+i][y+j];
-        if(*z == 1 && *(z+1) == 0 && *(z+2) == 0 &&
-            (curmon[0][24] != x+i || curmon[0][25] != y+j) ) {
-          if(obj > 13)
-            xobj(*c,crum);
-          zline[x][y][1] = 0;
-          if(light || zline[x][y][5] > 0)
-            drawsq(x,y);
-          *(z+1) = obj;
-          *(c+6) = x+i;
-          *(c+7) = y+j;
-          if(obj > 13)
-            storobj(*c,x+i,y+j);
-          if(light || *(z+5) > 0)
-             drawsq(x+i,y+j);
-          done = 1;
-          break;
-          }
-        }
-     if(done)
-        break;
-     }
-  }
-if(!flag) {
-    zline[*(c+6)][*(c+7)][1] = 0;
-    if(light || zline[*(c+6)][*(c+7)][5] > 0)
-      drawsq(*(c+6),*(c+7));
-    *(c+6) = x;
-    *(c+7) = y;
-    zline[x][y][1] = obj;
-    if(light || zline[x][y][5] > 0)
-      drawsq(x,y);
-    if(obj > 13) {
-       xobj(*c,crum);
-       storobj(*c,x,y);
-       }
-    done = 1;
-    }
-return(done);
+   char *c = crumobj[obj],*z;
+   int done,i,j,light = rumdata[crum][30];
+   if(flag) {
+      done = 0;
+      for(i = -1;i <= 1;i++) {
+         for(j = -1;j <= 1;j++) {
+            if(i == 0 && j == 0)
+                  continue;
+            z = zline[x+i][y+j];
+            if (*z == 1 && *(z+1) == 0 && *(z+2) == 0 &&
+                  (curmon[0][24] != x+i || curmon[0][25] != y+j)) {
+               if(obj > 13)
+                  xobj(*c,crum);
+               zline[x][y][1] = 0;
+               if(light || zline[x][y][5] > 0)
+                  drawsq(x,y);
+               *(z+1) = obj;
+               *(c+6) = x+i;
+               *(c+7) = y+j;
+               if(obj > 13) {
+                  storobj(*c,x+i,y+j);
+               }
+               if(light || *(z+5) > 0) {
+                  drawsq(x+i,y+j);
+               }
+               done = 1;
+               break;
+            }
+         }
+         if (done) {
+            break;
+         }
+      }
+   }
+
+   if(!flag) {
+      zline[*(c+6)][*(c+7)][1] = 0;
+      if(light || zline[*(c+6)][*(c+7)][5] > 0)
+         drawsq(*(c+6),*(c+7));
+      *(c+6) = x;
+      *(c+7) = y;
+      zline[x][y][1] = obj;
+      if(light || zline[x][y][5] > 0)
+         drawsq(x,y);
+      if(obj > 13) {
+         xobj(*c,crum);
+         storobj(*c,x,y);
+         }
+      done = 1;
+   }
+   return done;
 }
 
 int putinto(rumobj,thing)
@@ -546,91 +554,85 @@ putbuf[i+3] = crum;
 return(1);
 }
 
-int putaway(pc,thing)
-int pc,thing;
+int putaway(int pc, int thing)
 {
-char *i = invnpc[pc];
-int j = 1;
-if(thing == 0)
-  return(1);
-if(*i > 9 || thing == 81)
-  return(0);
-while(*(i+j) != 0 && j < 11) {
-  j++;
-  }
-if(j == 11)
-  return(0);
-if(thing < 46 && thing > 40)
-  curmon[pc][32] = 0;
-*(i+j) = thing;
-*i += 1;
-return(1);
+   char *i = invnpc[pc];
+   int j = 1;
+   if(thing == 0)
+      return(1);
+   if(*i > 9 || thing == 81)
+      return(0);
+   while(*(i+j) != 0 && j < 11) {
+      j++;
+   }
+   if(j == 11)
+      return(0);
+   if(thing < 46 && thing > 40)
+      curmon[pc][32] = 0;
+   *(i+j) = thing;
+   *i += 1;
+   return(1);
 }
 
-int takeout(pc,thing)
-int pc,thing;
+int takeout(int pc, int thing)
 {
-char invnpc[][20];
-char *i = invnpc[pc];
-int j = 1;
-if(thing == 0)
-  return(0);
-while(*(i+j) != thing && j < 11) {
-  j++;
-  }
-if(j == 11)
-  return(0);
-*i -= 1;
-*(i+j) = 0;
-return(1);
+   char *i = invnpc[pc];
+   int j = 1;
+   if(thing == 0)
+      return(0);
+   while(*(i+j) != thing && j < 11) {
+      j++;
+   }
+   if(j == 11)
+      return(0);
+   *i -= 1;
+   *(i+j) = 0;
+   return(1);
 }
 
-int remove(rumobj,thing)
-int rumobj,thing;
+int remove(int rumobj, int thing)
 {
-int crum;
-char putbuf[];
-int i = 0;
-while((putbuf[i+3] != crum || putbuf[i+2] != rumobj || putbuf[i+1] != thing) &&
-       i < 320) {
-    i += 4;
-    }
-if(i >= 320)
-  return(0);
-putbuf[i] = putbuf[i+1] = putbuf[i+2] = putbuf[i+3] = 0;
-return(1);
+   int crum;
+   char putbuf[];
+   int i = 0;
+   while((putbuf[i+3] != crum || putbuf[i+2] != rumobj || putbuf[i+1] != thing) &&
+         i < 320) {
+      i += 4;
+   }
+   if(i >= 320)
+      return(0);
+   putbuf[i] = putbuf[i+1] = putbuf[i+2] = putbuf[i+3] = 0;
+   return(1);
 } 
 
-int storobj(thing,x,y)
-int thing,x,y;
+int storobj(int thing, int x, int y)
 {
-int crum;
-int i=1;
-char *r = rumdata[0];
-while(*(r+i) != 0 && i <157) {
-  i += 3;
-  }
-if(i >= 157)
-  return(0);
-*(r+i) = thing;
-*(r+i+1) = 16*y + x;
-*(r+i+2) = crum;
-return(1);
+   int crum;
+   int i=1;
+   char *r = rumdata[0];
+   while(*(r+i) != 0 && i <157) {
+      i += 3;
+   }
+   if(i >= 157)
+      return(0);
+   *(r+i) = thing;
+   *(r+i+1) = 16*y + x;
+   *(r+i+2) = crum;
+   return(1);
 }
 
-int xobj(thing,room)
-int thing,room;
-{
-char rumdata[][157];
-int i = 1;
-char *r = rumdata[0];
-while( ( *(r+i) != thing || *(r+i+2) != room) && i < 157) {
-  i += 3;
-  }
-if(i >= 157)
-  return(0);
-*(r+i) = *(r+i+1) = *(r+i+2) = 0;
-return(1);
+int xobj(int thing, int room)
+
+   char rumdata[][157];
+   int i = 1;
+   char *r = rumdata[0];
+   while( ( *(r+i) != thing || *(r+i+2) != room) && i < 157) {
+      i += 3;
+   }
+   if(i >= 157)
+      return(0);
+   *(r+i) = *(r+i+1) = *(r+i+2) = 0;
+   return(1);
 }
 
 /****************************************************************************/
@@ -638,7 +640,7 @@ return(1);
 /* status as well as which possessions are in the person's inventory.       */
 /****************************************************************************/
 
-int status(pc)
+int status(int pc)
 {
 int i,j,ret,flag = 0;
 char scratch[3],*c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
@@ -723,66 +725,58 @@ top(1);
 clrinp();
 dotop(pc);
 return(flag);
-}     
-
-
-int invent(pc)
-int pc;
-{
-int handle,vbl(),off(),mode;
-char invnpc[][20],*obj[];
-int j,top = 3,i,ret,bot;
-char scratch[16];
-bot = 2+listinv(pc,scratch);
-sgetxy(&i,&j,2,top,bot+1,&ret);
-if(ret == bot+1)
-  return(0);
-return(scratch[ret]);
 }
 
-int listinv(pc,scratch)
-int pc;
-char *scratch;
+int invent(int pc)
 {
-int j,bot=0;
-char word[3],*o = invnpc[pc],*c = curmon[pc];
-xbios_37();
-xbios_38_off();
-vs_curaddress(handle,1,33);
-v_rvon(handle);
-printf("        ");
-v_rvoff(handle);
-textsix(1,260,1,9,"INVENTORY");
-prhand(pc);
-*(scratch+1) = *(c+45);
-*(scratch+2) = *(c+46);
-for(j=1;j<14;j++) {
-  if(*(o+j) != 0) {
-     bot++;
-     textsix(1,260,17+bot*8,strlen(obj[*(o+j)]),obj[*(o+j)]);
-     *(scratch+bot+2) = *(o+j);
-     }
-  }
-textsix(1,260,25+bot*8,9,"No Choice");
-textsix(1,260,33+8*bot,7,"Torches");
-sprintf(word,"%d",*(c+42));
-textsix(1,308,33+8*bot,strlen(word),word);
-textsix(1,260,41 + 8*bot,4,"Gold");
-sprintf(word,"%d",*(c+49));
-textsix(1,308,41 + 8*bot,strlen(word),word);
-xbios_37();
-xbios_38_vbl();
-invnpc[pc][0] = bot;
-return(bot);
+   int j,top = 3,i,ret,bot;
+   char scratch[16];
+   bot = 2+listinv(pc,scratch);
+   sgetxy(&i,&j,2,top,bot+1,&ret);
+   if(ret == bot+1)
+      return(0);
+   return(scratch[ret]);
 }
 
-int top(line)
-int line;
+int listinv(int pc, char *scratch)
 {
-int handle;
-int i;
-for(i=2;i>=line;i--) {
-  vs_curaddress(handle,i,33);
-  v_eeol(handle);
-  }
+   int j,bot=0;
+   char word[3],*o = invnpc[pc],*c = curmon[pc];
+   xbios_37();
+   xbios_38_off();
+   vs_curaddress(handle,1,33);
+   v_rvon(handle);
+   printf("        ");
+   v_rvoff(handle);
+   textsix(1,260,1,9,"INVENTORY");
+   prhand(pc);
+   *(scratch+1) = *(c+45);
+   *(scratch+2) = *(c+46);
+   for(j=1;j<14;j++) {
+   if(*(o+j) != 0) {
+      bot++;
+      textsix(1,260,17+bot*8,strlen(obj[*(o+j)]),obj[*(o+j)]);
+      *(scratch+bot+2) = *(o+j);
+      }
+   }
+   textsix(1,260,25+bot*8,9,"No Choice");
+   textsix(1,260,33+8*bot,7,"Torches");
+   sprintf(word,"%d",*(c+42));
+   textsix(1,308,33+8*bot,strlen(word),word);
+   textsix(1,260,41 + 8*bot,4,"Gold");
+   sprintf(word,"%d",*(c+49));
+   textsix(1,308,41 + 8*bot,strlen(word),word);
+   xbios_37();
+   xbios_38_vbl();
+   invnpc[pc][0] = bot;
+   return(bot);
+}
+
+int top(int line)
+{
+   int i;
+   for (i=2;i>=line;i--) {
+      vs_curaddress(handle,i,33);
+      v_eeol(handle);
+   }
 }

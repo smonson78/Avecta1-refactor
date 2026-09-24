@@ -907,7 +907,8 @@ plicably, %s decides not to strike out at the horror immediately!",s2);
       rumdata[50][0] = 1;
       goto prolog;
       }
-     moan:prnt("-> `Wethwicker's' the creature moans, `you must ... find it\
+     moan:
+     prnt("-> `Wethwicker's' the creature moans, `you must ... find it\
  ... please. I ... must conserve ... my strength.' And it slumps forward, as \
 if in a coma.");
       curmon[0][15] = 4;
@@ -916,7 +917,8 @@ if in a coma.");
       curmon[0][27] = curmon[0][29] = 4;
       break;
       }
-prolog:prnt("-> The horrid creature's mouth works, and it utters words in \
+prolog:
+prnt("-> The horrid creature's mouth works, and it utters words in \
 a slow and tortured manner, `Please ... believe me ... %s ... I am not a \
 thrang ... I am Leveth ... your old friend ... trapped in body ... of \
 thrang.'",s2);
