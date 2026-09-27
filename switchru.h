@@ -2,5 +2,7 @@
 #define __SWITCHRU_H
 
 int switchrum();
+int getmon(int room);
+int stormon();
 
 #endif

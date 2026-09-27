@@ -1,9 +1,13 @@
 
-int i9(pc)
-int pc;
+#include "globals.h"
+#include "startaux.h"
+
+int i9(int pc)
 {
-char *c = curmon[pc],*z,*w = (pc == 0 ? pname : name[*(c+3)]);
-int i,j,x,y,ret,quit = 0;
+  uint8_t *c = curmon[pc];
+  char *z,*w = (pc == 0 ? pname : name[*(c+3)]);
+  int i,j,x,y,ret,quit = 0;
+
 if(pc > 0 && pc < 4 && curmon[0][15] != 9) {
   prnt("-> %s says 'I cannot abandon you!  I will stay with you!'",w);
   return(0);
@@ -85,36 +89,36 @@ if(crumobj[*(z+1)][3] == 0) {
 return(1);
 }
 
-int o9(pc)
-int pc;
+int o9(int pc)
 {
-char *c = curmon[pc];
-int i,x = *(c+24), y = *(c+25);
-char *z = zline[x][y];
-if(pc == 0 && crumobj[*(c+9)][5] == -2) {
-    prnt("-> %s finds the exit is locked!",pname);
-    *(c+30) = crum;
-    return(1);
+  uint8_t *c = curmon[pc];
+  int x = *(c+24), y = *(c+25);
+  char *z = zline[x][y];
+  
+  if(pc == 0 && crumobj[*(c+9)][5] == -2) {
+      prnt("-> %s finds the exit is locked!",pname);
+      *(c+30) = crum;
+      return(1);
+      }
+  *(z+2) = 0;
+  if(*(z+5) > 0 || rumdata[*(c+30)][30]) {
+    xbios_37();
+    storsc(storbuf[pc],16*x,16*y,1,addr);
     }
-*(z+2) = 0;
-if(*(z+5) > 0 || rumdata[*(c+30)][30]) {
-  xbios_37();
-  storsc(storbuf[pc],16*x,16*y,1,addr);
-  }
-*(c+30) = *(c+10);
-if(pc != 0) {
-   z = zline[*(c+26)][*(c+27)];
-   *(c+30) = crumobj[*(z+1)][3];
-   if(mode)
-      dorep();
-   return(-1);
-   }
-if(pc == 0) {
-  *(c+34) = 0;
-  if(mode)
-    prnt("-> %s flees!",&pname[0]);
-  *(c+18) = 8;
-  }
-return(-1);
+  *(c+30) = *(c+10);
+  if(pc != 0) {
+    z = zline[*(c+26)][*(c+27)];
+    *(c+30) = crumobj[*(z+1)][3];
+    if(mode)
+        dorep();
+    return(-1);
+    }
+  if(pc == 0) {
+    *(c+34) = 0;
+    if(mode)
+      prnt("-> %s flees!",&pname[0]);
+    *(c+18) = 8;
+    }
+  return -1;
 }
 

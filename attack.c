@@ -1,7 +1,6 @@
 #include "globals.h"
 
 int attack(int pc, int xdes, int ydes) {
-  long int addr;
   int light = rumdata[crum][30],flag = 1,i,bit,xnow,ynow,xadd,yadd;
   xnow = curmon[pc][24];
   ynow = curmon[pc][25];

@@ -1,8 +1,10 @@
+#include "globals.h"
 #include "osbind.h"
 
 int input(int pc) {
   int i,j,x,y,ret;
-  char *z,*c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
+  uint8_t *c = curmon[pc];
+  char *z,*w = (pc == 0 ? pname : name[*(c+3)]);
   if(pc > 3)
     return(0);
   hold = usedline = 0;
@@ -93,23 +95,24 @@ int input(int pc) {
     return(ret + 1);
   if(ret > 2)
     return(ret + 2);
+
+  return 0;
 }
 
-int clrinp() {
+void clrinp() {
   int handle;
   int i;
   xbios_37();
   for(i=3;i<17;i++) {
-      vs_curaddress(handle,i,33);
-      v_eeol(handle);
-      }
-  } 
+    vs_curaddress(handle,i,33);
+    v_eeol(handle);
+  }
+} 
 
-  int comwind(pc)
-  int pc;
-  {
-  long int addr;
-  char *c = curmon[pc],scratch[3],*c1 = curmon[*(c+39)];
+int comwind(int pc)
+{
+  uint8_t *c = curmon[pc], *c1 = curmon[*(c+39)];
+  char scratch[3];
   char *w = (pc == 0 ? pname : name[*(c+3)]);
   int i,j,x,y,ret,n;
   if(!*(c+39) || *c1 == 0 || *(c1+30) != crum || !adjac(pc,*(c1+24),*(c1+25)) ) {
@@ -185,10 +188,11 @@ int clrinp() {
   return 1;
 }
 
-int dotop(int pc) {
-  char (*curmon)[60];
-  int handle;
-  char *c = curmon[pc],scratch[4],l;
+int dotop(int pc)
+{
+  uint8_t *c = curmon[pc];
+  char scratch[4], l;
+
   vs_curaddress(handle,2,33);
   v_eeol(handle);
   textsix(1,260,9,1,"H");

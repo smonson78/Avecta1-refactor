@@ -1,8 +1,13 @@
-int i11(pc)
-int pc;
+#include "globals.h"
+#include "damage.h"
+#include "startaux.h"
+
+int i11(int pc)
 {
-char *c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
-int tar,x,y,ret;
+  uint8_t *c = curmon[pc];
+  char *w = (pc == 0 ? pname : name[*(c+3)]);
+  int tar,x,y,ret;
+
 if(outside)
   return(0);
 if(*(c+45) != 45 || *(c+44) == 0) {
@@ -37,11 +42,12 @@ if(pc > 0)
 return(1);
 }
 
-int o11(pc)
-int pc;
+int o11(int pc)
 {
-char *c = curmon[pc],*t,*w = (pc == 0 ? pname : name[*(c+3)]),*wt;
-int x,y,miss,tar,dir,i,j,k = 0,off();
+  uint8_t *c = curmon[pc];
+  char *t,*w = (pc == 0 ? pname : name[*(c+3)]),*wt;
+  int x,y,miss,tar,dir,i,j,k = 0,off();
+
 tar = (pc == 0 ? *(c+7) : *(c+39) );
 t = curmon[tar];
 wt = (tar == 0 ? pname : name[*(t+3)]);

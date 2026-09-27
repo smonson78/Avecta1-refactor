@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "startaux.h"
 
 int i13(int pc)
 {

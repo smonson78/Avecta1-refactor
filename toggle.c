@@ -1,3 +1,6 @@
+// Unknown function
+
+/*
           .globl _toggle
 .text   
 _toggle: link R14,#-4
@@ -32,3 +35,8 @@ top:     move.w (R9),R4
          dbf R5,it
          unlk R14
          rts
+*/
+
+void toggle(int x, int y, int unknown1, void *addr) {
+
+}

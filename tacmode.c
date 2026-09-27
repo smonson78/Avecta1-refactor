@@ -1,4 +1,7 @@
-			
+#include "globals.h"
+#include "startaux.h"
+#include "osbind.h"
+
 /*****************************************************************************/
 /* TACMODE runs the tactical mode of the game, and continues until the hero  */
 /* is victorious or leaves the room, or everyone is dead.  It returns the    */
@@ -7,9 +10,9 @@
 /* room, -2 = hero has called an interrupt to play.                          */
 /*****************************************************************************/
 
-#include "osbind.h"
 
-int xmon(int room, int bit, int x, int y) {
+int xmon(int room, int bit, int x, int y)
+{
   char *monbuf;
   char *r = monbuf;
   int j, i = 1;

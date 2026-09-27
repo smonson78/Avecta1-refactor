@@ -3,7 +3,8 @@
 
 int i5(int pc);
 int o5(int pc);
-int header(char *string);
+void header(char *string);
 int handman(int pc, int inv, int rum, int flag);
+int prhand(int pc);
 
 #endif

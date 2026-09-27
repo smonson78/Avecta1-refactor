@@ -1,11 +1,22 @@
 #include "globals.h"
+#include "caux.h"
+#include "cinput.c"
+#include "startaux.h"
+#include "torches.h"
+#include "rumdraw.h"
+#include "toggle.h"
+#include "rausmaus.h"
+
+#include "f5.h"
 
 int sgetxy(int *x, int *y, int type, int top1, int bot, int *ret)
 {
-   int oldline = -1,newline=0,newx,newy,oldx = -1,oldy=0,i,j,k,status=1;
-   int light,keybd = 0,keystk = 0,mflag=0,rflag=0,tflag= 0,inrflag,intflag;
-   char *z,*c;
+   int oldline = -1,newline=0,newx,newy,oldx = -1, oldy=0,i,j,k,status=1;
+   int light,keybd = 0,keystk = 0,mflag=0,rflag=0, tflag = 0,inrflag,intflag;
+   uint8_t *z;
+   char *c;
    char *string,letter;
+
    if(winker != 0)
    c = curmon[winker-1];
    light = rumdata[crum][30];
@@ -40,8 +51,10 @@ int sgetxy(int *x, int *y, int type, int top1, int bot, int *ret)
                if(rflag) {
                xbios_37();
                zline[oldx][oldy][4] = 0;
-               for(j=0;j<2;j++) 
-                  for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+               for(j=0;j<2;j++) {
+                  for( k=0; k<2; toggle(2*oldx+j,2*oldy+(k++),0,addr))
+                     ;
+               }
                if(mflag>0 && mode) {
                   toggle(32,mflag,7,addr);
                   mflag = 0;
@@ -269,9 +282,11 @@ int sgetxy(int *x, int *y, int type, int top1, int bot, int *ret)
 
 int lom(int pc, int x, int y)
 {
-   int x2,y2,h,i,j,q;
-   long register k,l,m,n,p;
-   char *z,z1,*c0 = curmon[pc];
+   int x2,y2,i,j,q;
+   long int k,l,m,n;
+   char z1;
+   uint8_t *z;
+   uint8_t *c0 = curmon[pc];
    x2 = *(c0+24); /* fetch the x-coordinate of the PC */
    y2 = *(c0+25); /* fetch the y-coordinate of the PC */
    i = (x2-x);            /* find difference between target and PC */
@@ -319,9 +334,11 @@ int lom(int pc, int x, int y)
 
 int los(int pc, int x, int y)
 {
-   int x2,y2,h,i,j,q;
-   long register k,l,m,n,p;
-   char *z,z1,*c0 = curmon[pc];
+   int x2,y2,i,j,q;
+   long int k,l,m,n;
+   uint8_t *c0 = curmon[pc];
+   uint8_t *z;
+   char z1;
    x2 = *(c0+24); /* fetch the x-coordinate of the PC */
    y2 = *(c0+25); /* fetch the y-coordinate of the PC */
    i = (x2-x);            /* find difference between target and PC */
@@ -381,77 +398,75 @@ int los(int pc, int x, int y)
 /* west,8=Samesquare.                                              12/12/85  */
 /*****************************************************************************/
 
-int nextxy(xlo,ylo,xhi,yhi,xnow,ynow,xnext,ynext)
-int xlo,ylo,xhi,yhi,xnow,ynow,*xnext,*ynext;
+void nextxy(int xlo, int ylo, int xhi, int yhi, int xnow, int ynow, int *xnext, int *ynext)
 {
-int i,j,k=1,rollx,rolly,signx=0,signy=0;
-i = xhi - xlo;
-j = yhi - ylo;
-rollx = abs(i);
-rolly = abs(j);
-if (i != 0)
-   signx = i/rollx;
-if (j != 0)
-   signy = j/rolly;
-do {
-   if(line(xlo,ylo,xhi,yhi,xnow+signx,ynow+signy)) {
-       *xnext = xnow + signx;
-       *ynext = ynow + signy;
-       k = 0;
-       break;
-       }
-   if(line(xlo,ylo,xhi,yhi,xnow+signx,ynow)) {
-       *xnext = xnow + signx;
-       *ynext = ynow;
-       signy = 0;
-       k = 0;
-       break;
-       }
-   *xnext = xnow;
-   *ynext = ynow + signy;
-   k = 0;    
+   int i,j,k=1,rollx,rolly,signx=0,signy=0;
+   i = xhi - xlo;
+   j = yhi - ylo;
+   rollx = abs(i);
+   rolly = abs(j);
+   if (i != 0)
+      signx = i/rollx;
+   if (j != 0)
+      signy = j/rolly;
+   do {
+      if(line(xlo,ylo,xhi,yhi,xnow+signx,ynow+signy)) {
+         *xnext = xnow + signx;
+         *ynext = ynow + signy;
+         k = 0;
+         break;
+      }
+      if(line(xlo,ylo,xhi,yhi,xnow+signx,ynow)) {
+         *xnext = xnow + signx;
+         *ynext = ynow;
+         signy = 0;
+         k = 0;
+         break;
+      }
+      *xnext = xnow;
+      *ynext = ynow + signy;
+      k = 0;    
    } while (k == 1);
 }
 
 
-int line(xlo,ylo,xhi,yhi,xnow,ynow)
-int xlo,ylo,xhi,yhi,xnow,ynow;
+int line(int xlo, int ylo, int xhi, int yhi, int xnow, int ynow)
 {
-int i,j,q;
-register k,l,m,n,p,r;
-i = (xhi-xlo);            /* find difference between two coordinates */
-j = (yhi-ylo);            
-if((xnow == xlo && ynow == ylo) || (xnow == xhi && ynow == yhi) ) 
-     return(1);
-k = abs(i);   /* take absolute value of i and j */
-l = abs(j);
-if (i != 0)
-   i = ( i/k ); /* i is +1 if xhi>xlo and i is -1 if xhi<xlo, else = 0 */
-if (j != 0)
-   j = ( j/l );  /* j is +1 if yhi>ylo and j is -1 if yhi<ylo, else = 0  */
-m = k;      /* m is the temporary value of x separation,called roll variable */
-n = l;      /* n is the temporary value of y separation, called roll variable */
-q = 0;
-while ( (xlo != xhi) || (ylo != yhi) ) {
-   if (q == 1) {
-      if(xnow == xlo && ynow == ylo)
-         return(1); /* then it's along the line */
-      q = 0;  
+   int i,j,q;
+   int k,l,m,n;
+   i = (xhi-xlo);            /* find difference between two coordinates */
+   j = (yhi-ylo);            
+   if((xnow == xlo && ynow == ylo) || (xnow == xhi && ynow == yhi) ) 
+      return(1);
+   k = abs(i);   /* take absolute value of i and j */
+   l = abs(j);
+   if (i != 0)
+      i = ( i/k ); /* i is +1 if xhi>xlo and i is -1 if xhi<xlo, else = 0 */
+   if (j != 0)
+      j = ( j/l );  /* j is +1 if yhi>ylo and j is -1 if yhi<ylo, else = 0  */
+   m = k;      /* m is the temporary value of x separation,called roll variable */
+   n = l;      /* n is the temporary value of y separation, called roll variable */
+   q = 0;
+   while ( (xlo != xhi) || (ylo != yhi) ) {
+      if (q == 1) {
+         if(xnow == xlo && ynow == ylo)
+            return(1); /* then it's along the line */
+         q = 0;  
+         }
+      --m;         /* decrement each roll variable */
+      --n;
+      if (m<0) {   /* if x separation variable is 0 then roll y */
+         ylo += j;
+         q = 1;    /* alert system to check if los is blocked   */
+         m = k;
+         }
+      if (n<0) {   /* same for y separation variable            */
+         xlo += i;
+         q = 1;
+         n = l;
+         }
       }
-   --m;         /* decrement each roll variable */
-   --n;
-   if (m<0) {   /* if x separation variable is 0 then roll y */
-      ylo += j;
-      q = 1;    /* alert system to check if los is blocked   */
-      m = k;
-      }
-   if (n<0) {   /* same for y separation variable            */
-      xlo += i;
-      q = 1;
-      n = l;
-      }
-   }
-return(0);  /* if it makes it all the way through then it's NOT in line */     
+   return(0);  /* if it makes it all the way through then it's NOT in line */     
 }
 
 int rnd(int max)
@@ -459,7 +474,7 @@ int rnd(int max)
    if (max == 0 || max == 1) {
       return 0;
    }
-   return rand() % max;
+   return Random() % max;
 }
 
 int adjac(int pc, int x, int y)
@@ -483,8 +498,10 @@ int adjac(int pc, int x, int y)
 
 int move(int obj, int flag, int x, int y)
 {
-   char *c = crumobj[obj],*z;
-   int done,i,j,light = rumdata[crum][30];
+   uint8_t *c = crumobj[obj];
+   uint8_t *z;
+   int done, i, j, light = rumdata[crum][30];
+
    if(flag) {
       done = 0;
       for(i = -1;i <= 1;i++) {
@@ -536,27 +553,24 @@ int move(int obj, int flag, int x, int y)
    return done;
 }
 
-int putinto(rumobj,thing)
-int rumobj,thing;
+int putinto(int rumobj, int thing)
 {
-char putbuf[];
-int crum;
-int i = 0;
-while(putbuf[i] != 0 && i < 320) {
-  i += 4;
-  }
-if(i >= 320)
-  return(0);
-putbuf[i] = 1;
-putbuf[i+1] = thing;
-putbuf[i+2] = rumobj;
-putbuf[i+3] = crum;
-return(1);
+   int i = 0;
+   while(putbuf[i] != 0 && i < 320) {
+   i += 4;
+   }
+   if(i >= 320)
+   return(0);
+   putbuf[i] = 1;
+   putbuf[i+1] = thing;
+   putbuf[i+2] = rumobj;
+   putbuf[i+3] = crum;
+   return(1);
 }
 
 int putaway(int pc, int thing)
 {
-   char *i = invnpc[pc];
+   uint8_t *i = invnpc[pc];
    int j = 1;
    if(thing == 0)
       return(1);
@@ -576,7 +590,7 @@ int putaway(int pc, int thing)
 
 int takeout(int pc, int thing)
 {
-   char *i = invnpc[pc];
+   uint8_t *i = invnpc[pc];
    int j = 1;
    if(thing == 0)
       return(0);
@@ -592,8 +606,6 @@ int takeout(int pc, int thing)
 
 int remove(int rumobj, int thing)
 {
-   int crum;
-   char putbuf[];
    int i = 0;
    while((putbuf[i+3] != crum || putbuf[i+2] != rumobj || putbuf[i+1] != thing) &&
          i < 320) {
@@ -607,7 +619,6 @@ int remove(int rumobj, int thing)
 
 int storobj(int thing, int x, int y)
 {
-   int crum;
    int i=1;
    char *r = rumdata[0];
    while(*(r+i) != 0 && i <157) {
@@ -622,8 +633,7 @@ int storobj(int thing, int x, int y)
 }
 
 int xobj(int thing, int room)
-
-   char rumdata[][157];
+{
    int i = 1;
    char *r = rumdata[0];
    while( ( *(r+i) != thing || *(r+i+2) != room) && i < 157) {
@@ -642,9 +652,10 @@ int xobj(int thing, int room)
 
 int status(int pc)
 {
-int i,j,ret,flag = 0;
-char scratch[3],*c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
-long int point;
+   int i,j,ret,flag = 0;
+   uint8_t *c = curmon[pc];
+   char scratch[3],*w = (pc == 0 ? pname : name[*(c+3)]);
+
 if(pc > 3)
  return(1);
 xbios_37();
@@ -740,8 +751,9 @@ int invent(int pc)
 
 int listinv(int pc, char *scratch)
 {
-   int j,bot=0;
-   char word[3],*o = invnpc[pc],*c = curmon[pc];
+   int j, bot=0;
+   uint8_t *c = curmon[pc], *o = invnpc[pc];
+   char word[3];
    xbios_37();
    xbios_38_off();
    vs_curaddress(handle,1,33);
@@ -772,7 +784,7 @@ int listinv(int pc, char *scratch)
    return(bot);
 }
 
-int top(int line)
+void top(int line)
 {
    int i;
    for (i=2;i>=line;i--) {

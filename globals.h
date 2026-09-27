@@ -19,11 +19,9 @@ extern void *addr;
 
 extern char pname[20];
 
-// Monster names
-extern char *name[];
-
 extern char weapon[][3];
 extern char wepmatx[4][4];
+extern char spelinfo[24][3];
 
 extern int16_t pxy[8];
 extern int16_t bxy[4];
@@ -31,13 +29,20 @@ extern int16_t lxy[4];
 extern int16_t vxy[4];
 
 extern uint8_t curmon[12][60];
+extern uint8_t permon[][23];
+
 extern int16_t contrl[12], intin[128], intout[128], ptsin[128], ptsout[128];
 extern int16_t work_in[11], work_out[57];
 extern char specbuf[40], putbuf[320], monbuf[320], junk[20];
-extern char zline[16][8][7], rumdata[80][157], triglist[25];
+extern uint8_t zline[16][8][7];
+extern char rumdata[80][157];
+extern uint8_t triglist[25];
+extern char invtrig[20];
+
 extern uint8_t crumobj[18][9];
-extern char invnpc[4][20];
+extern uint8_t invnpc[4][20];
 extern int pursuit[];
+extern int mode, dismax;
 
 extern int crum, objnum, bitmap[200][65];
 
@@ -50,9 +55,6 @@ extern int usedline, prev, prevy;
 extern int grflist[13];
 extern int winroom;
 
-// Error message strings
-extern char *errmsg[];
-
 // Save game path
 extern char *path;
 extern char *filename;
@@ -63,5 +65,24 @@ extern int outside, dungeon;
 extern int police;
 
 extern int winker, winktime, combat;
+
+extern int firebuff[130];
+extern char weight[41];
+extern char eats[];
+extern char trigval[80][6];
+
+// Words
+extern char *posture[];
+extern char *wordmod[];
+extern char *statword[];
+extern char *wepname[];
+extern char *spell[];
+extern char *name[];
+extern char *errmsg[];
+extern char *com[];
+extern char *verblist[];
+extern char *att[][4];
+extern char *monmsg[];
+extern char *obj[];
 
 #endif

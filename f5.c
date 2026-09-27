@@ -1,10 +1,17 @@
 #include "globals.h"
+#include "caux.h"
+#include "startaux.h"
+#include "text.h"
+
+#include "f4.h"
 
 /****************************************************************************/
 /* I5() initializes a DRAG/Eat function.  Clicking in the room gives a     */
 /* move function.  The character can drop something from the inventory      */
 /* while holding something else but he gets a significant time penalty.     */
 /****************************************************************************/
+
+void header(char *string);
 
 int i5(int pc)
 {
@@ -108,9 +115,7 @@ int i5(int pc)
 int o5(int pc)
 {
   char *z,*c = curmon[pc],*w,*w1 = (pc == 0 ? &pname[0] : name[*(c+3)]);
-  int storbuf[][130],bitmap[][65],crum;
-  long int addr;
-  int flag = 1,x1,y1,x2,y2,i = 1,l,j = *(c+10),x = *(c+5),y = *(c+6),k;
+  int flag = 1,x1,y1,x2,y2,j = *(c+10),x = *(c+5),y = *(c+6),k;
   if(!handman(pc,*(c+8),*(c+9),!j)) {
     return(1);
   }
@@ -185,7 +190,7 @@ int o5(int pc)
 }
 
 
-int header(char *string)
+void header(char *string)
 {
   int handle;
   int i = strlen(string);
@@ -198,12 +203,12 @@ int header(char *string)
   vsf_color(handle,0);
   i = (11 - i)/2;
   textsix(1,260 + 6*i,1,strlen(string),string);
-  }
+}
 
-  int prhand(pc)
-  int pc;
-  {
-  char scratch[12],*c = curmon[pc];
+int prhand(int pc)
+{
+  char scratch[12];
+  uint8_t *c = curmon[pc];
   int i;
   v_rvon(handle);
   for(i=2;i<=3;i++) {
@@ -223,8 +228,10 @@ int header(char *string)
 
 int handman(int pc, int inv, int rum, int flag)
 {
-  char *c = curmon[pc],*w1 = (pc == 0 ? pname : name[*(c+3)]);
+  uint8_t *c = curmon[pc];
+  char *w1 = (pc == 0 ? pname : name[*(c+3)]);
   int l;	
+
   if (rum != 0 || (flag == 1 && inv != *(c+45) && inv != *(c+46)) ) {
     if (*(c+45) > 0 && *(c+46) > 0) {
       l = (*(c+46) != 81 ? 1 : 0);

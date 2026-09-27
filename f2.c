@@ -7,10 +7,23 @@
 #include "globals.h"
 #include "osbind.h"
 #include "gemdefs.h"
+
 #include "words.h"
 #include "startaux.h"
 #include "caux.h"
 #include "trapaux.h"
+#include "blt.h"
+#include "storsc.h"
+#include "torches.h"
+#include "actmon.h"
+#include "damage.h"
+#include "explode.h"
+#include "fireball.h"
+
+#include "f6.h"
+#include "f10.h"
+
+int savthrow(int npc, int mag);
 
 int i2(int pc)
 {
@@ -26,111 +39,111 @@ int i2(int pc)
     error(13);
     return(0);
   }
-top(1);
-clrinp();
-do {
-    vq_mouse(handle,&status,&x,&y);
-   } while (status != 0);
-xbios_37();
-xbios_38_off();
-undorep();
-for(i=0;i<25;i++) {
-  textsix(1,258,1 + 8*i,strlen(spell[i]),spell[i]);
-  sprintf(scratch,"%d",1 + (i/5));
-  if(i != 24)
-    textsix(1,314,1+8*i,1,scratch);
-  }
-xbios_37();
-xbios_38_vbl();
-sgetxy(&x,&y,2,0,24,&numb);
-top(1);
-xbios_37();
-clrinp();
-xbios_37();
-undorep();
-if(mode)
-  dorep();
-if(numb == 24)
+  top(1);
+  clrinp();
+  do {
+      vq_mouse(handle,&status,&x,&y);
+    } while (status != 0);
+  xbios_37();
+  xbios_38_off();
+  undorep();
+  for(i=0;i<25;i++) {
+    textsix(1,258,1 + 8*i,strlen(spell[i]),spell[i]);
+    sprintf(scratch,"%d",1 + (i/5));
+    if(i != 24)
+      textsix(1,314,1+8*i,1,scratch);
+    }
+  xbios_37();
+  xbios_38_vbl();
+  sgetxy(&x,&y,2,0,24,&numb);
+  top(1);
+  xbios_37();
+  clrinp();
+  xbios_37();
+  undorep();
+  if(mode)
+    dorep();
+  if(numb == 24)
+    return(0);
+  numb++;
+  if((numb-1)/5 > (*(c+51) + 1)/2) {
+    error(28);
+    return(0);
+    }
+  if( 1 + (numb-1)/5 > *(c+14)) {
+  error(13);
   return(0);
-numb++;
-if((numb-1)/5 > (*(c+51) + 1)/2) {
-   error(28);
-   return(0);
-   }
-if( 1 + (numb-1)/5 > *(c+14)) {
- error(13);
- return(0);
- }
-if((i = spelinfo[numb-1][1]) > 0) {
-  domsg(i);
-  header(w);
-  winker = pc + 1;
-  sgetxy(&x,&y,0,0,0,&ret);
-  undomsg();
-  winker = 0;
-  if(!los(pc,x,y)) {
-    error(3);
-    return(0);
-    }
-  z = zline[x][y];
-  j = spelinfo[numb-1][0];
-  if(j == 1 && *(z+2) == 0 ) {
-    error(8);
-    return(0);
-    }
-  if(j == 2 && *(z+1) == 0) {
-    error(23);
-    return(0);
-    }
-  if(j == 3 && ( *(z+2) == 0 && (x != *(c+24) || y != *(c+25)) ) ) {
-    error(8);
-    return(0);
-    }
-  *(c+9) =  *(z+1);
-  *(c+8) = 0;
-  *(c+7) = *(z+2);
-  *(c+5) = x;
-  *(c+6) = y;
   }
-if(numb == 24) {
-      k = 0;
-      if(*(c+45) == 80 || *(c+46) == 80)
-        k = 1;
-      for(j=1;j<invnpc[pc][0];j++) {
-         if(invnpc[pc][j] == 80) {
-            k = 1;
-            break;
-            }
-         }
-      if(k == 0) {
-         prnt("-> %s does not have a seekshard to trigger the teleport spell!",
-               w);
-         return(0);
-         }
+  if((i = spelinfo[numb-1][1]) > 0) {
+    domsg(i);
+    header(w);
+    winker = pc + 1;
+    sgetxy(&x,&y,0,0,0,&ret);
+    undomsg();
+    winker = 0;
+    if(!los(pc,x,y)) {
+      error(3);
+      return(0);
       }
-if(numb == 13) { /* asshole wants to blink */
-  domsg(1);
-  header(w);
-  winker = pc + 1;
-  sgetxy(&x,&y,0,0,0,&ret);
-  winker = 0;
-  undomsg();
-  if(!los(pc,x,y) || zline[x][y][0] != 1) {
-    error(3);
-    return(0);
+    z = zline[x][y];
+    j = spelinfo[numb-1][0];
+    if(j == 1 && *(z+2) == 0 ) {
+      error(8);
+      return(0);
+      }
+    if(j == 2 && *(z+1) == 0) {
+      error(23);
+      return(0);
+      }
+    if(j == 3 && ( *(z+2) == 0 && (x != *(c+24) || y != *(c+25)) ) ) {
+      error(8);
+      return(0);
+      }
+    *(c+9) =  *(z+1);
+    *(c+8) = 0;
+    *(c+7) = *(z+2);
+    *(c+5) = x;
+    *(c+6) = y;
     }
-  if(zline[x][y][1] != 0 && crumobj[zline[x][y][1]][0] < 41) {
-    error(1);
-    return(0);
+  if(numb == 24) {
+        k = 0;
+        if(*(c+45) == 80 || *(c+46) == 80)
+          k = 1;
+        for(j=1;j<invnpc[pc][0];j++) {
+          if(invnpc[pc][j] == 80) {
+              k = 1;
+              break;
+              }
+          }
+        if(k == 0) {
+          prnt("-> %s does not have a seekshard to trigger the teleport spell!",
+                w);
+          return(0);
+          }
+        }
+  if(numb == 13) { /* asshole wants to blink */
+    domsg(1);
+    header(w);
+    winker = pc + 1;
+    sgetxy(&x,&y,0,0,0,&ret);
+    winker = 0;
+    undomsg();
+    if(!los(pc,x,y) || zline[x][y][0] != 1) {
+      error(3);
+      return(0);
+      }
+    if(zline[x][y][1] != 0 && crumobj[zline[x][y][1]][0] < 41) {
+      error(1);
+      return(0);
+      }
+    *(c+26) = x;
+    *(c+27) = y;
     }
-  *(c+26) = x;
-  *(c+27) = y;
-  }
-*(c+10) = numb;
-*(c+15) = 2;
-*(c+16) = spelinfo[numb-1][2];
-*(c+14) -= 1 + (numb-1)/5;
-return(1);
+  *(c+10) = numb;
+  *(c+15) = 2;
+  *(c+16) = spelinfo[numb-1][2];
+  *(c+14) -= 1 + (numb-1)/5;
+  return(1);
 }  
 
 void losespel(int pc)
@@ -167,52 +180,59 @@ void flash()
 
 int o2(int pc)
 {
-long int addr;
-uint8_t *c = curmon[pc];
-char *z,*p,*t,*w,*wt;
-int k,m,flag=0,dam,j,trap,num,target,i,x,y;
-w = (pc == 0 ? pname :  name[*(c+3)]);
-if(pc > 3) {
-   if(*(c+58) != 16) {
-     sprintf(junk,"%s","The ");
-     sprintf(&junk[4],"%s",w);
-     w = junk;
-     }
-   num = *(c+10);
-   target = *(c+39);
-   t = curmon[*(c+39)];
-   if(!los(pc,*(t+24),*(t+25)))
-       flag = 1; 
-   wt = ( *(c+39) == 0 ? pname : name[*(t+3)]);
-   }
-if(pc < 4) {
-   flag = 0;
-   num = *(c+10);
-   if(spelinfo[num-1][0] != 2) {
-     target = *(c+7);   
-     t = curmon[target];
-     if( !*t || *(t+30) != crum || !los(pc,*(t+24),*(t+25)) ) 
-         flag = 1;
-     wt = (target == 0 ? pname : name[*(t+3)]);
-     } 
-   else {
-     target = *(c+9);
-     t = crumobj[target];
-     wt = obj[*t];
-     if(*t == 0) 
-       flag = 1;
-     }
-   }
-if(spelinfo[num-1][0] == 0)
-  flag = 0;
-if(flag) {
-       prnt("-> %s's %s Spell has no target!",w,spell[num - 1]);
-       return(1);
-       }
-if(num != 13)
-  prnt("-> %s casts the %s Spell!",w,spell[num-1]);
-flash();
-switch (num) {
+  uint8_t *c = curmon[pc];
+  char *z,*p,*w,*wt;
+  uint8_t *t;
+  int k, m, flag = 0, dam, j, trap, num, target, i, x, y;
+  w = (pc == 0 ? pname :  name[*(c+3)]);
+  
+  if(pc > 3) {
+    if(*(c+58) != 16) {
+      sprintf(junk,"%s","The ");
+      sprintf(&junk[4],"%s",w);
+      w = junk;
+    }
+    num = *(c+10);
+    target = *(c+39);
+    t = curmon[*(c+39)];
+    if(!los(pc,*(t+24),*(t+25))) {
+        flag = 1; 
+    }
+    wt = ( *(c+39) == 0 ? pname : name[*(t+3)]);
+  }
+
+  if (pc < 4) {
+    flag = 0;
+    num = *(c+10);
+    if(spelinfo[num-1][0] != 2) {
+      target = *(c+7);   
+      t = curmon[target];
+      if( !*t || *(t+30) != crum || !los(pc,*(t+24),*(t+25)) ) 
+          flag = 1;
+      wt = (target == 0 ? pname : name[*(t+3)]);
+      } 
+    else {
+      target = *(c+9);
+      t = crumobj[target];
+      wt = obj[*t];
+      if (*t == 0) 
+        flag = 1;
+      }
+    }
+    
+  if (spelinfo[num-1][0] == 0) {
+    flag = 0;
+  }
+
+  if(flag) {
+    prnt("-> %s's %s Spell has no target!", w, spell[num - 1]);
+    return(1);
+  }
+
+  if(num != 13)
+    prnt("-> %s casts the %s Spell!",w,spell[num-1]);
+  flash();
+  switch (num) {
    case 1:  /* cure light wounds but not poison */
       *(t+1) -= 5 + curmon[pc][51] + rnd(20);
       if(*(t+1) < 0)
