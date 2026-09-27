@@ -1,5 +1,5 @@
 
-
+/*
 .globl _raton
 .text
 _raton:    link R14,#-4
@@ -12,3 +12,8 @@ _raton:    link R14,#-4
            .dc.w $a009
            unlk R14
            rts
+*/
+
+void raton() {
+  
+}

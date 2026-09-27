@@ -1,12 +1,22 @@
 
+#include "globals.h"
+#include "caux.h"
+#include "dist.h"
 
-int intell(npc)
-int npc;
+#include "f4.h"
+#include "f6.h"
+
+int sillymsg(int npc);
+void alert(int npc);
+
+int intell(int npc)
 {
-char *c = curmon[npc],*t;
-int done = 0; /* this will give the ith step in the intelligence routine */
-char type = *(c+31),step;
-int i,j,x,y,flag;
+  uint8_t *c = curmon[npc];
+  char *t;
+  int done = 0; /* this will give the ith step in the intelligence routine */
+  char type = *(c+31),step;
+  int i,j,x,y,flag;
+
 if(!*c)
   return(0);
 if(npc < 4 || (npc > 3 && *(c+38) == 1))
@@ -99,8 +109,7 @@ while(!done) {
            }
          step = 1;
          *(c+31) = 1;
-         prnt("-> A general clamor can be heard `Get the guards! There's \
-a lunatic about!'");
+         prnt("-> A general clamor can be heard `Get the guards! There's a lunatic about!'");
          police = 1;
          dorep();
          break;
@@ -116,11 +125,11 @@ return(1);
 /* MORALE(NPC) checks the NPC for a failure of nerve.                        */
 /*****************************************************************************/
 
-int morale(npc)
-int npc;
+int morale(int npc)
 {
-char *c = curmon[npc],*d;
-int level,num,i,j,dam,top,bot;
+  uint8_t *c = curmon[npc];
+  char *d;
+  int level,num,i,j,dam,top,bot;
 if(*(c+36) == 1 || *c == 0) {
   *(c+38) = 0;
   return(0);
@@ -174,36 +183,37 @@ else
 /* heading south.                                                             */
 /******************************************************************************/
 
-int setflee(npc)
-int npc;
+int setflee(int npc)
 {
-int i,x,y;
-char *d,*c = curmon[npc];
-*(c+36) = 1;
-for(i=1;i<14;i++) {
-  d = crumobj[i];
-  if(*(d+3) != 0 && *(d+8) == 1 && *(d+5) != -2) {
-    if(adjac(npc,*(d+6),*(d+7)) ) {  /* then we're at exit */
-       *(c+15) = 9;                               /* so we set up a X-it act */
-       *(c+16) = 6;
-       *(c+26) = *(d+6);
-       *(c+27) = *(d+7);
-       return(1);
-       }
-    *(c+26) = *(d+6);
-    *(c+27) = *(d+7);
-    *(c+22) = *(c+24);
-    *(c+23) = *(c+25);
-    nextxy(*(c+22),*(c+23),*(c+26),*(c+27),*(c+24),*(c+25),&x,&y);
-    *(c+28) = x;
-    *(c+29) = y;
-    *(c+15) = 4;
-    *(c+18) = i;
-    *(c+16) = (*(c+11) < 1 ? 1 : *(c+11));
-    return(1);
+  int i,x,y;
+  char *d;
+  uint8_t *c = curmon[npc];
+
+  *(c+36) = 1;
+  for(i=1;i<14;i++) {
+    d = crumobj[i];
+    if(*(d+3) != 0 && *(d+8) == 1 && *(d+5) != -2) {
+      if(adjac(npc,*(d+6),*(d+7)) ) {  /* then we're at exit */
+        *(c+15) = 9;                               /* so we set up a X-it act */
+        *(c+16) = 6;
+        *(c+26) = *(d+6);
+        *(c+27) = *(d+7);
+        return(1);
+        }
+      *(c+26) = *(d+6);
+      *(c+27) = *(d+7);
+      *(c+22) = *(c+24);
+      *(c+23) = *(c+25);
+      nextxy(*(c+22),*(c+23),*(c+26),*(c+27),*(c+24),*(c+25),&x,&y);
+      *(c+28) = x;
+      *(c+29) = y;
+      *(c+15) = 4;
+      *(c+18) = i;
+      *(c+16) = (*(c+11) < 1 ? 1 : *(c+11));
+      return(1);
+      }
     }
-  }
-return(0);
+  return(0);
 }
 
 /******************************************************************************/
@@ -211,11 +221,12 @@ return(0);
 /* chosen by this function.  If the move is impossible a 0 is returned.       */
 /******************************************************************************/
 
-int setmove(npc,flag)
-int npc,flag;
+int setmove(int npc, int flag)
 {
-char *t,*c = curmon[npc],*z,*c1;
-int top,bot,i,j,l,m,n,k=0,xdes,ydes,x,y,buddy=0,tar = *(c+39);
+  uint8_t *c = curmon[npc];
+  char *t,*z,*c1;
+  int top,bot,i,j,l,m,n,k=0,xdes,ydes,x,y,buddy=0,tar = *(c+39);
+
 t = curmon[tar];
 if(npc < 4 || (npc > 3 && *(c+38) ) ) {
   top = 4;
@@ -375,89 +386,90 @@ do {
        break;
     }
   } while (flag == 0);
+
+  return 0;
 }
 
-int pass(npc)
-int npc;
+int pass(int npc)
 {
-char *c = curmon[npc];
-*(c+15) = 8;
-*(c+16) = 4;
-return(1);
+  uint8_t *c = curmon[npc];
+  *(c+15) = 8;
+  *(c+16) = 4;
+  return 1;
 }
 
-int target(npc)
-int npc;
+int target(int npc)
 {
-int i,j = curmon[npc][39];
-char *c;
-if( ( (npc > 3 && curmon[npc][38]) || npc < 4 )  && j == 0)
-  return(0);
-for(i=0;i<12;i++) {
-   if(i == npc)
-      continue;
-   c = curmon[i];
-   if(*(c+39) == npc && *c && *(c+30) == crum ) {
-     curmon[npc][39] = i;
-     return(1);
-     }
-   }
-if(j == npc || curmon[j][0] != 1 || curmon[j][30] != crum)
-   return(0);
-return(1);
+  int i, j = curmon[npc][39];
+  char *c;
+  if( ( (npc > 3 && curmon[npc][38]) || npc < 4 )  && j == 0)
+    return(0);
+  for(i=0;i<12;i++) {
+    if(i == npc)
+        continue;
+    c = curmon[i];
+    if(*(c+39) == npc && *c && *(c+30) == crum ) {
+      curmon[npc][39] = i;
+      return(1);
+      }
+    }
+  if(j == npc || curmon[j][0] != 1 || curmon[j][30] != crum)
+    return(0);
+  return(1);
 }
 
 int settarg(npc)
 int npc;
 {
-char *t,*c = curmon[npc];
-int j,list[12];
-int top,bot;
-list[0] = 0;
-if(npc < 4 || (npc > 3 && *(c+38) ) ) {
-  top = 12;
-  bot = 4;
-  }
-else {
-  top = 4;
-  bot = 0;
-  }
-if(npc < 4 && curmon[0][39] == npc) {
-  *(c+39) = 0;
-  return(1);
-  }
-if(npc > 3 && *(c+58) != 17 && *(c+58) != 24) {
-  for(j=4;j<12;j++) {
-     t = curmon[j];
-     if(*(t+58) == 17 && *(c+38) == 0)
-        continue;
-     if(*(t+4) != *(c+4) && *t == 1 && *(t+30) == crum && (*(c+38) == 1 || 
-        ( ( *(c+58) != 20 || *(t+58) != 4) && *(t+58) != 24) ) 
-        && los(npc,*(t+24),*(t+25)) ) {
-        list[0]++;
-        list[list[0]] = j;
-        }
-     }
-  }
-if(*(c+38) == 0 || list[0] == 0) {
-  for(j=bot;j<top;j++) {
-    if(j == npc)
-       continue;
-    t = curmon[j];
-    if(*t != 0 && *(t+30) == crum && (npc < 4 || los(npc,*(t+24),*(t+25))) &&
-        (npc > 3 || *(t+38) == 0) && *(t+31) < 4 ) {
-       list[0]++;
-       list[list[0]] = j;  
-       }
+  uint8_t *c = curmon[npc];
+  char *t;
+  int j,list[12];
+  int top,bot;
+  list[0] = 0;
+  if(npc < 4 || (npc > 3 && *(c+38) ) ) {
+    top = 12;
+    bot = 4;
     }
-  }
-if(!list[0])
-  return(0);
-j = rnd(list[0] - 1);
-*(c+39) = list[1+j]; 
-*(c+26) = curmon[*(c+39)][24];
-*(c+27) = curmon[*(c+39)][25];
-return(1);
+  else {
+    top = 4;
+    bot = 0;
+    }
+  if(npc < 4 && curmon[0][39] == npc) {
+    *(c+39) = 0;
+    return(1);
+    }
+  if(npc > 3 && *(c+58) != 17 && *(c+58) != 24) {
+    for(j=4;j<12;j++) {
+      t = curmon[j];
+      if(*(t+58) == 17 && *(c+38) == 0)
+          continue;
+      if(*(t+4) != *(c+4) && *t == 1 && *(t+30) == crum && (*(c+38) == 1 || 
+          ( ( *(c+58) != 20 || *(t+58) != 4) && *(t+58) != 24) ) 
+          && los(npc,*(t+24),*(t+25)) ) {
+          list[0]++;
+          list[list[0]] = j;
+          }
+      }
+    }
+  if(*(c+38) == 0 || list[0] == 0) {
+    for(j=bot;j<top;j++) {
+      if(j == npc)
+        continue;
+      t = curmon[j];
+      if(*t != 0 && *(t+30) == crum && (npc < 4 || los(npc,*(t+24),*(t+25))) &&
+          (npc > 3 || *(t+38) == 0) && *(t+31) < 4 ) {
+        list[0]++;
+        list[list[0]] = j;  
+        }
+      }
+    }
+  if(!list[0])
+    return(0);
+  j = rnd(list[0] - 1);
+  *(c+39) = list[1+j]; 
+  *(c+26) = curmon[*(c+39)][24];
+  *(c+27) = curmon[*(c+39)][25];
+  return(1);
 }
 
 /******************************************************************************/
@@ -465,89 +477,89 @@ return(1);
 /* possibilities: assail or magic.                                            */
 /******************************************************************************/
 
-int matt(npc)
-int npc;
+int matt(int npc)
 {
-char *a = curmon[npc];
-int i,j,k,sp;
-*(a+26) = curmon[*(a+39)][24];
-*(a+27) = curmon[*(a+39)][25];
-if(*(a+14) != 0) {               /* indicates a magic using monster */
-  if(*(a+47) > 3 && *(a+14) > 0) {
-     *(a+47) = 0;
-     *(a+14) = (*(a+14) == 0 ? 0 : *(a+14) - 1);
-     }
-  if(*(a+14) < 3) {
-    *(a+36) = 1;                /* set flee since out of spell units */
-    pass(npc);
-    return(0);
+  uint8_t *a = curmon[npc];
+  int i,j,k,sp;
+
+  *(a+26) = curmon[*(a+39)][24];
+  *(a+27) = curmon[*(a+39)][25];
+  if(*(a+14) != 0) {               /* indicates a magic using monster */
+    if(*(a+47) > 3 && *(a+14) > 0) {
+      *(a+47) = 0;
+      *(a+14) = (*(a+14) == 0 ? 0 : *(a+14) - 1);
+      }
+    if(*(a+14) < 3) {
+      *(a+36) = 1;                /* set flee since out of spell units */
+      pass(npc);
+      return(0);
+      }
+    j = 0;
+    for(i=5;i<10;i++) {
+      if(*(a+i) == 0)
+          break;
+        j++;
+        }
+    i = 5 + rnd(j);
+    sp = *(a+i);
+    *(a+14) -= spelunit[sp];
+    *(a+16) = spelinfo[sp-1][2];
+    *(a+40) = 4;
+    *(a+15) = 2;
+    *(a+14) = (*(a+14) < 5 ? -1 : *(a+14) );
+    *(a+10) = sp;
+    return(1);
     }
-  j = 0;
-  for(i=5;i<10;i++) {
-     if(*(a+i) == 0)
-        break;
+  *(a+15) = 1;
+  if(*(a+45) == 45) 
+    *(a+15) = 11;
+  *(a+16) = *(a+11);
+  if(*(a+15) == 11)
+    *(a+16) *= 2;
+  if(npc > 3) {
+    i = rnd(100);
+    j = 0;
+    while(j < 2 && *(a+6+2*j) < i) {
       j++;
       }
-  i = 5 + rnd(j);
-  sp = *(a+i);
-  *(a+14) -= spelunit[sp];
-  *(a+16) = spelinfo[sp-1][2];
-  *(a+40) = 4;
-  *(a+15) = 2;
-  *(a+14) = (*(a+14) < 5 ? -1 : *(a+14) );
-  *(a+10) = sp;
+    }
+  else
+  j = rnd(3);
+  *(a+40) = j+1;
   return(1);
-  }
-*(a+15) = 1;
-if(*(a+45) == 45) 
-  *(a+15) = 11;
-*(a+16) = *(a+11);
-if(*(a+15) == 11)
-   *(a+16) *= 2;
-if(npc > 3) {
-  i = rnd(100);
-  j = 0;
-  while(j < 2 && *(a+6+2*j) < i) {
-     j++;
-     }
-  }
-else
- j = rnd(3);
-*(a+40) = j+1;
-return(1);
 }
-  
 
-
-int alert(npc)
-int npc;
+void alert(int npc)
 {
-int i;
-char *c;
-for(i=1;i<7;i++) {
-   c = curmon[i];
-   if(*c == 1 && *(c+31) == 2)
-      *(c+31) = 1;
-   }
+  int i;
+  uint8_t *c;
+  for(i=1;i<7;i++) {
+    c = curmon[i];
+    if(*c == 1 && *(c+31) == 2) {
+        *(c+31) = 1;
+    }
+  }
 }
 
 
-int setatt(npc)
-int npc;
+int setatt(int npc)
 {
-char *a = curmon[npc],*t = curmon[*(a+39)];
-int d = dist(*(a+24),*(a+25),0,*(t+24),*(t+25),0);
-if(!los(npc,*(t+24),*(t+25)))
-   return(1);
-if(d == 1 || *(a+14) > 0  || (npc < 4 && *(a+45) == 45 && *(a+39) != 0) )
-  return(0);
-return(1);
+  uint8_t *a = curmon[npc];
+  uint8_t *t = curmon[*(a+39)];
+  int d = dist(*(a+24),*(a+25),0,*(t+24),*(t+25),0);
+
+  if(!los(npc,*(t+24),*(t+25)))
+    return(1);
+  if(d == 1 || *(a+14) > 0  || (npc < 4 && *(a+45) == 45 && *(a+39) != 0) )
+    return(0);
+  return(1);
 }
 
 int friend(int npc)
 {
-  char *c = curmon[npc];
-  int i,j,x = curmon[0][24],y = curmon[0][25];
+  uint8_t *c = curmon[npc];
+  int i, j, x = curmon[0][24], y = curmon[0][25];
+
   if (npc < 4 && rumdata[crum][30] == 0 && *(c+41) < 3 && *(c+42) > 0) {
     *(c+10) = 1;
     *(c+15) = 12;
@@ -651,56 +663,51 @@ int friend(int npc)
   return(1);
 }
 
-int sillymsg(npc)
-int npc;
+int sillymsg(int npc)
 {
-char *c = curmon[npc],*w = name[*(c+3)];
-if(*(c+47) > 0) {
-  prnt("-> %s says `The room spins.  I am poisoned.'",w);
+  uint8_t *c = curmon[npc];
+  char *w = name[*(c+3)];
+
+  if(*(c+47) > 0) {
+    prnt("-> %s says `The room spins.  I am poisoned.'",w);
+    return(1);
+    }
+  if(*(c+1) > (*(c+2))/2) {
+    prnt("-> %s says `By Zandru, my body aches.  Perhaps a clerical spell...'",w);
+    return(1);
+    }
+  if(rumdata[crum][26] > 0) {
+    prnt("-> %s says `I believe dangerous creatures lurk here!'",w);
+    return(1);
+    }
+  switch(rnd(8)) {
+    case 0:
+      prnt("-> %s growls, `Hurry up, %s!  Let us move on.'",w,pname);
+      break;
+    case 1:
+      prnt("-> %s says `Why are you wasting time, %s?  This place is dangerous!'",w,pname);
+      break;
+    case 2:
+      prnt("-> %s says `My stomach growls like an Alarian varg. Something to eat would be good.'",w);
+      break;
+    case 3:
+      prnt("-> %s says `I favor a quick exit from here.'",w);
+      break;
+    case 4:
+      prnt("-> %s grumbles `When I get my hands on Lord Vindroble... He bears the responsibility for our woe!'",w);
+      break;
+    case 5:
+      prnt("-> %s stares around the room in anger and mutters `An abomination such as this would never be tolerated in Nordheim.'",w);
+      break;
+    case 6:
+      prnt("-> %s searches his carrying pack and mumbles `By the gods! Those accursed fiends took my elven wafers.'",w);
+      break;
+    case 7:
+      prnt("-> %s utters an unrepeatable oath of disgust over the general situation.",w);
+      break;
+    default:
+      break;
+    }
   return(1);
-  }
-if(*(c+1) > (*(c+2))/2) {
-  prnt("-> %s says `By Zandru, my body aches.  Perhaps a clerical spell...'",w);
-  return(1);
-  }
-if(rumdata[crum][26] > 0) {
-  prnt("-> %s says `I believe dangerous creatures lurk here!'",w);
-  return(1);
-  }
-switch(rnd(8)) {
-  case 0:
-    prnt("-> %s growls, `Hurry up, %s!  Let us move on.'",w,pname);
-    break;
-  case 1:
-    prnt("-> %s says `Why are you wasting time, %s?  This place is \
-dangerous!'",w,pname);
-    break;
-  case 2:
-    prnt("-> %s says `My stomach growls like an Alarian varg. Something to \
-eat would be good.'",w);
-    break;
-  case 3:
-    prnt("-> %s says `I favor a quick exit from here.'",w);
-    break;
-  case 4:
-    prnt("-> %s grumbles `When I get my hands on Lord Vindroble... \
-He bears the responsibility for our woe!'",w);
-    break;
-  case 5:
-    prnt("-> %s stares around the room in anger and mutters `An abomination \
-such as this would never be tolerated in Nordheim.'",w);
-    break;
-  case 6:
-    prnt("-> %s searches his carrying pack and mumbles `By the gods! Those \
-accursed fiends took my elven wafers.'",w);
-    break;
-  case 7:
-    prnt("-> %s utters an unrepeatable oath of disgust over the general \
-situation.",w);
-    break;
-  default:
-    break;
-  }
-return(1);
 }
 

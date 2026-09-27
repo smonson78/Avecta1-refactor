@@ -21,7 +21,7 @@ int stinit();
 int main()
 {
    int old, i, j;
-   char *c = curmon[0];
+   uint8_t *c = curmon[0];
    
    if (stinit() == 0 || ruminit() == 1) {
       goto end;

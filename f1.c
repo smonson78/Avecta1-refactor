@@ -3,6 +3,7 @@
 #include "start.h"
 #include "startaux.h"
 #include "attack.h"
+#include "damage.h"
 
 int i1(int pc)
 {
@@ -35,7 +36,7 @@ int o1(int pc)
 {
   uint8_t *a = curmon[pc], *t = curmon[*(a+39)];
   char *w;
-  int bonus = 0,base,roll,dam,armor,wepchanz,i;
+  int base,roll,dam,wepchanz;
   if(*t == 0 || *(t+30) != crum)
     return(1);
   if(!adjac(pc,*(t+24),*(t+25))) {

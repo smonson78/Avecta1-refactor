@@ -1,8 +1,15 @@
 #include "globals.h"
+#include "trigtrol.h"
+#include "words.h"
+
+void stormon();
 
 int switchrum() {
   int d,i,j,x,y,xn,yn,oldrum;
-  char *c,*p = curmon[0],*r = rumdata[crum],pan[12];
+  uint8_t *p = curmon[0];
+  uint8_t *r = rumdata[crum];
+  uint8_t *c;
+  char pan[12];
   if(crum != *(p+30) && crum != -1 && !outside) {
     for(i=0;i<13;i++) {
       c = crumobj[i+1];
@@ -117,34 +124,36 @@ int switchrum() {
     if(i)
       prnt("-> The lit torch is snuffed and put away.");
     }
-  return(0);
+  return 0;
 }
 
-int stormon()
+void stormon()
 {
-char *r = monbuf,*c;
-int i,j = 1;
-for(i=4;i<12;i++) {
-   c = curmon[i];
-   if(*c == 0 || *(c+30) != crum)
-     continue;
-   while( *(r+j) != 0 && j < 320) {
-      j += 4;
-      }
-   if(j >= 320)
-      break;
-   if(*(c+4) > 115 && *(c+4) < 119)
-      *(c+4) = 110;
-   *(r+j) = *(c+4);
-   *(r+j+1) = crum;
-   *(r+j+2) = *(c+1);
-   *(r+j+3) = 16*( *(c+25) ) + *(c+24);
-   }
+  uint8_t *c;
+  char *r = monbuf;
+  int i, j = 1;
+  for (i = 4; i < 12; i++) {
+    c = curmon[i];
+    if(*c == 0 || *(c+30) != crum)
+      continue;
+    while( *(r+j) != 0 && j < 320) {
+        j += 4;
+        }
+    if(j >= 320)
+        break;
+    if(*(c+4) > 115 && *(c+4) < 119)
+        *(c+4) = 110;
+    *(r+j) = *(c+4);
+    *(r+j+1) = crum;
+    *(r+j+2) = *(c+1);
+    *(r+j+3) = 16*( *(c+25) ) + *(c+24);
+  }
 }
 
 int getmon(int room)
 {
-  char *r = monbuf,*c,*p;
+  uint8_t *c, *p;
+  char *r = monbuf;
   int i,j,k,type,count=0,x,y;
 
 for(i=1;i<320;i += 4) {
@@ -199,5 +208,5 @@ for(i=1;i<320;i += 4) {
       }
     } 
   }
-  return(count);
+  return count;
 }

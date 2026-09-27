@@ -1,29 +1,38 @@
+#include "globals.h"
 #include "osbind.h"
 
 int load() {
-  int fillpic[][65],bitmap[][65];
-  char fname[],savname[],rumdata[][157];
-  char putbuf[],trigval[][6],specbuf[];
-  long int offset = 0,count = 26000;
-  int fhandle,mode = 0;
-  fhandle = Fopen(fname,mode);
+  long int count = 26000;
+  int fhandle, mode = 0;
+
+  // GRAFX.DAT
+  fhandle = Fopen(fname, mode);
   if(fhandle < 0)
-    return(0);
-  Fread(fhandle,count,bitmap[0]);
+    return 0;
+  Fread(fhandle, count,bitmap[0]);
   Fclose(fhandle);
-  fhandle = Fopen("FILL.DAT\0",0);
-  if(fhandle < 0)
-    return(0);
-  Fread(fhandle,(long)5200,fillpic);
+
+  // FILL.DAT
+  fhandle = Fopen("FILL.DAT",0);
+  if (fhandle < 0)
+    return 0;
+  
+  // It's 26000 bytes but we're just going to get the first bit
+  Fread(fhandle, (long)5200, fillpic);
   Fclose(fhandle);
-  fhandle = Fopen(savname,mode);
-  if(fhandle < 0)
-    return(0);
-  Fread(fhandle,count = 12560,rumdata);
-  Fread(fhandle,(long)320,putbuf);
-  Fread(fhandle,(long)480,trigval);
-  Fread(fhandle,(long)40,specbuf);
+
+  // OUTSIDE.DAT
+  fhandle = Fopen(savname[0], mode);
+  if (fhandle < 0)
+    return 0;
+
+  // 13400 bytes in total
+  Fread(fhandle, count = 12560, rumdata);
+  Fread(fhandle, (long)320, putbuf);
+  Fread(fhandle, (long)480, trigval);
+  Fread(fhandle, (long)40, specbuf);
   Fclose(fhandle);
-  return(1);
+
+  return 1;
 }
 

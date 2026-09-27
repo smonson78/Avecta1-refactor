@@ -1,5 +1,6 @@
+// This function is never used
 
-
+/*
 .globl _spellfx
 .text
 .globl _zline
@@ -24,3 +25,4 @@ next:      addq #4,R8
            bne again
            unlk R14
            rts
+*/

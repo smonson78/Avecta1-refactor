@@ -26,7 +26,6 @@ int16_t newpal[16] = {
   -1912, -120, -1905, -600, -536, -1832, -55, -820, -8, -1793, -311, -1912, -113, -19, -627, 0xfff
 };
 int16_t oldpal[16];
-char rumdata[80][157];
 
 int16_t pxy[8] = {12, 136, 319-75, 199, 12, 134, 319-75, 197};
 int16_t bxy[4] = {12, 197, 319-75, 199};
@@ -34,21 +33,24 @@ int16_t lxy[4] = {0, 127, 319-75, 128};
 int16_t vxy[4] = {255, 0, 255, 199};
 
 MFDB psrc, pdes;
-char *savname[] = {"OUTSIDE.DAT\0","DEMON.DAT\0","TROND.DAT\0","CAVE.DAT\0",
-                   "DDEMON.DAT\0","DTROND.DAT\0","DCAVE.DAT\0"};
+char *savname[] = {"OUTSIDE.DAT","DEMON.DAT","TROND.DAT","CAVE.DAT","DDEMON.DAT","DTROND.DAT","DCAVE.DAT"};
 int fromout = 0, new = 0, lev = 0;
 int monster = 0, hold = 0, police = 0;
 int usedline = 0, prev = 0, prevy = 0;
 int row, col = 2;
 int grflist[13];
 int winroom;
+
 int (*inverb[])()  = {i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14};
 int (*outverb[])() = {o0,o1,o2,o3,o4,o5,o6,o7,o8,o9,o10,o11,o12,o13,o14};
+
 int winker = 0, winktime = 0, combat = 0;
 char *posture[] = {"All Out","Standard","Defensive","Fall Back"};
 char *wordmod[] = {"None","Low","Medium","Severe","Dead","Panicked"};
                       /* chance,damage,weight */
-char specbuf[40],putbuf[320],monbuf[320],junk[20];
+
+uint8_t putbuf[320], specbuf[40];
+char monbuf[320],junk[20];
 char weapon[][3] = { {0,0,0},                                 /* no weapon */
                      {60,12,10},                              /* broad sword */
                      {60,8,5},                              /* scimitar  */
@@ -64,10 +66,12 @@ char *statword[] = {"Points","Spell","Good Hand",
                     "Other Hand"," OPTIONS:","Good Hand",
                     "Other Hand","Inventory","  Quit"};
 long int saddr;
-int fillpic[41][65];
+
+uint16_t fillpic[41][65];
+
 int mode = 0, dismax;
 int pursuit[] = {0, 0, 0};
-char trigval[80][6];
+uint8_t trigval[80][6];
 char invtrig[20];
 char *path = "a:*.SAV";
 char *filename = "________.___";
@@ -193,7 +197,7 @@ char *com[] = {"the ",
                "   exit",
                "   item",
                "   item"};
-char fname[] = "grafx.dat\0";
+char fname[] = "grafx.dat";
 
 // Player name (?)
 char pname[20];
@@ -204,7 +208,7 @@ char *verblist[] = {"Cast ","Examine","Drag/Eat","Search","Take/Drop","Wait",
                     "Voice","Quit/File"};
 
 uint8_t zline[16][8][7];                    
-char rumdata[80][157];
+uint8_t rumdata[80][157];
 uint8_t triglist[25];
 uint8_t crumobj[18][9];
 char *att[][4] = {

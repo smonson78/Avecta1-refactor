@@ -254,7 +254,6 @@ void click()
 
 int fillsq(int x, int y)
 {
-  char rumdata[][157];
   int pxy[4];
   pxy[0] = 16*x;
   pxy[1] = 16*y;
@@ -264,10 +263,18 @@ int fillsq(int x, int y)
   return(1);
 }
 
-int setfill(int k)
+void trans(uint16_t *bit, uint16_t *stor)
 {
-  char rumdata[][157];
-  int fillpic[][65],crudbuf[],handle,crum;
+  int i, j;
+  for (i = 0; i<4; i++) {
+    for (j = 0; j < 16; j++) {
+      *(stor + j + 16 * i) = *(bit + 4 * j + i);
+    }
+  }
+}
+
+void setfill(int k)
+{
   char *r = rumdata[crum];
   if(k == 2) {
     vsf_interior(handle,1);
@@ -281,19 +288,9 @@ int setfill(int k)
     }
   else {
     trans(fillpic[*(r+17+3*k)],crudbuf);
-    vsf_udpat(handle,crudbuf,4);
+    vsf_udpat(handle, crudbuf,4);
     vsf_interior(handle,4);
     }
-}
-
-void trans(int *bit, int *stor)
-{
-  int i,j;
-  for(i=0;i<4;i++) {
-    for(j=0;j<16;j++) {
-      *(stor+j+16*i) = *(bit+4*j+i);
-    }
-  }
 }
 
 

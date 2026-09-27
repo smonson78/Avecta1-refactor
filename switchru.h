@@ -3,6 +3,6 @@
 
 int switchrum();
 int getmon(int room);
-int stormon();
+void stormon();
 
 #endif

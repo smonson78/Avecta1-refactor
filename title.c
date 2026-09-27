@@ -1,8 +1,25 @@
+#include "globals.h"
 #include "osbind.h"
+#include "gemdefs.h"
+
+void prntbig(char *s, int x, int y)
+{
+  int i=0;
+  x = 16*x;
+  y = 16*y;
+  while(s[i] != '\0') {
+    textbig(s[i], x, y);
+    x += 16;
+    i++;
+    if(x >= 310) {
+      x = 0;
+      y += 6;
+    }
+  }
+}
 
 int title() {
-  int handle,newpal[];
-  int i,j,k,rgb[3];
+  int i, rgb[3];
   vs_curaddress(handle,1,1);
   v_eeos(handle);
   rgb[0] = rgb[1] = rgb[2] = 0;
@@ -32,24 +49,4 @@ int title() {
   Setpalette(newpal);
   i = ( i>110 ? 2*(i-113) : 1); 
   return(i);
-  }
-
-  int prntbig(s,x,y)
-  char s[];
-  int x,y;
-  {
-  int textbig(),handle;
-  int i=0;
-  x = 16*x;
-  y = 16*y;
-  while(s[i] != '\0') {
-    textbig(s[i],x,y);
-    x += 16;
-    i++;
-    if(x >= 310) {
-      x = 0;
-      y += 6;
-    }
-  }
 }
-

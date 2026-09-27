@@ -1,5 +1,8 @@
 #include "globals.h"
+#include "start.h"
 #include "startaux.h"
+#include "torches.h"
+#include "caux.h"
 
 /*****************************************************************************/
 /* It's torch time!!                                                         */
@@ -35,11 +38,11 @@ int o12(int pc)
     *(c+42) += 1;
     *(c+46) = 0;
     litetrol(*(c+24),*(c+25),0);
-    prnt("-> %s puts out and stores the torch.",w);
+    prnt("-> %s puts out and stores the torch.", w, NULL, NULL, NULL, NULL, NULL);
     return(1);
     }
   *(c+42) -= 1;
-  prnt("-> %s lights a torch.",w);
+  prnt("-> %s lights a torch.", w, NULL, NULL, NULL, NULL, NULL);
   if(*(c+41) > 0) {
     *(c+41) = 100;
     *(c+42) -= 1;

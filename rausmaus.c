@@ -1,4 +1,4 @@
-
+/*
 
 .globl _rausmaus
 .text
@@ -7,3 +7,9 @@ _rausmaus: link R14,#-4
            .dc.w $a00a
            unlk R14
            rts
+*/
+
+// "Out mouse" in German?
+void rausmaus() {
+
+}

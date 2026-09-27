@@ -1,7 +1,8 @@
 #include "globals.h"
 #include "osbind.h"
 
-int input(int pc) {
+int input(int pc)
+{
   int i,j,x,y,ret;
   uint8_t *c = curmon[pc];
   char *z,*w = (pc == 0 ? pname : name[*(c+3)]);

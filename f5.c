@@ -1,9 +1,12 @@
 #include "globals.h"
 #include "caux.h"
+#include "cinput.h"
+#include "start.h"
 #include "startaux.h"
 #include "text.h"
 
 #include "f4.h"
+#include "f5.h"
 
 /****************************************************************************/
 /* I5() initializes a DRAG/Eat function.  Clicking in the room gives a     */
@@ -15,9 +18,12 @@ void header(char *string);
 
 int i5(int pc)
 {
-  int self = 0,i,j = 0,k,ret,time;
-  int object,top=0,bot=0,type,x,y,oldy;
-  char *c = curmon[pc],*z,scratch[18],*w = (pc == 0 ? pname : name[*(c+3)]);
+  int self = 0, ret, time;
+  int16_t x, y;
+  int object, top = 0, bot = 0, type;
+  uint8_t *c = curmon[pc];
+  char scratch[18],*w = (pc == 0 ? pname : name[*(c+3)]);
+
   if(outside)
     return(0);
   if(invnpc[pc][0] == 0 ) {
@@ -114,8 +120,10 @@ int i5(int pc)
 
 int o5(int pc)
 {
-  char *z,*c = curmon[pc],*w,*w1 = (pc == 0 ? &pname[0] : name[*(c+3)]);
+  uint8_t *z, *c = curmon[pc];
+  char *w, *w1 = (pc == 0 ? &pname[0] : name[*(c+3)]);
   int flag = 1,x1,y1,x2,y2,j = *(c+10),x = *(c+5),y = *(c+6),k;
+
   if(!handman(pc,*(c+8),*(c+9),!j)) {
     return(1);
   }
@@ -124,11 +132,11 @@ int o5(int pc)
     w = obj[*(c+8)];
     if (eats[*(c+8) - 40] == 0) {
       prnt("-> %s attempts to consume the %s, but such a thing is clearly impossible!  "
-        "It is apparent that %s is becoming a little strange.", w1, w, w1);
+        "It is apparent that %s is becoming a little strange.", w1, w, w1, NULL, NULL, NULL);
       *(c+8) = 0;
       return(1);
     } else {
-      prnt("-> %s swallows the %s!",w1,w);
+      prnt("-> %s swallows the %s!", w1, w, NULL, NULL, NULL, NULL);
       if(*(c+8) != *(c+45) && *(c+8) != *(c+46))
         takeout(pc,*(c+8));
       if(*(c+8) == *(c+45)) {
@@ -149,12 +157,12 @@ int o5(int pc)
       return(1);
     k = crumobj[j][0];
     if(k < 41 && weight[k] < 0) {
-      prnt("-> %s attempts to drag the %s, but that is impossible!",w1,obj[k]);
+      prnt("-> %s attempts to drag the %s, but that is impossible!", w1, obj[k], NULL, NULL, NULL, NULL);
       return(1);
       }
     if(k < 41 && *(c+50) + rnd(3) < weight[k]) {
       flag = 1; 
-      prnt("-> %s is unable to budge the %s.",w1,obj[k]);
+      prnt("-> %s is unable to budge the %s.", w1, obj[k], NULL, NULL, NULL, NULL);
       }
     else {  
       if(*(c+24) == *(c+5) && *(c+25) == *(c+6))
@@ -166,7 +174,7 @@ int o5(int pc)
       if(*z != 1 || *(z+1) != 0 || (*(z+2) > 0 && *(z+2) != pc) ||
         (curmon[0][24] == x2 && curmon[0][25] == y2 && pc != 0) ) {
         flag = 1;
-        prnt("-> The %s which %s is moving is blocked!",obj[crumobj[j][0]],w1);
+        prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j][0]], w1, NULL, NULL, NULL, NULL);
         }
       else {
         *(c+26) = *(c+5);
@@ -192,7 +200,6 @@ int o5(int pc)
 
 void header(char *string)
 {
-  int handle;
   int i = strlen(string);
   v_rvon(handle);
   vs_curaddress(handle,1,33);
@@ -218,9 +225,9 @@ int prhand(int pc)
   v_rvoff(handle);
   for(i=0;i<2;i++) {
     if(*(c+45+i) != 0)
-      sprintf(scratch,"%s",obj[*(c+45+i)]);
+      sprintf(scratch, "%s", obj[*(c+45+i)]);
     else
-      sprintf(scratch,"%s","Empty");
+      sprintf(scratch, "%s", "Empty");
     textsix(1,260,9+8*i,strlen(scratch),scratch);
     }
   return(1);
@@ -241,9 +248,9 @@ int handman(int pc, int inv, int rum, int flag)
         }
       if(inv != 0 && pc != 3)
         prnt("-> %s puts away the %s in order to handle the %s.",
-          w1,obj[*(c+45+l)],obj[inv]);
+          w1, obj[*(c+45+l)], obj[inv], NULL, NULL, NULL);
       if(rum != 0 && pc != 3)
-        prnt("-> %s puts away the %s to free a hand.",w1,obj[*(c+45+l)]);
+        prnt("-> %s puts away the %s to free a hand.", w1, obj[*(c+45+l)], NULL, NULL, NULL, NULL);
       *(c+45+l) = 0;
     }
   }

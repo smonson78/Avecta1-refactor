@@ -101,7 +101,7 @@ int fileio(int flow) {
       Fclose(filehandle);
       if(outside || fromout) {
             specbuf[32] = 1;
-            filehandle = Fopen("FILL.DAT\0",0);
+            filehandle = Fopen("FILL.DAT",0);
             if(filehandle < 0)
                 return(0);
             Fseek((long)5330,filehandle,0);
@@ -109,7 +109,7 @@ int fileio(int flow) {
             Fclose(filehandle);
             }
       else {
-            filehandle = Fopen("GRAFX.DAT\0",0);
+            filehandle = Fopen("GRAFX.DAT",0);
             if(filehandle < 0)
                 return(0);
             Fread(filehandle,(long)9230,bitmap[0]);

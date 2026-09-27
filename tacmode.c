@@ -1,6 +1,18 @@
+#include "gemdefs.h"
+
 #include "globals.h"
 #include "startaux.h"
 #include "osbind.h"
+#include "cinput.h"
+#include "intell.h"
+#include "trigtrol.h"
+#include "dorep.h"
+#include "words.h"
+#include "start.h"
+#include "actmon.h"
+#include "caux.h"
+#include "torches.h"
+#include "timetrol.h"
 
 /*****************************************************************************/
 /* TACMODE runs the tactical mode of the game, and continues until the hero  */
@@ -13,7 +25,6 @@
 
 int xmon(int room, int bit, int x, int y)
 {
-  char *monbuf;
   char *r = monbuf;
   int j, i = 1;
   if (bit < 119 && bit > 115)
@@ -35,10 +46,10 @@ int xmon(int room, int bit, int x, int y)
 
 
 int tacmode() {
-  int flag,i,j,k,l,m,n,p,timer=0,x,y;
+  int flag,i,j,k,l,n,p,timer=0,x,y;
   int actlist[13];
-  int grflist[];
-  char *c,*o;
+  uint8_t *c, *o;
+
   do {
     for(i=0;i<13;i++)
         grflist[i] = actlist[i] = 0;
@@ -102,7 +113,7 @@ int tacmode() {
               break;
             }
         if(i < 17 && actmon(17,4,*(o+6),*(o+7)) > 0) {
-            prnt("-> The guards are pursuing!");
+            prnt("-> The guards are pursuing!", NULL, NULL, NULL, NULL, NULL, NULL);
             mode = 1;
             }
         }
@@ -110,9 +121,9 @@ int tacmode() {
       if(mode == 0 && rnd(100) < *(o+26)) {
         actmon(*(o+22),*(o+23),*(o+24),*(o+25));
         if(*(o+29) != 0)
-          prnt(msg[*(o+29) + 80*dungeon]);
+          prnt(msg[*(o+29) + 80*dungeon], NULL, NULL, NULL, NULL, NULL, NULL);
         if(mode && permon[*(o+22)][20] < 4 && (dungeon != 2 || crum != 31))
-            prnt("      ***  A MELEE BEGINS!  ***");
+            prnt("      ***  A MELEE BEGINS!  ***", NULL, NULL, NULL, NULL, NULL, NULL);
         *(o+26) = *(o+27);
         }
       }

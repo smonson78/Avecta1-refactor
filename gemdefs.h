@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include <gemdos.h>
+#include <xbios.h>
 
 // Not in my library yet, but needed:
 void xbios_37();

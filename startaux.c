@@ -1,9 +1,12 @@
+#include "globals.h"
 #include "osbind.h"
 #include "gemdefs.h"
+#include "title.h"
+#include "rausmaus.h"
+#include "caux.h"
+#include "startaux.h"
 
-int domsg(int i) {
-  int handle, vbl(), off();
-  char **com;
+void domsg(int i) {
   int x = 256,y = 8,w = 64,h = 40;
   int pxy[10];
   char scratch[10];
@@ -31,9 +34,7 @@ int domsg(int i) {
   xbios_38_vbl();
 }
 
-
-int undomsg() {
-  int handle,vbl(),off(),i;
+void undomsg() {
   int x = 255,y = 0,w = 64,h = 40;
   xbios_37();
   xbios_38_off();
@@ -105,9 +106,8 @@ int init(int flag) {
 
 int ruminit()
 {
-  char (* rumdata)[157], (* curmon)[60];
   int i;
-  char *c = curmon[1];
+  uint8_t *c = curmon[1];
   for (i=0;i<660;*(c+(i++)) = 0);
   if (!loadnew()) {
     raton();
@@ -121,8 +121,6 @@ int ruminit()
 }
 
 int error(int i) {
-  char *errmsg[];
-  int vbl(),off();
   xbios_37();
   xbios_38_off();
   raton();
@@ -133,10 +131,10 @@ int error(int i) {
   return i;
 }
 
-int savpal() {
-  int *j;
+void savpal() {
+  volatile int16_t *j;
   int i;
-  j = 16745024; // Must be the address of the palette in TOS
+  j = (volatile int16_t *)0xFF8240; // Must be the address of the palette in TOS
   for (i=0; i<16; i++) {
     oldpal[i] = *(j+i);
   }
@@ -144,7 +142,7 @@ int savpal() {
 
 int console() {
   int i;
-  char *c = curmon[0];
+  uint8_t *c = curmon[0];
   for(i=1;i<17;i++) {
     vs_curaddress(handle,i,1);
     v_eeol(handle);
@@ -186,8 +184,9 @@ int console() {
 }
 
 // Endgame
-int congratulate() {
-  int i,rgb[3];
+void congratulate() {
+  int i;
+  int16_t rgb[3];
 
   xbios_37();
   xbios_38_off();
@@ -229,7 +228,7 @@ int congratulate() {
 
 
 int loadnew() {
-  char *c = curmon[0];
+  uint8_t *c = curmon[0];
   int fhandle,i,j,old,d1=0,d2=0,d3=0,flag = 0;
   old = dungeon;
   if(new == 0) {
@@ -280,10 +279,10 @@ int loadnew() {
   }
   Fread(fhandle,(long)26000,bitmap[0]);
   Fclose(fhandle);
-  fhandle = Fopen("FILL.DAT\0",0);
+  fhandle = Fopen("FILL.DAT",0);
   if(fhandle < 0)
       return(0);
-  Fread(fhandle,(long)5330,fillpic);
+  Fread(fhandle,(long)5330, fillpic);
   if(dungeon == 0) {
     *(c+4) = 125;
     if(*(c+47) > 0 && *(c+14) > 0)

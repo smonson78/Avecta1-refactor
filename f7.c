@@ -3,6 +3,12 @@
 #include "caux.h"
 #include "trapaux.h"
 #include "trapres.h"
+#include "torches.h"
+#include "start.h"
+#include "startaux.h"
+#include "cinput.h"
+
+#include "f5.h"
 
 /******************************************************************************/
 /* I7() is a  call to initialize a TAKE/DROP.      It must be adjacent and    */
@@ -11,14 +17,18 @@
 
 int i7(int pc)
 {
-char *z,*c = curmon[pc],scratch[15],*w = (pc == 0 ? pname : name[*(c+3)]);
-int object,x,y,j,k,l,self,num=0,bot=0,top1=3,type,ret=0;
+  uint8_t *c = curmon[pc];
+  uint8_t *z;
+  char scratch[15],*w = (pc == 0 ? pname : name[*(c+3)]);
+  int object,k,l,self,bot=0,top1=3,type,ret=0;
+  int16_t x, y;
+
 if(outside)
   return(0);
 if(invnpc[pc][0] == 0 && *(c+45) == 0 && (*(c+46) == 0 || *(c+46) == 81) )
   type = 0;
 else {
-  bot = 2+listinv(pc,scratch);
+  bot = 2 + listinv(pc,scratch);
   type = 1;
   }
 if(type == 0)
@@ -112,7 +122,8 @@ else { /* this is a drop out of inventory */
 int o7(int pc)
 {
   uint8_t *c = curmon[pc];
-  char *z,*t,*w,*w1 = (pc == 0 ? pname : name[*(c+3)]);
+  uint8_t *t, *z;
+  char *w,*w1 = (pc == 0 ? pname : name[*(c+3)]);
   int i,k,l,inv = *(c+8),r = *(c+9),x = *(c+5),y = *(c+6),j = *(c+10),id;
 
   *(c+18) = 7;
@@ -121,12 +132,12 @@ int o7(int pc)
   if(!handman(pc,inv,r,j))
     return(1);
   if(j > 0 && (k = zline[x][y][1]) == 0 && slotnum() == 0) {
-    prnt("-> Supernatural forces prevent %s from dropping the %s!",w1,
-        obj[*(c+8)]);
+    prnt("-> Supernatural forces prevent %s from dropping the %s!", w1,
+        obj[*(c+8)], NULL, NULL, NULL, NULL);
     return(1);
     }
   if(j > 0 && k != 0) {
-    prnt("-> %s puts the %s in the %s.",w1,obj[*(c+8)],obj[crumobj[k][0]]);
+    prnt("-> %s puts the %s in the %s.", w1, obj[*(c+8)], obj[crumobj[k][0]], NULL, NULL, NULL);
     crumobj[k][5] = 1;
     takeout(pc,*(c+8));
     if(*(c+45) == *(c+8))
@@ -140,7 +151,7 @@ int o7(int pc)
   if(j > 0 && k == 0) {
     *(c+9) = 0;
     i = rumslot();
-    prnt("-> %s puts the %s down.",w1,obj[*(c+8)]);
+    prnt("-> %s puts the %s down.", w1, obj[*(c+8)], NULL, NULL, NULL, NULL);
     z = crumobj[i];
     if(i > 13) { 
       storobj(*(c+8),x,y);
@@ -193,7 +204,7 @@ int o7(int pc)
   if(j > 0 && *(c+8) == 80) {
     *(c+52) = *(c+30);
     *(c+53) = x + 16*y;
-    prnt("-> The seeking shard imprints the room!");
+    prnt("-> The seeking shard imprints the room!", NULL, NULL, NULL, NULL, NULL, NULL);
   }
 
   if(j == 0) {
@@ -209,7 +220,7 @@ int o7(int pc)
     *(c+45+l) = k;
     invtrap(k);
     w = obj[k];
-    prnt("-> %s takes the %s into hand.",w1,w); 
+    prnt("-> %s takes the %s into hand.", w1, w, NULL, NULL, NULL, NULL); 
     for(j=0;j<9;j++) 
       crumobj[id][j] = 0;
     if(id > 13) {

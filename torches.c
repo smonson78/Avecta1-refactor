@@ -116,18 +116,18 @@ void drawsq(int x, int y)
     storsc(storbuf[pc],x,y,0,addr);
     blt(bitmap[*(c+4)],x,y,addr);
     }
-  if(*(z+6) != 0)
+  if(*(z+6) != 0) {
     blt(bitmap[130 + 2*(*(z+6))],x,y,addr);
   }
+}
 
-  drawman(pc,x,y)
-  int pc,x,y;
-  {
-  char *c = curmon[pc];
-  if(pc < 4 && *(c+41) > 0) {
-    litetrol(x,y,1);
-  }
-  if(zline[x][y][5] > 0 || rumdata[crum][30] || pc < 4) {
-    drawsq(x,y);
-  }
+void drawman(int pc, int x, int y)
+{
+    uint8_t *c = curmon[pc];
+    if(pc < 4 && *(c+41) > 0) {
+      litetrol(x,y,1);
+    }
+    if(zline[x][y][5] > 0 || rumdata[crum][30] || pc < 4) {
+      drawsq(x,y);
+    }
 }

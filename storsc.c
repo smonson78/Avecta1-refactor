@@ -1,10 +1,13 @@
-********************************************************************************
+#include "globals.h"
+/*******************************************************************************
 * STORSC(BUFFER,X,Y,FLAG,ADDR) is a call to store the current screen           *
 * at the screen pixel location x,y into the buffer of ints.  The size is the   *
 * square size in standard 16 row sprites.  ADDR is the logical screen address. *
 * FLAG = 0 means store the screen, FLAG = 1 means restore the screen.          *
-********************************************************************************
+*******************************************************************************/
 
+
+/*
 .globl _storsc
 .text
 _storsc:
@@ -54,3 +57,9 @@ proc:
   blt top
   unlk R14
   rts
+*/
+
+void storsc(void *buffer, int x, int y, int flag, void *addr)
+{
+
+}

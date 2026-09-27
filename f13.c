@@ -1,10 +1,20 @@
 #include "globals.h"
 #include "startaux.h"
+#include "start.h"
+#include "caux.h"
+#include "torches.h"
+#include "trapaux.h"
+#include "dist.h"
+
+#include "f5.h"
 
 int i13(int pc)
 {
-  char *c = curmon[pc],*w = (pc == 0 ? pname : name[*(c+3)]);
-  int x,y,ret,tar;
+  uint8_t *c = curmon[pc];
+  char *w = (pc == 0 ? pname : name[*(c+3)]);
+  int ret,tar;
+  int16_t x, y;
+
   if(outside)
     return(0);
   if(*(c+45) == 0) {
@@ -35,7 +45,9 @@ int i13(int pc)
 
 int o13(int pc)
 {
-  char *c = curmon[pc],*t,*wt,*z,*w = (pc == 0 ? pname : name[*(c+3)]);
+  uint8_t *c = curmon[pc];
+  uint8_t *z, *t;
+  char *wt,*w = (pc == 0 ? pname : name[*(c+3)]);
   int tar = *(c+7),x,y,d,miss,i,j,k;
   t = curmon[tar];
   x = *(t+24);
@@ -43,7 +55,7 @@ int o13(int pc)
   d = dist(*(c+24),*(c+25),0,x,y,0);
   wt = (tar == 0 ? pname : name[*(t+3)]);
   if(!los(pc,x,y)) {
-    prnt("-> %s cannot see %s to give the %s!",w,wt,obj[*(c+45)]);
+    prnt("-> %s cannot see %s to give the %s!", w, wt, obj[*(c+45)], NULL, NULL, NULL);
     return(1);
     }
   if(!adjac(pc,x,y)) { /* gotta throw the damned thing */
@@ -59,10 +71,10 @@ int o13(int pc)
           } while(k < 20 && (zline[x+i][y+j][1] != 0 || zline[x+i][y+j][0] != 1));
         }
     if(k == 20) {
-      prnt("-> %s cannot spot a place to which to throw the %s!",w,obj[*(c+45)]);
+      prnt("-> %s cannot spot a place to which to throw the %s!", w, obj[*(c+45)], NULL, NULL, NULL, NULL);
       return(1);
       }    
-    prnt("-> %s throws the %s to %s!",w,obj[*(c+45)],wt);
+    prnt("-> %s throws the %s to %s!", w, obj[*(c+45)], wt, NULL, NULL, NULL);
     k = rumslot();
     z = crumobj[k];
     if(k > 13) { 
@@ -83,7 +95,7 @@ int o13(int pc)
         drawsq(x+i,y+j);
     return(1);
     }
-  prnt("-> %s gives the %s to %s.",w,obj[*(c+45)],wt);
+  prnt("-> %s gives the %s to %s.", w, obj[*(c+45)], wt, NULL, NULL, NULL);
   if(*(t+45) != 0)
     putaway(tar,*(t+45));
   *(c+8) = *(c+45);

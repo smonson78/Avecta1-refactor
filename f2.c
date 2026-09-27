@@ -19,7 +19,12 @@
 #include "damage.h"
 #include "explode.h"
 #include "fireball.h"
+#include "start.h"
+#include "dorep.h"
+#include "text.h"
+#include "cinput.h"
 
+#include "f5.h"
 #include "f6.h"
 #include "f10.h"
 
@@ -27,9 +32,11 @@ int savthrow(int npc, int mag);
 
 int i2(int pc)
 {
-  int i,j,k,numb,x,y,status,ret;
+  int16_t status, x, y;
+  int i,j,k,numb,ret;
   uint8_t *c = curmon[pc];
-  char *z,scratch[3],*w = (pc == 0 ? pname : name[*(c+3)]);
+  uint8_t *z;
+  char scratch[3],*w = (pc == 0 ? pname : name[*(c+3)]);
 
   if(outside) {
     return(0);
@@ -42,7 +49,7 @@ int i2(int pc)
   top(1);
   clrinp();
   do {
-      vq_mouse(handle,&status,&x,&y);
+      vq_mouse(handle, &status, &x, &y);
     } while (status != 0);
   xbios_37();
   xbios_38_off();
@@ -55,7 +62,7 @@ int i2(int pc)
     }
   xbios_37();
   xbios_38_vbl();
-  sgetxy(&x,&y,2,0,24,&numb);
+  sgetxy(&x, &y, 2, 0, 24, &numb);
   top(1);
   xbios_37();
   clrinp();
@@ -117,7 +124,7 @@ int i2(int pc)
           }
         if(k == 0) {
           prnt("-> %s does not have a seekshard to trigger the teleport spell!",
-                w);
+                w, NULL, NULL, NULL, NULL, NULL);
           return(0);
           }
         }
@@ -152,7 +159,7 @@ void losespel(int pc)
   char *w = (pc == 0 ? pname : name[*(c+3)]);
   char *n = (pc < 4 ? rummsg[0] : msg[0]);
   if (*(c+21) != 0) {
-        prnt("-> The original spell on %s%s was lost!", n, w, NULL, NULL, NULL, NULL, NULL);  
+        prnt("-> The original spell on %s%s was lost!", n, w, NULL, NULL, NULL, NULL);  
         *(c + *(c+19)) = *(c+20);
         *(c+21) = 0;
   }
@@ -181,7 +188,8 @@ void flash()
 int o2(int pc)
 {
   uint8_t *c = curmon[pc];
-  char *z,*p,*w,*wt;
+  uint8_t *p, *z;
+  char *w,*wt;
   uint8_t *t;
   int k, m, flag = 0, dam, j, trap, num, target, i, x, y;
   w = (pc == 0 ? pname :  name[*(c+3)]);
@@ -225,12 +233,12 @@ int o2(int pc)
   }
 
   if(flag) {
-    prnt("-> %s's %s Spell has no target!", w, spell[num - 1]);
+    prnt("-> %s's %s Spell has no target!", w, spell[num - 1], NULL, NULL, NULL, NULL);
     return(1);
   }
 
   if(num != 13)
-    prnt("-> %s casts the %s Spell!",w,spell[num-1]);
+    prnt("-> %s casts the %s Spell!", w, spell[num-1], NULL, NULL, NULL, NULL);
   flash();
   switch (num) {
    case 1:  /* cure light wounds but not poison */
@@ -248,7 +256,7 @@ int o2(int pc)
       if(savthrow(target,*(c+51)))
          break;
       if(*(t+16) == 0) {
-        prnt("-> The spell fails!");
+        prnt("-> The spell fails!", NULL, NULL, NULL, NULL, NULL, NULL);
         break;
         }
      losespel(target);
@@ -306,7 +314,7 @@ int o2(int pc)
          j = 2;
          }
       if(!los(pc,*(t+24),*(t+25))) {
-         prnt("-> But the target is out of sight!");
+         prnt("-> But the target is out of sight!", NULL, NULL, NULL, NULL, NULL, NULL);
          return(1);
          }
       xbios_37();
@@ -335,13 +343,13 @@ int o2(int pc)
       break;
    case 13:  /* blink spell */
       if(zline[*(c+26)][*(c+27)][2] != 0) {
-        prnt("-> %s's blink spell fails!",w);
+        prnt("-> %s's blink spell fails!", w, NULL, NULL, NULL, NULL, NULL);
         break;
         }
       x = *(t+24);
       y = *(t+25);
       *(t+35) = 0;
-      prnt("-> %s blinks out of reality for an instant!",wt);
+      prnt("-> %s blinks out of reality for an instant!", wt, NULL, NULL, NULL, NULL, NULL);
       explode(x,y,0);
       xbios_37();
       storsc(storbuf[target],16*x,16*y,1,addr);
@@ -378,7 +386,7 @@ int o2(int pc)
       flag = 0;
       for(i=0;i<4;i++) {
         if(curmon[i][0] && curmon[i][30] == pursuit[2]) {
-           prnt("-> %s holds the %s spell to wait for friends!",w,spell[num-1]);
+           prnt("-> %s holds the %s spell to wait for friends!", w, spell[num-1], NULL, NULL, NULL, NULL);
            flag = 1;
            break;
            }
@@ -402,7 +410,7 @@ int o2(int pc)
       break;
     case 19: /* firewall */
       if(specbuf[35] != 0) {
-        prnt("-> The existing wall of fire prevents a second spell!");
+        prnt("-> The existing wall of fire prevents a second spell!", NULL, NULL, NULL, NULL, NULL, NULL);
         break;
         }
       specbuf[35] = *(c+51)/3;
@@ -420,7 +428,7 @@ int o2(int pc)
       break;
     case 20:  /* destroy an object */
       if(*(t+2) > dismax || *(t+3) > 0 || *t == 1) {
-        prnt("-> The spell inexplicably fails!");
+        prnt("-> The spell inexplicably fails!", NULL, NULL, NULL, NULL, NULL, NULL);
         break;
         }
       explode(*(t+6),*(t+7),0);
@@ -452,7 +460,7 @@ int o2(int pc)
       break;
     case 23: /* bringin back the dead */
       if(*t < 38 || *t > 40) {
-        prnt("-> The life spell does not work on %ss!",wt);
+        prnt("-> The life spell does not work on %ss!", wt, NULL, NULL, NULL, NULL, NULL);
         break;
         }
       k = 41 - *t;
@@ -475,11 +483,11 @@ int o2(int pc)
       explode(x,y,0);
       actmon(-k,1,x,y);         
       prnt("-> Eirik shakes his head and mutters `Crom, my eyes spin! But \
-I still live! I do not wish to know the ensorcelment used to do this.'");
+I still live! I do not wish to know the ensorcelment used to do this.'", NULL, NULL, NULL, NULL, NULL, NULL);
       break;
    case 24:  /* time to teleport */
       if( (k = *(c+52)) == 0) {
-        prnt("-> The teleport invocator cannot find the inline mana thread!");
+        prnt("-> The teleport invocator cannot find the inline mana thread!", NULL, NULL, NULL, NULL, NULL, NULL);
         break;
         }
       crum = -1;
@@ -504,9 +512,9 @@ int savthrow(int npc, int mag)
   char *w = (npc == 0 ? pname : name[*(c+3)]);
   if(rnd(100) < (*(c+51) - mag)*8 || *(c+54) > 0) {
     if(npc < 4 || curmon[npc][3] == 10)
-      prnt("-> %s resists the spell!", w, NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s resists the spell!", w, NULL, NULL, NULL, NULL, NULL);
     else
-      prnt("-> The %s resists the spell!", w, NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The %s resists the spell!", w, NULL, NULL, NULL, NULL, NULL);
     return(1);
     }
   return(0);

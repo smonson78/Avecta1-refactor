@@ -4,5 +4,6 @@
 int i2(int pc);
 int o2(int pc);
 void losespel(int pc);
+void flash();
 
 #endif

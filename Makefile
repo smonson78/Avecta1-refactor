@@ -23,7 +23,7 @@ OBJS=start.o globals.o gemdefs.o \
 	actmon.o animate.o attack.o blt.o caux.o cinput.o \
 	damage.o dist.o dorep.o explode.o fileio.o fireball.o \
 	instring.o intell.o load.o off.o raton.o rausmaus.o rumdraw.o \
-	sell.o spellfx.o startaux.o status.o storsc.o stun.o switchru.o \
+	sell.o spellfx.o startaux.o storsc.o stun.o switchru.o \
 	tacmode.o text.o textbig.o texwin.o timetrol.o title.o toggle.o \
 	torches.o trapaux.o trapres.o trigtrol.o vbl.o words.o \
 	f0.o f1.o f2.o f3.o f4.o f5.o f6.o f7.o f8.o \
@@ -34,9 +34,9 @@ all: $(TARGET).$(EXT)
 
 $(TARGET).$(EXT): $(TARGET).elf
 	@# Strip out .discard section and make .text writable before passing to vlink
-	@#$(OBJCOPY) --remove-section=.discard --writable-text $^ ready.o
+	$(OBJCOPY) --remove-section=.discard --writable-text $^ ready.o
 	$(VLINK) $^ -b ataritos -o $@
-	@#$(RM) ready.o
+	# @#$(RM) ready.o
 
 clean:
 	$(RM) $(TARGET) *.o *.elf $(TARGET).$(EXT)

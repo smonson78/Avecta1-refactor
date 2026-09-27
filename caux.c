@@ -1,6 +1,6 @@
 #include "globals.h"
 #include "caux.h"
-#include "cinput.c"
+#include "cinput.h"
 #include "startaux.h"
 #include "torches.h"
 #include "rumdraw.h"
@@ -9,7 +9,7 @@
 
 #include "f5.h"
 
-int sgetxy(int *x, int *y, int type, int top1, int bot, int *ret)
+int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 {
    int oldline = -1,newline=0,newx,newy,oldx = -1, oldy=0,i,j,k,status=1;
    int light,keybd = 0,keystk = 0,mflag=0,rflag=0, tflag = 0,inrflag,intflag;
@@ -656,86 +656,86 @@ int status(int pc)
    uint8_t *c = curmon[pc];
    char scratch[3],*w = (pc == 0 ? pname : name[*(c+3)]);
 
-if(pc > 3)
- return(1);
-xbios_37();
-xbios_38_off();
-top(1);
-clrinp();
-header(w);
-for(i=0;i<2;i++)
-  textsix(1,260,9+8*i,strlen(statword[i]),statword[i]);
-v_rvon(handle);
-for(i=2;i<5;i++) {
-   vs_curaddress(handle,2*i,33);
-   printf("        ");
-   textsix(1,260,16*i-7,strlen(statword[i]),statword[i]);
-   }
-textsix(1,260,33,strlen(obj[*(c+45)]),obj[*(c+45)]);
-textsix(1,260,49,strlen(obj[*(c+46)]),obj[*(c+46)]);
-sprintf(scratch,"%d",*(c+2) - *(c+1));
-textsix(1,300,9,2,scratch);
-if(*(c+47)>0)
-  sprintf(scratch,"%c",'P');
-else
-  sprintf(scratch,"%c",'G');
-textsix(1,314,9,1,scratch);
-sprintf(scratch,"%d",*(c+14));
-textsix(1,300,17,strlen(scratch),scratch);
-v_rvoff(handle);
-for(i=5;i<9;i++)
-   textsix(1,260,25+8*i,strlen(statword[i]),statword[i]);
-xbios_37();
-xbios_38_vbl();
-sgetxy(&i,&j,2,8,11,&ret);
-top(1);
-clrinp();
-ret -= 7;
-switch(ret) {
-   case 1:
-   case 2:
-       if(ret == 2) {
-         if(*(c+41) > 0) {
-            *(c+46) = 0;
-            litetrol(*(c+24),*(c+25),0);
-            } 
-         if(*(c+41) > 64) 
-            *(c+42) += 1;
-         if(*(c+41) > 0)
-            *(c+41) = 0;
-         }
-       j = invent(pc);
-       if(j == 0) {
-         if(!putaway(pc,*(c+44+ret))) {
-            error(7);
-            break;
+   if(pc > 3)
+   return(1);
+   xbios_37();
+   xbios_38_off();
+   top(1);
+   clrinp();
+   header(w);
+   for(i=0;i<2;i++)
+   textsix(1,260,9+8*i,strlen(statword[i]),statword[i]);
+   v_rvon(handle);
+   for(i=2;i<5;i++) {
+      vs_curaddress(handle,2*i,33);
+      printf("        ");
+      textsix(1,260,16*i-7,strlen(statword[i]),statword[i]);
+      }
+   textsix(1,260,33,strlen(obj[*(c+45)]),obj[*(c+45)]);
+   textsix(1,260,49,strlen(obj[*(c+46)]),obj[*(c+46)]);
+   sprintf(scratch,"%d",*(c+2) - *(c+1));
+   textsix(1,300,9,2,scratch);
+   if(*(c+47)>0)
+   sprintf(scratch,"%c",'P');
+   else
+   sprintf(scratch,"%c",'G');
+   textsix(1,314,9,1,scratch);
+   sprintf(scratch,"%d",*(c+14));
+   textsix(1,300,17,strlen(scratch),scratch);
+   v_rvoff(handle);
+   for(i=5;i<9;i++)
+      textsix(1,260,25+8*i,strlen(statword[i]),statword[i]);
+   xbios_37();
+   xbios_38_vbl();
+   sgetxy(&i,&j,2,8,11,&ret);
+   top(1);
+   clrinp();
+   ret -= 7;
+   switch(ret) {
+      case 1:
+      case 2:
+         if(ret == 2) {
+            if(*(c+41) > 0) {
+               *(c+46) = 0;
+               litetrol(*(c+24),*(c+25),0);
+               } 
+            if(*(c+41) > 64) 
+               *(c+42) += 1;
+            if(*(c+41) > 0)
+               *(c+41) = 0;
             }
-         *(c+44+ret) = 0;
+         j = invent(pc);
+         if(j == 0) {
+            if(!putaway(pc,*(c+44+ret))) {
+               error(7);
+               break;
+               }
+            *(c+44+ret) = 0;
+            break;
+            } 
+         if(*(c+44+ret) != 0 ) { 
+            if(!putaway(pc,*(c+44+ret))) {
+               error(7);
+               break;
+               }
+            }
+         takeout(pc,j);
+         *(c+44+ret) = j;
+         if(*(c+45) < 46 && *(c+45) > 40)
+            *(c+32) = *(c+45);
          break;
-         } 
-       if(*(c+44+ret) != 0 ) { 
-          if(!putaway(pc,*(c+44+ret))) {
-             error(7);
-             break;
-             }
-          }
-       takeout(pc,j);
-       *(c+44+ret) = j;
-       if(*(c+45) < 46 && *(c+45) > 40)
-           *(c+32) = *(c+45);
-       break;
-   case 3:
-       invent(pc);
-       flag = 1;
-       break;
-   default:
-       flag = 1;
-       break;
-   }
-top(1);
-clrinp();
-dotop(pc);
-return(flag);
+      case 3:
+         invent(pc);
+         flag = 1;
+         break;
+      default:
+         flag = 1;
+         break;
+      }
+   top(1);
+   clrinp();
+   dotop(pc);
+   return(flag);
 }
 
 int invent(int pc)
@@ -751,7 +751,7 @@ int invent(int pc)
 
 int listinv(int pc, char *scratch)
 {
-   int j, bot=0;
+   int j, bot = 0;
    uint8_t *c = curmon[pc], *o = invnpc[pc];
    char word[3];
    xbios_37();

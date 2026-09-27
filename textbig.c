@@ -1,4 +1,5 @@
 
+/*
 .globl _textbig
 .text
 _textbig: link R14,#-4
@@ -26,3 +27,9 @@ _textbig: link R14,#-4
           unlk R14
           rts
 
+*/
+
+void textbig(const char *s, int x, int y)
+{
+
+}

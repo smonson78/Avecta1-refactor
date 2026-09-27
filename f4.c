@@ -1,8 +1,15 @@
 #include "globals.h"
+#include "gemdefs.h"
+#include "rumdraw.h"
+#include "torches.h"
+#include "start.h"
+#include "blt.h"
+#include "storsc.h"
+#include "caux.h"
 
 int i4(int pc)
 {
-   char *c = curmon[pc];
+   uint8_t *c = curmon[pc];
    int x, y;
    *(c + 22) = *(c + 24);
    *(c + 23) = *(c + 25);
@@ -19,9 +26,12 @@ int i4(int pc)
 
 int o4(int pc)
 {
-   char *c = curmon[pc], *z, id, *w;
+   uint8_t *c = curmon[pc];
+   uint8_t *z;
+   char id, *w;
    int flag, xroll, yroll, i, xnow = *(c + 24), ynow = *(c + 25), x = *(c + 28), y = *(c + 29);
    int j, light = rumdata[crum][30];
+
    z = zline[x][y];
    id = crumobj[*(z + 1)][0];
    w = (pc == 0 ? &pname[0] : name[curmon[pc][3]]);
@@ -31,9 +41,9 @@ int o4(int pc)
       if (pc < 4 && *(z + 2) != 0 && pc != *(z + 2))
       {
          if (*(z + 2) > 3 && i != 10)
-            prnt("-> The %s blocks %s!", name[i], w);
+            prnt("-> The %s blocks %s!", name[i], w, NULL, NULL, NULL, NULL);
          else
-            prnt("-> %s blocks %s!", name[i], w);
+            prnt("-> %s blocks %s!", name[i], w, NULL, NULL, NULL, NULL);
       }
       return (1);
    }
@@ -42,7 +52,7 @@ int o4(int pc)
    if (pc == 0)
    {
       if (*(c + 18) != 4)
-         prnt("-> %s moves...", &pname[0]);
+         prnt("-> %s moves...", &pname[0], NULL, NULL, NULL, NULL, NULL);
       *(c + 18) = 4;
    }
    xroll = 2 * (x - xnow) / (1 + outside);

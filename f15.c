@@ -1,9 +1,15 @@
 #include "globals.h"
 #include "startaux.h"
+#include "start.h"
+#include "cinput.h"
+#include "caux.h"
+
+#include "f5.h"
 
 int i15(int pc)
 {
-  int x,y,ret,tar;
+  int16_t x,y;
+  int ret,tar;
   uint8_t *c = curmon[pc];
 
   if(outside)
@@ -39,10 +45,10 @@ int o15(int pc)
   curmon[pc][8] = curmon[pc][9] = 0;
   if(*(c+38)) {
     *(c+38) = 0;
-    prnt("-> %s allows %s to make decisions!",pname,name[*(c+3)]);
+    prnt("-> %s allows %s to make decisions!", pname, name[*(c+3)], NULL, NULL, NULL, NULL);
     return(1);
     }
-  prnt("-> %s issues orders to %s!",pname,name[*(c+3)]);
+  prnt("-> %s issues orders to %s!", pname, name[*(c+3)], NULL, NULL, NULL, NULL);
   if(*(c+16) != 0) {
     *(c+15) = 8;
     *(c+16) = 1;

@@ -3,14 +3,14 @@
 
 int ruminit();
 int init(int flag);
-int domsg(int i);
-int undomsg();
+void domsg(int i);
+void undomsg();
 int console();
-int congratulate();
+void congratulate();
 int loadnew();
 int error(int i);
 
 // Save palette
-int savpal();
+void savpal();
 
 #endif

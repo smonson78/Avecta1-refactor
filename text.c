@@ -1,10 +1,12 @@
-*****************************************************************************
+#include <stdint.h>
+
+/****************************************************************************
 * textsix(FLAG,X,Y,LENGTH,STRING) is a call to output the string whose 
 * starting address is (LONG) STRING, and whose length is (INT) LENGTH at the
 * screen location (INT) X,Y.  If (INT) FLAG is set then the text will be output
 * in inversed mode, background color 1 (black), foreground color 0 (white).
-*****************************************************************************
-
+*****************************************************************************/
+/*
 .globl _textsix
 
 .text
@@ -50,3 +52,9 @@ done:
   unlk R14
   rts
 
+*/
+
+void textsix(int16_t flag, int16_t x, int16_t y, int16_t length, const char *text)
+{
+  
+}

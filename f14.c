@@ -7,7 +7,8 @@
 
 int i14(int pc)
 {
-  int x, y, ret, tar;
+  int16_t x, y;
+  int ret, tar;
   uint8_t *c = curmon[pc];
   if(outside) {
     return 0;
@@ -41,7 +42,6 @@ int i14(int pc)
 
 int o14(int pc)
 {
-  int act;
   uint8_t *c = curmon[curmon[pc][7]];
   curmon[pc][8] = curmon[pc][9] = 0;
   if (*(c+38)) {

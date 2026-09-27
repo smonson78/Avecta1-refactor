@@ -1,7 +1,7 @@
 #ifndef __CAUX_H
 #define __CAUX_H
 
-int sgetxy(int *x, int *y, int type, int top1, int bot, int *ret);
+int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret);
 void nextxy(int xlo, int ylo, int xhi, int yhi, int xnow, int ynow, int *xnext, int *ynext);
 int line(int xlo, int ylo, int xhi, int yhi, int xnow, int ynow);
 int los(int pc, int x, int y);

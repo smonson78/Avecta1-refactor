@@ -4,9 +4,9 @@
 int rumdraw(char *pan);
 int abs(int x);
 void rumclear();
-int setfill(int k);
+void setfill(int k);
 int fillsq(int x, int y);
 void click();
-void trans(int *bit, int *stor);
+void trans(uint16_t *bit, uint16_t *stor);
 
 #endif

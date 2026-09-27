@@ -1,12 +1,14 @@
+#include "globals.h"
+
 /***************************************************************************/
 /* TIMETROL() checks the pc's for the expiration of temporary events.      */
 /***************************************************************************/
 
 int timetrol()
 {
-char *c,*w,*z;
-int i,j,x,y;
-for(i=0;i<12;i++) {
+   char *c,*w,*z;
+   int i,j,x,y;
+   for(i=0;i<12;i++) {
     c = curmon[i];
     if(*c == 0)
        continue;
@@ -89,6 +91,6 @@ for(i=0;i<12;i++) {
           }
        }
      }
-return(1);
+   return(1);
 }
 

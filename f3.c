@@ -2,6 +2,10 @@
 #include "caux.h"
 #include "startaux.h"
 #include "words.h"
+#include "start.h"
+#include "cinput.h"
+
+#include "f5.h"
 
 /******************************************************************************/
 /* I3(NPC) initializes an EXAMINE action.  It simply determines if the charac */
@@ -10,15 +14,16 @@
 
 int i3(int pc)
 {
-  int i, bot = 0, top1 = 0, type, x, y, ret;
-  char *c = curmon[pc], z1, z2, scratch[15];
+  int16_t x, y;
+  int i, bot = 0, top1 = 0, type, ret;
+  uint8_t *c = curmon[pc];
+  char z1, z2, scratch[15];
   char *w = (pc == 0 ? pname : name[*(c + 3)]);
 
   if (invnpc[pc][0] == 0 && *(c + 45) == 0 && (*(c + 46) == 0 || *(c + 46) == 81))
   {
     type = 0;
-  }
-  else
+  } else
   {
     top(1);
     clrinp();
@@ -103,9 +108,10 @@ int i3(int pc)
 
 int o3(int pc)
 {
-  char *c = curmon[pc], *w, *w1, scratch[10];
+  uint8_t *c = curmon[pc];
+  char *w, *w1, scratch[10];
   uint8_t *t;
-  int flag, type, x = *(c + 24), y = *(c + 25), object, mess;
+  int flag, type, x = *(c + 24), y = *(c + 25), object = 0, mess = 0;
   type = *(c + 10);
   w1 = (pc == 0 ? &pname[0] : name[*(c + 3)]);
   if ((type == 3 && (object = *(c + 8)) > 40) ||
@@ -121,15 +127,15 @@ int o3(int pc)
         *(c + 45) = *(c + 8);
       takeout(pc, *(c + 8));
       object = *(c + 8);
-      prnt("-> %s takes out the %s to examine.", w1, obj[object]);
+      prnt("-> %s takes out the %s to examine.", w1, obj[object], NULL, NULL, NULL, NULL);
     }
-    prnt("-> %s examines the %s.", w1, obj[object]);
+    prnt("-> %s examines the %s.", w1, obj[object], NULL, NULL, NULL, NULL);
     if (!rumdata[crum][30] && !zline[x][y][5])
     {
-      prnt("-> It is too dark for %s to see anything!", w1);
+      prnt("-> It is too dark for %s to see anything!", w1, NULL, NULL, NULL, NULL, NULL);
       return (1);
     }
-    prnt(msg[object]);
+    prnt(msg[object], NULL, NULL, NULL, NULL, NULL, NULL);
     return (1);
   }
   if (type == 2)
@@ -137,7 +143,7 @@ int o3(int pc)
   if (type == 2 && !los(object, *(c + 24), *(c + 25)))
   {
     prnt("-> The object which %s was examining has moved out of sight.",
-         w1);
+         w1, NULL, NULL, NULL, NULL, NULL);
     return (1);
   }
   if (type == 1)
@@ -162,7 +168,7 @@ int o3(int pc)
       mess = 0;
   }
   if (!outside && !fromout && (type != 2 || *(c + 7)))
-    prnt("-> %s examines the %s.", w1, w);
+    prnt("-> %s examines the %s.", w1, w, NULL, NULL, NULL, NULL);
   if (type == 2)
   {
     if (*(t + 39) != pc)
@@ -183,38 +189,38 @@ int o3(int pc)
         w1 = scratch;
       }
     }
-    prnt(monmsg[*(t + 3)], w1);
+    prnt(monmsg[*(t + 3)], w1, NULL, NULL, NULL, NULL, NULL);
     return (1);
   }
   flag = 0;
   if (type == 1 && mess == 0 && *(t + 5) == -1 && *(t + 3) == 0 && (*(t + 2) == 0 || rnd(100) > *(c + 37)))
   {
-    prnt("-> %s notices nothing unusual.", w1);
+    prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
     return (1);
   }
   if (!outside && type == 1 && *(t + 2) != 0 && *(c + 37) > rnd(100))
   {
     flag = 1;
-    prnt("-> %s senses something strange about the %s.", w1, w);
+    prnt("-> %s senses something strange about the %s.", w1, w, NULL, NULL, NULL, NULL);
   }
   if (mess != 0)
   {
-    prnt(msg[mess]);
+    prnt(msg[mess], NULL, NULL, NULL, NULL, NULL, NULL);
     return (1);
   }
   if (!outside && type == 1 && mess == 0 && *(t + 3) != 0)
   {
     flag = 1;
     prnt("-> %s notices an exit through the %s.",
-         w1, w);
+         w1, w, NULL, NULL, NULL, NULL);
   }
   if (type == 1 && *(t + 5) == -2)
   {
     flag = 1;
-    prnt("-> %s notices the %s is locked.", w1, w);
+    prnt("-> %s notices the %s is locked.", w1, w, NULL, NULL, NULL, NULL);
   }
   if ((type == 1 || mess == 0) && !flag)
-    prnt("-> %s notices nothing unusual.", w1);
+    prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
   *(c + 18) = 3;
   return 1;
 }

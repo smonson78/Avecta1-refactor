@@ -8,11 +8,17 @@
 
 #include "aes.h"
 
+// The iX() and oX() mechanism
+extern int (*inverb[])();
+extern int (*outverb[])();
 
 extern int16_t handle;
 extern MFDB psrc, pdes;
 
-extern char rumdata[80][157];
+// Game data filenames
+extern char *savname[];
+extern char fname[];
+
 extern int16_t oldpal[16];
 extern int16_t newpal[16];
 extern void *addr;
@@ -30,12 +36,19 @@ extern int16_t vxy[4];
 
 extern uint8_t curmon[12][60];
 extern uint8_t permon[][23];
+extern char selllist[][4];
 
+// These are all to do with TOS/GEM
 extern int16_t contrl[12], intin[128], intout[128], ptsin[128], ptsout[128];
 extern int16_t work_in[11], work_out[57];
-extern char specbuf[40], putbuf[320], monbuf[320], junk[20];
+
+// buffers probably
+extern char monbuf[320], junk[20];
+extern int crudbuf[65];
+extern uint8_t specbuf[40], putbuf[320];
+
 extern uint8_t zline[16][8][7];
-extern char rumdata[80][157];
+extern uint8_t rumdata[80][157];
 extern uint8_t triglist[25];
 extern char invtrig[20];
 
@@ -69,7 +82,13 @@ extern int winker, winktime, combat;
 extern int firebuff[130];
 extern char weight[41];
 extern char eats[];
-extern char trigval[80][6];
+extern uint8_t trigval[80][6];
+
+// Graphics
+extern uint16_t fillpic[41][65];
+
+// Magic
+extern char spelunit[];
 
 // Words
 extern char *posture[];
@@ -84,5 +103,7 @@ extern char *verblist[];
 extern char *att[][4];
 extern char *monmsg[];
 extern char *obj[];
+
+extern char *mod[];
 
 #endif

@@ -1,9 +1,23 @@
 #include "globals.h"
+#include "explode.h"
+#include "fireball.h"
+#include "dorep.h"
+#include "caux.h"
+#include "instring.h"
+#include "dist.h"
+#include "trapaux.h"
+#include "torches.h"
+#include "damage.h"
+#include "intell.h"
+#include "words.h"
 
-int trapres(int pc, int type, int x, int y)
+#include "f2.h"
+
+void trapres(int pc, int type, int x, int y)
 {
   uint8_t *c = curmon[pc];
-  char *s1, *s2, *z = zline[x][y], str[20];
+  uint8_t *z = zline[x][y];
+  char *s1, *s2, str[20];
   int flag, flag2, flag3, i, j;
 
   if (pc > 3)

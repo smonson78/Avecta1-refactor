@@ -1,5 +1,10 @@
 #include "globals.h"
+#include "start.h"
 #include "startaux.h"
+#include "caux.h"
+#include "cinput.h"
+
+#include "f5.h"
 
 /******************************************************************************/
 /* ROB/LISTEN is function 10.  This attempts to open locked objects, and is   */
@@ -10,7 +15,8 @@
 
 int i10(int pc)
 {
-  int obj,x,y,ret;
+  int16_t x, y;
+  int obj,ret;
   uint8_t *c = curmon[pc];
   char *w = (pc == 0 ? pname : name[*(c+3)]);
 
@@ -50,7 +56,8 @@ int o10(int pc)
 {
   int x, y, object, flag=0;
   uint8_t *c = curmon[pc], *o;
-  char *r,*w = (pc == 0 ? pname : name[*(c+3)]);
+  uint8_t *r;
+  char *w = (pc == 0 ? pname : name[*(c+3)]);
 
   x = *(c+5);
   y = *(c+6);
@@ -68,16 +75,16 @@ int o10(int pc)
         else
           return(1);
         }
-      prnt("-> %s unlocks the %s!",w,obj[*o]);
+      prnt("-> %s unlocks the %s!", w, obj[*o], NULL, NULL, NULL, NULL);
       flag = 1;
       }
   if(*(o+3) != 0 && *(r+22) != 0 && rnd(100) < *(r+26) && rnd(100) < *(c+37)) {
       flag = 1; 
-      prnt("-> %s hears one or more %ss through the %s!",w,
-          name[permon[*(r+22)][3]],obj[*o]);
+      prnt("-> %s hears one or more %ss through the %s!", w,
+          name[permon[*(r+22)][3]], obj[*o], NULL, NULL, NULL);
       }
   if(flag == 0 && *(c+18) != 10) {
-    prnt("-> %s has no success with the %s!", w, obj[*o]);
+    prnt("-> %s has no success with the %s!", w, obj[*o], NULL, NULL, NULL, NULL);
   }
   *(c+18) = 10;
   return(1);
