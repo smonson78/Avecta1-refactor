@@ -1,5 +1,6 @@
 #include "globals.h"
 #include "osbind.h"
+#include "gemdefs.h"
 
 int input(int pc)
 {

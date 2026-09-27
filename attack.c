@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "gemdefs.h"
 
 int attack(int pc, int xdes, int ydes) {
   int light = rumdata[crum][30],flag = 1,i,bit,xnow,ynow,xadd,yadd;

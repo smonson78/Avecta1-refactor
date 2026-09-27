@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "gemdefs.h"
 #include "caux.h"
 #include "cinput.h"
 #include "startaux.h"
@@ -8,6 +9,17 @@
 #include "rausmaus.h"
 
 #include "f5.h"
+
+// Weird to split these out but whatever
+// Read character, no echo
+int gemdos_8() {
+   return Cnecin();
+}
+
+// Is character waiting on console? 0 = no, non-zero = yes
+int gemdos_b() {
+   return Cconis();
+}
 
 int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 {
@@ -20,9 +32,9 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
    if(winker != 0)
    c = curmon[winker-1];
    light = rumdata[crum][30];
-   while( (int)gemdos(0xb) != 0) {
-      gemdos(0x8);
-      }
+   while(gemdos_b() != 0) {
+      gemdos_8();
+   }
    do {
       vq_mouse(handle,&status,x,y);
       } while(status != 0);
@@ -33,9 +45,9 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
    xbios_37();
    raton();
    do {
-      if((int)gemdos(0xb) == -1) {
+      if(gemdos_b() == -1) {
          keystk = 1;
-         letter = gemdos(0x8);
+         letter = gemdos_8();
          }
       if(keybd != 0 && keystk) {
       keystk = 0;

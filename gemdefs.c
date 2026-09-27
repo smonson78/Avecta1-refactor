@@ -7,7 +7,9 @@ void xbios_37() {
 }
 
 void xbios_38_off() {
+}
 
+void xbios_38_vbl() {
 }
 
 void xbios_38_savpal() {

@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "gemdefs.h"
 #include "trigtrol.h"
 #include "words.h"
 

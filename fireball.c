@@ -1,5 +1,6 @@
 
 #include "globals.h"
+#include "gemdefs.h"
 #include "rumdraw.h"
 
 void fireball(int xs, int ys, int xd, int yd, int type)

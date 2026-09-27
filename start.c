@@ -303,7 +303,9 @@ int stinit() {
    path[0] = 'a' + i;
 
    num = 1;
-   rgb[0] = rgb[1] = rgb[2] = 0;
+   rgb[0] = 0;
+   rgb[1] = 0;
+   rgb[2] = 0;
    vs_color(handle, 0, rgb);
    xbios_37();
    return 1;  

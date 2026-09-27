@@ -16,7 +16,8 @@ int instring(int x, int y, char *string, int max, int flag)
    int k, i = 0;
    do {
       k = Bconin(2); /* pull character from keyboard */
-      if (k == 0 || k == 13) {   /* this is a dead key, like the cursors,undo, etc. */
+      if (k == 0 || k == 13) {
+         /* this is a dead key, like the cursors,undo, etc. */
          continue;
       }
 
@@ -40,7 +41,7 @@ int instring(int x, int y, char *string, int max, int flag)
 
    *(string+i) = '\0'; /* terminate the string with a null marker */
 
-   return(i - 1); /* kick back the char length */
+   return i - 1; /* kick back the char length */
 }
 
 

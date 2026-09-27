@@ -1,10 +1,16 @@
 
 #include "globals.h"
+#include "gemdefs.h"
 #include "rumdraw.h"
+#include "storsc.h"
+#include "blt.h"
+
+void drawsq(int x, int y);
+int litetrol(int x, int y, int s);
 
 int setlite(int pc, int dx, int dy)
 {
-  char *c = curmon[pc];
+  uint8_t *c = curmon[pc];
   int x,y;
   if(rumdata[crum][30])
     return(1);
@@ -27,7 +33,7 @@ int setlite(int pc, int dx, int dy)
 int litetrol(int x, int y, int s)
 {
   int i,j,k,a,flag,l;
-  char *c;
+  uint8_t *c;
 
   if(rumdata[crum][30]) /* if room is naturally lit */
     return(1);          /* don't sweat torches  */
@@ -84,12 +90,14 @@ int litetrol(int x, int y, int s)
           break;                  
       }
     }
-  }   
+  }
+  return 0;
 }
 
 void drawsq(int x, int y)
 {
-  char *z = zline[x][y],*c;
+  uint8_t *z = zline[x][y];
+  uint8_t *c;
   int i,pc;
   if(*z == 1)
     i = 1;
@@ -100,7 +108,7 @@ void drawsq(int x, int y)
   setfill(i);
   fillsq(x,y);
   if(i == 2)
-    return(1);
+    return;
   pc = *(z+2);
   if(!pc)
     pc = (curmon[0][24] == x && curmon[0][25] == y ? 0 : -1);

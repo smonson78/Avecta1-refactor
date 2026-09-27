@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "gemdefs.h"
 #include "switchru.h"
 #include "dorep.h"
 #include "torches.h"

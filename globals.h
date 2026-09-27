@@ -52,7 +52,7 @@ extern uint8_t rumdata[80][157];
 extern uint8_t triglist[25];
 extern char invtrig[20];
 
-extern uint8_t crumobj[18][9];
+extern uint8_t crumobj[19][9];
 extern uint8_t invnpc[4][20];
 extern int pursuit[];
 extern int mode, dismax;

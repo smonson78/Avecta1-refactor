@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "gemdefs.h"
 
 void explode(int x, int y, int type)
 {

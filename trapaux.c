@@ -1,9 +1,20 @@
 #include "globals.h"
+#include "caux.h"
+#include "gemdefs.h"
+#include "instring.h"
+#include "start.h"
+#include "explode.h"
+#include "torches.h"
+#include "damage.h"
+
+int rumslot();
 
 int destroy(int type, int num)
 {
   int x,y,i;
-  char *c,*z;
+  uint8_t *z;
+  uint8_t *c;
+
   if(type == 1) {
     c = crumobj[num];
     x = *(c+6);
@@ -37,7 +48,7 @@ int empty(int num)
 int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, int vis)
 {
   int i;
-  char *c;
+  uint8_t *c;
   if((i=zline[x][y][1]) != 0)
     destroy(1,i);
   i = rumslot();
@@ -61,12 +72,13 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
   return(i);
 }
 
-int settrap(int num, int trap)
-{
-crumobj[num][2] = trap;
-triglist[0]++;
-triglist[num] = trap;
-}
+// Never called
+// void settrap(int num, int trap)
+// {
+//   crumobj[num][2] = trap;
+//   triglist[0]++;
+//   triglist[num] = trap;
+// }
 
 int invtrap(char obj)
 {
@@ -114,8 +126,10 @@ int discon(int robj)
 
 int blowup(int x, int y)
 {
-  char *z = zline[x][y],*c;
+  uint8_t *z = zline[x][y];
+  uint8_t *c;
   int i;
+
   for(i=0;i<5;i++) {
     explode(x,y,0);
   }
@@ -133,10 +147,11 @@ int blowup(int x, int y)
 
 int getword(char *comp)
 {
-  int usedline,hold,row,col;
-  prnt("-> [Type answer]: ");
-  instring(row,col,junk,18,1);
-  hold = usedline = 0;
+  prnt("-> [Type answer]: ", NULL, NULL, NULL, NULL, NULL, NULL);
+  instring(row, col, junk, 18, 1);
+  hold = 0;
+  usedline = 0;
+
   if(strcmp(junk,comp) != 0) 
     return(0);
   else 
@@ -146,33 +161,38 @@ int getword(char *comp)
 int rumslot()
 {
   int i;
-  for(i=1;i<19;i++){
-    if(crumobj[i][0] == 0)
-      return(i);
+  for(i = 1; i < 19; i++) {
+    if(crumobj[i][0] == 0) {
+      return i;
     }
-  destroy(1,18);
+  }
+
+  destroy(1, 18);
   rumdata[crum][152] = 0;
-  return(18);
+  return 18;
 }
 
-int makeslot(int numb)
-{
-  int i;
-  if((numb = (numb - slotnum())) <= 0)
-    return(1);
-  for(i=13;i>13-numb;i--) {
-    destroy(1,i);
-  }
-}
+// Never called
+// void makeslot(int numb)
+// {
+//   int i;
+//   if((numb = (numb - slotnum())) <= 0)
+//     return(1);
+//   for(i=13;i>13-numb;i--) {
+//     destroy(1,i);
+//   }
+// }
 
 int slotnum()
 {
-  int i,j=0;
-  for(i=1;i<19;i++) {
-    if(crumobj[i][0] == 0)
+  int i, j = 0;
+  for (i = 1; i < 19; i++) {
+    if (crumobj[i][0] == 0) {
       j++;
     }
-  return(j);
+  }
+
+  return j;
 } 
 
 int thief(int pc)

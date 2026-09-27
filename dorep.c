@@ -1,5 +1,6 @@
 
 #include "globals.h"
+#include "gemdefs.h"
 
 int dorep()
 {
