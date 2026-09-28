@@ -6,8 +6,6 @@
 // This is my Atari LIBC, not a fancy one
 #include <libc.h>
 
-#include "aes.h"
-
 // The iX() and oX() mechanism
 extern int (*inverb[])();
 extern int (*outverb[])();

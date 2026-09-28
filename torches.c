@@ -16,7 +16,7 @@ int setlite(int pc, int dx, int dy)
     return(1);
   x = *(c+24);
   y = *(c+25);
-  xbios_37();
+  Vsync();
   xbios_38_off();
   drawsq(x,y);
   if(*(c+41) == 0) {
@@ -25,7 +25,7 @@ int setlite(int pc, int dx, int dy)
     }
   litetrol(x,y,1);
   litetrol(x-dx,y-dy,0);
-  xbios_37();
+  Vsync();
   xbios_38_vbl();
   return 0;
 }
@@ -119,7 +119,7 @@ void drawsq(int x, int y)
   if(pc >= 0) { 
     c = curmon[pc];
     *c = 0;
-    xbios_37();
+    Vsync();
     *c = 1;
     storsc(storbuf[pc],x,y,0,addr);
     blt(bitmap[*(c+4)],x,y,addr);

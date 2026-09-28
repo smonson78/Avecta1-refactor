@@ -2,10 +2,6 @@
 
 #include <gemdos.h>
 
-void xbios_37() {
-  Vsync();
-}
-
 void xbios_38_off() {
 }
 

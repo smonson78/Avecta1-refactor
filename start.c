@@ -22,6 +22,11 @@ int main()
 {
    int old, i, j;
    uint8_t *c = curmon[0];
+
+   // Clear screen
+   printf("\eE");
+   printf("AVECTA 1. Press a key to start\n");
+   Cconin();
    
    if (stinit() == 0 || ruminit() == 1) {
       goto end;
@@ -34,10 +39,13 @@ int main()
    // srand(j); 
 
    i = title();
-   if(i == 1) 
-   new = 0;
-   else
-   new = 1;
+
+   if (i == 1) {
+      new = 0;
+   } else {
+      new = 1;
+   }
+
    specbuf[29] = new;
    crum = -1;
    while (i != 0) {
@@ -63,12 +71,12 @@ int main()
       while (i == 0 && j > 0) {
          i = switchrum();
          if (i > 0) {
-            xbios_37();
+            Vsync();
             xbios_38_off();
             continue;
          }
          i = tacmode();
-         xbios_37();
+         Vsync();
          xbios_38_off();
       }
 
@@ -171,7 +179,7 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
    col = 2;
    row++;
    rausmaus();
-   xbios_37();
+   Vsync();
    xbios_38_off();
    v_rvon(handle);
    while( l - i > 0) {
@@ -200,7 +208,7 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
          lines++;
          row++;
          per = 0;
-         xbios_37();
+         Vsync();
       }
       
       per = 0;
@@ -233,7 +241,7 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
             usedline = 0;
             xbios_38_vbl();
             Bconin(2);
-            xbios_37();
+            Vsync();
             xbios_38_off();
             lines = 1;
             vs_curaddress(handle,25,2);
@@ -292,7 +300,7 @@ int stinit() {
       return(0);
    }
    Setpalette(newpal);
-   xbios_37();
+   Vsync();
    addr = Logbase();
    vq_extnd(handle, 1, work_out);
    psrc.fd_nplanes = pdes.fd_nplanes = work_out[4];
@@ -307,6 +315,7 @@ int stinit() {
    rgb[1] = 0;
    rgb[2] = 0;
    vs_color(handle, 0, rgb);
-   xbios_37();
+   Vsync();
+
    return 1;  
 }

@@ -42,7 +42,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
    keybd = 13;
    if(top1 ==  8 && bot == 11)
    keybd = 4;
-   xbios_37();
+   Vsync();
    raton();
    do {
       if(gemdos_b() == -1) {
@@ -61,7 +61,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
                top(1);
                clrinp();
                if(rflag) {
-               xbios_37();
+               Vsync();
                zline[oldx][oldy][4] = 0;
                for(j=0;j<2;j++) {
                   for( k=0; k<2; toggle(2*oldx+j,2*oldy+(k++),0,addr))
@@ -98,7 +98,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
          inrflag = 0;
       if(type == 0 && (newx > 15 || newy > 7) ) {
          if(rflag) { 
-            xbios_37();
+            Vsync();
             for(j=0;j<2;j++) 
                for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
             zline[oldx][oldy][4] = 0;
@@ -121,14 +121,14 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
          else
          intflag = 0;
          if(tflag && !intflag) {
-         xbios_37();
+         Vsync();
          rausmaus();
          tflag = 0;
          toggle(32,oldline,7,addr);
          raton();
          }
          if(rflag && !inrflag) {
-            xbios_37();
+            Vsync();
             for(j=0;j<2;j++) 
                for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
             zline[oldx][oldy][4] = 0;
@@ -151,7 +151,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       if(type == 2 && (newx < 16 || newline < top1 || newline > bot ) ) {
          if(tflag) {
          tflag = 0;
-         xbios_37();
+         Vsync();
          rausmaus();
          toggle(32,oldline,7,addr);
          raton();
@@ -164,21 +164,21 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       z = zline[newx][newy];
       if(tflag) {
          tflag = 0;
-         xbios_37();
+         Vsync();
          rausmaus();
          toggle(32,oldline,7,addr);
          raton();
          } 
       if(newx < 16 && newy < 8 && (*z == 1 || (*z == 2 && *(z+1) != 0 ) ) ) {
          if(newx != oldx || newy != oldy) {
-            xbios_37();
+            Vsync();
             if(tflag) {
                tflag = 0;
                toggle(32,oldline,7,addr);
                } 
             rausmaus();
             if(oldx != -1 && rflag) {
-               xbios_37();
+               Vsync();
                for(j=0;j<2;j++) 
                   for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
                zline[oldx][oldy][4] = 0;
@@ -190,7 +190,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
                }
             if(*(z+5) > 0 || light || (*(z+2) > 0 && *(z+2) < 4) || 
                   (winker > 0 && *(c+24) == newx && *(c+25) == newy) ) {
-               xbios_37();
+               Vsync();
                for(j=0;j<2;j++) 
                   for(k=0;k<2;toggle(2*newx+j,2*newy+(k++),0,addr));
                *(z+4) = 1;
@@ -201,7 +201,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             if( mflag == 0 && mode && *(z+2) > 3 && (*(z+5) > 0 || light) 
                   && curmon[*(z+2)][31] < 4 ) {
                mflag = curmon[*(z+2)][33];
-               xbios_37();
+               Vsync();
                toggle(32,mflag,7,addr);             
                }
             raton();
@@ -210,7 +210,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       else {
          if(rflag) {
             rausmaus();
-            xbios_37();
+            Vsync();
             for(j=0;j<2;j++) 
                for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
             zline[oldx][oldy][4] = 0;
@@ -228,7 +228,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       if(type == 2 || (type == 1 && intflag)) {
          if(rflag) {
             rausmaus();
-            xbios_37();
+            Vsync();
             for(j=0;j<2;j++) 
                for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
             zline[oldx][oldy][4] = 0;
@@ -243,7 +243,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             }
       if(newx > 15 && newline >= top1 && newline <= bot) {
          if(newline != oldline || oldx < 16) {
-            xbios_37();
+            Vsync();
             rausmaus();
             if(oldline != -1 && tflag && oldx > 15) 
                toggle(32,oldline,7,addr);
@@ -256,7 +256,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
          }
       else {
          if(tflag) {
-            xbios_37();
+            Vsync();
             rausmaus();
             toggle(32,oldline,7,addr);
             tflag = 0;
@@ -270,7 +270,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       if(status != 0 && (rflag || tflag || 
       (inrflag && winker > 0 && lom(winker-1,oldx,oldy)) ) ) {
       rausmaus();
-      xbios_37();
+      Vsync();
       if(rflag) {
          zline[oldx][oldy][4] = 0;
          for(j=0;j<2;j++) 
@@ -670,7 +670,7 @@ int status(int pc)
 
    if(pc > 3)
    return(1);
-   xbios_37();
+   Vsync();
    xbios_38_off();
    top(1);
    clrinp();
@@ -697,7 +697,7 @@ int status(int pc)
    v_rvoff(handle);
    for(i=5;i<9;i++)
       textsix(1,260,25+8*i,strlen(statword[i]),statword[i]);
-   xbios_37();
+   Vsync();
    xbios_38_vbl();
    sgetxy(&i,&j,2,8,11,&ret);
    top(1);
@@ -766,7 +766,7 @@ int listinv(int pc, char *scratch)
    int j, bot = 0;
    uint8_t *c = curmon[pc], *o = invnpc[pc];
    char word[3];
-   xbios_37();
+   Vsync();
    xbios_38_off();
    vs_curaddress(handle,1,33);
    v_rvon(handle);
@@ -790,7 +790,7 @@ int listinv(int pc, char *scratch)
    textsix(1,260,41 + 8*bot,4,"Gold");
    sprintf(word,"%d",*(c+49));
    textsix(1,308,41 + 8*bot,strlen(word),word);
-   xbios_37();
+   Vsync();
    xbios_38_vbl();
    invnpc[pc][0] = bot;
    return(bot);

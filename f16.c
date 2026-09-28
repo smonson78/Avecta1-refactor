@@ -7,12 +7,12 @@
 
 int i16(int pc)
 {
-  xbios_37();
+  Vsync();
   xbios_38_off();
   raton();
   form_alert(1, "[1][ZZZ... not implemented][OK]");
   rausmaus();
-  xbios_37();
+  Vsync();
   xbios_38_vbl();
   return 0;
 }

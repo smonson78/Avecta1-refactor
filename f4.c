@@ -58,7 +58,7 @@ int o4(int pc)
    xroll = 2 * (x - xnow) / (1 + outside);
    yroll = 2 * (y - ynow) / (1 + outside);
    z = zline[xnow][ynow];
-   xbios_37();
+   Vsync();
    xbios_38_off();
    x = 16 * xnow;
    y = 16 * ynow;
@@ -90,9 +90,9 @@ int o4(int pc)
       if (outside)
       {
          for (j = 0; j < 2; j++)
-            xbios_37();
+            Vsync();
       }
-      xbios_37();
+      Vsync();
       if (i > 1 || pc < 4 || !flag)
          storsc(storbuf[pc], x - xroll, y - yroll, 1, addr); /* restores the screen */
       storsc(storbuf[pc], x, y, 0, addr);
@@ -113,7 +113,7 @@ int o4(int pc)
    }
    if (*(z + 6))
       blt(bitmap[132], 16 * xnow, 16 * ynow, addr);
-   xbios_37();
+   Vsync();
    xbios_38_vbl();
    if (*(c + 28) == *(c + 26) && *(c + 29) == *(c + 27))
    {

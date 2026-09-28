@@ -28,7 +28,7 @@ int dorep()
     return(1);
     }
   mode = 1;
-  xbios_37();
+  Vsync();
   xbios_38_off();
   form_dial(1,0,0,0,0,x,y,w,h);
   v_pline(handle,5,pxy);
@@ -53,7 +53,7 @@ int dorep()
       j++;
       }
     }
-  xbios_37();
+  Vsync();
   xbios_38_vbl();
   return 0;
 }
@@ -63,7 +63,7 @@ void undorep()
   int handle;
   int i;
 
-  xbios_37();
+  Vsync();
   for(i=16;i<26;i++) {
     vs_curaddress(handle,i,33);
     v_eeol(handle);

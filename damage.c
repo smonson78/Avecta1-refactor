@@ -35,7 +35,7 @@ int damage(int pc, int level)
       i = 5;
       if(*(c+38) && *c == 1)
       i = 6;
-      xbios_37();
+      Vsync();
       textsix(0,313,1+8*(*(c+33)),1," ");
       textsix(1,313,1+8*(*(c+33)),1,mod[i]);
       }
@@ -57,17 +57,17 @@ int damage(int pc, int level)
          police = 1;
       }
    *(c+35) = 2;
-   xbios_37();
+   Vsync();
    xbios_38_off();
    if(pc < 4 || light || zline[x][y][5] > 0)
       blt(bitmap[128],16*x,16*y,addr);
    if(pc > 3 && mode) {
    for(i=0;i<8;i++) {
-      xbios_37(); 
+      Vsync(); 
       toggle(32,*(c+33),7,addr);
       }
    }
-   xbios_37();
+   Vsync();
    xbios_38_vbl();
    if(*(c+1) >= *(c+2) || level > *(c+2)) {
    *(c+1) = *(c+2);

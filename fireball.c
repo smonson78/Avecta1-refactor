@@ -23,11 +23,11 @@ void fireball(int xs, int ys, int xd, int yd, int type)
   xd *= 16;
   ys *= 16;
   yd *= 16;
-  xbios_37();
+  Vsync();
   storsc(firebuff, xs, ys, 0, addr);
   while( (xs/16 != xd/16) || (ys/16 != yd/16) ) {
     if(q == 1) {
-      xbios_37();
+      Vsync();
       storsc(firebuff,xs-s,ys-r,1,addr);
       storsc(firebuff,xs,ys,0,addr);
       blt(bitmap[132 + 2*type + rnd(2)],xs,ys,addr);
@@ -48,6 +48,6 @@ void fireball(int xs, int ys, int xd, int yd, int type)
       s = i;
       }
     }
-  xbios_37();
+  Vsync();
   storsc(firebuff,xs-s,ys-r,1,addr);
 }

@@ -51,7 +51,7 @@ int i2(int pc)
   do {
       vq_mouse(handle, &status, &x, &y);
     } while (status != 0);
-  xbios_37();
+  Vsync();
   xbios_38_off();
   undorep();
   for(i=0;i<25;i++) {
@@ -60,13 +60,13 @@ int i2(int pc)
     if(i != 24)
       textsix(1,314,1+8*i,1,scratch);
     }
-  xbios_37();
+  Vsync();
   xbios_38_vbl();
   sgetxy(&x, &y, 2, 0, 24, &numb);
   top(1);
-  xbios_37();
+  Vsync();
   clrinp();
-  xbios_37();
+  Vsync();
   undorep();
   if(mode)
     dorep();
@@ -169,7 +169,7 @@ void flash()
 {
   int i, j;
   int16_t funk[3];
-  xbios_37();
+  Vsync();
   xbios_38_off();
   for (i=0;i<30;i++) {
     for (j=2;j<15;j++) {
@@ -178,10 +178,10 @@ void flash()
       funk[2] = rnd(1000);
       vs_color(handle, j, funk);
     }
-    xbios_37();
+    Vsync();
   }
   Setpalette(newpal);
-  xbios_37();
+  Vsync();
   xbios_38_vbl();
 }
 
@@ -317,7 +317,7 @@ int o2(int pc)
          prnt("-> But the target is out of sight!", NULL, NULL, NULL, NULL, NULL, NULL);
          return(1);
          }
-      xbios_37();
+      Vsync();
       xbios_38_off();
       fireball(*(c+24),*(c+25),*(t+24),*(t+25),j);
       explode( *(t+24), *(t+25) ,j);
@@ -351,7 +351,7 @@ int o2(int pc)
       *(t+35) = 0;
       prnt("-> %s blinks out of reality for an instant!", wt, NULL, NULL, NULL, NULL, NULL);
       explode(x,y,0);
-      xbios_37();
+      Vsync();
       storsc(storbuf[target],16*x,16*y,1,addr);
       zline[x][y][2] = 0;
       *(t+24) = *(c+26);

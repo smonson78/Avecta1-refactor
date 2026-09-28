@@ -5,10 +5,14 @@
 #include "rausmaus.h"
 #include "caux.h"
 #include "startaux.h"
+#include "raton.h"
+#include "text.h"
+#include "cinput.h"
+#include "texwin.h"
 
 void domsg(int i) {
   int x = 256,y = 8,w = 64,h = 40;
-  int pxy[10];
+  int16_t pxy[10];
   char scratch[10];
   top(2);
   pxy[0] = 256;
@@ -21,33 +25,35 @@ void domsg(int i) {
   pxy[7] = 48;
   pxy[8] = 256;
   pxy[9] = 8;
-  xbios_37();
+  Vsync();
   xbios_38_off();
   form_dial(0,0,0,0,0,x,y,w,h);
   form_dial(1,0,0,0,0,x,y,w,h);
-  v_pline(handle,5,pxy);
+  v_pline(handle, 5, pxy);
   textsix(1,259,17,7,"  Point");
   textsix(1,259,25,8,"  at the");
   sprintf(scratch, "%s", com[i]);
   textsix(1,259,33,strlen(scratch),scratch);
-  xbios_37();
+  Vsync();
   xbios_38_vbl();
 }
 
 void undomsg() {
   int x = 255,y = 0,w = 64,h = 40;
-  xbios_37();
+  Vsync();
   xbios_38_off();
   form_dial(2,0,0,0,0,x,y,w,h);
   top(1);
   clrinp();
-  xbios_37();
+  Vsync();
   xbios_38_vbl();
 }
 
 int init(int flag) {
   int i,j;
-  char str[15],*c,val[3];
+  char val[3];
+  uint8_t *c;
+
   vs_curaddress(handle,1,1);
   v_eeos(handle);
   row=17;
@@ -106,27 +112,33 @@ int init(int flag) {
 
 int ruminit()
 {
-  int i;
+  //int i;
   uint8_t *c = curmon[1];
-  for (i=0;i<660;*(c+(i++)) = 0);
+
+  // Zero out 660 bytes
+  //for (i = 0; i < 660; *(c + (i++)) = 0) {
+  //}
+  memset(c, 660, 0);
+
   if (!loadnew()) {
     raton();
     Setpalette(oldpal);
-    xbios_37();
+    Vsync();
     form_alert(1,"[1][There are data files missing!][OK]");
     rausmaus();
     return(1);
   }
-  return(0);
+
+  return 0;
 }
 
 int error(int i) {
-  xbios_37();
+  Vsync();
   xbios_38_off();
   raton();
   i = form_alert(1,errmsg[i]);
   rausmaus();
-  xbios_37();
+  Vsync();
   xbios_38_vbl();
   return i;
 }
@@ -177,7 +189,7 @@ int console() {
   specbuf[28] = 1;
   rausmaus();
   Setpalette(newpal);
-  xbios_37();
+  Vsync();
   init(2);
 
   return 3;
@@ -188,7 +200,7 @@ void congratulate() {
   int i;
   int16_t rgb[3];
 
-  xbios_37();
+  Vsync();
   xbios_38_off();
   vs_curaddress(handle,1,1);
   v_eeos(handle);
@@ -208,7 +220,7 @@ void congratulate() {
   v_eeos(handle);
   rgb[0] = rgb[1] = rgb[2] = 0;
   vs_color(handle,0,rgb);
-  xbios_37();
+  Vsync();
   prntbig("VICTORY OVER",4,1);
   prntbig(" MELKTHROP!",4,5);
 
@@ -223,7 +235,7 @@ void congratulate() {
     vs_color(handle, 2, rgb);
     i = Bconstat(2);
   } while(i == 0);
-  xbios_37();
+  Vsync();
 }
 
 

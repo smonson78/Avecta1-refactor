@@ -16,7 +16,7 @@ int input(int pc)
   if( (pc == 0 || (pc < 4 && *(c+38) ) )  && combat)
     return(1);
   top:
-    xbios_37();
+    Vsync();
   xbios_38_off();
   header(w);
   dotop(pc);
@@ -31,7 +31,7 @@ int input(int pc)
   vsf_style(handle,0);
   vsf_color(handle,0);
   v_bar(handle,vxy);
-  xbios_37();
+  Vsync();
   *(c+31) = 0;
   winker = pc+1;
   xbios_38_vbl();
@@ -104,7 +104,7 @@ int input(int pc)
 void clrinp() {
   int handle;
   int i;
-  xbios_37();
+  Vsync();
   for(i=3;i<17;i++) {
     vs_curaddress(handle,i,33);
     v_eeol(handle);
@@ -123,7 +123,7 @@ int comwind(int pc)
     return(0);
     }
   clrinp();
-  xbios_37();
+  Vsync();
   xbios_38_off();
   v_rvon(handle);
   for(i=1;i<5;i++) {

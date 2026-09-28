@@ -1,4 +1,9 @@
 #include "globals.h"
+#include "start.h"
+#include "torches.h"
+#include "damage.h"
+#include "rumdraw.h"
+#include "caux.h"
 
 /***************************************************************************/
 /* TIMETROL() checks the pc's for the expiration of temporary events.      */
@@ -6,7 +11,8 @@
 
 int timetrol()
 {
-   char *c,*w,*z;
+   uint8_t *c, *z;
+   char *w;
    int i,j,x,y;
    for(i=0;i<12;i++) {
     c = curmon[i];
@@ -19,11 +25,11 @@ int timetrol()
              w = &pname[0];
           else
              w = name[*(c+3)];
-          prnt("-> %s's torch flickers...",w);
+          prnt("-> %s's torch flickers...", w, NULL, NULL, NULL, NULL, NULL);
           litetrol(*(c+24),*(c+25),0);
           litetrol(*(c+24),*(c+25),1);
           if(*(c+41) == 0) {
-            prnt("-> ... and goes out!");
+            prnt("-> ... and goes out!", NULL, NULL, NULL, NULL, NULL, NULL);
             if(rumdata[crum][30] == 0)
               litetrol(*(c+24),*(c+25),0);
             }
@@ -39,9 +45,9 @@ int timetrol()
           j = (4*(*(c+47)))/(*(c+2));
           if(j > 0) {
             if(i < 4 || *(c+58) == 16)
-              prnt("-> %s's level of poisoning is %s!",w,wordmod[j]);
+              prnt("-> %s's level of poisoning is %s!",w,wordmod[j], NULL, NULL, NULL, NULL);
             else
-              prnt("-> The %s's level of poisoning is %s!",w,wordmod[j]);
+              prnt("-> The %s's level of poisoning is %s!",w,wordmod[j], NULL, NULL, NULL, NULL);
             if(*(c+47) >= *(c+2)) {
                *(c+1) = *(c+2);
                damage(i,1 + *(c+12));
@@ -59,9 +65,9 @@ int timetrol()
           else
              w = name[*(c+3)];
           if(i < 4)
-             prnt("-> %s's spell has expired!",w);
+             prnt("-> %s's spell has expired!",w, NULL, NULL, NULL, NULL, NULL);
           else
-             prnt("-> The spell on the %s has worn off!",w);
+             prnt("-> The spell on the %s has worn off!",w, NULL, NULL, NULL, NULL, NULL);
           }
         }
      if(zline[*(c+24)][*(c+25)][6] > 0 && *(c+30) == crum && *(c+46) == 0)
@@ -70,11 +76,11 @@ int timetrol()
   if(specbuf[35] != 0) {
      specbuf[35]--;
      if(specbuf[35] == 0) {
-       prnt("-> The Wallfire spell has expired!");
+       prnt("-> The Wallfire spell has expired!", NULL, NULL, NULL, NULL, NULL, NULL);
        x = specbuf[36]%16;
        y = specbuf[36]/16;
        for(i=x-1;i<=x+1;i++) {
-          for(j=y-1;j<=y+1;j++) {
+          for (j=y-1;j<=y+1;j++) {
              z = zline[i][j];
              if( *z != 1)
                  continue;

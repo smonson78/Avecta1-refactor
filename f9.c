@@ -114,7 +114,7 @@ int o9(int pc)
       }
   *(z+2) = 0;
   if(*(z+5) > 0 || rumdata[*(c+30)][30]) {
-    xbios_37();
+    Vsync();
     storsc(storbuf[pc],16*x,16*y,1,addr);
     }
   *(c+30) = *(c+10);

@@ -120,7 +120,7 @@ int o11(int pc)
       break;
    }
   dir /= 2;
-  xbios_37();
+  Vsync();
   xbios_38_off();
   fireball(*(c+24),*(c+25),*(t+24)+i,*(t+25)+j,3+dir);
   explode(*(t+24)+i,*(t+25)+j,3+dir);

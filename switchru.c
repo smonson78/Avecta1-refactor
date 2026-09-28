@@ -2,11 +2,19 @@
 #include "gemdefs.h"
 #include "trigtrol.h"
 #include "words.h"
+#include "caux.h"
+#include "dist.h"
+#include "rumdraw.h"
+#include "torches.h"
+#include "dorep.h"
+#include "start.h"
+#include "blt.h"
 
 void stormon();
+int getmon(int room);
 
 int switchrum() {
-  int d,i,j,x,y,xn,yn,oldrum;
+  int d,i,j,x = 0, y = 0,xn,yn,oldrum;
   uint8_t *p = curmon[0];
   uint8_t *r = rumdata[crum];
   uint8_t *c;
@@ -80,7 +88,7 @@ int switchrum() {
           *(p+25) = y = *(c+7);
           if(*(c+8) == 0) { /* must reveal hidden door */
             *(c+8) = 1;
-            xbios_37(); 
+            Vsync(); 
             blt(bitmap[*c],16*x,16*y,addr);
             zline[x][y][1] = i;
             }
@@ -106,9 +114,9 @@ int switchrum() {
     dorep();
   if(!outside) {
     if(fromout != 0)
-      prnt(msg[crum]);
+      prnt(msg[crum], NULL, NULL, NULL, NULL, NULL, NULL);
     else
-      prnt(rummsg[crum + 80*(dungeon-1)]);  
+      prnt(rummsg[crum + 80*(dungeon-1)], NULL, NULL, NULL, NULL, NULL, NULL);  
     trigtrol(0);
     }
   if(rumdata[crum][30]) {
@@ -123,7 +131,7 @@ int switchrum() {
         }
       }
     if(i)
-      prnt("-> The lit torch is snuffed and put away.");
+      prnt("-> The lit torch is snuffed and put away.", NULL, NULL, NULL, NULL, NULL, NULL);
     }
   return 0;
 }
