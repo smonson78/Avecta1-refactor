@@ -10,6 +10,7 @@ _rausmaus: link R14,#-4
 */
 
 // "Out mouse" in German?
+// disables the mouse
 void rausmaus() {
 
 }

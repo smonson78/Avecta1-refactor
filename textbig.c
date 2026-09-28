@@ -90,51 +90,13 @@ typedef struct
            (*fill_abort)( void );  /* 118: Tests seedfill               */
 } LINEA;
 
-
-/*
-.globl _textbig
-.text
-_textbig: 
-// reserve 4 bytes of stack memory, probably a pointer to the LINE-A parameter block
-// R14 would be a6 in Atari's MADMAC assembler.
-          link R14,#-4
-
-          // Get address of LINE-A parameter block... keep in a0
-          .dc.w $a000
-          // a1 has system fonts
-
-// multiply char by 8
-          move.w 8(R14),d0      
-          mulu #8,d0            * must convert ascii into offset for 8 pixel text
-
-          movea.l 8(a1),a3      * a3 holds third fontheader address
-
-          move.l 76(a3),84(a0)  * move font data address into line A 
-
-          move.w 80(a3),88(a0)  * move font width value
-          move.w 52(a3),80(a0)  
-          move.w 82(a3),82(a0)
-          move.w d0,72(a0)      * select ascii value in d0
-          move.w 10(R14),76(a0) * select screen x-loc 8
-          move.w 12(R14),78(a0) * select screen y-loc 8
-          move.w #1,102(a0)
-          move.w #1,68(a0)      * set yet another scaling flag
-          move.w $8000,64(a0)   * must be set for a textblt ?
-          move.w #254,d3
-          mulu #256,d3
-          move.w d3,66(a0)
-          move.w #1,90(a0)      * Thickened text
-          move.w #1,106(a0)     * Set text color to be red
-          move.w #0,36(a0)      * Set replace mode
-
-          // Line-A Text block transfer
-          .dc.w $a008           * Do a textblt operation 
-
-          unlk R14
-          rts
-
-*/
-
+// parameter offsets on the stack are 8, 10, 12
+// probably:
+// --- 0:  return address
+// --- 4:  reserved 4 bytes from link
+// --- 8:  s
+// --- 10: x
+// --- 12: y
 void textbig(const char s, int x, int y)
 {
   LINEA *parameter_block;
@@ -188,7 +150,6 @@ void textbig(const char s, int x, int y)
   // mulu #256,d3
   // move.w d3,66(a0)
   parameter_block->dda_inc = (0xfe << 8); // "scaling increment"
-
 
   // move.w #1,90(a0)      * Thickened text
   parameter_block->style = 1;

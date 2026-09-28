@@ -128,6 +128,7 @@ quite an adventurer in his day.",
 "-> Is this a dream? The room is strangely empty, full of dust, with no \
 trace of Leveth, the memory of whose words seems to ring as if they were \
 just spoken.",
+// This seems to be entry 110
 "-> This is the room of a powerful mage. Various retorts and bookshelves can \
 be seen lining the walls.",
 "-> This subterranean room is cold and damp. It is difficult to imagine \

@@ -70,24 +70,33 @@ long int saddr;
 uint16_t fillpic[41][65];
 
 int mode = 0, dismax;
-int pursuit[] = {0, 0, 0};
+int pursuit[3] = {0, 0, 0};
 uint8_t trigval[80][6];
 char invtrig[20];
 char *path = "a:*.SAV";
 char *filename = "________.___";
-char *spell[] = {"Cure","Search","Freeze","Unvenom","Vorpal",
-                 "Speed","Armor","Disarm","Bolt","Thief",
-                 "Fear","Fireball","Blink","Reveal","Heal",
-                 "Prism","Block","Charm","Wallfire","Destroy",
-                 "Summon","Death","Life","Teleport",
-                 "CANCEL"};
+char *spell[] = {
+  "Cure","Search","Freeze","Unvenom","Vorpal",
+  "Speed","Armor","Disarm","Bolt","Thief",
+  "Fear","Fireball","Blink","Reveal","Heal",
+  "Prism","Block","Charm","Wallfire","Destroy",
+  "Summon","Death","Life","Teleport",
+  "CANCEL"
+};
+
+// Spell magic points costs I think
 char spelunit[] = {0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5};
-char *name[] = {"goblin","skeleton","spider","firewolf","ghost","thrang",
-                "ghoul","snake","vampire","gork","Melkthrop","merchant",
-                "bat","Eirik","guard","pedestrian","Mage Leveth",
-                "orc","crusher","flamer","rat","bartender","rogue"};
+char *name[] = {
+  "goblin","skeleton","spider","firewolf","ghost","thrang", "ghoul","snake","vampire",
+  "gork","Melkthrop","merchant", "bat","Eirik","guard","pedestrian","Mage Leveth",
+  "orc","crusher","flamer","rat","bartender","rogue"
+};
+
+// This is used by practically everything. No idea what it does yet
 uint8_t curmon[12][60] = { {1,4,50,0,81,5,60,8,0,0,0,4,3,90,10} };
-uint8_t invnpc[4][20]; 
+
+uint8_t invnpc[4][20];
+
 uint8_t permon[][23] = {
                   {0,0},
   /* spider */    {1,0,20,2,83,6,100,0,0,0,0,4,2,95,0,13,1,30,0,0,1,0,0},
@@ -116,7 +125,8 @@ uint8_t permon[][23] = {
   /* barten */    {1,0,20,21,115,8,100,0,0,0,0,4,1,95,0,10,0,40,0,0,7,0,0},
   /* rogue */     {1,0,35,22,120,20,30,16,70,12,100,3,4,96,0,12,0,60,60,60,7,0,0}
 };
-char selllist[][4] = { {81,3,5,0},
+
+uint8_t selllist[][4] = { {81,3,5,0},
                         {42,10,20,0},
                         {69,25,35,0},
                         {45,20,30,0} };

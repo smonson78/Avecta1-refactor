@@ -2,20 +2,34 @@
 #include "globals.h"
 #include "caux.h"
 #include "dist.h"
+#include "dorep.h"
+#include "damage.h"
+#include "trapaux.h"
+#include "sell.h"
+#include "start.h"
 
 #include "f4.h"
 #include "f6.h"
 
 int sillymsg(int npc);
 void alert(int npc);
+int matt(int npc);
+int friend(int npc);
+int setatt(int npc);
+int target(int npc);
+int settarg(int npc);
+int setmove(int npc, int flag);
+int pass(int npc);
+int setflee(int npc);
+int morale(int npc);
 
 int intell(int npc)
 {
   uint8_t *c = curmon[npc];
-  char *t;
+  uint8_t *t;
   int done = 0; /* this will give the ith step in the intelligence routine */
   char type = *(c+31),step;
-  int i,j,x,y,flag;
+  int j, flag;
 
 if(!*c)
   return(0);
@@ -100,7 +114,7 @@ while(!done) {
             }
          c = curmon[npc];
          if(crum == 31) {
-           prnt("-> The forlorn creature sobs `All is lost. I die now.'");
+           prnt("-> The forlorn creature sobs `All is lost. I die now.'", NULL, NULL, NULL, NULL, NULL, NULL);
            damage(npc,*(c+2) + *(c+12));
            *c = 0;
            untrap(3);
@@ -109,7 +123,7 @@ while(!done) {
            }
          step = 1;
          *(c+31) = 1;
-         prnt("-> A general clamor can be heard `Get the guards! There's a lunatic about!'");
+         prnt("-> A general clamor can be heard `Get the guards! There's a lunatic about!'", NULL, NULL, NULL, NULL, NULL, NULL);
          police = 1;
          dorep();
          break;
@@ -128,27 +142,29 @@ return(1);
 int morale(int npc)
 {
   uint8_t *c = curmon[npc];
-  char *d;
-  int level,num,i,j,dam,top,bot;
-if(*(c+36) == 1 || *c == 0) {
-  *(c+38) = 0;
-  return(0);
+  uint8_t *d;
+  int level,num,i,dam,top,bot;
+  if(*(c+36) == 1 || *c == 0) {
+    *(c+38) = 0;
+    return(0);
   }
-if(npc > 3 && *(c+44) > 0) {
-  for(i=0;i<4;i++) {
-    d = curmon[i];
-    if(!*d || *(d+30) != crum)
-       continue;
-    if(*(d+45) == *(c+44) || *(d+46) == *(c+44)) {
-       prnt("-> The %s is gripped by terror at the sight of the %s!",
-             name[*(c+3)],obj[*(c+44)]);
-       damage(npc,*(c+12));
-       return(0);
-       }
+  if(npc > 3 && *(c+44) > 0) {
+    for(i=0;i<4;i++) {
+      d = curmon[i];
+      if(!*d || *(d+30) != crum)
+        continue;
+      if(*(d+45) == *(c+44) || *(d+46) == *(c+44)) {
+        prnt("-> The %s is gripped by terror at the sight of the %s!",
+              name[*(c+3)],obj[*(c+44)], NULL, NULL, NULL, NULL);
+        damage(npc,*(c+12));
+        return(0);
+      }
     }
   }
-if(*(c+13) > 100 || *(c+1) < (*(c+2))/2 ) /* not intelligent creature */
-  return(1);
+
+  if(*(c+13) > 100 || *(c+1) < (*(c+2))/2 ) /* not intelligent creature */
+    return(1);
+
 num = 0;
 top = (npc > 3 ? 12 : 4);
 bot = (npc > 3 ? 4 : 0);
@@ -186,7 +202,7 @@ else
 int setflee(int npc)
 {
   int i,x,y;
-  char *d;
+  uint8_t *d;
   uint8_t *c = curmon[npc];
 
   *(c+36) = 1;
@@ -224,7 +240,7 @@ int setflee(int npc)
 int setmove(int npc, int flag)
 {
   uint8_t *c = curmon[npc];
-  char *t,*z,*c1;
+  uint8_t *z, *c1, *t;
   int top,bot,i,j,l,m,n,k=0,xdes,ydes,x,y,buddy=0,tar = *(c+39);
 
 t = curmon[tar];
@@ -401,7 +417,7 @@ int pass(int npc)
 int target(int npc)
 {
   int i, j = curmon[npc][39];
-  char *c;
+  uint8_t *c;
   if( ( (npc > 3 && curmon[npc][38]) || npc < 4 )  && j == 0)
     return(0);
   for(i=0;i<12;i++) {
@@ -418,11 +434,10 @@ int target(int npc)
   return(1);
 }
 
-int settarg(npc)
-int npc;
+int settarg(int npc)
 {
   uint8_t *c = curmon[npc];
-  char *t;
+  uint8_t *t;
   int j,list[12];
   int top,bot;
   list[0] = 0;
@@ -480,7 +495,7 @@ int npc;
 int matt(int npc)
 {
   uint8_t *a = curmon[npc];
-  int i,j,k,sp;
+  int i,j,sp;
 
   *(a+26) = curmon[*(a+39)][24];
   *(a+27) = curmon[*(a+39)][25];
@@ -541,7 +556,6 @@ void alert(int npc)
   }
 }
 
-
 int setatt(int npc)
 {
   uint8_t *a = curmon[npc];
@@ -588,7 +602,7 @@ int friend(int npc)
     if( npc < 4 && (*(c+45) > 45 || *(c+45) < 41)) {
       if(*(c+53) == 0)
         prnt("-> %s yells, 'I don't have a weapon! Give me one quick!'",
-            name[*(c+3)]);
+            name[*(c+3)], NULL, NULL, NULL, NULL, NULL);
       pass(npc);
       j = *(c+53);
       *(c+53) = (j == 5 ? 0 : ++j );
@@ -669,41 +683,41 @@ int sillymsg(int npc)
   char *w = name[*(c+3)];
 
   if(*(c+47) > 0) {
-    prnt("-> %s says `The room spins.  I am poisoned.'",w);
+    prnt("-> %s says `The room spins.  I am poisoned.'",w, NULL, NULL, NULL, NULL, NULL);
     return(1);
     }
   if(*(c+1) > (*(c+2))/2) {
-    prnt("-> %s says `By Zandru, my body aches.  Perhaps a clerical spell...'",w);
+    prnt("-> %s says `By Zandru, my body aches.  Perhaps a clerical spell...'",w, NULL, NULL, NULL, NULL, NULL);
     return(1);
     }
   if(rumdata[crum][26] > 0) {
-    prnt("-> %s says `I believe dangerous creatures lurk here!'",w);
+    prnt("-> %s says `I believe dangerous creatures lurk here!'",w, NULL, NULL, NULL, NULL, NULL);
     return(1);
     }
   switch(rnd(8)) {
     case 0:
-      prnt("-> %s growls, `Hurry up, %s!  Let us move on.'",w,pname);
+      prnt("-> %s growls, `Hurry up, %s!  Let us move on.'",w,pname, NULL, NULL, NULL, NULL);
       break;
     case 1:
-      prnt("-> %s says `Why are you wasting time, %s?  This place is dangerous!'",w,pname);
+      prnt("-> %s says `Why are you wasting time, %s?  This place is dangerous!'",w,pname, NULL, NULL, NULL, NULL);
       break;
     case 2:
-      prnt("-> %s says `My stomach growls like an Alarian varg. Something to eat would be good.'",w);
+      prnt("-> %s says `My stomach growls like an Alarian varg. Something to eat would be good.'",w, NULL, NULL, NULL, NULL, NULL);
       break;
     case 3:
-      prnt("-> %s says `I favor a quick exit from here.'",w);
+      prnt("-> %s says `I favor a quick exit from here.'",w, NULL, NULL, NULL, NULL, NULL);
       break;
     case 4:
-      prnt("-> %s grumbles `When I get my hands on Lord Vindroble... He bears the responsibility for our woe!'",w);
+      prnt("-> %s grumbles `When I get my hands on Lord Vindroble... He bears the responsibility for our woe!'",w, NULL, NULL, NULL, NULL, NULL);
       break;
     case 5:
-      prnt("-> %s stares around the room in anger and mutters `An abomination such as this would never be tolerated in Nordheim.'",w);
+      prnt("-> %s stares around the room in anger and mutters `An abomination such as this would never be tolerated in Nordheim.'",w, NULL, NULL, NULL, NULL, NULL);
       break;
     case 6:
-      prnt("-> %s searches his carrying pack and mumbles `By the gods! Those accursed fiends took my elven wafers.'",w);
+      prnt("-> %s searches his carrying pack and mumbles `By the gods! Those accursed fiends took my elven wafers.'",w, NULL, NULL, NULL, NULL, NULL);
       break;
     case 7:
-      prnt("-> %s utters an unrepeatable oath of disgust over the general situation.",w);
+      prnt("-> %s utters an unrepeatable oath of disgust over the general situation.",w, NULL, NULL, NULL, NULL, NULL);
       break;
     default:
       break;

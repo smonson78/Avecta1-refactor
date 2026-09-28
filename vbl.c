@@ -1,3 +1,5 @@
+#include <stdint.h>
+#include "animate.h"
 /*
 .globl _vbl
 .globl _animate
@@ -9,7 +11,11 @@ _vbl:   link R14,#-4
         rts
 */
 
+#define VBL_LIST ((volatile int16_t (**)())0x4ce)
+
+// Install the vbl routine as a vertical blank handler
+
 void vbl() {
-        
+  VBL_LIST[2] = animate;
 }
         

@@ -41,6 +41,7 @@ int main()
    i = title();
 
    if (i == 1) {
+      // 'n' for New Games was pressed
       new = 0;
    } else {
       new = 1;
@@ -48,15 +49,19 @@ int main()
 
    specbuf[29] = new;
    crum = -1;
+
    while (i != 0) {
       j = 1;
 
       switch(i) {
       case 1:
+         // New Game
          i = init(0);
          break;
       case 2:
-         if ((j=fileio(2)) == -1) {
+         // Restore Game
+         j = fileio(2);
+         if (j == -1) {
             raton();
             form_alert(1, errmsg[18]);
             rausmaus();
@@ -64,21 +69,36 @@ int main()
          i = 0;
          break;
       default:
+         // 0 - Quit
          i = 0;
          break;
       }
 
+      printf("\nPast init(), i = %d\n", i);
+      Cconin();      
+
       while (i == 0 && j > 0) {
          i = switchrum();
+
+         // printf("Past switchrum(), i = %d\n", i);
+         // Cconin();    
+
          if (i > 0) {
             Vsync();
             xbios_38_off();
             continue;
          }
+
          i = tacmode();
+         printf("Past tacmode(), i = %d\n", i);
+         Cconin();    
+
+         
+
          Vsync();
          xbios_38_off();
       }
+
 
       switch(i) {
          case -5:
@@ -221,7 +241,7 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
          v_bar(handle,lxy);
          vsf_interior(handle,1);
          vsf_color(handle,1);
-         for(m=0;m<4;m++) {
+         for (m=0;m<4;m++) {
             pxy[1] = 136-2*m;
             pxy[3] = 199-2*m;
             pxy[5] = 134-2*m;
@@ -230,7 +250,8 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
             bxy[3] = 199-2*m;
             vro_cpyfm(handle, 3, pxy, &psrc, &pdes);
             v_bar(handle, bxy);
-            }
+         }
+
          row = 25;
          if ((usedline + lines > 7 
             && hold == 1 
@@ -248,21 +269,31 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
             printf("                              ");
          }
       }
+
       if(*(s1+i) == ' ' || l-i == 0) {
          textsix(1,6*col,8*(row-1),len,buffer);
       } else {
          textsix(1,6*col,8*(row-1),len,c[k-1]);
          col--;
       }
+
       col += len + 1;
       i++;
-      }
+   }
+
+   // printf("\nprnt() cleaning up\n");
+   // Cconin();   
+
+   // Crash somewhere in here???
    v_rvoff(handle);
    usedline += lines;
-   xbios_38_vbl();
+   // xbios_38_vbl(); // <----------------- crash
    raton();
    hold = 1;
-   return(i);
+
+   // printf("prnt() reached end i=%d\n", i);
+   // Cconin();
+   return i;
 }   
 
 int stinit() {

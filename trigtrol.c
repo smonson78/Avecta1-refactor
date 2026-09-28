@@ -9,6 +9,9 @@ void trigtrol(int pc)
   uint8_t trapvec;
   uint8_t *c = curmon[pc];
   uint8_t *t, *inv;
+
+  printf("trigtrol() starting\n");
+  Cconin();     
   
   if(triglist[0] == 0) { /* triglist[0] gives the number of traps in room */
     return;
@@ -21,6 +24,7 @@ void trigtrol(int pc)
     if(triglist[i] == 0) {
       continue;
     }
+
     trapvec = triglist[i];
     t = trigval[trapvec];
     type = *t;
@@ -77,4 +81,6 @@ void trigtrol(int pc)
       trapres(pc,*(t+5),x,y);
     }
   }
+  printf("trigtrol() ending\n");
+  Cconin();     
 }

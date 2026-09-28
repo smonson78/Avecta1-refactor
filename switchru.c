@@ -13,72 +13,103 @@
 void stormon();
 int getmon(int room);
 
+// God knows what's going on in this mess
 int switchrum() {
   int d,i,j,x = 0, y = 0,xn,yn,oldrum;
   uint8_t *p = curmon[0];
   uint8_t *r = rumdata[crum];
   uint8_t *c;
+
   char pan[12];
-  if(crum != *(p+30) && crum != -1 && !outside) {
-    for(i=0;i<13;i++) {
+
+  if (crum != *(p+30) && crum != -1 && !outside) {
+    for (i = 0; i < 13; i++) {
       c = crumobj[i+1];
-      for(j=0;j<9;j++) 
+      for(j=0;j<9;j++) {
         *(r+31+9*i+j) = *(c+j);
       }
-    for(i=0;i<3;pursuit[i++] = 0);
+    }
+
+    // Init pursuit[3] to all zeroes
+    // for(i=0;i<3;pursuit[i++] = 0)
+    //   ;
     pursuit[0] = 10;
-    for(i=1;i<12;i++) {
+    pursuit[1] = 0;
+    pursuit[2] = 0;
+
+    for (i = 1; i < 12; i++) {
+      
       c = curmon[i];
       *(c+35) = 0;
-      if(*c == 1 && *(c+30) == crum  && (i < 4 || *(c+38) == 0) && 
+
+      if (*c == 1 && *(c+30) == crum  && (i < 4 || *(c+38) == 0) && 
         (i < 4 || *(c+39) < 4) && *(c+58) != 16 &&
         *(c+31) < 4 && (dungeon != 2 || *(c+58) == 17) &&
         (i < 4 || (*(c+36) == 0 && *(c+13) > rnd(100)) ) ) {
+
         pursuit[2] = crum;
         xn = *(c+24);
         yn = *(c+25);
         d = dist(x,y,0,xn,yn,0);
         pursuit[0] = (pursuit[0] > d ? d : pursuit[0]);
         pursuit[1]++;
-        } 
-      }
+      } 
     }
-  if(*(p+30) == 127) {
+  }
+
+  // printf("\nswitchrum() part 1 done\n");
+  // Cconin();        
+
+  if (*(p+30) == 127) {
     stormon();
     pursuit[0] = pursuit[1] = pursuit[2] = 0;
     return(2);
-    }
-  if(fromout == 1 && *(p+30) != crum) {
+  }
+
+  if (fromout == 1 && *(p+30) != crum) {
     *(p+4) = 125;
     outside = 1;
     fromout = 0;
-    }
+  }
+
   if(fromout == 2)
     fromout = 1;
+
   *(p+15) = 8;
   *(p+16) = 1;
   x = *(p+24);
   y = *(p+25);
   *(p+35) = 0;
   mode = 0;
+
+  // Init pan[12] to all zeroes
   for(i=0;i<12;pan[i++] = 0);
+
   for(i=4;i<12;i++) {
-  if(curmon[i][30] != crum && (curmon[i][36] == 1 || curmon[i][31] == 6) )
-          pan[i-1] = 1;
+    if(curmon[i][30] != crum && (curmon[i][36] == 1 || curmon[i][31] == 6) )
+      pan[i-1] = 1;
   }
-  if(crum != *(p+30) && crum != -1) {
+
+  if (crum != *(p+30) && crum != -1) {
     specbuf[35] = specbuf[36] = 0;
     stormon();
-    }
+  }
+
+  // printf("\nswitchrum() part 2 done\n");
+  // Cconin();        
+
+
   if(pursuit[0] > 1)
     pursuit[0] /= 2;
   if(pursuit[1] == 0)
     pursuit[0] = 0;
   oldrum = crum;
   crum = *(p+30);
-  if(crum == 70) 
+  if (crum == 70) 
     return(1);
+
   rumdraw(pan);
+
   i = 0;
   if(oldrum != crum) {
     for(i=1;i<14;i++) {
@@ -96,30 +127,54 @@ int switchrum() {
           }
         }
     }
-  if(oldrum == crum || i == 14) { /* got into the room through a trap */
+
+  // printf("\nswitchrum() part 3 done\n");
+  // Cconin();    
+
+  if (oldrum == crum || i == 14) { /* got into the room through a trap */
     x = *(p+24);
     y = *(p+25);
-    if(i == 14)
+    if (i == 14) {
       pursuit[0] = pursuit[1] = pursuit[2] = 0;
     }
-  drawman(0,x,y);
-  if(oldrum == crum) {
+  }
+  drawman(0, x, y);
+
+  if (oldrum == crum) {
     for(i=1;i<12;i++) { 
       if(pan[i-1] == 1)
           curmon[i][36] = 1;
       }
-    }
+  }
+
   getmon(crum);
-  if(mode)
+
+  // printf("\nswitchrum() part 4 done (crum = %d)\n", crum);
+  // Cconin();    
+ 
+  if (mode) {
     dorep();
-  if(!outside) {
-    if(fromout != 0)
+  }
+
+  // At the beginning of the game, we are not outside
+  if (!outside) {
+    if(fromout != 0) {
+      // printf("\nswitchrum() part 5 printing (crum = %d)\n", crum);
+      // Cconin();   
       prnt(msg[crum], NULL, NULL, NULL, NULL, NULL, NULL);
-    else
-      prnt(rummsg[crum + 80*(dungeon-1)], NULL, NULL, NULL, NULL, NULL, NULL);  
-    trigtrol(0);
+    } else {
+      // printf("\nswitchrum() part 6 printing (crum = %d,\ndungeon=%d)\n", crum, dungeon);
+      // // crum = 30, dungeon = 2
+      // printf("rummsg=%d\n", crum + 80 * (dungeon-1));
+      // // result = 110
+      // Cconin();
+      prnt(rummsg[crum + 80 * (dungeon-1)], NULL, NULL, NULL, NULL, NULL, NULL);
     }
-  if(rumdata[crum][30]) {
+
+    trigtrol(0);
+  }
+
+  if (rumdata[crum][30]) {
     i = 0;
     for(j=0;j<4;j++) {
       c = curmon[j];
@@ -130,9 +185,14 @@ int switchrum() {
         *(c+46) = 0;
         }
       }
+
     if(i)
       prnt("-> The lit torch is snuffed and put away.", NULL, NULL, NULL, NULL, NULL, NULL);
-    }
+  }
+
+  // printf("\nswitchrum() all done!\n");
+  // Cconin();    
+
   return 0;
 }
 

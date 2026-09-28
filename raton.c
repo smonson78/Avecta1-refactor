@@ -14,6 +14,7 @@ _raton:    link R14,#-4
            rts
 */
 
+// Enable mouse, get it, rat on?
 void raton() {
   
 }

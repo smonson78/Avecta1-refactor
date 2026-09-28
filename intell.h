@@ -3,5 +3,6 @@
 
 int pass(int npc);
 int intell(int npc);
+int setmove(int npc, int flag);
 
 #endif

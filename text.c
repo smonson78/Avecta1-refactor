@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "gemdefs.h"
 
 /****************************************************************************
 * textsix(FLAG,X,Y,LENGTH,STRING) is a call to output the string whose 
@@ -56,5 +57,6 @@ done:
 
 void textsix(int16_t flag, int16_t x, int16_t y, int16_t length, const char *text)
 {
-  
+  printf("textsix: %s\n", text);
+  //Cconin();
 }

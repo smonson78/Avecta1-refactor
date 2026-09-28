@@ -50,29 +50,46 @@ void undomsg() {
 }
 
 int init(int flag) {
-  int i,j;
+  int i;
   char val[3];
   uint8_t *c;
 
-  vs_curaddress(handle,1,1);
+  // Move cursor to position (1, 1)
+  vs_curaddress(handle, 1, 1);
+  // Clear screen to end
   v_eeos(handle);
+
   row=17;
-  if(flag == 1) {
+  if (flag == 1) {
     texwin();
     return(1);
   }
+
   dungeon = 2;
   outside = 0;
-  for(i=4;i<12;i++) {
+
+  for (i = 4; i < 12; i++) {
+    // From 4 to 11 ( in a [0 .. 11] block)
     c = curmon[i];
-    for(j=0;j<60;j++) {
-      *(c+j) = 0;
-    }
+
+    // Clear the entire line of 60 chars
+    // for (j = 0; j < 60; j++) {
+    //   *(c+j) = 0;
+    // }
+    memset(curmon[i], 60, 0);
   }
-  for(i=0;i<3;pursuit[i++] = 0);  
+
+  // Initialise to zero all of pursuit[3]
+  for (i = 0; i < 3; pursuit[i++] = 0)
+    ;
+
   c = curmon[0];
   crum = -1;
+
+  // equivalent to curmon[0][0] = 0
   *c = 1;
+
+  // Maybe starting stats on some character... the player?
   *(c+46) = *(c+45) = 
     *(c+31) = *(c+32) = *(c+33) = *(c+34) = *(c+35) = *(c+1) = 0;
   *(c+59) = 2;
@@ -81,33 +98,45 @@ int init(int flag) {
   *(c+32) = 2;
   *(c+33) = 4;
   *(c+4) = 81;
-  for(j=0;j<4;j++) {
-    for(i=0;i<20;i++) {
-      invnpc[j][i] = 0;
-    }
-  }
+
+  // Clear all of invnpc[4][20]
+  // for (j = 0; j < 4; j++) {
+  //   for (i = 0; i < 20; i++) {
+  //     invnpc[j][i] = 0;
+  //   }
+  // }
+  memset(invnpc, 4 * 20, 0);
+
   invnpc[0][0] = 1;
   invnpc[0][2] = 42;
+
   *(c+44) = 50;
   *(c+47) = 0;
   *(c+49) = 50;
-  if(flag == 2) {
+
+  if (flag == 2) {
     *(c+14) = 6*(*(c+51));
     texwin();
-    return(1);
+    return 1;
   }
+
   val[0] = 10;
   val[1] = 3;
   val[2] = 1;
-  *(c+37) = 5 + 20*val[2];
-  *(c+50) = 3 + 2*val[1];
-  *(c+14) = 6*val[0];
+
+  *(c+37) = 5 + 20 * val[2];
+  *(c+50) = 3 + 2 * val[1];
+  *(c+14) = 6 * val[0];
   *(c+51) = val[0];
   *(c+2) = 50;
   *(c+11) = 4;
+
   texwin();
-  usedline = hold = 0;
-  return(0);
+
+  usedline = 0;
+  hold = 0;
+
+  return 0;
 }
 
 int ruminit()
