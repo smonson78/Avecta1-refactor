@@ -7,6 +7,6 @@ void rumclear();
 void setfill(int k);
 int fillsq(int x, int y);
 void click();
-void trans(uint16_t *bit, uint16_t *stor);
+void trans(int16_t *bit, int16_t *stor);
 
 #endif

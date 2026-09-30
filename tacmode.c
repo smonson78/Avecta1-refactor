@@ -160,13 +160,13 @@ int tacmode() {
         c = curmon[n];
         if(*c && *(c+30) == crum)
           j = (*outverb[*(c+15)])(n);      
-        if( (n == 0 || (n == 1 && *(c+38))) && j == 0 && (p=Bconstat(2)) != 0) {
-          p = Bconin(2);
-          if(p == 32) {
+        if ((n == 0 || (n == 1 && *(c+38))) && j == 0 && (p=Bconstat(2)) != 0) {
+          p = Bconin(2) & 0xff;
+          if (p == ' ') {
             *(c+16) = 0;
             j = 1;
-            }
           }
+        }
         if(*(c+15) != 8 || !outside)
           trigtrol(n);
         if(curmon[0][0] == 0)

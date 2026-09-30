@@ -67,7 +67,7 @@ char *statword[] = {"Points","Spell","Good Hand",
                     "Other Hand","Inventory","  Quit"};
 long int saddr;
 
-uint16_t fillpic[41][65];
+int16_t fillpic[41][65];
 
 int mode = 0, dismax;
 int pursuit[3] = {0, 0, 0};
@@ -134,7 +134,7 @@ char weight[41] = {0,-1,4,7,10,17,-1,18,8,-1,-1,20,-1,-1,16,8,8,-1,7,8,
                    -1,-1,16,20,-1,-1,-1,8,-1,14,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                    -1,12};
 char *mod[] = {"0","L","M","H","X","P","C"};
-int crudbuf[65];
+int16_t crudbuf[65];
 char *stuff[] = {"","                    "};
 char *errmsg[] = {"",
                    "[1][That path is blocked!|     Try again!][OK]",
@@ -300,7 +300,7 @@ spitting at %s!",
 examination reveals a fair amount of strength beneath an amiable surface.",
 "-> The rogue, noticing %s's interest, issues a gesture of contempt."};
 
-int crum, objnum, bitmap[200][65];
+int16_t crum, objnum, bitmap[200][65];
 int storbuf[12][130], num,time=0;
 int firebuff[130];
 int16_t contrl[12], intin[128], intout[128], ptsin[128], ptsout[128];

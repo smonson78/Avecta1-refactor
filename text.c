@@ -55,8 +55,113 @@ done:
 
 */
 
+// On stack:
+// --- 0:  return address
+// --- 4:  reserved 4 bytes from link
+// --- 8:  flag
+// --- 10: x
+// --- 12: y
+// --- 14: length
+// --- 16: text
+
 void textsix(int16_t flag, int16_t x, int16_t y, int16_t length, const char *text)
 {
-  printf("textsix: %s\n", text);
+  LINEA *parameter_block; //a0
+  FONT_HDR **sysfont_pointers; //a1
+
+  //   link R14,#-4
+  //   .dc.w $a000
+  linea_init(&parameter_block, &sysfont_pointers);
+
+  //   clr.l d3
+  //   move.w 14(R14),d3    * d3 now holds the length of the string
+  uint32_t d3 = length;
+
+  //   move.l 16(R14),a5    * a5 now holds the address of the string
+  const char *a5 = text;
+
+  //   move.l a0,a4
+  // what was in a0???
+  // INEA *a4 = parameter_block;
+
+  //   clr.l d4
+  //   move.w 8(R14),d4     * d4 now holds the text flag
+  //uint32_t d4 = flag;
+
+  //   movea.l (a1),a3       * a3 holds first fontheader address
+  FONT_HDR *a3 = sysfont_pointers[0];
+
+  //   move.l 76(a3),84(a4)  * move font data address into line A 
+  parameter_block->fbase = a3->dat_table;
+
+  //   move.w 80(a3),88(a4)  * move font width value
+  parameter_block->fwidth = a3->form_width;
+
+  //   move.w 52(a3),80(a4)  
+  parameter_block->delx = a3->max_cell_width;
+
+  //   move.w 82(a3),82(a4)
+  parameter_block->dely = a3->form_height;
+
+  //   move.w 12(R14),78(a4)  * select screen y-loc 8
+  parameter_block->desty = y;
+
+  //   move.w #1,102(a4)
+  parameter_block->scale = 1;
+
+  //   move.w #1,68(a4)       * set yet another scaling flag
+  parameter_block->t_sclsts = 1;
+
+  //   move.w $8000,64(a4)    * must be set for a textblt ?
+  parameter_block->xacc_dda = 0x8000;
+
+  //   move.w #1,106(a4)      * When running this is black
+  parameter_block->text_fg = 1;
+
+  //   cmp.w #1,d4
+  //   bne norml 
+  if (flag == 1) {
+  //   move.w #2,36(a4)      * Set XOR mode if flag = 1
+    parameter_block->wrt_mode = 2;
+  //   bra doit
+  } else {
+  // norml:
+  //   move.w #0,36(a4)      * Set REPLACE mode if flag = 0
+    parameter_block->wrt_mode = 0;
+  }
+
+  // doit:
+  //   cmp.w #0,d3
+  //   beq done
+  while (d3 != 0) {
+  //   move.w 10(R14),76(a4)  * select screen x-loc 8
+    parameter_block->destx = x;
+  //   addq #6,10(R14)
+    x += 6;
+  //   clr.l d6
+    uint32_t d6 = 0;
+  //   move.b (a5),d6
+    d6 = *a5;
+  //   mulu #6,d6
+    d6 *= 6;
+  //   addq #1,a5
+    a5++;
+  //   subq #1,d3
+    d3--;
+  //   move.w d6,72(a4)
+    parameter_block->sourcex = d6;
+
+  //   .dc.w $a008           * Do a textblt operation 
+    linea_textblock_transfer();
+  }
+
+  //   bra doit
+  // done:
+  //   unlk R14
+  //   rts
+
+
+
+
   //Cconin();
 }

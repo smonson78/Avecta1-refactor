@@ -1,4 +1,5 @@
 #include "globals.h"
+#include "text.h"
 
 /******************************************************************************/
 /* This call inputs a string typed in on the keyboard, stores it at the addr  */
@@ -15,7 +16,7 @@ int instring(int x, int y, char *string, int max, int flag)
 {
    int k, i = 0;
    do {
-      k = Bconin(2); /* pull character from keyboard */
+      k = Bconin(2) & 0xff; /* pull character from keyboard */
       if (k == 0 || k == 13) {
          /* this is a dead key, like the cursors,undo, etc. */
          continue;
@@ -25,7 +26,7 @@ int instring(int x, int y, char *string, int max, int flag)
 
       *(string+i) = k;
 
-      if(k == 8 ) { /* then struck the backspace key */
+      if (k == 8 ) { /* then struck the backspace key */
          --i;  /* back up along string */
          if(i < 0) { /* can't back up further than original y */
             i = 0;
@@ -34,8 +35,10 @@ int instring(int x, int y, char *string, int max, int flag)
          textsix(1,6*(y+i),8*(x-1),1,string+i);  /* XOR will snuff out image */
          *(string+i) = ' ';  /* wipe out char at position i */
          continue;          /* fall through to while */
-         }
+      }
+
       textsix(1,6*(y+i),8*(x-1),1,string+i); /* echo to da screen */
+
       i++;
    } while (k != 13 && i-1 < max); /* 13 is the ascii code for return */
 

@@ -1,5 +1,5 @@
 #include <stdint.h>
-
+#include <libc.h>
 /*******************************************************************************
 * BLT(SPRITE,XPIX,YPIX,ADDR) takes the address of a sprite in memory = SPRITE, *
 * the X,Y coordinates in pixels, and the logical screen address = ADDR and puts*
@@ -7,7 +7,7 @@
 *******************************************************************************/
 
 // --- 0:  return address
-// --- 4:  reserved 4 bytes
+// --- 4:  reserved 4 bytes (maybe this is the return address)
 // --- 8:  sprite
 // --- 12: xpix
 // --- 14: ypix
@@ -20,8 +20,6 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
   // .globl _blt
   // .text
   // _blt:  link R14,#-4          *Allocate stack frame. (a6)
-  // I don't think he ever used this variable.
-  //uint32_t unknown;
 
   //        clr.l R0              (d0)
   //        clr.l R1              (d1)
@@ -62,9 +60,25 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
   //d2 = (xpix / 16) * 8;
 
   //        swap R0              *R0 now holds the right shift number of sprite
+  // ... RIGHT shift????
   // ...which we never use for anything because it'll be overwritten shortly
   //d0_upper = d0;
   // d0 = 0;
+
+  // lemme recheck these maths
+  // --> clr.l R0
+  // --> move.w 12(R14),R0
+  // now R0 = x coord
+  // --> divu #16,R0
+  // x / 16 so it's the number of 16-bit words now, the start word that contains the sprite
+  // --> move.w R0,R2   ...copy it to R2
+  // --> mulu #8,R2        now R2 is (x / 16) * 8, comment says "number of bytes in screen row"
+  // --> swap R0 ....the weird part. Now R0 will be 0x000E 0000
+  
+  // --> clr.l R3
+  // --> move.w #16,R3
+  // --> sub.w R0,R3 ....there's nothing in R0 so what does it do??? R3 = 16 - 0
+  // --> move.l R3,R0 .. as a longword, so now R0 is just 0x0000 0010
 
   //        clr.l R3
   //        move.w #16,R3
@@ -74,25 +88,33 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
   //        move.l R3,R0
   //d0_upper = 0;
   //d0 = d3;
-  uint16_t shift = 16 - (xpix / 16);
+  //uint16_t shift = 16 - (xpix / 16); // I don't think I understood the assembler right
+  uint16_t shift = 16 - (xpix % 16);
 
+  //  printf("\eE");
+  //  printf("\nblit: left shift is %d.\n", shift);
+
+   // for x=238, should be 14 * 8 = 112 or pixel 224 (correct)
+  //  printf("starting X byte onscreen is %d", (xpix / 16) * 8);
 
   //        add.l R2,R1          *R1 now holds starting screen byte address
-  // Here, d1 = (ypix * 160) + ((xpix / 16) * 8)
+  // Here, d1 = (ypix * 160) + ((xpix / 16) * 8)   <--- bytes
   //d1 += d2;
 
   //        add.l R1,R9          *Starting byte for sprite in screen memory in R9 (addr)
   //dest += d1;
-  // y * row bytes
+  // y * row bytes (320 pixels times 4 bits = 80 words)
   //   plus x / 16 pixels
   //     times 4 bitplanes
   dest += (ypix * 80) + ((xpix / 16) * 4);
 
   //        clr.l R5              *Zero the row counter 
+
   // top2:  clr.l R1
   //        clr.l R2
   //        clr.l R3
   //        clr.l R4
+
   //        clr.l R6
   
   // "row counter"
@@ -105,6 +127,7 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
     uint32_t bitplane2 = 0;
     uint32_t bitplane3 = 0;
 
+    // This is an accumulator
     uint32_t d6 = 0;
 
     // Don't you love Atari screen plane maths
@@ -133,6 +156,8 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
     //        asl.l R0,R4
     bitplane3 <<= shift;
 
+    // bitplanes with shift 2 after this should all be 0b 0000 0000 0000 0011 1111 1111 1111 1100
+
     //        move.l R1,R6          *Put a copy of R3 into R4
     //        or.l R2,R6            *find the plane overlap for nontrivial info
     //        or.l R3,R6
@@ -141,9 +166,10 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
     d6 |= bitplane1;
     d6 |= bitplane2;
     d6 |= bitplane3;
+    // OR them all together in the 32-but word
 
     //        not.l R6            *find the inverse of the nontrivial (1's comp)
-    d6 = ~d6;
+    d6 = ~d6; // reverse it 0b 1111 1111 1111 1100 0000 0000 0000 0011
 
     //        and.w R6,8(R9)        *blanks out screen where the bitmap will appear
     //        and.w R6,10(R9)
@@ -154,9 +180,13 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
     dest[6] &= d6;
     dest[7] &= d6;
 
+    // so punching a hole in the scanline at pixel 224 + 16 = 240
+    // ... XXXXX|_______XX  <-- that's the right-hand half of the sprite where it goes over the boundary
+
     //        swap R6
     // pretty sure we just need the top half now
     d6 = d6 >> 16;
+
     //        and.w R6,(R9)
     //        and.w R6,2(R9)
     //        and.w R6,4(R9)
@@ -165,6 +195,8 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
     dest[1] &= d6;
     dest[2] &= d6;
     dest[3] &= d6;
+    // Now punch out the left-hand half of the sprite
+    // ... XXXXX__|XXXXXXX  <---- on the left side of the boundary
 
     //        or.w R1,8(R9)
     //        or.w R2,10(R9)
@@ -174,6 +206,7 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
     dest[5] |= bitplane1;
     dest[6] |= bitplane2;
     dest[7] |= bitplane3;
+    // OR data in here: ________|XXXXXX__ <----(data on the Xs)
 
     //        swap R1
     //        swap R2
@@ -193,6 +226,7 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
     dest[1] |= bitplane1;
     dest[2] |= bitplane2;
     dest[3] |= bitplane3;
+    // ... 
 
     //        add #8,R8             *done with 8 bytes of memory = 4 16-bit integers
     sprite += 4;
@@ -204,7 +238,9 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
     d5++;
     //        cmp.w #16,R5           *have we done 16 lines yet?
     //        blt top2              *if not then do another line
-  } while (d5 != 16);
+  } while (d5 < 16);
+
+  // Cconin();
      
 }
 

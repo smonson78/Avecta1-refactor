@@ -25,8 +25,6 @@ int main()
 
    // Clear screen
    printf("\eE");
-   printf("AVECTA 1. Press a key to start\n");
-   Cconin();
    
    if (stinit() == 0 || ruminit() == 1) {
       goto end;
@@ -74,14 +72,18 @@ int main()
          break;
       }
 
-      printf("\nPast init(), i = %d\n", i);
-      Cconin();      
+      // printf("\npoint 1\n");
+      // Cconin();
+
+      // The room is NOT drawn at this point
 
       while (i == 0 && j > 0) {
+         // does this once before Leveth speaks, then again after changing rooms before he speaks the second time.
+         // printf("\nin some main loop\n"); 
+         // Cconin();
          i = switchrum();
-
-         // printf("Past switchrum(), i = %d\n", i);
-         // Cconin();    
+         // printf("\nnow the room is drawn, right???\n"); 
+         // Cconin();         
 
          if (i > 0) {
             Vsync();
@@ -90,15 +92,14 @@ int main()
          }
 
          i = tacmode();
-         printf("Past tacmode(), i = %d\n", i);
-         Cconin();    
-
-         
 
          Vsync();
          xbios_38_off();
       }
 
+      // doesn't reach here 
+      printf("\nexited the intro. Didn't crash!\n"); 
+      Cconin();
 
       switch(i) {
          case -5:
@@ -241,7 +242,8 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
          v_bar(handle,lxy);
          vsf_interior(handle,1);
          vsf_color(handle,1);
-         for (m=0;m<4;m++) {
+
+         for (m = 0; m < 4; m++) {
             pxy[1] = 136-2*m;
             pxy[3] = 199-2*m;
             pxy[5] = 134-2*m;
@@ -257,15 +259,16 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
             && hold == 1 
             && l-i > 40) 
             || usedline + lines > 8) {
-            textsix(1,204,8*24,6,"[More]");
+            textsix(1, 204, 8 * 24, 6, "[More]");
             hold = 0;
             usedline = 0;
             xbios_38_vbl();
+            // Wait for keypress
             Bconin(2);
             Vsync();
             xbios_38_off();
             lines = 1;
-            vs_curaddress(handle,25,2);
+            vs_curaddress(handle, 25, 2);
             printf("                              ");
          }
       }
@@ -281,18 +284,12 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
       i++;
    }
 
-   // printf("\nprnt() cleaning up\n");
-   // Cconin();   
-
-   // Crash somewhere in here???
    v_rvoff(handle);
    usedline += lines;
-   // xbios_38_vbl(); // <----------------- crash
+   xbios_38_vbl();
    raton();
    hold = 1;
 
-   // printf("prnt() reached end i=%d\n", i);
-   // Cconin();
    return i;
 }   
 
@@ -330,6 +327,7 @@ int stinit() {
       rausmaus();
       return(0);
    }
+
    Setpalette(newpal);
    Vsync();
    addr = Logbase();

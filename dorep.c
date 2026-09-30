@@ -60,7 +60,6 @@ int dorep()
 
 void undorep()
 {
-  int handle;
   int i;
 
   Vsync();

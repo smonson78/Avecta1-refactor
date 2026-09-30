@@ -102,7 +102,6 @@ int input(int pc)
 }
 
 void clrinp() {
-  int handle;
   int i;
   Vsync();
   for(i=3;i<17;i++) {

@@ -80,8 +80,11 @@ int init(int flag) {
   }
 
   // Initialise to zero all of pursuit[3]
-  for (i = 0; i < 3; pursuit[i++] = 0)
-    ;
+  // for (i = 0; i < 3; pursuit[i++] = 0)
+  //   ;
+  pursuit[0] = 0;
+  pursuit[1] = 0;
+  pursuit[2] = 0;
 
   c = curmon[0];
   crum = -1;
@@ -172,13 +175,14 @@ int error(int i) {
   return i;
 }
 
-void savpal() {
+int32_t savpal() {
   volatile int16_t *j;
   int i;
   j = (volatile int16_t *)0xFF8240; // Must be the address of the palette in TOS
   for (i=0; i<16; i++) {
     oldpal[i] = *(j+i);
   }
+  return 0;
 }
 
 int console() {
@@ -263,7 +267,7 @@ void congratulate() {
     rgb[2] %= 1000;  
     vs_color(handle, 2, rgb);
     i = Bconstat(2);
-  } while(i == 0);
+  } while (i == 0);
   Vsync();
 }
 
@@ -314,33 +318,47 @@ int loadnew() {
     Fclose(fhandle);
     }
   dungeon = *(c+59);
-  fhandle = Fopen("GRAFX.DAT\0",0);
-  if(fhandle < 0) {
-    return(0);
+
+  // Load entirety of GRAFX.DAT into bitmap[]
+  // This has 200 sprite and object images in it.
+  fhandle = Fopen("GRAFX.DAT", 0);
+  if (fhandle < 0) {
+    return 0;
   }
-  Fread(fhandle,(long)26000,bitmap[0]);
+  Fread(fhandle, (long)26000, bitmap[0]);
   Fclose(fhandle);
-  fhandle = Fopen("FILL.DAT",0);
-  if(fhandle < 0)
-      return(0);
-  Fread(fhandle,(long)5330, fillpic);
-  if(dungeon == 0) {
+
+  // Now load the first part of FILL.DAT
+  // It's actually 26000 bytes long
+  fhandle = Fopen("FILL.DAT", 0);
+  if (fhandle < 0) {
+    return 0;
+  }
+
+  // Just read 41 sprites into "FILLPIC"
+  Fread(fhandle, (long)5330, fillpic);
+
+  if (dungeon == 0) {
     *(c+4) = 125;
     if(*(c+47) > 0 && *(c+14) > 0)
       *(c+47) = 0;
     *(c+41) = 0;
-    Fseek((long)5330,fhandle,0);
-    Fread(fhandle,(long)5200,bitmap[21]);
-    }
-  else
+    Fseek((long)5330, fhandle, 0);
+    Fread(fhandle, (long)5200, bitmap[21]);
+  } else {
     *(c+4) = 81;
+  }
   Fclose(fhandle);
+
   if(dungeon != 0)
     fhandle = Fopen(savname[dungeon + 3*specbuf[30 + dungeon]],0);
   else
     fhandle = Fopen(savname[0],0);
-  if(fhandle < 0)
-      return(0);
+
+  if (fhandle < 0) {
+    return(0);
+  }
+
   d1 = specbuf[31];
   d2 = specbuf[32];
   d3 = specbuf[33];

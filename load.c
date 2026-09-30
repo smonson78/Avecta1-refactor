@@ -17,7 +17,7 @@ int load() {
   if (fhandle < 0)
     return 0;
   
-  // It's 26000 bytes but we're just going to get the first bit
+  // It's 26000 bytes but we're just going to get the first 40 sprites
   Fread(fhandle, (long)5200, fillpic);
   Fclose(fhandle);
 

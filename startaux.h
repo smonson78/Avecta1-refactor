@@ -11,6 +11,6 @@ int loadnew();
 int error(int i);
 
 // Save palette
-void savpal();
+int32_t savpal();
 
 #endif

@@ -13,7 +13,7 @@
 // Weird to split these out but whatever
 // Read character, no echo
 int gemdos_8() {
-   return Cnecin();
+   return Cnecin() && 0xff;
 }
 
 // Is character waiting on console? 0 = no, non-zero = yes
@@ -24,34 +24,40 @@ int gemdos_b() {
 int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 {
    int oldline = -1,newline=0,newx,newy,oldx = -1, oldy=0,i,j,k,status=1;
-   int light,keybd = 0,keystk = 0,mflag=0,rflag=0, tflag = 0,inrflag,intflag;
+   int light, keybd = 0, keystk = 0, mflag=0,rflag=0, tflag = 0,inrflag,intflag;
    uint8_t *z;
-   char *c;
-   char *string,letter;
+   char *c = NULL;
+   char *string, letter;
 
    if(winker != 0)
-   c = curmon[winker-1];
+      c = curmon[winker-1];
    light = rumdata[crum][30];
-   while(gemdos_b() != 0) {
+   while (gemdos_b() != 0) {
       gemdos_8();
    }
+
    do {
-      vq_mouse(handle,&status,x,y);
-      } while(status != 0);
+      vq_mouse(handle, &status, x, y);
+   } while(status != 0);
+
    if(top1 == 3 && bot == 15)
-   keybd = 13;
+      keybd = 13;
    if(top1 ==  8 && bot == 11)
-   keybd = 4;
+      keybd = 4;
+
    Vsync();
    raton();
+
    do {
-      if(gemdos_b() == -1) {
+      if (gemdos_b() == -1) {
          keystk = 1;
          letter = gemdos_8();
-         }
+         printf("\na letter was pressed? %d\n", letter);
+      }
+
       if(keybd != 0 && keystk) {
-      keystk = 0;
-      for(i=0;i<keybd;i++) {
+         keystk = 0;
+         for(i=0;i<keybd;i++) {
          if(keybd == 13)
             string = verblist[i];
          else
@@ -569,14 +575,15 @@ int putinto(int rumobj, int thing)
 {
    int i = 0;
    while(putbuf[i] != 0 && i < 320) {
-   i += 4;
+      i += 4;
    }
    if(i >= 320)
-   return(0);
+      return(0);
    putbuf[i] = 1;
    putbuf[i+1] = thing;
    putbuf[i+2] = rumobj;
    putbuf[i+3] = crum;
+
    return(1);
 }
 
@@ -632,7 +639,7 @@ int remove(int rumobj, int thing)
 int storobj(int thing, int x, int y)
 {
    int i=1;
-   char *r = rumdata[0];
+   uint8_t *r = rumdata[0];
    while(*(r+i) != 0 && i <157) {
       i += 3;
    }

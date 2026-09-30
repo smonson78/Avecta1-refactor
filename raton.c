@@ -1,3 +1,4 @@
+#include "gemdefs.h"
 
 /*
 .globl _raton
@@ -16,5 +17,17 @@ _raton:    link R14,#-4
 
 // Enable mouse, get it, rat on?
 void raton() {
+  LINEA *parameter_block; //a0
+  FONT_HDR **sysfont_pointers; //a1
+
+  linea_init(&parameter_block, &sysfont_pointers);
+
+  // These two may not do anything for all I know
+  // parameter_block->contrl[3] = 1;
+  // parameter_block->contrl[1] = 0;
+
+  parameter_block->intin[0] = 1; // "flag"
+
+  linea_showmouse();
   
 }

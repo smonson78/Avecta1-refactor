@@ -6,6 +6,8 @@
 /* status as well as which possessions are in the person's inventory.       */
 /****************************************************************************/
 
+// All unused.
+
 // int status(pc)
 // {
 //    int i,j,ret,flag;

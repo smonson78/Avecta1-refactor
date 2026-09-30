@@ -1,37 +1,54 @@
+#include <stdint.h>
+#include "globals.h"
 #include "osbind.h"
+#include "rausmaus.h"
+#include "raton.h"
+#include "gemdefs.h"
+#include "startaux.h"
 
 int fileio(int flow) {
-  char *putbuf, *monbuf, (*crumobj)[9], (*curmon)[60], (*rumdata)[157];
-  int police, lev, new, (*bitmap)[65], outside, dungeon, handle, crum, pursuit[3];
-  int fromout;
-  char (*trigval)[6], (*invnpc)[20], *path, *filename, *pname, *specbuf;
-  char *invtrig;
-  int i, j, button, filehandle;
-  int *length;
-  char check,*c,*r = rumdata[crum],dta[44];
+  int16_t button;
+  int i, j, filehandle;
+  //int *length;
+  uint32_t length;
+  uint8_t *r = rumdata[crum];
+  char check,*c;
+  // FIXME get a definition for struct DTA.
+  char dta[44];
   
   vs_curaddress(handle,1,1);
   v_eeos(handle);
   raton();
-  fsel_input(path,filename,&button);
+  fsel_input(path, filename, &button);
   rausmaus();
   vs_curaddress(handle,1,1);
   v_eeos(handle);
   init(1);
-  if(button == 0) {
+  if (button == 0) {
     return(-2);
-    }
+  }
   filehandle = Fopen(filename,0);
   if(flow == 2 && filehandle < 0) {
     return(-1);
     }
-  if(flow == 2) {
+  if (flow == 2) {
     Fsetdta(dta);
-    Fsfirst(filename,0);
-    length = &dta[26];
-    if(*length != 14546) {
+    Fsfirst(filename, 0);
+    // This is a hack and we don't wanna do silly stuff.
+    //length = &dta[26];
+    // ...instead we will do it the long yet sane way
+    length = dta[26];
+    length <<= 8;
+    length |= dta[27];
+    length << 8;
+    length |= dta[28];
+    length << 8;
+    length |= dta[29];
+
+    //if(*length != 14546) {
+    if(length != 14546) {
       return(-1);
-      }
+    }
     }
   if(flow == 1 && filehandle < 0)
     filehandle = Fcreate(filename,0);

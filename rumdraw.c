@@ -1,25 +1,123 @@
 #include "globals.h"
 #include "trapaux.h"
+#include "tacmode.h"
+#include "dorep.h"
+#include "blt.h"
+#include "torches.h"
+#include "caux.h"
+
+// Transfer data from bit to stor
+// bit[] is in bitplanes (4 bitplane words for a group of 16 pixels)
+// stor is all the words for first bitplane, then second bitplane, etc
+void trans(int16_t *bit, int16_t *stor)
+{
+  int i, j;
+  // 0..3
+  for (i = 0; i < 4; i++) {
+    // 0..15
+    for (j = 0; j < 16; j++) {
+      // original: *(stor+j+16*i) = *(bit+4*j+i);
+      // *(stor + j + (16 * i)) = *(bit + (4 * j) + i);
+      stor[j + (16 * i)] = bit[(4 * j) + i];
+      // stor[] gets filled with 64 continuous words (one sprite)
+      // but bit[] gets read in bitplane format
+    }
+  }
+}
+
+void setfill(int k)
+{
+  uint8_t *r = rumdata[crum];
+
+  if (k == 2) {
+    // Clear background?
+    vsf_interior(handle, 1);
+    vsf_color(handle, 0);
+    return;
+  }
+
+  vsf_color(handle, *(r+18+3*k)); 
+  if (*(r+16+3*k) > 0) {
+    vsf_interior(handle, *(r+16+3*k)); // checked
+    vsf_style(handle, *(r+17+3*k));    // checked
+  } else {
+    // So uhhh rumdata[crum][17] is 3 bytes per floor tile (k), with the first byte being the sprite number
+    // in fillpic[41].
+    
+    trans(fillpic[*(r + 17 + (3 * k))], crudbuf);
+    vsf_udpat(handle, crudbuf, 4);
+    vsf_interior(handle, 4);
+  }
+}
+
+void rumclear()
+{
+  int i;
+  for (i=1;i<17;i++) {
+    vs_curaddress(handle,i,1);
+    v_eeol(handle);
+  }
+  undorep();
+}
+
+int abs(int x)
+{
+  return( x = (x < 0 ? -x : x) );
+}
+
+void click()
+{
+  int16_t status, x, y;
+  do {
+      vq_mouse(handle, &status, &x, &y);
+  } while(status == 0);
+
+  do {
+      vq_mouse(handle, &status, &x, &y);
+  } while(status != 0);
+}  
+
+int fillsq(int x, int y)
+{
+  int16_t pxy[4];
+  pxy[0] = 16 * x;
+  pxy[1] = 16 * y;
+  pxy[2] = pxy[0] + 15;
+  pxy[3] = pxy[1] + 15;
+  
+  // VDI filled rectangle
+  vr_recfl(handle, pxy);
+  return(1);
+}
 
 int rumdraw(char *pan)
 {
   int top,i,j,k,xold,yold,x,y,x1,y1,x2,y2,stepx,stepy,open;
-  char *c,*z,*r =  rumdata[crum];
+  uint8_t *c,*z,*r = rumdata[crum];
+
+  // printf("\nRUMDRAW\n");
+  // Cconin();
+
   for(i=0;i<13;i++) {
     c = crumobj[i+1];
     for(j=0;j<9;j++) 
       *(c+j) = *(r+31+9*i+j);
-    }
+  }
+
   for(i=14;i<19;i++) {
     c = crumobj[i];
     for(j=0;j<9;*(c+(j++)) = 0);
-    }
+  }
+
   for(i=0;i<16;i++) {
     for(j=0;j<8;j++)
         for(k=0;k<7;zline[i][j][k++] = 0);
-    }
+  }
+
   objnum = 0;
-  for(i=0;i<25;triglist[i++] = 0);
+  for(i=0;i<25;triglist[i++] = 0)
+    ;
+
   for(i=1;i<14;i++) {
     c = crumobj[i];
     if(*c != 0) {
@@ -29,7 +127,11 @@ int rumdraw(char *pan)
           triglist[i] = *(c+2);
           }
       }
-    }
+  }
+
+  // printf("RUMDRAW still nothing\n");
+  // Cconin();
+
   for(i=0;i<4;i++) {
     c = curmon[i];
     if(*(c+45) > 40 && *(c+45) < 81)
@@ -44,12 +146,14 @@ int rumdraw(char *pan)
         continue;
       invtrap(*(c+j));
       }
-    }
-  xold = rumdata[crum][0]%16;
-  yold = rumdata[crum][0]/16;
+  }
+
+  xold = rumdata[crum][0] % 16;
+  yold = rumdata[crum][0] / 16;
   x1 = xold;
   y1 = yold;
   i = 1;
+
   do {
     x2 = (rumdata[crum][i])%16;
     y2 = (rumdata[crum][i])/16;
@@ -57,22 +161,24 @@ int rumdraw(char *pan)
     stepy = y2-y1;
     stepx = (stepx != 0 ? stepx/abs(stepx) : 0);
     stepy = (stepy != 0 ? stepy/abs(stepy) : 0);
-    while( x1 != x2 || y1 != y2 )  {
-        zline[x1][y1][0] = 2;
-        x1 += stepx;
-        y1 += stepy;
-        }
+    while( x1 != x2 || y1 != y2 ) {
+      zline[x1][y1][0] = 2;
+      x1 += stepx;
+      y1 += stepy;
+    }
     x1 = x2;
     y1 = y2;
     i++;
-    } while((x2 != xold || y2 != yold) && i <= 16);
+  } while((x2 != xold || y2 != yold) && i <= 16);
+
   top = -1;
   for(j=0;j<8;j++) {
     open = 0;
     for(i=0;i<16;i++) {
       z = zline[i][j];
       if(top == -1 && *z != 0)
-            top = j;
+        top = j;
+
       if(i > 0 && zline[i-1][j][0] == 2 && *z != 2) {
         open = !open;
         k = 0;
@@ -102,50 +208,69 @@ int rumdraw(char *pan)
       if(*z != 2)
           *z = open;
       }      
-    }
+  }
+
+  // Clear room area maybe
   rumclear();
-  if(*(r+30)) {
+
+  // This seems to want to draw in some plain background stuff
+  if (*(r + 30)) {
     for(k=0;k<2;k++) {
       setfill(k);
+
+      // added by me:
+      uint8_t *r = rumdata[crum];
+      int16_t *sprite = fillpic[*(r + 17 + (3 * k))];
+
       for(j=0;j<8;j++) {
         for(i=0;i<16;i++) {
             if(zline[i][j][0] == 2-k && (!outside || k != 0) ) 
-              fillsq(i,j);
-            }
-        }
+              //fillsq(i, j); // perhaps this doesn't work
+
+              // This shows that the fill routines are the problem:
+              blt(sprite, i * 16, j * 16, addr);
+          }
       }
     }
-  else {
-  setfill(2);
-  for(j=0;j<8;j++) {
+  } else {
+    setfill(2);
+    for(j=0;j<8;j++) {
       for(i=0;i<16;i++)
         fillsq(i,j);
       }
   }
-  vsf_interior(handle,1);
-  vsf_style(handle,0);
-  vsf_color(handle,0);
-  v_bar(handle,vxy);
-  v_bar(handle,lxy);
+
+  vsf_interior(handle, 1);
+  vsf_style(handle, 0);
+  vsf_color(handle, 0);
+  v_bar(handle, vxy);
+  v_bar(handle, lxy);
+
+  // 1..13
   for(i=1;i<14;i++) {
+    // Draw room objects, I assume
     c = crumobj[i];
-    if(*c != 0) {
-      if(*(c+8)){
-        if(*(r+30)) 
+    if (*c != 0) {
+      if (*(c+8)){
+        if(*(r+30)) {
+          // This is the only blit in this file.
           blt(bitmap[*c],(*(c+6))*16,(*(c+7))*16,addr);
+        }
+
         zline[*(c+6)][*(c+7)][1] = i;
         }
       else
         zline[*(c+6)][*(c+7)][3] = i;
       }
     }
+
   for(i=148;i<153;i++) {
     if(*(r+i) == 0)
       continue;
     j = 1;
-    while(j < 157 && (rumdata[0][j] != *(r+i) || rumdata[0][j+2] != crum)) {
+    while (j < 157 && (rumdata[0][j] != *(r+i) || rumdata[0][j+2] != crum)) {
       j += 3;
-      }
+    }
     if(j >= 157) {
       *(r+i) = 0;
       continue;
@@ -223,74 +348,8 @@ int rumdraw(char *pan)
         mode = 1; 
       }
     }
+
+  // printf("\nRUMDRAW done\n");
+  // Cconin();    
   return(1);
 }
-
-void rumclear()
-{
-  int i;
-  for(i=1;i<17;i++) {
-    vs_curaddress(handle,i,1);
-    v_eeol(handle);
-    }
-  undorep();
-}
-
-int abs(int x)
-{
-  return( x = (x < 0 ? -x : x) );
-}
-
-void click()
-{
-  int status,x,y;
-  do {
-      vq_mouse(handle,&status,&x,&y);
-    } while(status == 0);
-  do{
-      vq_mouse(handle,&status,&x,&y);
-    } while(status != 0);
-}  
-
-int fillsq(int x, int y)
-{
-  int pxy[4];
-  pxy[0] = 16*x;
-  pxy[1] = 16*y;
-  pxy[2] = pxy[0] + 15;
-  pxy[3] = pxy[1] + 15;
-  vr_recfl(handle,pxy);
-  return(1);
-}
-
-void trans(uint16_t *bit, uint16_t *stor)
-{
-  int i, j;
-  for (i = 0; i<4; i++) {
-    for (j = 0; j < 16; j++) {
-      *(stor + j + 16 * i) = *(bit + 4 * j + i);
-    }
-  }
-}
-
-void setfill(int k)
-{
-  char *r = rumdata[crum];
-  if(k == 2) {
-    vsf_interior(handle,1);
-    vsf_color(handle,0);
-    return(1);
-    }
-  vsf_color(handle,*(r+18+3*k)); 
-  if( *(r+16+3*k) > 0) {
-    vsf_interior(handle,*(r+16+3*k));
-    vsf_style(handle,*(r+17+3*k));
-    }
-  else {
-    trans(fillpic[*(r+17+3*k)],crudbuf);
-    vsf_udpat(handle, crudbuf,4);
-    vsf_interior(handle,4);
-    }
-}
-
-

@@ -42,7 +42,7 @@ extern int16_t work_in[11], work_out[57];
 
 // buffers probably
 extern char monbuf[320], junk[20];
-extern int crudbuf[65];
+extern int16_t crudbuf[65];
 extern uint8_t specbuf[40], putbuf[320];
 
 extern uint8_t zline[16][8][7];
@@ -55,7 +55,8 @@ extern uint8_t invnpc[4][20];
 extern int pursuit[3];
 extern int mode, dismax;
 
-extern int crum, objnum, bitmap[200][65];
+// Each bitmap is 130 bytes. That's 128 bytes for the sprite plus one extra word, probably unused
+extern int16_t crum, objnum, bitmap[200][65];
 
 extern int fromout, new, lev;
 extern int monster, hold;
@@ -83,7 +84,7 @@ extern char eats[];
 extern uint8_t trigval[80][6];
 
 // Graphics
-extern uint16_t fillpic[41][65];
+extern int16_t fillpic[41][65];
 
 // Magic
 extern char spelunit[];

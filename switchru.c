@@ -14,19 +14,23 @@ void stormon();
 int getmon(int room);
 
 // God knows what's going on in this mess
+// Switch... Room? It might be.
 int switchrum() {
-  int d,i,j,x = 0, y = 0,xn,yn,oldrum;
+  int d, i, j, x = 0, y = 0, xn, yn, oldrum;
   uint8_t *p = curmon[0];
+
+  // It must be room data. There are 80 of these and crum might be "current room"
   uint8_t *r = rumdata[crum];
   uint8_t *c;
 
   char pan[12];
 
-  if (crum != *(p+30) && crum != -1 && !outside) {
+  if (crum != *(p + 30) && crum != -1 && !outside) {
     for (i = 0; i < 13; i++) {
       c = crumobj[i+1];
-      for(j=0;j<9;j++) {
-        *(r+31+9*i+j) = *(c+j);
+      for (j = 0; j < 9; j++) {
+        // Copy some data into the room by the look of it
+        *(r + 31 + 9 * i + j) = *(c + j);
       }
     }
 
@@ -56,9 +60,6 @@ int switchrum() {
       } 
     }
   }
-
-  // printf("\nswitchrum() part 1 done\n");
-  // Cconin();        
 
   if (*(p+30) == 127) {
     stormon();
@@ -95,10 +96,6 @@ int switchrum() {
     stormon();
   }
 
-  // printf("\nswitchrum() part 2 done\n");
-  // Cconin();        
-
-
   if(pursuit[0] > 1)
     pursuit[0] /= 2;
   if(pursuit[1] == 0)
@@ -108,28 +105,39 @@ int switchrum() {
   if (crum == 70) 
     return(1);
 
+  // ROOM DRAW hopefully
   rumdraw(pan);
 
+  // Seems like this just draws room furniture
   i = 0;
-  if(oldrum != crum) {
-    for(i=1;i<14;i++) {
-        c = crumobj[i];
-        if(*(c+3) == oldrum) {
-          *(p+24) = x = *(c+6);
-          *(p+25) = y = *(c+7);
-          if(*(c+8) == 0) { /* must reveal hidden door */
-            *(c+8) = 1;
-            Vsync(); 
-            blt(bitmap[*c],16*x,16*y,addr);
-            zline[x][y][1] = i;
-            }
-          break;
-          }
-        }
-    }
+  // ...if we changed rooms
+  if (oldrum != crum) {
+    // 1..13
+    for (i = 1; i < 14; i++) {
+      // This array is 19x9 or possibly 18x9
+      c = crumobj[i];
 
-  // printf("\nswitchrum() part 3 done\n");
-  // Cconin();    
+      if (*(c+3) == oldrum) {
+        
+        *(p+24) = x = *(c+6);
+        *(p+25) = y = *(c+7);
+
+        /* must reveal hidden door */
+        if (*(c+8) == 0) { 
+          *(c+8) = 1;
+          Vsync(); 
+
+          // It never gets here.
+          blt(bitmap[*c], 16 * x, 16 * y, addr);
+
+          zline[x][y][1] = i;
+        }
+        break;
+      }
+    }
+  }
+  //printf("\nWAS THAT IT???");
+  // nope.
 
   if (oldrum == crum || i == 14) { /* got into the room through a trap */
     x = *(p+24);
@@ -149,25 +157,15 @@ int switchrum() {
 
   getmon(crum);
 
-  // printf("\nswitchrum() part 4 done (crum = %d)\n", crum);
-  // Cconin();    
- 
   if (mode) {
     dorep();
   }
 
   // At the beginning of the game, we are not outside
   if (!outside) {
-    if(fromout != 0) {
-      // printf("\nswitchrum() part 5 printing (crum = %d)\n", crum);
-      // Cconin();   
+    if(fromout != 0) {  
       prnt(msg[crum], NULL, NULL, NULL, NULL, NULL, NULL);
     } else {
-      // printf("\nswitchrum() part 6 printing (crum = %d,\ndungeon=%d)\n", crum, dungeon);
-      // // crum = 30, dungeon = 2
-      // printf("rummsg=%d\n", crum + 80 * (dungeon-1));
-      // // result = 110
-      // Cconin();
       prnt(rummsg[crum + 80 * (dungeon-1)], NULL, NULL, NULL, NULL, NULL, NULL);
     }
 
@@ -189,9 +187,6 @@ int switchrum() {
     if(i)
       prnt("-> The lit torch is snuffed and put away.", NULL, NULL, NULL, NULL, NULL, NULL);
   }
-
-  // printf("\nswitchrum() all done!\n");
-  // Cconin();    
 
   return 0;
 }

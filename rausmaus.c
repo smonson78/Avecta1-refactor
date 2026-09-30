@@ -1,3 +1,5 @@
+#include "gemdefs.h"
+
 /*
 
 .globl _rausmaus
@@ -13,4 +15,9 @@ _rausmaus: link R14,#-4
 // disables the mouse
 void rausmaus() {
 
+  LINEA *parameter_block; //a0
+  FONT_HDR **sysfont_pointers; //a1
+
+  linea_init(&parameter_block, &sysfont_pointers);
+  linea_showmouse();
 }
