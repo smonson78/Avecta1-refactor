@@ -56,7 +56,7 @@ int o10(int pc)
 {
   int x, y, object, flag=0;
   uint8_t *c = curmon[pc], *o;
-  uint8_t *r;
+  int8_t *r;
   char *w = (pc == 0 ? pname : name[*(c+3)]);
 
   x = *(c+5);

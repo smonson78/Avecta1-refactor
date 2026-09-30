@@ -48,7 +48,8 @@ int xmon(int room, int bit, int x, int y)
 int tacmode() {
   int flag,i,j = 0,k,l,n,p,timer=0,x,y;
   int actlist[13];
-  uint8_t *c, *o;
+  uint8_t *c;
+  int8_t *o;
 
   do {
     for(i=0;i<13;i++)

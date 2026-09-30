@@ -46,7 +46,7 @@ extern int16_t crudbuf[65];
 extern uint8_t specbuf[40], putbuf[320];
 
 extern uint8_t zline[16][8][7];
-extern uint8_t rumdata[80][157];
+extern int8_t rumdata[80][157];
 extern uint8_t triglist[25];
 extern char invtrig[20];
 

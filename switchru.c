@@ -20,7 +20,7 @@ int switchrum() {
   uint8_t *p = curmon[0];
 
   // It must be room data. There are 80 of these and crum might be "current room"
-  uint8_t *r = rumdata[crum];
+  int8_t *r = rumdata[crum];
   uint8_t *c;
 
   char pan[12];
@@ -100,8 +100,11 @@ int switchrum() {
     pursuit[0] /= 2;
   if(pursuit[1] == 0)
     pursuit[0] = 0;
+  
+  // Move to a new room?
   oldrum = crum;
   crum = *(p+30);
+  // Crum 70 might be the endgame
   if (crum == 70) 
     return(1);
 

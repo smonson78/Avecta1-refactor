@@ -25,27 +25,55 @@ void trans(int16_t *bit, int16_t *stor)
   }
 }
 
+// First fill calls:
+// colour 1, style 5, pattern 255
+// colour 1, style 21, pattern 255
+// (then the furniture gets drawn)
+
+
 void setfill(int k)
 {
-  uint8_t *r = rumdata[crum];
+  int8_t *r = rumdata[crum];
 
   if (k == 2) {
-    // Clear background?
+    // Clear background with pattern 1 (solid fill), colour 0 (background)
     vsf_interior(handle, 1);
     vsf_color(handle, 0);
     return;
   }
 
-  vsf_color(handle, *(r+18+3*k)); 
-  if (*(r+16+3*k) > 0) {
-    vsf_interior(handle, *(r+16+3*k)); // checked
-    vsf_style(handle, *(r+17+3*k));    // checked
+
+  int pattern = r[16 + 3 * k];
+  int style = r[17 + 3 * k];
+  int colour = r[18 + 3 * k];
+
+  vsf_color(handle, colour);
+
+  // printf("\nk=%d c=%d s=%d p=%d", k, colour, style, pattern);
+  // Cconin();  
+
+  // k seems to be the pattern type 0-2
+  //if (*(r + 16 + 3 * k) > 0) {
+  if (pattern > 0) {
+    // Code goes into this path
+    // vsf_interior(handle, *(r+16+3*k));
+    vsf_interior(handle, pattern);
+    // vsf_style(handle, *(r+17+3*k));
+    vsf_style(handle, style);
+
   } else {
     // So uhhh rumdata[crum][17] is 3 bytes per floor tile (k), with the first byte being the sprite number
     // in fillpic[41].
     
-    trans(fillpic[*(r + 17 + (3 * k))], crudbuf);
+    // code never goes down this path.
+
+    //trans(fillpic[*(r + 17 + (3 * k))], crudbuf);
+    trans(fillpic[style], crudbuf);
+    
+    // Install 4 bitplanes from crudbuf to the AES pattern buffer
     vsf_udpat(handle, crudbuf, 4);
+
+    // User-defined style = 4!
     vsf_interior(handle, 4);
   }
 }
@@ -93,9 +121,12 @@ int fillsq(int x, int y)
 int rumdraw(char *pan)
 {
   int top,i,j,k,xold,yold,x,y,x1,y1,x2,y2,stepx,stepy,open;
-  uint8_t *c,*z,*r = rumdata[crum];
+  uint8_t *c,*z;
+  int8_t *r = rumdata[crum];
 
-  // printf("\nRUMDRAW\n");
+
+  // Answer: 30
+  // printf("\nRUMDRAW crum=%d", crum);
   // Cconin();
 
   for(i=0;i<13;i++) {
@@ -128,9 +159,6 @@ int rumdraw(char *pan)
           }
       }
   }
-
-  // printf("RUMDRAW still nothing\n");
-  // Cconin();
 
   for(i=0;i<4;i++) {
     c = curmon[i];
@@ -215,24 +243,28 @@ int rumdraw(char *pan)
 
   // This seems to want to draw in some plain background stuff
   if (*(r + 30)) {
-    for(k=0;k<2;k++) {
+    for (k = 0; k < 2; k++) {
+      // We're just doing 0, 1. I guess the three types of background tiles for this room.
       setfill(k);
 
       // added by me:
-      uint8_t *r = rumdata[crum];
-      int16_t *sprite = fillpic[*(r + 17 + (3 * k))];
+      // uint8_t *r = rumdata[crum];
+      // int16_t *sprite = fillpic[*(r + 17 + (3 * k))];
 
-      for(j=0;j<8;j++) {
-        for(i=0;i<16;i++) {
-            if(zline[i][j][0] == 2-k && (!outside || k != 0) ) 
-              //fillsq(i, j); // perhaps this doesn't work
+      for (j = 0; j < 8; j++) {
+        for (i=0;i<16;i++) {
+            if (zline[i][j][0] == 2 - k && (!outside || k != 0) ) {
+              fillsq(i, j); // perhaps this doesn't work
 
               // This shows that the fill routines are the problem:
-              blt(sprite, i * 16, j * 16, addr);
-          }
+              // blt(sprite, i * 16, j * 16, addr);
+            }
+
+        }
       }
     }
   } else {
+    // and then number 4 to just blank the whole area
     setfill(2);
     for(j=0;j<8;j++) {
       for(i=0;i<16;i++)

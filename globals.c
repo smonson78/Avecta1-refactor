@@ -218,7 +218,7 @@ char *verblist[] = {"Cast ","Examine","Drag/Eat","Search","Take/Drop","Wait",
                     "Voice","Quit/File"};
 
 uint8_t zline[16][8][7];                    
-uint8_t rumdata[80][157];
+int8_t rumdata[80][157];
 uint8_t triglist[25];
 // This was declared as [18][9] but is accessed as [19][9] in trapaux.c
 uint8_t crumobj[19][9];
