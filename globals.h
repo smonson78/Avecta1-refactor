@@ -46,7 +46,7 @@ extern int16_t crudbuf[65];
 extern uint8_t specbuf[40], putbuf[320];
 
 extern uint8_t zline[16][8][7];
-extern int8_t rumdata[80][157];
+extern uint8_t rumdata[80][157];
 extern uint8_t triglist[25];
 extern char invtrig[20];
 
@@ -55,8 +55,12 @@ extern uint8_t invnpc[4][20];
 extern int pursuit[3];
 extern int mode, dismax;
 
+// Current room number (index into rumdata[])
+extern int crum;
+
 // Each bitmap is 130 bytes. That's 128 bytes for the sprite plus one extra word, probably unused
-extern int16_t crum, objnum, bitmap[200][65];
+extern int16_t bitmap[200][65];
+//extern int objnum;
 
 extern int fromout, new, lev;
 extern int monster, hold;

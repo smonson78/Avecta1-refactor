@@ -1,7 +1,7 @@
 #ifndef __RUMDRAW_H
 #define __RUMDRAW_H
 
-int rumdraw(char *pan);
+void rumdraw(char *pan);
 int abs(int x);
 void rumclear();
 void setfill(int k);

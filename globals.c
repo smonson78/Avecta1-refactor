@@ -218,10 +218,49 @@ char *verblist[] = {"Cast ","Examine","Drag/Eat","Search","Take/Drop","Wait",
                     "Voice","Quit/File"};
 
 uint8_t zline[16][8][7];                    
-int8_t rumdata[80][157];
+
+uint8_t rumdata[80][157];
+// Per room (157 bytes):
+// - 0   = oldx and oldy (4 bits each) - x in lower, y in upper
+// - 1   = another set of xy coords
+
+// - 16  = background tile 1 pattern
+// - 17  = background tile 1 style
+// - 18  = background tile 1 colour
+// - 19  = background tile 2 pattern
+// - 20  = background tile 2 style
+// - 21  = background tile 2 colour
+
+// - 30  = room has background graphics if non-zero
+// - 31  = Object data for object 1 in room (9 bytes)
+// - 40  = Object data for object 2 in room (9 bytes)
+// - 49  = Object data for object 3 in room (9 bytes)
+// - 58  = Object data for object 4 in room (9 bytes)
+// - 67  = Object data for object 5 in room (9 bytes)
+// - 76  = Object data for object 6 in room (9 bytes)
+// - 85  = Object data for object 7 in room (9 bytes)
+// - 94  = Object data for object 8 in room (9 bytes)
+// - 103 = Object data for object 9 in room (9 bytes)
+// - 112 = Object data for object 10 in room (9 bytes)
+// - 121 = Object data for object 11 in room (9 bytes)
+// - 130 = Object data for object 12 in room (9 bytes)
+// - 139  = Object data for object 13 in room (9 bytes)
+
 uint8_t triglist[25];
+
 // This was declared as [18][9] but is accessed as [19][9] in trapaux.c
+// crumobj[][] is used to hold data about objects in the current room
 uint8_t crumobj[19][9];
+// The first dimension is the objects in the room.
+// 0      - unknown
+// 1..13  - 13 room objects like furniture copied from rumdata[]
+// 14..18 - Blanked out to zeroes on room entry
+
+// Each 9-byte object structure is copied from rumdata:
+// 0 - if something is here
+// 6 - object X coord
+// 7 - object Y coord
+// 8 - if the object is visible
 
 char *att[][4] = {
   {"","","",""},
@@ -300,7 +339,15 @@ spitting at %s!",
 examination reveals a fair amount of strength beneath an amiable surface.",
 "-> The rogue, noticing %s's interest, issues a gesture of contempt."};
 
-int16_t crum, objnum, bitmap[200][65];
+// The number of the current room and the index into rumdata[]
+int crum;
+
+// Sprite data for 200 sprites, each 16x16 (128 bytes) with 2 wasted bytes
+int16_t bitmap[200][65];
+
+// The number of objects in the current room - never used.
+//int objnum;
+
 int storbuf[12][130], num,time=0;
 int firebuff[130];
 int16_t contrl[12], intin[128], intout[128], ptsin[128], ptsout[128];

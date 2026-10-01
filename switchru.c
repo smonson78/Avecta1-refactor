@@ -25,12 +25,16 @@ int switchrum() {
 
   char pan[12];
 
-  if (crum != *(p + 30) && crum != -1 && !outside) {
+  if (crum != p[30] && crum != -1 && !outside) {
     for (i = 0; i < 13; i++) {
+      
       c = crumobj[i+1];
+
+      // Each of these iterations is for one object inside the current room.
       for (j = 0; j < 9; j++) {
-        // Copy some data into the room by the look of it
-        *(r + 31 + 9 * i + j) = *(c + j);
+        // Copy the objects data from the current room array data back into storage in rumdata[]
+        // Maybe because we're leaving the room which suggests p[30] is a room number
+        r[31 + (9 * i) + j] = c[j];
       }
     }
 
