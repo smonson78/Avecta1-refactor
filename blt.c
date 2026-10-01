@@ -91,9 +91,6 @@ void blt(uint16_t *sprite, int xpix, int ypix, void *addr) {
   //uint16_t shift = 16 - (xpix / 16); // I don't think I understood the assembler right
   uint16_t shift = 16 - (xpix % 16);
 
-  //  printf("\eE");
-  //  printf("\nblit: left shift is %d.\n", shift);
-
    // for x=238, should be 14 * 8 = 112 or pixel 224 (correct)
   //  printf("starting X byte onscreen is %d", (xpix / 16) * 8);
 

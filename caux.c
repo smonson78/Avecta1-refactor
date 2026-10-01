@@ -6,14 +6,16 @@
 #include "torches.h"
 #include "rumdraw.h"
 #include "toggle.h"
+#include "raton.h"
 #include "rausmaus.h"
+#include "text.h"
 
 #include "f5.h"
 
 // Weird to split these out but whatever
 // Read character, no echo
 int gemdos_8() {
-   return Cnecin() && 0xff;
+   return Cnecin() & 0xff;
 }
 
 // Is character waiting on console? 0 = no, non-zero = yes
@@ -23,39 +25,44 @@ int gemdos_b() {
 
 int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 {
-   int oldline = -1,newline=0,newx,newy,oldx = -1, oldy=0,i,j,k,status=1;
-   int light, keybd = 0, keystk = 0, mflag=0,rflag=0, tflag = 0,inrflag,intflag;
-   uint8_t *z;
-   char *c = NULL;
-   char *string, letter;
+  int16_t status;
+  int oldline = -1,newline=0,newx,newy,oldx = -1, oldy=0,i,j,k;
+  int light, keybd = 0, keystk = 0, mflag=0,rflag=0, tflag = 0,inrflag,intflag = 0;
+  uint8_t *z;
+  uint8_t *c = NULL;
+  char *string, letter;
 
-   if(winker != 0)
-      c = curmon[winker-1];
-   light = rumdata[crum][30];
-   while (gemdos_b() != 0) {
-      gemdos_8();
-   }
+  if (winker != 0) {
+    c = curmon[winker-1];
+  }
 
-   do {
-      vq_mouse(handle, &status, x, y);
-   } while(status != 0);
+  light = rumdata[crum][30];
 
-   if(top1 == 3 && bot == 15)
-      keybd = 13;
-   if(top1 ==  8 && bot == 11)
-      keybd = 4;
+  // Clear keyboard buffer by reading everything
+  while (gemdos_b() != 0) {
+    gemdos_8();
+  }
 
-   Vsync();
-   raton();
+  // Wait for the mouse buttons to be let go
+  do {
+    vq_mouse(handle, &status, x, y);
+  } while (status != 0);
 
-   do {
-      if (gemdos_b() == -1) {
-         keystk = 1;
-         letter = gemdos_8();
-         printf("\na letter was pressed? %d\n", letter);
-      }
+  if (top1 == 3 && bot == 15)
+    keybd = 13;
+  if (top1 ==  8 && bot == 11)
+    keybd = 4;
 
-      if(keybd != 0 && keystk) {
+  Vsync();
+  raton();
+
+  do {
+    if (gemdos_b() == -1) {
+        keystk = 1;
+        letter = gemdos_8();
+    }
+
+      if (keybd != 0 && keystk) {
          keystk = 0;
          for(i=0;i<keybd;i++) {
          if(keybd == 13)
@@ -94,7 +101,10 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
                }
             }
       }
-      vq_mouse(handle,&status,x,y);  /* sample mouse state */
+
+      vq_mouse(handle, &status, x, y);  /* sample mouse state */
+
+      // See where the cursor landed
       newx = (*x)/16;
       newy = (*y)/16;
       newline = (*y)/8;
@@ -273,26 +283,28 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
          oldy = newy;
          }
       }
-      if(status != 0 && (rflag || tflag || 
-      (inrflag && winker > 0 && lom(winker-1,oldx,oldy)) ) ) {
-      rausmaus();
-      Vsync();
-      if(rflag) {
-         zline[oldx][oldy][4] = 0;
-         for(j=0;j<2;j++) 
-            for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
-         }
-      if(tflag) 
-         toggle(32,oldline,7,addr);
-      if(mflag > 0 && mode) 
-         toggle(32,mflag,7,addr);
-      *x = oldx;
-      *y = oldy;
-      if(tflag)
-         *ret = oldline;
-      else
-         *ret = 0;
-      return(1);
+
+      if (status != 0 && (rflag || tflag || 
+        (inrflag && winker > 0 && lom(winker-1,oldx,oldy)) ) ) {
+        rausmaus();
+        Vsync();
+
+        if(rflag) {
+          zline[oldx][oldy][4] = 0;
+          for(j=0;j<2;j++) 
+              for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+          }
+        if(tflag) 
+          toggle(32,oldline,7,addr);
+        if(mflag > 0 && mode) 
+          toggle(32,mflag,7,addr);
+        *x = oldx;
+        *y = oldy;
+        if(tflag)
+          *ret = oldline;
+        else
+          *ret = 0;
+        return(1);
       }
    } while (1);
 }
@@ -654,11 +666,11 @@ int storobj(int thing, int x, int y)
 int xobj(int thing, int room)
 {
    int i = 1;
-   char *r = rumdata[0];
+   uint8_t *r = rumdata[0];
    while( ( *(r+i) != thing || *(r+i+2) != room) && i < 157) {
       i += 3;
    }
-   if(i >= 157)
+   if (i >= 157)
       return(0);
    *(r+i) = *(r+i+1) = *(r+i+2) = 0;
    return(1);
@@ -671,12 +683,14 @@ int xobj(int thing, int room)
 
 int status(int pc)
 {
-   int i,j,ret,flag = 0;
-   uint8_t *c = curmon[pc];
-   char scratch[3],*w = (pc == 0 ? pname : name[*(c+3)]);
+  int16_t i, j;
+  int ret,flag = 0;
+  uint8_t *c = curmon[pc];
+  char scratch[3],*w = (pc == 0 ? pname : name[*(c+3)]);
 
-   if(pc > 3)
-   return(1);
+   if (pc > 3)
+    return(1);
+
    Vsync();
    xbios_38_off();
    top(1);
@@ -759,13 +773,14 @@ int status(int pc)
 
 int invent(int pc)
 {
-   int j,top = 3,i,ret,bot;
-   char scratch[16];
-   bot = 2+listinv(pc,scratch);
-   sgetxy(&i,&j,2,top,bot+1,&ret);
-   if(ret == bot+1)
-      return(0);
-   return(scratch[ret]);
+  int16_t i, j;
+  int top = 3,ret,bot;
+  char scratch[16];
+  bot = 2+listinv(pc,scratch);
+  sgetxy(&i,&j,2,top,bot+1,&ret);
+  if(ret == bot+1)
+    return(0);
+  return(scratch[ret]);
 }
 
 int listinv(int pc, char *scratch)

@@ -1,69 +1,146 @@
 #include "globals.h"
 #include "osbind.h"
 #include "gemdefs.h"
+#include "caux.h"
+#include "text.h"
+
+#include "f5.h"
+
+int comwind(int pc);
+
+void clrinp() {
+  int i;
+  Vsync();
+  for(i=3;i<17;i++) {
+    vs_curaddress(handle,i,33);
+    v_eeol(handle);
+  }
+} 
+
+int dotop(int pc)
+{
+  uint8_t *c = curmon[pc];
+  char scratch[4], l = ' ';
+
+  vs_curaddress(handle,2,33);
+  v_eeol(handle);
+  textsix(1,260,9,1,"H");
+  sprintf(scratch,"%d",*(c+2) - *(c+1));
+  textsix(1,269,9,strlen(scratch),scratch);
+  if(*(c+47) > 0)
+    sprintf(scratch,"%c",'P');
+  else
+    sprintf(scratch,"%c",'G');
+  textsix(1,281,9,1,scratch);
+  textsix(1,290,9,1,"S");
+  sprintf(scratch,"%d",*(c+14));
+  textsix(1,299,9,strlen(scratch),scratch);
+  
+  if(*(c+21) == 0)
+    sprintf(scratch, "%c", ' ');
+  else {
+    if (*(c+19) == 12)
+      l = 'A';
+    if (*(c+19) == 11)
+      l = 'S';
+    if (*(c+19) == 43)
+      l = 'V';
+    if (*(c+19) == 54)
+      l = 'I';
+    }
+  sprintf(scratch, "%c", l);
+  textsix(1,315,9,1,scratch);
+
+  return 1;
+}
+
 
 int input(int pc)
 {
-  int i,j,x,y,ret;
+  int16_t x, y;
+  int i,j,ret;
   uint8_t *c = curmon[pc];
-  char *z,*w = (pc == 0 ? pname : name[*(c+3)]);
-  if(pc > 3)
+  uint8_t *z = NULL;
+  char *w = (pc == 0 ? pname : name[*(c+3)]);
+  
+  if (pc > 3)
     return(0);
+
   hold = usedline = 0;
-  com:if(pc == 0 && *(c+15) == 1 || (pc < 4 && *(c+38) && *(c+15) == 1) ) {
+  
+com:
+  // I hope I got these parentheses in the right groupings
+  if (((pc == 0) && (c[15] == 1)) || ((pc < 4) && c[38] && (c[15] == 1)) ) {
     combat = comwind(pc);
-    }
+  }
   if( (pc == 0 || (pc < 4 && *(c+38) ) )  && combat)
     return(1);
-  top:
-    Vsync();
+
+top:
+  Vsync();
   xbios_38_off();
   header(w);
   dotop(pc);
+
   vs_curaddress(handle,3,33);
   v_rvon(handle);
   printf("        ");
   v_rvoff(handle);
   textsix(1,272,17,6,"Action");
-  for(i=2;i<15;i++) 
+  for(i=2;i<15;i++) {
     textsix(1,258,9 + 8*i,strlen(verblist[i-2]),verblist[i-2]);
+  }
   vsf_interior(handle,0);
   vsf_style(handle,0);
   vsf_color(handle,0);
   v_bar(handle,vxy);
   Vsync();
+
   *(c+31) = 0;
   winker = pc+1;
   xbios_38_vbl();
+
   do {
     i = 0;
     sgetxy(&x,&y,1,3,15,&ret);
-    if(ret != 0)
+
+    if (ret != 0) {
       ret -= 2;
+    }
+
     if(ret == 0 || ret == 14) {
         if( (*(c+24) == x && *(c+25) == y) || ret == 14) {
           i = status(pc); /* if status returns a 0 it fixed the action */
+
           if(!i)
             return(8);
+
           goto top;
-          }
+        }
+
         z = zline[x][y];
-        if(!lom(pc,x,y))
+
+        if (!lom(pc,x,y)) {
           i = 1;
+        }
+
         j = crumobj[*(z+1)][0];
+
         if( (j > 0 && j < 41) || (*(z+2) < 4 && pc > 0 && *(z+2) > 0) 
             || (*z == 2 && *(z+2) == 0) )
           i = 1;
-        }
-    } while(i == 1); 
+    }
+  } while (i == 1); 
   winker = 0;
   clrinp();
+
   if(pc != 0) {
     header(pname);
     dotop(0);
-    }
-  if(ret == 0) {
-    if(*(z+2) != 0) {
+  }
+
+  if (ret == 0) {
+    if (z[2] != 0) {
       *(c+7) = *(z+2);
       if(*(z+2) > 3)  {
         combat = 1;
@@ -90,7 +167,8 @@ int input(int pc)
       *(c+27) = y;
       return(4);
       }
-    }
+  }
+
   if(ret == 13)
     return(-1);
   if(ret < 3)
@@ -101,34 +179,30 @@ int input(int pc)
   return 0;
 }
 
-void clrinp() {
-  int i;
-  Vsync();
-  for(i=3;i<17;i++) {
-    vs_curaddress(handle,i,33);
-    v_eeol(handle);
-  }
-} 
-
+// Draw the command window
 int comwind(int pc)
 {
   uint8_t *c = curmon[pc], *c1 = curmon[*(c+39)];
   char scratch[3];
   char *w = (pc == 0 ? pname : name[*(c+3)]);
-  int i,j,x,y,ret,n;
+  int16_t x, y;
+  int i,j,ret;
   if(!*(c+39) || *c1 == 0 || *(c1+30) != crum || !adjac(pc,*(c1+24),*(c1+25)) ) {
     *(c+34) = *(c+39) = *(c+7) = 0;
     clrinp();
     return(0);
-    }
+  }
+
   clrinp();
   Vsync();
   xbios_38_off();
   v_rvon(handle);
+
   for(i=1;i<5;i++) {
     vs_curaddress(handle,i,33);
     printf("         ");
-    }
+  }
+
   vs_curaddress(handle,8,33);
   printf("        ");
   textsix(1,260,57,8,"Options:");
@@ -169,6 +243,7 @@ int comwind(int pc)
   xbios_38_vbl();
   sgetxy(&x,&y,1,8,11,&ret);
   clrinp();
+
   if(ret == 11 || ret == 12) {
     *(c+40) = *(c+39) = *(c+34) = 0;
     return(0);
@@ -189,37 +264,3 @@ int comwind(int pc)
   return 1;
 }
 
-int dotop(int pc)
-{
-  uint8_t *c = curmon[pc];
-  char scratch[4], l;
-
-  vs_curaddress(handle,2,33);
-  v_eeol(handle);
-  textsix(1,260,9,1,"H");
-  sprintf(scratch,"%d",*(c+2) - *(c+1));
-  textsix(1,269,9,strlen(scratch),scratch);
-  if(*(c+47) > 0)
-    sprintf(scratch,"%c",'P');
-  else
-    sprintf(scratch,"%c",'G');
-  textsix(1,281,9,1,scratch);
-  textsix(1,290,9,1,"S");
-  sprintf(scratch,"%d",*(c+14));
-  textsix(1,299,9,strlen(scratch),scratch);
-  if(*(c+21) == 0)
-    sprintf(scratch,"%c",' ');
-  else {
-    if(*(c+19) == 12)
-      l = 'A';
-    if(*(c+19) == 11)
-      l = 'S';
-    if(*(c+19) == 43)
-      l = 'V';
-    if(*(c+19) == 54)
-      l = 'I';
-    }
-  sprintf(scratch,"%c",l);
-  textsix(1,315,9,1,scratch);
-  return 1;
-}

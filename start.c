@@ -72,18 +72,12 @@ int main()
          break;
       }
 
-      // printf("\npoint 1\n");
-      // Cconin();
-
       // The room is NOT drawn at this point
 
       while (i == 0 && j > 0) {
          // does this once before Leveth speaks, then again after changing rooms before he speaks the second time.
-         // printf("\nin some main loop\n"); 
          // Cconin();
          i = switchrum();
-         // printf("\nnow the room is drawn, right???\n"); 
-         // Cconin();         
 
          if (i > 0) {
             Vsync();
@@ -98,8 +92,6 @@ int main()
       }
 
       // doesn't reach here 
-      printf("\nexited the intro. Didn't crash!\n"); 
-      Cconin();
 
       switch(i) {
          case -5:

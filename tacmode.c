@@ -27,18 +27,22 @@ int xmon(int room, int bit, int x, int y)
 {
   char *r = monbuf;
   int j, i = 1;
-  if (bit < 119 && bit > 115)
+  
+  if (bit < 119 && bit > 115) {
     bit = 110;
-  while (( *(r+i) != bit || *(r+i+1) != room || (*(r+i+3))%16 != x || 
+  }
+
+  while (( r[i] != bit || r[i + 1] != room || r[i + 3] % 16 != x || 
         (*(r+i+3))/16 != y ) && i < 320) {
     i += 4;
   }
+
   if (i >= 320) {
     return(0);
   }
 
   for (j = i; j < i+4 ; j++) {
-    *(r+j) = 0;
+    r[j] = 0;
   }
   
   return 1;
@@ -49,38 +53,50 @@ int tacmode() {
   int flag,i,j = 0,k,l,n,p,timer=0,x,y;
   int actlist[13];
   uint8_t *c;
-  int8_t *o;
-
+  uint8_t *o;
+  
   do {
-    for(i=0;i<13;i++)
-        grflist[i] = actlist[i] = 0;
-    if(curmon[0][0] == 0)
-      return(-1);
-    if( curmon[0][30] != crum)
-      return(0);
-    if(timer % 5 == 0) {
+    for(i = 0; i < 13; i++) {
+      grflist[i] = 0;
+      actlist[i] = 0;
+    }
+
+    // Player is dead or not here
+    if (curmon[0][0] == 0) {
+      return -1;
+    }
+
+    // Everyone is dead
+    if (curmon[0][30] != crum) {
+      return 0;
+    }
+
+    if (timer % 5 == 0) {
       timetrol();
       if(pursuit[0] != 0) {
         pursuit[0]--;
         flag = 0;
-        if(pursuit[0] == 0 && (mode == 0 || pursuit[1] != 0) ) {
+
+        if (pursuit[0] == 0 && (mode == 0 || pursuit[1] != 0) ) {
           for(i=1;i<12;i++) {
               c = curmon[i];
               if(*c == 0 || *(c+30) != pursuit[2] || flag > 0 || *(c+31) > 3)
                 continue;
               for(j=0;j<14;j++) {
                 o = crumobj[j];
-                if(*o == 0 || flag > 0)
+                if (o[0] == 0 || flag > 0)
                   continue;
-                if(*(o+3) == pursuit[2]) {
-                  x = *(o+6);
-                  y = *(o+7);
+                if(o[3] == pursuit[2]) {
+                  x = o[6];
+                  y = o[7];
+
                   if(zline[x][y][2] != 0 || (curmon[0][24] == x &&
                                               curmon[0][25] == y ) ) {
-                      pursuit[0] += 2;
-                      flag = 2;
-                      break;
-                      }
+                    pursuit[0] += 2;
+                    flag = 2;
+                    break;
+                  }
+
                   zline[x][y][2] = i; 
                   xmon(*(c+30),*(c+4),*(c+24),*(c+25));
                   *(c+24) = x;
@@ -96,125 +112,147 @@ int tacmode() {
                     mode = 1;
                   flag = 1;
                   pursuit[1]--;
-                  if(pursuit[1] > 0) 
+                  if(pursuit[1] > 0) {
                     pursuit[0] += 2;
-                  else
-                    pursuit[0] = pursuit[1] = pursuit[2] = 0;
-                  } 
-                }
+                  } else {
+                    pursuit[0] = 0;
+                    pursuit[1] = 0;
+                    pursuit[2] = 0;
+                  }
+                } 
               }
-          if(i == 12 && flag == 0)
-              for(i=0;i<3;pursuit[i++] = 0);
+          }
+
+          if (i == 12 && flag == 0) {
+            for(i=0;i<3;pursuit[i++] = 0);
           }
         }
-      if(police && rnd(100) < 15) {
-        for(i=1;i<17;i++) {
-            o = crumobj[i];
-            if(*(o+3) != 0)
-              break;
-            }
-        if(i < 17 && actmon(17,4,*(o+6),*(o+7)) > 0) {
-            prnt("-> The guards are pursuing!", NULL, NULL, NULL, NULL, NULL, NULL);
-            mode = 1;
-            }
+      }
+
+      if (police && rnd(100) < 15) {
+
+        for (i=1;i<17;i++) {
+          o = crumobj[i];
+          if(*(o+3) != 0) {
+            break;
+          }
         }
+
+        if (i < 17 && actmon(17, 4, o[6], o[7]) > 0) {
+          prnt("-> The guards are pursuing!", NULL, NULL, NULL, NULL, NULL, NULL);
+          mode = 1;
+        }
+      }
+
       o = rumdata[crum];
-      if(mode == 0 && rnd(100) < *(o+26)) {
+      if (mode == 0 && rnd(100) < *(o+26)) {
         actmon(*(o+22),*(o+23),*(o+24),*(o+25));
         if(*(o+29) != 0)
           prnt(msg[*(o+29) + 80*dungeon], NULL, NULL, NULL, NULL, NULL, NULL);
         if(mode && permon[*(o+22)][20] < 4 && (dungeon != 2 || crum != 31))
             prnt("      ***  A MELEE BEGINS!  ***", NULL, NULL, NULL, NULL, NULL, NULL);
         *(o+26) = *(o+27);
+      }
+    }
+
+    monster = 0;
+
+    for (i=0; i < 12; i++) {
+      c = curmon[i];
+      if( *c == 1 && *(c+30) ==  crum) {
+        if(i > 3 && *(c+31) < 4) {
+          monster++;
+          if(*(c+38) == 0)
+            monster++;
+        }
+        grflist[0]++;
+        grflist[grflist[0]] = i;
+        *(c+16) -= 1;
+        if(*(c+16) == 0) {
+          actlist[0] += 1;
+          actlist[actlist[0]] = i;
         }
       }
-    monster = 0;
-    for(i=0;i<12;i++) {
-        c = curmon[i];
-        if( *c == 1 && *(c+30) ==  crum) {
-            if(i > 3 && *(c+31) < 4) {
-              monster++;
-              if(*(c+38) == 0)
-                monster++;
-              }
-            grflist[0]++;
-            grflist[grflist[0]] = i;
-            *(c+16) -= 1;
-            if(*(c+16) == 0) {
-              actlist[0] += 1;
-              actlist[actlist[0]] = i;
-              }
-            }
-        }
+    }
+
     if(mode == 1 && monster < 2 && curmon[0][0] == 1 && curmon[0][30] == crum) { 
-          mode = 0;
-          undorep();
-          }
+      mode = 0;
+      undorep();
+    }
+
     if(monster > 1 && curmon[0][0] == 1 && curmon[0][30] == crum) {
-          mode = 1;
-          }
+      mode = 1;
+    }
+
     timer++;
-    if(actlist[0] == 0 || !curmon[0][0] )
+
+    if (actlist[0] == 0 || !curmon[0][0] )
         continue;
-    for(i=1;i<=actlist[0];i++) {
-        n = actlist[i];
-        c = curmon[n];
-        if(*c && *(c+30) == crum)
-          j = (*outverb[*(c+15)])(n);      
-        if ((n == 0 || (n == 1 && *(c+38))) && j == 0 && (p=Bconstat(2)) != 0) {
-          p = Bconin(2) & 0xff;
-          if (p == ' ') {
-            *(c+16) = 0;
-            j = 1;
-          }
+
+    for (i=1;i<=actlist[0];i++) {
+      n = actlist[i];
+      c = curmon[n];
+      if(*c && *(c+30) == crum)
+        j = (*outverb[*(c+15)])(n);
+
+      if ((n == 0 || (n == 1 && *(c+38))) && j == 0 && (p=Bconstat(2)) != 0) {
+        p = Bconin(2) & 0xff;
+        if (p == ' ') {
+          *(c+16) = 0;
+          j = 1;
         }
-        if(*(c+15) != 8 || !outside)
-          trigtrol(n);
-        if(curmon[0][0] == 0)
-          return(-1);
-        if(curmon[0][30] != crum)
-          return(0);
-        if(j == -1 && n == 0)
-          return(0);
-        if( n > 3 || (n < 4 && n > 0 && *(c+38) == 0))
-            intell(n);
-        else {
-          if(*(c+16) == 0) {
-            do {
-                l = 1;
-                if(j == 1) {
-                  k = input(n); 
-                  if(k == 1 && !combat) {
-                      l = 0;
-                      continue;
-                      }
-                  if(k == -1) {
-                      if((k=error(17)) > 1) {
+      }
+
+      if(*(c+15) != 8 || !outside)
+        trigtrol(n);
+      if(curmon[0][0] == 0)
+        return(-1);
+      if(curmon[0][30] != crum)
+        return(0);
+      if(j == -1 && n == 0)
+        return(0);
+
+      if ( n > 3 || (n < 4 && n > 0 && *(c+38) == 0)) {
+        intell(n);
+      } else {
+        if (*(c+16) == 0) {
+          do {
+            l = 1;
+            if (j == 1) {
+              k = input(n); 
+              
+              if (k == 1 && !combat) {
+                l = 0;
+                continue;
+              }
+
+              if (k == -1) {
+                  if((k=error(17)) > 1) {
+                    if(k == 2)
+                        return(-2);
+                    if(k == 3 && !outside && !fromout) {
+                        k = error(19);
+                        if(k == 1)
+                          l = 0;
                         if(k == 2)
-                            return(-2);
-                        if(k == 3 && !outside && !fromout) {
-                            k = error(19);
-                            if(k == 1)
-                              l = 0;
-                            if(k == 2)
-                              return(-4);
-                            if(k == 3)
-                              return(-5);
-                            }
-                        else
-                            l = 0;
+                          return(-4);
+                        if(k == 3)
+                          return(-5);
                         }
-                      else 
+                    else
                         l = 0;
-                      }
-                  if(l == 1)
-                      l = (*inverb[k])(n);
-                  if(l == -1)
-                      return(-1);
+                    }
+                  else 
+                    l = 0;
                   }
-                } while(l == 0);        
+              if (l == 1)
+                  l = (*inverb[k])(n);
+              if (l == -1)
+                  return(-1);
             }
-          }
+          } while(l == 0);        
         }
-    } while(1);   
+      }
+    }
+  } while (1);   
 }

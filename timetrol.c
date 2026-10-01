@@ -14,6 +14,7 @@ int timetrol()
    uint8_t *c, *z;
    char *w;
    int i,j,x,y;
+   
    for(i=0;i<12;i++) {
     c = curmon[i];
     if(*c == 0)

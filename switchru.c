@@ -20,7 +20,7 @@ int switchrum() {
   uint8_t *p = curmon[0];
 
   // It must be room data. There are 80 of these and crum might be "current room"
-  int8_t *r = rumdata[crum];
+  uint8_t *r = rumdata[crum];
   uint8_t *c;
 
   char pan[12];
@@ -88,27 +88,34 @@ int switchrum() {
   mode = 0;
 
   // Init pan[12] to all zeroes
-  for(i=0;i<12;pan[i++] = 0);
-
-  for(i=4;i<12;i++) {
-    if(curmon[i][30] != crum && (curmon[i][36] == 1 || curmon[i][31] == 6) )
-      pan[i-1] = 1;
+  for (i = 0; i < 12; i++) {
+    pan[i] = 0;
   }
 
-  if (crum != *(p+30) && crum != -1) {
+  for (i = 4; i < 12; i++) {
+    if (curmon[i][30] != crum && (curmon[i][36] == 1 || curmon[i][31] == 6)) {
+      pan[i - 1] = 1;
+    }
+  }
+
+  if (crum != p[30] && crum != -1) {
     specbuf[35] = specbuf[36] = 0;
     stormon();
   }
 
-  if(pursuit[0] > 1)
+  if (pursuit[0] > 1) {
     pursuit[0] /= 2;
-  if(pursuit[1] == 0)
+  }
+
+  if (pursuit[1] == 0) {
     pursuit[0] = 0;
+  }
   
   // Move to a new room?
   oldrum = crum;
-  crum = *(p+30);
-  // Crum 70 might be the endgame
+  crum = p[30];
+
+  // Crum 70 might be the endgame room
   if (crum == 70) 
     return(1);
 
@@ -124,18 +131,19 @@ int switchrum() {
       // This array is 19x9 or possibly 18x9
       c = crumobj[i];
 
-      if (*(c+3) == oldrum) {
+      if (c[3] == oldrum) {
         
-        *(p+24) = x = *(c+6);
-        *(p+25) = y = *(c+7);
+        x = c[6];
+        y = c[7];
+        p[24] = x;
+        p[25] = y;
 
         /* must reveal hidden door */
-        if (*(c+8) == 0) { 
-          *(c+8) = 1;
+        if (c[8] == 0) { 
+          c[8] = 1;
           Vsync(); 
 
-          // It never gets here.
-          blt(bitmap[*c], 16 * x, 16 * y, addr);
+          blt(bitmap[c[0]], 16 * x, 16 * y, addr);
 
           zline[x][y][1] = i;
         }
@@ -143,14 +151,16 @@ int switchrum() {
       }
     }
   }
-  //printf("\nWAS THAT IT???");
-  // nope.
 
-  if (oldrum == crum || i == 14) { /* got into the room through a trap */
-    x = *(p+24);
-    y = *(p+25);
+  /* got into the room through a trap */
+  if (oldrum == crum || i == 14) {
+    x = p[24];
+    y = p[25];
+
     if (i == 14) {
-      pursuit[0] = pursuit[1] = pursuit[2] = 0;
+      pursuit[0] = 0;
+      pursuit[1] = 0;
+      pursuit[2] = 0;
     }
   }
   drawman(0, x, y);
@@ -173,7 +183,7 @@ int switchrum() {
     if(fromout != 0) {  
       prnt(msg[crum], NULL, NULL, NULL, NULL, NULL, NULL);
     } else {
-      prnt(rummsg[crum + 80 * (dungeon-1)], NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt(rummsg[crum + 80 * (dungeon - 1)], NULL, NULL, NULL, NULL, NULL, NULL);
     }
 
     trigtrol(0);
