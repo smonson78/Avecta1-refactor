@@ -6,6 +6,10 @@
 #include "caux.h"
 #include "trapaux.h"
 #include "storsc.h"
+#include "text.h"
+#include "start.h"
+#include "blt.h"
+#include "toggle.h"
 
 int damage(int pc, int level)
 {
@@ -44,7 +48,7 @@ int damage(int pc, int level)
    if(pc > 3 && (c[31] > 3  || (c[38] && curmon[0][39] == pc)) && crum != 31) {
    if(c[31] > 3 && c[52] == 0) {
       c[52] = 1;
-      prnt("-> The %s shrieks in pain and fear!",w);
+      prnt("-> The %s shrieks in pain and fear!", w, NULL, NULL, NULL, NULL, NULL);
       }
    if(curmon[0][39] == pc || (curmon[0][15] == 2 && curmon[0][7] == pc) ) {
       c[38] = 0;
@@ -76,17 +80,17 @@ int damage(int pc, int level)
    zline[x][y][2] = 0;
    if(pc > 0) {
       if(pc > 3 && c[58] != 16)
-         prnt("-> The %s has been slain!",w);
+         prnt("-> The %s has been slain!", w, NULL, NULL, NULL, NULL, NULL);
       if(newpolice && police) {
          prnt("-> And an evil deed it was!  %s will pay for this heinous crime!",
-               pname);
+               pname, NULL, NULL, NULL, NULL, NULL);
          }
       if(pc > 3 && c[58] == 16)
-         prnt("->  MELKTHROP IS SLAIN!!!");
+         prnt("->  MELKTHROP IS SLAIN!!!", NULL, NULL, NULL, NULL, NULL, NULL);
       if(pc < 4) {
          j = rumslot();
          z = crumobj[j];
-         prnt("-> %s IS DEAD!",w);
+         prnt("-> %s IS DEAD!", w, NULL, NULL, NULL, NULL, NULL);
          if(c[41] > 0)
             litetrol(x,y,0);
          i = zline[x][y][1];
@@ -146,14 +150,14 @@ int damage(int pc, int level)
          return 1;
       } else {
          undorep();
-         prnt("   -- ! %s IS PASSING OUT ! --",w);
+         prnt("   -- ! %s IS PASSING OUT ! --", w, NULL, NULL, NULL, NULL, NULL);
          stormon();
          combat = 0;
          return(-1);
       }
    }
    if( pc < 4 && (old*4)/(c[2]) < (i = (c[1]*4)/(c[2])) ) {
-      prnt("-> %s's damage is now %s!",w,wordmod[i]);
+      prnt("-> %s's damage is now %s!",w,wordmod[i], NULL, NULL, NULL, NULL);
    }
    return(1);
 }

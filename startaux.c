@@ -103,9 +103,8 @@ int init(int flag) {
   // equivalent to curmon[0][0] = 0
   *c = 1;
 
-  // Maybe starting stats on some character... the player?
-  c[46] = c[45] = 
-    c[31] = c[32] = c[33] = c[34] = c[35] = c[1] = 0;
+  // Maybe starting stats on the player.
+  c[46] = c[45] = c[31] = c[32] = c[33] = c[34] = c[35] = c[1] = 0;
   c[59] = 2;
   c[42] = 20;
   c[41] = 0;
@@ -126,6 +125,8 @@ int init(int flag) {
 
   c[44] = 50;
   c[47] = 0;
+
+  // Starting gold
   c[49] = 50;
 
   if (flag == 2) {
@@ -315,10 +316,11 @@ int loadnew() {
     specbuf[31] = specbuf[32] = specbuf[33] = 0;
     specbuf[27] = 2;
 
-    if(flag)
+    if (flag) {
       lev = 1;
-    else
+    } else {
       lev = 0;
+    }
   } else {
     lev = 1;
   }

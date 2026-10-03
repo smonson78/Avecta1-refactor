@@ -1,20 +1,13 @@
 #include <stdint.h>
 #include <libc.h>
+
 /*******************************************************************************
 * BLT(SPRITE,XPIX,YPIX,ADDR) takes the address of a sprite in memory = SPRITE, *
 * the X,Y coordinates in pixels, and the logical screen address = ADDR and puts*
 * your sprite on the screen at that location.                                  *
 *******************************************************************************/
 
-// --- 0:  return address
-// --- 4:  reserved 4 bytes (maybe this is the return address)
-// --- 8:  sprite
-// --- 12: xpix
-// --- 14: ypix
-// --- 16: addr
-
 // Sprites are always 16x16 pixels.
-
 void blt(uint16_t *sprite, int xpix, int ypix, uint16_t *addr) {
 
   uint16_t *dest = addr + (ypix * 80) + ((xpix / 16) * 4);

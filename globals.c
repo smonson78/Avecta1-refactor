@@ -97,9 +97,20 @@ char *name[] = {
   "orc","crusher","flamer","rat","bartender","rogue"
 };
 
-// This refers to either the player or every character.
-// 44 - number of arrows owned
-// 49 - how much gold they have
+
+// If it's curmon[0]:
+//   44 - number of arrows owned but also "bane"?
+//   49 - gold amount
+
+// If it's curmon[5..11]:
+//   31 - intell routine
+//   41 - base chance 1 attack
+//   42 - base chance 2 attack
+//   43 - base chance 3 attack
+//   44 - bane
+//   45 - poison mode
+//   50 - physical strength
+
 uint8_t curmon[12][60] = {
   // curmon 0 - the player. Only 15 default bytes populated out of 60.
   {1, 4, 50, 0, 81, 5, 60, 8, 0, 0, 0, 4, 3, 90, 10},

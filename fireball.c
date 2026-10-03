@@ -1,11 +1,15 @@
 
 #include "globals.h"
 #include "gemdefs.h"
+
 #include "rumdraw.h"
+#include "storsc.h"
+#include "blt.h"
+#include "caux.h"
 
 void fireball(int xs, int ys, int xd, int yd, int type)
 {
-  int i,j,k,l,m,n,q,r,s,t;
+  int i,j,k,l,m,n,q,r,s;
   i = 8*(xd - xs);
   j = 8*(yd - ys);
   k = abs(i);

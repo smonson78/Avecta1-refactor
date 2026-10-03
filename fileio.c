@@ -12,7 +12,6 @@
 int fileio(int flow) {
   int16_t button;
   int i, j, filehandle;
-  uint32_t length;
   uint8_t *r = rumdata[crum];
   uint8_t check,*c;
   DTA dta;
@@ -104,9 +103,8 @@ int fileio(int flow) {
       Fread(filehandle,(long)80,invnpc) < 80 ||
       Fread(filehandle,(long)320,monbuf) < 320 ) {
       Fclose(filehandle);
-      return(-1);
-      }
-    else {
+      return -1;
+    } else {
       lev = specbuf[28] = 1;
       dungeon = specbuf[27];
       fromout = specbuf[37];
@@ -116,24 +114,26 @@ int fileio(int flow) {
       for(i=0;i<20;i++)
           invtrig[i] = specbuf[i+1];
       Fclose(filehandle);
-      if(outside || fromout) {
-            specbuf[32] = 1;
-            filehandle = Fopen("FILL.DAT",0);
-            if(filehandle < 0)
-                return(0);
-            Fseek((long)5330,filehandle,0);
-            Fread(filehandle,(long)3900,bitmap[21]);
-            Fclose(filehandle);
-            }
-      else {
-            filehandle = Fopen("GRAFX.DAT",0);
-            if(filehandle < 0)
-                return(0);
-            Fread(filehandle,(long)9230,bitmap[0]);
-            Fclose(filehandle);
-            }            
-      }
+      if (outside || fromout) {
+        specbuf[32] = 1;
+        filehandle = Fopen("FILL.DAT",0);
+        if (filehandle < 0) {
+          return 0;
+        }
+        Fseek((long)5330,filehandle,0);
+        Fread(filehandle,(long)3900,bitmap[21]);
+        Fclose(filehandle);
+      } else {
+        filehandle = Fopen("GRAFX.DAT",0);
+        if (filehandle < 0) {
+          return 0;
+        }
+        Fread(filehandle,(long)9230,bitmap[0]);
+        Fclose(filehandle);
+      }            
     }
-  return(1);
+  }
+
+  return 1;
 }
   

@@ -1,4 +1,10 @@
+#include <stdint.h>
+
 #include "globals.h"
+#include "dorep.h"
+#include "rumdraw.h"
+#include "torches.h"
+#include "caux.h"
 
 /****************************************************************************/
 /* ACTMON(TYPE,NUMBER,X,Y) activates the number of type monsters around and */
@@ -7,9 +13,10 @@
 
 int actmon(int type, int nm, int x, int y)
 {
-  char *z,*c,*p;
+  uint8_t *c, *p, *z;
   int adder,i,j=0,k,l;
-  if(type < 0) {
+
+  if (type < 0) {
     type = abs(type);
     c = curmon[type];
     for(i=0;i<60;i++)
@@ -32,11 +39,14 @@ int actmon(int type, int nm, int x, int y)
     zline[x][y][2] = type;
     drawman(type,x,y);
     return(1);
-    }
+  }
+
   p = permon[type];
-  for(i=4;i<12;i++) {
+
+  for (i = 4; i < 12; i++) {
     c = curmon[i];
     adder = 0;
+
     if(*c == 0 || c[30] != crum) {
       z = zline[x][y];
       if(*z == 1 && (z[1] == 0 || crumobj[z[1]][0] > 40) && z[2] == 0 && 
@@ -62,24 +72,31 @@ int actmon(int type, int nm, int x, int y)
                 continue;  /* if it doesn't continue then square available */
             else {
                 z[2] = i;
-                c[24] = x+k;
-                c[25] = y+l;
+                c[24] = x + k;
+                c[25] = y + l;
                 adder = 1;
                 break;
-                }
-            } while ( l != 1 || k != 1); 
-        }    
-      }
-    if(adder == 0)
+            }
+        } while ( l != 1 || k != 1); 
+      }   
+    }
+    
+    if (adder == 0) {
       continue;
+    }
     j++;
-    for(k=0;k<60;k++) { 
-        if(k == 24 || k == 25)
-          continue;
-        *(c+k) = 0;
-        }
-    for(k=0;k<15;k++)
-        *(c+k) = *(p+k);
+    
+    for (k=0;k<60;k++) { 
+      if (k == 24 || k == 25) {
+        continue;
+      }
+      c[k] = 0;
+    }
+
+    for (k = 0; k < 15; k++) {
+      c[k] = p[k];
+    }
+
     c[50] = p[15];   /* physical strength */
     c[45] = p[16];   /* poison mode */
     c[41] = p[17];   /* base chance #1 attack */

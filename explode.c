@@ -1,6 +1,9 @@
 #include "globals.h"
 #include "gemdefs.h"
 
+#include "blt.h"
+#include "storsc.h"
+
 void explode(int x, int y, int type)
 {
    int i,j;

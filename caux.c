@@ -712,8 +712,9 @@ int status(int pc)
   uint8_t *c = curmon[pc];
   char scratch[3],*w = (pc == 0 ? pname : name[c[3]]);
 
-   if (pc > 3)
-    return(1);
+   if (pc > 3) {
+      return(1);
+   }
 
    Vsync();
    vbl_animation_off();
@@ -723,25 +724,32 @@ int status(int pc)
    for(i=0;i<2;i++)
    textsix(1,260,9+8*i,strlen(statword[i]),statword[i]);
    v_rvon(handle);
-   for(i=2;i<5;i++) {
+   for (i = 2; i < 5; i++) {
       vs_curaddress(handle,2*i,33);
       printf("        ");
       textsix(1,260,16*i-7,strlen(statword[i]),statword[i]);
-      }
+   }
    textsix(1,260,33,strlen(obj[c[45]]),obj[c[45]]);
    textsix(1,260,49,strlen(obj[c[46]]),obj[c[46]]);
    sprintf(scratch,"%d",c[2] - c[1]);
    textsix(1,300,9,2,scratch);
-   if(c[47]>0)
-   sprintf(scratch,"%c",'P');
-   else
-   sprintf(scratch,"%c",'G');
+
+   if (c[47] > 0) {
+      sprintf(scratch, "%c", 'P');
+   } else {
+      sprintf(scratch, "%c", 'G');
+   }
    textsix(1,314,9,1,scratch);
+
    sprintf(scratch,"%d",c[14]);
    textsix(1,300,17,strlen(scratch),scratch);
+
    v_rvoff(handle);
-   for(i=5;i<9;i++)
+
+   for(i = 5; i < 9; i++) {
       textsix(1,260,25+8*i,strlen(statword[i]),statword[i]);
+   }
+
    Vsync();
    vbl_animation_on();
    sgetxy(&i,&j,2,8,11,&ret);
@@ -822,11 +830,11 @@ int listinv(int pc, char *scratch)
    prhand(pc);
    *(scratch+1) = c[45];
    *(scratch+2) = c[46];
-   for(j=1;j<14;j++) {
-   if(*(o+j) != 0) {
-      bot++;
-      textsix(1,260,17+bot*8,strlen(obj[*(o+j)]),obj[*(o+j)]);
-      *(scratch+bot+2) = *(o+j);
+   for (j = 1; j < 14; j++) {
+      if (o[j] != 0) {
+         bot++;
+         textsix(1,260,17+bot*8,strlen(obj[*(o+j)]),obj[o[j]]);
+         scratch[bot + 2] = o[j];
       }
    }
    textsix(1,260,25+bot*8,9,"No Choice");

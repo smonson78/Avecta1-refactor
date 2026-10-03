@@ -11,18 +11,26 @@
 int sell(int npc)
 {
   int done = 0,num = 1,i = rumdata[crum][27],j,amount;
+
+  // The shopkeeper:
   uint8_t *c = curmon[npc];
+
+  // The player:
   uint8_t *h = curmon[0];
   char str[6], temp[3];
 
   rumdata[crum][26] = 0;
   c[39] = 0;
   c[32] = 6;
-  for(j=4;j<12;j++) {
-    if(curmon[j][0] && curmon[j][30] == crum && curmon[j][31] < 4)
+  for (j = 4; j < 12; j++) {
+    if (curmon[j][0] && curmon[j][30] == crum && curmon[j][31] < 4) {
         num++;
     }
+  }
+  
+  // Asking price
   sprintf(temp, "%d", selllist[i][2] + 5);
+
   if (num == 1 && (selllist[i][3] == -1 || police) )  {
     prnt("-> The merchant shrieks `Is there no end to this lunatic! Help! "
       "Guards!'", NULL, NULL, NULL, NULL, NULL, NULL);
@@ -57,7 +65,7 @@ int sell(int npc)
     return 1;
   }
 
-  if(invnpc[0][0] > 9) {
+  if (invnpc[0][0] > 9) {
     prnt("-> The merchant laughs `How can you carry anything more? Your bag is\
   completely full! Why don't you drop something?'", NULL, NULL, NULL, NULL, NULL, NULL);
     pass(npc);
@@ -73,7 +81,7 @@ int sell(int npc)
     return 1;
   }
 
-  if(selllist[i][3] == 2) {
+  if (selllist[i][3] == 2) {
     prnt("-> The merchant smiles at %s warmly and coos `Ahhh! My good friend! "
       "Evidently you wish to purchase something more!'", pname, NULL, NULL, NULL, NULL, NULL);
   }
@@ -115,12 +123,15 @@ int sell(int npc)
       instring(row, col, str, 4, 0);
       hold = usedline = 0;
       amount = atoi(str);
-      if(amount <= 0 || amount > h[49]) {
-        if(amount <= 0)
+      if (amount <= 0 || amount > h[49]) {
+        if (amount <= 0) {
           prnt("-> The merchant snarls `You are deranged!'", NULL, NULL, NULL, NULL, NULL, NULL);
-        else
-          prnt("-> The merchant growls `From the look of your pouch I don't \
-  think you have that many goldpieces!'", NULL, NULL, NULL, NULL, NULL, NULL);
+        }
+        else {
+          prnt("-> The merchant growls `From the look of your pouch I don't "
+            "think you have that many goldpieces!'", NULL, NULL, NULL, NULL, NULL, NULL);
+        }
+
         c[6] = c[8] = 1;
         c[5] = 1;
         done = 1;
@@ -129,80 +140,100 @@ int sell(int npc)
         break;
         }
       if (amount < c[9]) {
-          prnt("-> The merchant shrugs `I can see you are not interested in \
-  bargaining in good faith!'", NULL, NULL, NULL, NULL, NULL, NULL);
+          prnt("-> The merchant shrugs `I can see you are not interested in "
+            "bargaining in good faith!'", NULL, NULL, NULL, NULL, NULL, NULL);
           pass(npc);
           done = 1;
           selllist[i][3] = 1;
           c[8] = 1;
           c[6] = 1;
           continue;
-          }
+      }
+
       if (amount < selllist[i][1]) {
           sprintf(temp,"%d",selllist[i][2]);
-          prnt("-> The merchant shrieks `Such an insult!  How am I to feed my \
-  family with a pitiful pittance such as that!  How about %s goldpieces?'",temp, NULL, NULL, NULL, NULL, NULL);
+          prnt("-> The merchant shrieks `Such an insult!  How am I to feed my "
+            "family with a pitiful pittance such as that!  How about %s goldpieces?'",
+            temp, NULL, NULL, NULL, NULL, NULL);
           c[9] = amount;
           continue;
-          }  
-      if(amount < selllist[i][2] - c[10] &&
-          amount < selllist[i][1] + selllist[i][2] - amount ) {
-          prnt("-> The merchant moans woefully", NULL, NULL, NULL, NULL, NULL, NULL);
-          j = rnd(8);
-          while( j == c[32]) {
-              j = rnd(8);
-              }  
-          c[32] = j;
-          switch(j) {
-            case 0:
-              prnt("`Ahh! By the gods! Such a hard trader!'", NULL, NULL, NULL, NULL, NULL, NULL);
-              break;
-            case 1:
-              prnt("`Are you heartless? I'm old and ill!'", NULL, NULL, NULL, NULL, NULL, NULL);
-              break;
-            case 2:
-              prnt("`Think of my poor wife and children!'", NULL, NULL, NULL, NULL, NULL, NULL);
-              break;
-            case 3:
-              prnt("`Mercy! My family lives in a hovel!'", NULL, NULL, NULL, NULL, NULL, NULL);
-              break;
-            case 4:
-              prnt("'Upon my poor sweet mother's grave!'", NULL, NULL, NULL, NULL, NULL, NULL);
-              break;
-            case 5:
-              prnt("`Aiiee!! For all the love of Zandru!'", NULL, NULL, NULL, NULL, NULL, NULL);
-              break;
-            case 6:
-              prnt("`A demon would be easier to sell to!'", NULL, NULL, NULL, NULL, NULL, NULL);
-              break;
-            case 7:
-              prnt("`Did Fat Oskar send you to ruin me?'", NULL, NULL, NULL, NULL, NULL, NULL);
-              break;
-          }
-          c[9] = amount;
-          j = selllist[i][2] - amount + selllist[i][1];
-          sprintf(temp,"%d",j);
-          prnt("and keens ` %s goldpieces and no lower!'",temp, NULL, NULL, NULL, NULL, NULL);
-          c[10] = selllist[i][2] - j;
-          continue;
-          }
-      prnt("-> The merchant throws up his hands and wails `I must accept this \
-  offer!  It is done!'  He fetches the %s from the locked case and gives \
-  it to %s.",
-            obj[(uint8_t)selllist[i][0]],pname, NULL, NULL, NULL, NULL);
+      }  
+      if (amount < selllist[i][2] - c[10] &&
+        amount < selllist[i][1] + selllist[i][2] - amount ) {
+        prnt("-> The merchant moans woefully", NULL, NULL, NULL, NULL, NULL, NULL);
+        j = rnd(8);
+        while( j == c[32]) {
+            j = rnd(8);
+            }  
+        c[32] = j;
+        switch(j) {
+          case 0:
+            prnt("`Ahh! By the gods! Such a hard trader!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            break;
+          case 1:
+            prnt("`Are you heartless? I'm old and ill!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            break;
+          case 2:
+            prnt("`Think of my poor wife and children!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            break;
+          case 3:
+            prnt("`Mercy! My family lives in a hovel!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            break;
+          case 4:
+            prnt("'Upon my poor sweet mother's grave!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            break;
+          case 5:
+            prnt("`Aiiee!! For all the love of Zandru!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            break;
+          case 6:
+            prnt("`A demon would be easier to sell to!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            break;
+          case 7:
+            prnt("`Did Fat Oskar send you to ruin me?'", NULL, NULL, NULL, NULL, NULL, NULL);
+            break;
+        }
+        c[9] = amount;
+        j = selllist[i][2] - amount + selllist[i][1];
+        sprintf(temp,"%d",j);
+        prnt("and keens ` %s goldpieces and no lower!'",temp, NULL, NULL, NULL, NULL, NULL);
+        c[10] = selllist[i][2] - j;
+        continue;
+      }
+
+      prnt("-> The merchant throws up his hands and wails `I must accept this "
+        "offer!  It is done!'  He fetches the %s from the locked case and gives "
+        "it to %s.",
+            obj[(uint8_t)selllist[i][0]], 
+            pname, NULL, NULL, NULL, NULL);
+      
+      // Player gold
+      printf("\ngold before %d\n", h[49]);
+      printf("price %d\n", amount);
       h[49] -= amount;
+      printf("gold after %d\n", h[49]);
+      Cconin();
       selllist[i][3] = 2;
       done = 1;
+
       c[15] = 8;
       c[16] = 100;
-      c[6] = c[7] = c[8] = c[9] = c[10] = 0;
-      if(selllist[i][0] == 45) {
-        prnt("-> The merchant adds `Please accept these thirty fine arrows \
-  as well.' Of course, %s takes them gladly.",pname, NULL, NULL, NULL, NULL, NULL);
+      c[6] = 0;
+      c[7] = 0;
+      c[8] = 0;
+      c[9] = 0;
+      c[10] = 0;
+
+      // If item is a bow, get 30 free arrows
+      if (selllist[i][0] == 45) {
+        prnt("-> The merchant adds `Please accept these thirty fine arrows "
+          "as well.' Of course, %s takes them gladly.",
+          pname, NULL, NULL, NULL, NULL, NULL);
         curmon[0][44] += 30;
-        }
-      if(selllist[i][0] == 69) 
-          invtrap(69);
+      }
+
+      if (selllist[i][0] == 69) {
+        invtrap(69);
+      }
       if(selllist[i][0] != 81) 
         putaway(0,selllist[i][0]);
       else {
