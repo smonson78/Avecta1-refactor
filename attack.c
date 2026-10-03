@@ -6,7 +6,9 @@
 #include "blt.h"
 
 int attack(int pc, int xdes, int ydes) {
-  int light = rumdata[crum][30],flag = 1,i,bit,xnow,ynow,xadd,yadd;
+  int flag = 1,i,bit,xnow,ynow,xadd,yadd;
+  int light = rumdata[crum][30];
+
   xnow = curmon[pc][24];
   ynow = curmon[pc][25];
   bit = curmon[pc][4];

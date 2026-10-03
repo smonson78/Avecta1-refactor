@@ -233,59 +233,94 @@ void stormon()
 
 int getmon(int room)
 {
-  uint8_t *c, *p;
+  uint8_t *c;
+  permon_t *p;
   char *r = monbuf;
   int i,j,k,type,count=0,x,y;
 
-for(i=1;i<320;i += 4) {
-  if(*(r+i+1) == room) {
-    for(j=1;j<26;j++) {
-      if(permon[j][4] == *(r+i))
-         break;
+  for (i=1;i<320;i += 4) {
+    if (*(r+i+1) == room) {
+      for (j=1;j<26;j++) {
+        if (permon[j].unknown4 == r[i]) {
+          break;
+        }
       }
-    if(j == 26)
-      continue;
-    type = j;
-    p = permon[type];
-    x = ( *(r+i+3) )%16;
-    y = ( *(r+i+3) )/16;
-    if( zline[x][y][2] != 0 || (x == curmon[0][24] && y == curmon[0][25]))
-       continue;
-    for(j=4;j<12;j++) {
-      c = curmon[j];
-      if(*c == 0 || c[30] != room) {
-         for(k=0;k<60;*(c+(k++)) = 0);
-         for(k=0;k<15;k++)
-             *(c+k) = *(p+k);
-         c[50] = p[15];
-         c[45] = p[16];
-         c[41] = p[17];
-         c[42] = p[18];
-         c[43] = p[19];
-         c[31] = p[20];
-         c[44] = p[21];
-         c[46] = c[37] = p[22];
-         c[58] = type;
-         c[51] = (c[14])/3;
-         if(c[51] > 20)
-           c[54] = 1;
-         c[24] = x;
-         c[25] = y;
-         c[30] = room;
-         c[39] = j;
-         c[1] = *(r+i+2);
-         c[15] = 8;
-         c[16] = 1;
-         zline[x][y][2] = j;
-         count++;
-         if(*(r+i) == 110)
+
+      if (j == 26) {
+        continue;
+      }
+
+      type = j;
+      p = &permon[type];
+      x = r[i+3] % 16;
+      y = r[i+3] / 16;
+
+      if (zline[x][y][2] != 0 || (x == curmon[0][24] && y == curmon[0][25])) {
+        continue;
+      }
+
+      for (j = 4; j < 12; j++) {
+        c = curmon[j];
+        if (c[0] == 0 || c[30] != room) {
+
+          // Clear curmon data
+          for (k = 0; k < 60; k++) {
+            c[k] = 0;
+          }
+          
+          // Copy curmon (monster instance) data from permon (monster type)
+          // for (k = 0; k < 15; k++) {
+          //   *(c+k) = *(p+k);
+          // }
+          c[0] = p->in_use;
+          c[1] = p->unknown1;
+          c[2] = p->unknown2;
+          c[3] = p->unknown3;
+          c[4] = p->unknown4;
+          c[5] = p->unknown5;
+          c[6] = p->unknown6;
+          c[7] = p->unknown7;
+          c[8] = p->unknown8;
+          c[9] = p->unknown9;
+          c[10] = p->unknown10;
+          c[11] = p->unknown11;
+          c[12] = p->unknown12;
+          c[13] = p->unknown13;
+          c[14] = p->unknown14;          
+
+          c[50] = p->physical_strength;
+          c[45] = p->poison_mode;
+          c[41] = p->base_chance_1_attack;
+          c[42] = p->base_chance_2_attack;
+          c[43] = p->base_chance_3_attack;
+          c[31] = p->intell_routine;
+          c[44] = p->bane;
+          c[46] = p->magic_mode;
+          c[37] = p->magic_mode;
+          c[58] = type;
+          c[51] = (c[14]) / 3;
+          if (c[51] > 20) {
+            c[54] = 1;
+          }
+          c[24] = x;
+          c[25] = y;
+          c[30] = room;
+          c[39] = j;
+          c[1] = r[i + 2];
+          c[15] = 8;
+          c[16] = 1;
+          zline[x][y][2] = j;
+          count++;
+          if (r[i] == 110) {
             c[4] = 116 + rnd(3);
-         if(c[31] < 4)
+          }
+          if (c[31] < 4) {
             mode = 1;
-         drawman(j,x,y);
-         *(r+i) = *(r+i+1) = *(r+i+2) = *(r+i+3) = 0;
-         break;
-         }
+          }
+          drawman(j, x, y);
+          *(r+i) = *(r+i+1) = *(r+i+2) = *(r+i+3) = 0;
+          break;
+        }
       }
     } 
   }

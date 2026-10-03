@@ -974,7 +974,7 @@ World's Spells sails across the room to him in a ball of flame!",
 recites `Yog ... vradhe ... acka pranath ... ' A flame leaps from the page\
  and envelops the creature!", NULL, NULL, NULL, NULL, NULL, NULL);
       blowup(*(c + 24), *(c + 25));
-      permon[19][4] = 121;
+      permon[19].unknown4 = 121;
       actmon(19, 1, 5, 4);
       prnt("-> Standing before %s is the real Leveth! `Well, well,' he chuckles\
 , `Now, to the business of finding this horrid creature Gondrath and expunging \

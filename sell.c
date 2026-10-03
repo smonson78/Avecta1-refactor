@@ -207,11 +207,7 @@ int sell(int npc)
             pname, NULL, NULL, NULL, NULL);
       
       // Player gold
-      printf("\ngold before %d\n", h[49]);
-      printf("price %d\n", amount);
       h[49] -= amount;
-      printf("gold after %d\n", h[49]);
-      Cconin();
       selllist[i][3] = 2;
       done = 1;
 
@@ -234,17 +230,19 @@ int sell(int npc)
       if (selllist[i][0] == 69) {
         invtrap(69);
       }
-      if(selllist[i][0] != 81) 
+
+      if (selllist[i][0] != 81) {
         putaway(0,selllist[i][0]);
-      else {
-        for(j=0;j<4;j++) {
+      } else {
+        for (j = 0; j < 4; j++) {
           c = curmon[i];
-          c[42] = ( c[42] + 30 > 40 ? 40 : c[42] + 30);
-          }
+          c[42] = (c[42] + 30 > 40 ? 40 : c[42] + 30);
         }
       }
     }
-  return(1);
+  }
+
+  return 1;
 }
 
 int wander(int npc)

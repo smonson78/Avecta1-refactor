@@ -81,7 +81,7 @@ int o10(int pc)
   if (o[3] != 0 && r[22] != 0 && rnd(100) < r[26] && rnd(100) < c[37]) {
       flag = 1; 
       prnt("-> %s hears one or more %ss through the %s!", w,
-          name[permon[r[22]][3]],
+          name[permon[r[22]].unknown3],
           obj[o[0]],
           NULL, NULL, NULL);
       }

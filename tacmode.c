@@ -146,11 +146,16 @@ int tacmode() {
 
       o = rumdata[crum];
       if (mode == 0 && rnd(100) < o[26]) {
-        actmon(o[22],o[23],o[24],o[25]);
-        if(o[29] != 0)
+        actmon(o[22], o[23], o[24], o[25]);
+        
+        if (o[29] != 0) {
           prnt(msg[o[29] + 80*dungeon], NULL, NULL, NULL, NULL, NULL, NULL);
-        if(mode && permon[o[22]][20] < 4 && (dungeon != 2 || crum != 31))
-            prnt("      ***  A MELEE BEGINS!  ***", NULL, NULL, NULL, NULL, NULL, NULL);
+        }
+        
+        if (mode && permon[o[22]].intell_routine < 4 && (dungeon != 2 || crum != 31)) {
+          prnt("      ***  A MELEE BEGINS!  ***", NULL, NULL, NULL, NULL, NULL, NULL);
+        }
+        
         o[26] = o[27];
       }
     }

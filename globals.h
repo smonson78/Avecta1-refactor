@@ -33,7 +33,40 @@ extern int16_t lxy[4];
 extern int16_t vxy[4];
 
 extern uint8_t curmon[12][60];
-extern uint8_t permon[][23];
+
+typedef struct {
+  // always "1" for monsters that are defined in the table and "0" for entries that are blank.
+  uint8_t in_use;
+  uint8_t unknown1;
+  uint8_t unknown2;
+  uint8_t unknown3;
+  uint8_t unknown4;
+  uint8_t unknown5;
+  uint8_t unknown6;
+  uint8_t unknown7;
+  uint8_t unknown8;
+  uint8_t unknown9;
+  uint8_t unknown10;
+  uint8_t unknown11;
+  uint8_t unknown12;
+  uint8_t unknown13;
+  uint8_t unknown14;
+  // 15
+  uint8_t physical_strength;
+  // 16
+  uint8_t poison_mode;
+  // 17-19
+  uint8_t base_chance_1_attack;
+  uint8_t base_chance_2_attack;
+  uint8_t base_chance_3_attack;
+  // 20
+  uint8_t intell_routine;
+  // 21
+  uint8_t bane;
+  uint8_t magic_mode;
+} permon_t;
+
+extern permon_t permon[];
 extern int8_t selllist[][4];
 
 // These are all to do with TOS/GEM
