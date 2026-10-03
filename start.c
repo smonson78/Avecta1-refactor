@@ -13,8 +13,8 @@
 #include "switchru.h"
 #include "tacmode.h"
 #include "text.h"
-#include "raton.h"
-#include "rausmaus.h"
+#include "mouse_on.h"
+#include "mouse_off.h"
 
 int stinit();
 
@@ -60,9 +60,9 @@ int main()
          // Restore Game
          j = fileio(2);
          if (j == -1) {
-            raton();
+            mouse_on();
             form_alert(1, errmsg[18]);
-            rausmaus();
+            mouse_off();
          }
          i = 0;
          break;
@@ -81,14 +81,14 @@ int main()
 
          if (i > 0) {
             Vsync();
-            xbios_38_off();
+            vbl_animation_off();
             continue;
          }
 
          i = tacmode();
 
          Vsync();
-         xbios_38_off();
+         vbl_animation_off();
       }
 
       // doesn't reach here 
@@ -96,14 +96,14 @@ int main()
       switch(i) {
          case -5:
             if ((j=fileio(2)) == -1) {
-               raton();
+               mouse_on();
                form_alert(1,errmsg[18]);
-               rausmaus();
+               mouse_off();
             }
             if (j == 0) {
-               raton();
+               mouse_on();
                form_alert(1,errmsg[33]);
-               rausmaus();
+               mouse_off();
             }
             i = 3;
             break;
@@ -124,6 +124,7 @@ int main()
             i = 0;
             break;
          case 2: /* dungeon switch */
+
             old = dungeon;
             if (dungeon != 0) {
                *(c+54) = *(c+4);
@@ -138,13 +139,15 @@ int main()
                *(c+57) = *(c+25);
                *(c+55) = crum;
             }
+
             if (loadnew() == 0) {
-               raton();
+               mouse_on();
                i = 0;
                form_alert(1, errmsg[32]);
-               rausmaus();
+               mouse_off();
                break;
             }
+
             if (old != 0) {
                *(c+30) = *(c+55);
                *(c+4) = 125;
@@ -156,6 +159,7 @@ int main()
                outside = 0;
                *(c+54) = 0;
             }
+            
             i = 3;
             break;  
          default:
@@ -165,7 +169,7 @@ int main()
    }
 end:
    Setpalette(oldpal);
-   raton();
+   mouse_on();
    v_clsvwk(handle);
    appl_exit();
    return 0;
@@ -191,9 +195,9 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
    l = strlen(s1);
    col = 2;
    row++;
-   rausmaus();
+   mouse_off();
    Vsync();
-   xbios_38_off();
+   vbl_animation_off();
    v_rvon(handle);
    while( l - i > 0) {
       j = 0;
@@ -254,11 +258,11 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
             textsix(1, 204, 8 * 24, 6, "[More]");
             hold = 0;
             usedline = 0;
-            xbios_38_vbl();
+            vbl_animation_on();
             // Wait for keypress
             Bconin(2);
             Vsync();
-            xbios_38_off();
+            vbl_animation_off();
             lines = 1;
             vs_curaddress(handle, 25, 2);
             printf("                              ");
@@ -278,8 +282,8 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
 
    v_rvoff(handle);
    usedline += lines;
-   xbios_38_vbl();
-   raton();
+   vbl_animation_on();
+   mouse_on();
    hold = 1;
 
    return i;
@@ -305,18 +309,18 @@ int stinit() {
    psrc.fd_wdwidth = pdes.fd_wdwidth = psrc.fd_w>>4;
    psrc.fd_stand = pdes.fd_stand = 1;
    psrc.fd_addr = pdes.fd_addr = (long)0;
-   rausmaus();
+   mouse_off();
    vs_curaddress(handle,1,1);
 
    // Erase to end of screen
    v_eeos(handle);
    // Save palette
-   xbios_38_savpal();
+   save_palette();
 
    if(Getrez() != 0) {
-      raton();
+      mouse_on();
       form_alert(1,"[1][Reboot in Low Rez!][OK]");
-      rausmaus();
+      mouse_off();
       return(0);
    }
 

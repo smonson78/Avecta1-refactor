@@ -17,7 +17,7 @@
 // if(pc > 3)
 //  return(1);
 // Vsync();
-// xbios_38_off();
+// vbl_animation_off();
 // clrinp();
 // v_rvon(handle);
 // for(i=0;i<7;i++) {
@@ -46,7 +46,7 @@
 // sgetxy(&i,&i,2,14,18,&ret);
 // ret -= 13;
 // Vsync();
-// xbios_38_vbl();
+// vbl_animation_on();
 // switch(ret) {
 //    case 1:
 //        i = *(c+33);
@@ -104,7 +104,7 @@
 //    int j,bot=1;
 //    char word[3],*o = invnpc[pc];
 //    Vsync();
-//    xbios_38_off();
+//    vbl_animation_off();
 //    header("INVENTORY");
 //    for(j=1;j<14;j++) {
 //    if(*(o+j) != 0) {
@@ -117,6 +117,6 @@
 //    sprintf(word,"%d",curmon[pc][42]);
 //    textsix(1,308,1+8*(bot+1),strlen(word),word);
 //    Vsync();
-//    xbios_38_vbl();
+//    vbl_animation_on();
 //    return(bot);
 // }

@@ -5,15 +5,15 @@
 
 #include <gemdefs.h>
 
-void xbios_38_off() {
+void vbl_animation_off() {
   xbios_supexec(off);
 }
 
-void xbios_38_vbl() {
+void vbl_animation_on() {
   xbios_supexec(vbl);
 }
 
-void xbios_38_savpal() {
+void save_palette() {
   xbios_supexec(savpal);
 }
 

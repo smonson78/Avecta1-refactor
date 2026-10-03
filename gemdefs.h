@@ -94,9 +94,9 @@ typedef struct
 } LINEA;
 
 // Not in my library yet, but needed:
-void xbios_38_off();
-void xbios_38_vbl();
-void xbios_38_savpal();
+void vbl_animation_off();
+void vbl_animation_on();
+void save_palette();
 
 void linea_init(LINEA **parameter_block, FONT_HDR ***sysfont_pointers);
 void linea_textblock_transfer();

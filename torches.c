@@ -17,7 +17,7 @@ int setlite(int pc, int dx, int dy)
   x = *(c+24);
   y = *(c+25);
   Vsync();
-  xbios_38_off();
+  vbl_animation_off();
   drawsq(x,y);
   if(*(c+41) == 0) {
     drawsq(x-dx,y-dy);
@@ -26,7 +26,7 @@ int setlite(int pc, int dx, int dy)
   litetrol(x,y,1);
   litetrol(x-dx,y-dy,0);
   Vsync();
-  xbios_38_vbl();
+  vbl_animation_on();
   return 0;
 }
 

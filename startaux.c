@@ -2,51 +2,62 @@
 #include "osbind.h"
 #include "gemdefs.h"
 #include "title.h"
-#include "rausmaus.h"
+#include "mouse_off.h"
 #include "caux.h"
 #include "startaux.h"
-#include "raton.h"
+#include "mouse_on.h"
 #include "text.h"
 #include "cinput.h"
 #include "texwin.h"
 
 void domsg(int i) {
-  int x = 256,y = 8,w = 64,h = 40;
-  int16_t pxy[10];
+  int x = 256, y = 8, w = 64, h = 40;
   char scratch[10];
   top(2);
+
+  int16_t pxy[10];
+  // Top corner of rectangle
   pxy[0] = 256;
   pxy[1] = 8;
+
+  // Horizontal line to the top right corner
   pxy[2] = 319;
   pxy[3] = 8;
+
+  // Vertical line down to bottom right
   pxy[4] = 319;
   pxy[5] = 48;
+
+  // Horizontal line back to the bottom left
   pxy[6] = 256;
   pxy[7] = 48;
+
+  // Back up to the original point
   pxy[8] = 256;
   pxy[9] = 8;
+
   Vsync();
-  xbios_38_off();
-  form_dial(0,0,0,0,0,x,y,w,h);
-  form_dial(1,0,0,0,0,x,y,w,h);
+  vbl_animation_off();
+  form_dial(0, 0, 0, 0, 0, x, y, w, h);
+  form_dial(1, 0, 0, 0, 0, x, y, w, h);
   v_pline(handle, 5, pxy);
-  textsix(1,259,17,7,"  Point");
-  textsix(1,259,25,8,"  at the");
+  textsix(1, 259, 17, 7, "  Point");
+  textsix(1, 259, 25, 8, "  at the");
   sprintf(scratch, "%s", com[i]);
-  textsix(1,259,33,strlen(scratch),scratch);
+  textsix(1, 259, 33, strlen(scratch), scratch);
   Vsync();
-  xbios_38_vbl();
+  vbl_animation_on();
 }
 
 void undomsg() {
-  int x = 255,y = 0,w = 64,h = 40;
+  int x = 255, y = 0, w = 64, h = 40;
   Vsync();
-  xbios_38_off();
-  form_dial(2,0,0,0,0,x,y,w,h);
+  vbl_animation_off();
+  form_dial(2, 0, 0, 0, 0, x, y, w, h);
   top(1);
   clrinp();
   Vsync();
-  xbios_38_vbl();
+  vbl_animation_on();
 }
 
 int init(int flag) {
@@ -59,7 +70,7 @@ int init(int flag) {
   // Clear screen to end
   v_eeos(handle);
 
-  row=17;
+  row = 17;
   if (flag == 1) {
     texwin();
     return(1);
@@ -153,11 +164,11 @@ int ruminit()
   memset(c, 660, 0);
 
   if (!loadnew()) {
-    raton();
+    mouse_on();
     Setpalette(oldpal);
     Vsync();
-    form_alert(1,"[1][There are data files missing!][OK]");
-    rausmaus();
+    form_alert(1, "[1][There are data files missing!][OK]");
+    mouse_off();
     return(1);
   }
 
@@ -166,12 +177,12 @@ int ruminit()
 
 int error(int i) {
   Vsync();
-  xbios_38_off();
-  raton();
+  vbl_animation_off();
+  mouse_on();
   i = form_alert(1,errmsg[i]);
-  rausmaus();
+  mouse_off();
   Vsync();
-  xbios_38_vbl();
+  vbl_animation_on();
   return i;
 }
 
@@ -188,22 +199,22 @@ int32_t savpal() {
 int console() {
   int i;
   uint8_t *c = curmon[0];
-  for(i=1;i<17;i++) {
-    vs_curaddress(handle,i,1);
+  for (i = 1; i < 17; i++) {
+    vs_curaddress(handle, i ,1);
     v_eeol(handle);
-    }
-  for(i=17;i<26;i++) {
-    vs_curaddress(handle,i,31);
+  }
+  for (i = 17; i < 26; i++) {
+    vs_curaddress(handle, i, 31);
     v_eeol(handle);
-    }
-  for(i=17;i<26;i++) {
-    vs_curaddress(handle,i,1);
+  }
+  for(i = 17; i < 26; i++) {
+    vs_curaddress(handle, i, 1);
     printf(" ");
-    }
-  vsf_interior(handle,1);
-  vsf_color(handle,2);
-  v_contourfill(handle,300,10,-1);
-  raton();
+  }
+  vsf_interior(handle, 1);
+  vsf_color(handle, 2);
+  v_contourfill(handle, 300, 10, -1);
+  mouse_on();
 
   if (dungeon == 2 && police) {
     form_alert(1,"[1][The blond man murmurs |`Unworthy soul!    |No resurrection!   "
@@ -214,13 +225,13 @@ int console() {
   new = 0;
   loadnew();
   new = 1;
-  *(c+30) = 29;
+  c[30] = 29;
 
   form_alert(1,"[1][The blond man murmurs  |`Resurrection again... |My strength fails me..."
     "|Such a great distance...|So little time.' ][ Once more ]");
 
   specbuf[28] = 1;
-  rausmaus();
+  mouse_off();
   Setpalette(newpal);
   Vsync();
   init(2);
@@ -234,7 +245,7 @@ void congratulate() {
   int16_t rgb[3];
 
   Vsync();
-  xbios_38_off();
+  vbl_animation_off();
   vs_curaddress(handle,1,1);
   v_eeos(handle);
   vs_curaddress(handle,5,1);
@@ -274,50 +285,69 @@ void congratulate() {
 
 int loadnew() {
   uint8_t *c = curmon[0];
-  int fhandle,i,j,old,d1=0,d2=0,d3=0,flag = 0;
+  int fhandle, i, j, old, d1 = 0, d2 = 0, d3 = 0, flag = 0;
+
   old = dungeon;
-  if(new == 0) {
-    if(specbuf[32])
+  if (new == 0) {
+    if(specbuf[32]) {
       flag = 1;
+    }
+
     police = 0;
     *(c+55) = 53;
     *(c+56) = 3;
     *(c+57) = 3;
     *(c+59) = 2;
-    for(i=0;i<4;selllist[i++][3] = 0);
-    for(i=1;i<320;i += 4) {
-      if(old == 2 && !flag && lev > 0 && monbuf[i] == 112)
+    for (i = 0; i < 4; i++) {
+      selllist[i][3] = 0;
+    }
+
+    for (i = 1; i < 320; i += 4) {
+      if (old == 2 && !flag && lev > 0 && monbuf[i] == 112) {
         continue;
-      for(j=0;j<4;monbuf[i + (j++)] = 0);
       }
+
+      for (j = 0; j < 4; j++) {
+        monbuf[i + (j++)] = 0;
+      }
+    }
+
     specbuf[31] = specbuf[32] = specbuf[33] = 0;
     specbuf[27] = 2;
+
     if(flag)
       lev = 1;
     else
       lev = 0;
-    }
-  else {
+  } else {
     lev = 1;
   }
+
   if (dungeon != 0 && new != 0) {
-    specbuf[30+dungeon] = 1;  /* gotta set the dirty flag on that dungeon */
-    fhandle = Fopen(savname[dungeon + 3*specbuf[30 + dungeon]],0);
-    if(fhandle < 0) 
-      fhandle = Fcreate(savname[dungeon+3*specbuf[30+dungeon]],0);
-    if(fhandle < 0)
-      return(0);
-    if(Fwrite(fhandle,(long)12560,rumdata) < 12560 ||
+    specbuf[30 + dungeon] = 1;  /* gotta set the dirty flag on that dungeon */
+
+    fhandle = Fopen(savname[dungeon + (3 * specbuf[30 + dungeon])], 0);
+    if (fhandle < 0) {
+      fhandle = Fcreate(savname[dungeon + (3 * specbuf[30 + dungeon])], 0);
+    }
+
+    if (fhandle < 0) {
+      return 0;
+    }
+
+    if (Fwrite(fhandle,(long)12560,rumdata) < 12560 ||
       Fwrite(fhandle,(long)320,putbuf) < 320 ||
       Fwrite(fhandle,(long)480,trigval) < 480 ||
       Fwrite(fhandle,(long)40,specbuf) < 40 ||
       Fwrite(fhandle,(long)320,monbuf) < 320) {
           Fclose(fhandle);
-          return(0);
-      }
-    Fclose(fhandle);
+          return 0;
     }
-  dungeon = *(c+59);
+
+    Fclose(fhandle);
+  }
+
+  dungeon = c[59];
 
   // Load entirety of GRAFX.DAT into bitmap[]
   // This has 200 sprite and object images in it.

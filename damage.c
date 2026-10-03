@@ -58,7 +58,7 @@ int damage(int pc, int level)
       }
    *(c+35) = 2;
    Vsync();
-   xbios_38_off();
+   vbl_animation_off();
    if(pc < 4 || light || zline[x][y][5] > 0)
       blt(bitmap[128],16*x,16*y,addr);
    if(pc > 3 && mode) {
@@ -68,7 +68,7 @@ int damage(int pc, int level)
       }
    }
    Vsync();
-   xbios_38_vbl();
+   vbl_animation_on();
    if(*(c+1) >= *(c+2) || level > *(c+2)) {
    *(c+1) = *(c+2);
    *c = 0;

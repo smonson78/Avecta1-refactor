@@ -121,7 +121,7 @@ int o11(int pc)
    }
   dir /= 2;
   Vsync();
-  xbios_38_off();
+  vbl_animation_off();
   fireball(*(c+24),*(c+25),*(t+24)+i,*(t+25)+j,3+dir);
   explode(*(t+24)+i,*(t+25)+j,3+dir);
   if(!miss && (*(c+43) || (tar > 3 && !*(t+46)) || tar < 3) ) {

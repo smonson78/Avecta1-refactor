@@ -12,7 +12,7 @@ int attack(int pc, int xdes, int ydes) {
     flag = 0;
   }
   Vsync();
-  xbios_38_off();
+  vbl_animation_off();
   if (!flag) {
     storsc(storbuf[pc],16*xnow,16*ynow,0,addr); 
   }
@@ -41,6 +41,6 @@ int attack(int pc, int xdes, int ydes) {
     blt(bitmap[130 + 2*i],xnow,ynow,addr);
   }
   Vsync();
-  xbios_38_vbl();
+  vbl_animation_on();
   return 1;
 }

@@ -6,20 +6,20 @@
 #include "torches.h"
 #include "rumdraw.h"
 #include "toggle.h"
-#include "raton.h"
-#include "rausmaus.h"
+#include "mouse_on.h"
+#include "mouse_off.h"
 #include "text.h"
 
 #include "f5.h"
 
 // Weird to split these out but whatever
 // Read character, no echo
-int gemdos_8() {
+int read_char_no_echo() {
    return Cnecin() & 0xff;
 }
 
 // Is character waiting on console? 0 = no, non-zero = yes
-int gemdos_b() {
+int check_char_waiting() {
    return Cconis();
 }
 
@@ -39,8 +39,8 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
   light = rumdata[crum][30];
 
   // Clear keyboard buffer by reading everything
-  while (gemdos_b() != 0) {
-    gemdos_8();
+  while (check_char_waiting() != 0) {
+    read_char_no_echo();
   }
 
   // Wait for the mouse buttons to be let go
@@ -54,12 +54,12 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
     keybd = 4;
 
   Vsync();
-  raton();
+  mouse_on();
 
   do {
-    if (gemdos_b() == -1) {
+    if (check_char_waiting() == -1) {
         keystk = 1;
-        letter = gemdos_8();
+        letter = read_char_no_echo();
     }
 
       if (keybd != 0 && keystk) {
@@ -70,7 +70,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
          else
             string = posture[i];
          if( letter == ' ' || *string == letter || *string == (letter-32) ) {
-               rausmaus();
+               mouse_off();
                top(1);
                clrinp();
                if(rflag) {
@@ -108,92 +108,113 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       newx = (*x)/16;
       newy = (*y)/16;
       newline = (*y)/8;
-      if(newx < 16 && newy < 8)
+      
+      if (newx < 16 && newy < 8) {
          inrflag = 1;
-      else
+      } else {
          inrflag = 0;
-      if(type == 0 && (newx > 15 || newy > 7) ) {
+      }
+      
+      if (type == 0 && (newx > 15 || newy > 7) ) {
          if(rflag) { 
             Vsync();
-            for(j=0;j<2;j++) 
+            for(j=0;j<2;j++) {
                for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+            }
+
             zline[oldx][oldy][4] = 0;
             if(mflag>0 && mode) {
                toggle(32,mflag,7,addr);
                mflag = 0;
-               }
-            rflag = 0;
             }
+            rflag = 0;
+         }
          oldx = newx;
          continue;
+      }
+
+      if (type == 1) {
+         if (newx < 16 && newy < 8) {
+            inrflag = 1;
+         } else{
+            inrflag = 0;
          }
-      if(type == 1) {
-         if(newx < 16 && newy < 8)
-         inrflag = 1;
-         else
-         inrflag = 0;
-         if(newx > 15 && newline >= top1 && newline <= bot)
-         intflag = 1;
-         else
-         intflag = 0;
-         if(tflag && !intflag) {
-         Vsync();
-         rausmaus();
-         tflag = 0;
-         toggle(32,oldline,7,addr);
-         raton();
+
+         if (newx > 15 && newline >= top1 && newline <= bot) {
+            intflag = 1;
+         } else {
+            intflag = 0;
          }
-         if(rflag && !inrflag) {
+
+         if (tflag && !intflag) {
             Vsync();
-            for(j=0;j<2;j++) 
+            mouse_off();
+            tflag = 0;
+            toggle(32,oldline,7,addr);
+            mouse_on();
+         }
+
+         if (rflag && !inrflag) {
+            Vsync();
+            for(j=0;j<2;j++) {
                for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+            }
             zline[oldx][oldy][4] = 0;
-            if(mflag > 0 && mode) {
+            if (mflag > 0 && mode) {
                toggle(32,mflag,7,addr);
                mflag = 0;
-               }
-            rflag = 0;
             }
-         if(!intflag)
-            oldline = newline;
-         if(!inrflag) {  
-         if(!intflag)
-            oldx = newx;
-         oldy = newy;
+            rflag = 0;
          }
-         if(!intflag && !inrflag) 
+
+         if (!intflag) {
+            oldline = newline;
+         }
+         
+         if (!inrflag) {  
+            if(!intflag) {
+               oldx = newx;
+            }
+            oldy = newy;
+         }
+
+         if(!intflag && !inrflag) {
             continue;
          }
+      }
+
       if(type == 2 && (newx < 16 || newline < top1 || newline > bot ) ) {
          if(tflag) {
          tflag = 0;
          Vsync();
-         rausmaus();
+         mouse_off();
          toggle(32,oldline,7,addr);
-         raton();
+         mouse_on();
          } 
          oldline = newline;
          oldx = newx;
          continue;
-         }
+      }
+
       if(type == 0 || (type == 1 && inrflag) ) {
-      z = zline[newx][newy];
-      if(tflag) {
-         tflag = 0;
-         Vsync();
-         rausmaus();
-         toggle(32,oldline,7,addr);
-         raton();
+         z = zline[newx][newy];
+         if(tflag) {
+            tflag = 0;
+            Vsync();
+            mouse_off();
+            toggle(32,oldline,7,addr);
+            mouse_on();
          } 
+
       if(newx < 16 && newy < 8 && (*z == 1 || (*z == 2 && *(z+1) != 0 ) ) ) {
          if(newx != oldx || newy != oldy) {
             Vsync();
-            if(tflag) {
+            if (tflag) {
                tflag = 0;
                toggle(32,oldline,7,addr);
-               } 
-            rausmaus();
-            if(oldx != -1 && rflag) {
+            } 
+            mouse_off();
+            if (oldx != -1 && rflag) {
                Vsync();
                for(j=0;j<2;j++) 
                   for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
@@ -203,29 +224,29 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
                   mflag = 0;
                   }
                rflag = 0;
-               }
-            if(*(z+5) > 0 || light || (*(z+2) > 0 && *(z+2) < 4) || 
+            }
+
+            if (*(z+5) > 0 || light || (*(z+2) > 0 && *(z+2) < 4) || 
                   (winker > 0 && *(c+24) == newx && *(c+25) == newy) ) {
                Vsync();
                for(j=0;j<2;j++) 
                   for(k=0;k<2;toggle(2*newx+j,2*newy+(k++),0,addr));
                *(z+4) = 1;
                rflag = 1;
-               }
+            }
             oldx = newx;
             oldy = newy;
-            if( mflag == 0 && mode && *(z+2) > 3 && (*(z+5) > 0 || light) 
+            if (mflag == 0 && mode && *(z+2) > 3 && (*(z+5) > 0 || light) 
                   && curmon[*(z+2)][31] < 4 ) {
                mflag = curmon[*(z+2)][33];
                Vsync();
                toggle(32,mflag,7,addr);             
-               }
-            raton();
             }
+            mouse_on();
          }
-      else {
+      } else {
          if(rflag) {
-            rausmaus();
+            mouse_off();
             Vsync();
             for(j=0;j<2;j++) 
                for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
@@ -234,7 +255,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
                toggle(32,mflag,7,addr);
                mflag = 0;
                }
-            raton();
+            mouse_on();
             rflag = 0;
             }
          oldx = newx;
@@ -243,7 +264,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       }
       if(type == 2 || (type == 1 && intflag)) {
          if(rflag) {
-            rausmaus();
+            mouse_off();
             Vsync();
             for(j=0;j<2;j++) 
                for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
@@ -252,7 +273,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
                toggle(32,mflag,7,addr);
                mflag = 0;
                }
-            raton();
+            mouse_on();
             rflag = 0;
             oldx = newx;
             oldy = newy;
@@ -260,23 +281,23 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       if(newx > 15 && newline >= top1 && newline <= bot) {
          if(newline != oldline || oldx < 16) {
             Vsync();
-            rausmaus();
+            mouse_off();
             if(oldline != -1 && tflag && oldx > 15) 
                toggle(32,oldline,7,addr);
             toggle(32,newline,7,addr);
             tflag = 1;
             oldline = newline;
             oldx = newx;
-            raton();
+            mouse_on();
             }
          }
       else {
          if(tflag) {
             Vsync();
-            rausmaus();
+            mouse_off();
             toggle(32,oldline,7,addr);
             tflag = 0;
-            raton();
+            mouse_on();
             }
          oldline = newline;
          oldx = newx;
@@ -286,7 +307,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 
       if (status != 0 && (rflag || tflag || 
         (inrflag && winker > 0 && lom(winker-1,oldx,oldy)) ) ) {
-        rausmaus();
+        mouse_off();
         Vsync();
 
         if(rflag) {
@@ -692,7 +713,7 @@ int status(int pc)
     return(1);
 
    Vsync();
-   xbios_38_off();
+   vbl_animation_off();
    top(1);
    clrinp();
    header(w);
@@ -719,7 +740,7 @@ int status(int pc)
    for(i=5;i<9;i++)
       textsix(1,260,25+8*i,strlen(statword[i]),statword[i]);
    Vsync();
-   xbios_38_vbl();
+   vbl_animation_on();
    sgetxy(&i,&j,2,8,11,&ret);
    top(1);
    clrinp();
@@ -789,7 +810,7 @@ int listinv(int pc, char *scratch)
    uint8_t *c = curmon[pc], *o = invnpc[pc];
    char word[3];
    Vsync();
-   xbios_38_off();
+   vbl_animation_off();
    vs_curaddress(handle,1,33);
    v_rvon(handle);
    printf("        ");
@@ -813,7 +834,7 @@ int listinv(int pc, char *scratch)
    sprintf(word,"%d",*(c+49));
    textsix(1,308,41 + 8*bot,strlen(word),word);
    Vsync();
-   xbios_38_vbl();
+   vbl_animation_on();
    invnpc[pc][0] = bot;
    return(bot);
 }

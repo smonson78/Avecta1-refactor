@@ -78,7 +78,7 @@ com:
 
 top:
   Vsync();
-  xbios_38_off();
+  vbl_animation_off();
   header(w);
   dotop(pc);
 
@@ -98,7 +98,7 @@ top:
 
   *(c+31) = 0;
   winker = pc+1;
-  xbios_38_vbl();
+  vbl_animation_on();
 
   do {
     i = 0;
@@ -195,7 +195,7 @@ int comwind(int pc)
 
   clrinp();
   Vsync();
-  xbios_38_off();
+  vbl_animation_off();
   v_rvon(handle);
 
   for(i=1;i<5;i++) {
@@ -240,7 +240,7 @@ int comwind(int pc)
   for(i=0;i<4;i++)
       textsix(1,260,65+8*i,strlen(posture[i]),posture[i]);
   winker = 1;
-  xbios_38_vbl();
+  vbl_animation_on();
   sgetxy(&x,&y,1,8,11,&ret);
   clrinp();
 

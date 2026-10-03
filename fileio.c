@@ -1,8 +1,8 @@
 #include <stdint.h>
 #include "globals.h"
 #include "osbind.h"
-#include "rausmaus.h"
-#include "raton.h"
+#include "mouse_off.h"
+#include "mouse_on.h"
 #include "gemdefs.h"
 #include "startaux.h"
 
@@ -18,9 +18,9 @@ int fileio(int flow) {
   
   vs_curaddress(handle,1,1);
   v_eeos(handle);
-  raton();
+  mouse_on();
   fsel_input(path, filename, &button);
-  rausmaus();
+  mouse_off();
   vs_curaddress(handle,1,1);
   v_eeos(handle);
   init(1);

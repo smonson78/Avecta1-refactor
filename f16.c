@@ -1,19 +1,19 @@
 #include "globals.h"
 #include "vbl.h"
 #include "off.h"
-#include "raton.h"
-#include "rausmaus.h"
+#include "mouse_on.h"
+#include "mouse_off.h"
 #include "gemdefs.h"
 
 int i16(int pc)
 {
   Vsync();
-  xbios_38_off();
-  raton();
+  vbl_animation_off();
+  mouse_on();
   form_alert(1, "[1][ZZZ... not implemented][OK]");
-  rausmaus();
+  mouse_off();
   Vsync();
-  xbios_38_vbl();
+  vbl_animation_on();
   return 0;
 }
 

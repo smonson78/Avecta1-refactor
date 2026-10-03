@@ -1,8 +1,8 @@
 #include "globals.h"
-#include "rausmaus.h"
+#include "mouse_off.h"
 #include "storsc.h"
 #include "blt.h"
-#include "raton.h"
+#include "mouse_on.h"
 #include "toggle.h"
 #include "caux.h"
 
@@ -45,7 +45,7 @@ int16_t animate()
       if(!*(z+5) && !rumdata[crum][30] && j > 3)
       return(1);
       *(c+17) = ( *(c+17) == 1 ? 0 : 1);
-      rausmaus();
+      mouse_off();
       storsc(storbuf[j],16*x,16*y,1,addr);
       blt(bitmap[*(c+4) + 66*(*(c+17))],x*16,y*16,addr);
       if(*(c+35) > 0) {
@@ -58,7 +58,7 @@ int16_t animate()
          for(m=0;m<2;m++)
          for(n=0;n<2;toggle(2*x+m,2*y+(n++),0,addr));
       }
-      raton();
+      mouse_on();
    }
    return 1;
 }

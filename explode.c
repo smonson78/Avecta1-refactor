@@ -7,7 +7,7 @@ void explode(int x, int y, int type)
    x *= 16;
    y *= 16;
    Vsync();
-   xbios_38_off();
+   vbl_animation_off();
    storsc(firebuff,x,y,0,addr);
    for(i=1;i<10;i++) {
       Vsync();
@@ -16,5 +16,5 @@ void explode(int x, int y, int type)
       Vsync();
       storsc(firebuff,x,y,1,addr);
       }
-   xbios_38_vbl();
+   vbl_animation_on();
 }

@@ -1,9 +1,9 @@
 #include "gemdefs.h"
 
 /*
-.globl _raton
+.globl _mouse_on
 .text
-_raton:    link R14,#-4
+_mouse_on:    link R14,#-4
            .dc.w $a000
            move.l 4(a0),a3
            move.l 8(a0),a4
@@ -16,7 +16,7 @@ _raton:    link R14,#-4
 */
 
 // Enable mouse, get it, rat on?
-void raton() {
+void mouse_on() {
   LINEA *parameter_block; //a0
   FONT_HDR **sysfont_pointers; //a1
 

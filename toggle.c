@@ -46,28 +46,29 @@ top:     move.w (R9),R4
 // --- 10 y
 // --- 12 unknown
 // --- 14 addr - unused?
-void toggle(int x, int y, int unknown1, int16_t *addr) {
-// In the real source, I find this similar function which MUST be the true source code because 
-// the assembly source given makes no sense.
+// "loops" is actually one less than the number of loops, so 0 for 1 loop or 7 for 8 loops.
+void toggle(int x, int y, int loops, int16_t *addr) {
+  // The code here was obtained by disassembling the executable. The file 
+  // distributed with the source does not work.
 
     // 2e40:	4e56 fffc      	linkw %fp,#-4
     // 2e44:	4280           	clrl %d0
     // 2e46:	4281           	clrl %d1
     // 2e48:	4282           	clrl %d2
     // 2e4a:	302e 0008      	movew %fp@(8),%d0
-    uint32_t d0 = x;    
+    //uint32_t d0 = x;    
     // 2e4e:	322e 000a      	movew %fp@(10),%d1
-    uint32_t d1 = y;
+    // uint32_t d1 = y;
     // 2e52:	342e 000c      	movew %fp@(12),%d2
-    uint16_t d2 = unknown1;
+    // uint16_t d2 = unknown1;
     // 2e56:	206e 000e      	moveal %fp@(14),%a0
-    int16_t *a0 = addr;
+    //int16_t *a0 = addr;
 
     // 2e5a:	c2fc 0500      	muluw #1280,%d1
-    d1 *= 1280;
+    uint32_t d1 = y * 1280;
 
     // 2e5e:	c0fc 0004      	muluw #4,%d0
-    d0 *= 4;
+    uint32_t d0 = x * 4;
 
     // 2e62:	d280           	addl %d0,%d1
     d1 += d0;
@@ -75,21 +76,27 @@ void toggle(int x, int y, int unknown1, int16_t *addr) {
     // d1 = (x * 4) + (y * 1280);
 
     // 2e64:	d1c1           	addal %d1,%a0
-    a0 += d1 / 2; // halved because of 16 bit pointer width
+    //a0 += d1 / 2; // halved because of 16 bit pointer width
+    int16_t *a0 = addr + (y * 640) + (x * 2);
 
     // 2e66:	4285           	clrl %d5
     // 2e68:	3a3c 0007      	movew #7,%d5
     // loop 8 times
-    int32_t d5 = 7;
+    //int32_t d5 = 7;
 
-    do {
+    //do {
+    for (int loop = 0; loop < 8; loop++) {
       // 2e6c:	2248           	moveal %a0,%a1
       int16_t *a1 = a0;
 
       // 2e6e:	3602           	movew %d2,%d3
-      int16_t d3 = d2; //the unknown value, 0 or 7. This is how many times to loop (1 or 8):
+      // int16_t d3 = d2; //the unknown value, 0 or 7. This is how many times to loop (1 or 8):
+      //int16_t d3 = loops; //the unknown value, 0 or 7. This is how many times to loop (1 or 8):
 
-      do {
+      // do {
+      for (int loop2 = 0; loop2 <= loops; loop2++) {
+        // Invert 32 bits X number of times
+
         // 2e70:	3811           	movew %a1@,%d4
         // 2e72:	4644           	notw %d4
         // 2e74:	3284           	movew %d4,%a1@
@@ -104,16 +111,19 @@ void toggle(int x, int y, int unknown1, int16_t *addr) {
         a1 += 2;
 
         // 2e82:	51cb ffec      	dbf %d3,0x2e70
-        d3--;
-      } while (d3 >= 0);
+        //d3--;
+      //} while (d3 >= 0);
+      }
 
       // 2e86:	d0fc 00a0      	addaw #160,%a0
+      // Move to next line
       a0 += 80;
       // ...go to the next scanline
 
       // 2e8a:	51cd ffe0      	dbf %d5,0x2e6c
-      d5--;
-    } while (d5 >= 0);
+      // d5--;
+    //} while (d5 >= 0);
+    }
     
     // 2e8e:	4e5e           	unlk %fp
     // 2e90:	4e75           	rts

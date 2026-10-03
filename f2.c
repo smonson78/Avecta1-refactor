@@ -52,7 +52,7 @@ int i2(int pc)
       vq_mouse(handle, &status, &x, &y);
     } while (status != 0);
   Vsync();
-  xbios_38_off();
+  vbl_animation_off();
   undorep();
   for(i=0;i<25;i++) {
     textsix(1,258,1 + 8*i,strlen(spell[i]),spell[i]);
@@ -61,7 +61,7 @@ int i2(int pc)
       textsix(1,314,1+8*i,1,scratch);
     }
   Vsync();
-  xbios_38_vbl();
+  vbl_animation_on();
   sgetxy(&x, &y, 2, 0, 24, &numb);
   top(1);
   Vsync();
@@ -170,7 +170,7 @@ void flash()
   int i, j;
   int16_t funk[3];
   Vsync();
-  xbios_38_off();
+  vbl_animation_off();
   for (i=0;i<30;i++) {
     for (j=2;j<15;j++) {
       funk[0] = rnd(1000);
@@ -182,7 +182,7 @@ void flash()
   }
   Setpalette(newpal);
   Vsync();
-  xbios_38_vbl();
+  vbl_animation_on();
 }
 
 int o2(int pc)
@@ -318,7 +318,7 @@ int o2(int pc)
          return(1);
          }
       Vsync();
-      xbios_38_off();
+      vbl_animation_off();
       fireball(*(c+24),*(c+25),*(t+24),*(t+25),j);
       explode( *(t+24), *(t+25) ,j);
       if(savthrow(target,*(c+51)))

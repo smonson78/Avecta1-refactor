@@ -59,7 +59,7 @@ int o4(int pc)
    yroll = 2 * (y - ynow) / (1 + outside);
    z = zline[xnow][ynow];
    Vsync();
-   xbios_38_off();
+   vbl_animation_off();
    x = 16 * xnow;
    y = 16 * ynow;
    if (!light && *(z + 5) == 0)
@@ -114,7 +114,7 @@ int o4(int pc)
    if (*(z + 6))
       blt(bitmap[132], 16 * xnow, 16 * ynow, addr);
    Vsync();
-   xbios_38_vbl();
+   vbl_animation_on();
    if (*(c + 28) == *(c + 26) && *(c + 29) == *(c + 27))
    {
       return (1); /* since the move is complete */
