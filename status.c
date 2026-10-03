@@ -28,19 +28,19 @@
 // if(pc == 0)
 //    w = &pname[0];
 // else
-//    w = name[*(c+3)];
+//    w = name[c[3]];
 // vs_curaddress(handle,1,33);
 // texsix(1,260,9,strlen(w),w);
-// sprintf(scratch,"%d",*(c+2) - *(c+1));
+// sprintf(scratch,"%d",c[2] - c[1]);
 // textsix(1,284,25,2,scratch);
-// if(*(c+47)>0)
+// if(c[47]>0)
 //   sprintf(scratch,"%c",'P');
 // else
 //   sprintf(scratch,"%c",'G');
 // textsix(1,312,25,1,scratch);
-// sprintf(scratch,"%d",*(c+14));
+// sprintf(scratch,"%d",c[14]);
 // textsix(1,284,41,2,scratch);
-// textsix(1,260,57,strlen(wepname[*(c+32)]),wepname[*(c+32)]);
+// textsix(1,260,57,strlen(wepname[c[32]]),wepname[c[32]]);
 // for(i=0;i<2;i++)
 //   textsix(1,260,73+16*i,strlen(obj[*(c+45+i)]),obj[*(c+45+i)]);
 // sgetxy(&i,&i,2,14,18,&ret);
@@ -49,28 +49,28 @@
 // vbl_animation_on();
 // switch(ret) {
 //    case 1:
-//        i = *(c+33);
-//        *(c+33) = *(c+32);
-//        *(c+32) = i;
+//        i = c[33];
+//        c[33] = c[32];
+//        c[32] = i;
 //        pass(pc);
 //        flag = 0;
 //        break;
 //    case 2:
-//        putaway(pc,*(c+45));
-//        *(c+45) = invent(pc);
+//        putaway(pc,c[45]);
+//        c[45] = invent(pc);
 //        pass(pc);
 //        flag = 0;
 //        break;
 //    case 3:
-//        if(*(c+41) > 0)
-//           litetrol(*(c+24),*(c+25),0);
+//        if(c[41] > 0)
+//           litetrol(c[24],c[25],0);
 //        else
-//           putaway(pc,*(c+46));
+//           putaway(pc,c[46]);
 //        if(invnpc[pc][0] == 0)
 //           return(1);
-//        if(*(c+41) > 64)
-//           *(c+42) += 1;
-//        *(c+46) = invent(pc);
+//        if(c[41] > 64)
+//           c[42] += 1;
+//        c[46] = invent(pc);
 //        pass(pc);
 //        flag = 0;
 //        break;

@@ -19,59 +19,59 @@ int timetrol()
     c = curmon[i];
     if(*c == 0)
        continue;
-    if(i < 4 && *(c+41) > 0 && *(c+30) == crum) { 
-       *(c+41) -= 1; /* checks for burn out of torches */
-       if(*(c+41) < 3) {
+    if(i < 4 && c[41] > 0 && c[30] == crum) { 
+       c[41] -= 1; /* checks for burn out of torches */
+       if(c[41] < 3) {
           if(i == 0)
              w = &pname[0];
           else
-             w = name[*(c+3)];
+             w = name[c[3]];
           prnt("-> %s's torch flickers...", w, NULL, NULL, NULL, NULL, NULL);
-          litetrol(*(c+24),*(c+25),0);
-          litetrol(*(c+24),*(c+25),1);
-          if(*(c+41) == 0) {
+          litetrol(c[24],c[25],0);
+          litetrol(c[24],c[25],1);
+          if(c[41] == 0) {
             prnt("-> ... and goes out!", NULL, NULL, NULL, NULL, NULL, NULL);
             if(rumdata[crum][30] == 0)
-              litetrol(*(c+24),*(c+25),0);
+              litetrol(c[24],c[25],0);
             }
           }
        }
-    if(*(c+47) > 0 && *(c+30) == crum) { /* poisoning depends on constitution */
-       *(c+47) += 1;
-       if( (*(c+47))%10 == 0) {
+    if(c[47] > 0 && c[30] == crum) { /* poisoning depends on constitution */
+       c[47] += 1;
+       if( (c[47])%10 == 0) {
           if(i == 0)
              w = &pname[0];
           else
-             w = name[*(c+3)];
-          j = (4*(*(c+47)))/(*(c+2));
+             w = name[c[3]];
+          j = (4*(c[47]))/(c[2]);
           if(j > 0) {
-            if(i < 4 || *(c+58) == 16)
+            if(i < 4 || c[58] == 16)
               prnt("-> %s's level of poisoning is %s!",w,wordmod[j], NULL, NULL, NULL, NULL);
             else
               prnt("-> The %s's level of poisoning is %s!",w,wordmod[j], NULL, NULL, NULL, NULL);
-            if(*(c+47) >= *(c+2)) {
-               *(c+1) = *(c+2);
-               damage(i,1 + *(c+12));
+            if(c[47] >= c[2]) {
+               c[1] = c[2];
+               damage(i,1 + c[12]);
                return(-1);
                }
             }
           }
        }          
-    if( *(c+21) > 0) { /* checks for expiration of spells */
-       *(c+21) -= 1;
-       if( *(c+21) == 0) {
-          *(c + *(c+19) ) = *(c+20);
+    if( c[21] > 0) { /* checks for expiration of spells */
+       c[21] -= 1;
+       if( c[21] == 0) {
+          *(c + c[19] ) = c[20];
           if(i == 0)
              w = &pname[0];
           else
-             w = name[*(c+3)];
+             w = name[c[3]];
           if(i < 4)
              prnt("-> %s's spell has expired!",w, NULL, NULL, NULL, NULL, NULL);
           else
              prnt("-> The spell on the %s has worn off!",w, NULL, NULL, NULL, NULL, NULL);
           }
         }
-     if(zline[*(c+24)][*(c+25)][6] > 0 && *(c+30) == crum && *(c+46) == 0)
+     if(zline[c[24]][c[25]][6] > 0 && c[30] == crum && c[46] == 0)
        damage(i,20 + rnd(10));
      }
   if(specbuf[35] != 0) {
@@ -85,10 +85,10 @@ int timetrol()
              z = zline[i][j];
              if( *z != 1)
                  continue;
-             *(z+6) = 0;
-             if(*(z+5) > 0)
-               *(z+5) -= 1;
-             if(*(z+5) > 0 || rumdata[crum][30])
+             z[6] = 0;
+             if(z[5] > 0)
+               z[5] -= 1;
+             if(z[5] > 0 || rumdata[crum][30])
                 drawsq(i,j);
              else {
                 setfill(2);

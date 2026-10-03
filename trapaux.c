@@ -17,24 +17,24 @@ int destroy(int type, int num)
 
   if(type == 1) {
     c = crumobj[num];
-    x = *(c+6);
-    y = *(c+7);
+    x = c[6];
+    y = c[7];
     }
   else {
     c = curmon[num];
-    x = *(c+24);
-    y = *(c+25);
+    x = c[24];
+    y = c[25];
     }
   z = zline[x][y];
   if(type == 1) {
     for(i=0;i<9;i++)
       c[i] = 0;
-    *(z+1) = 0;
-    if(*(z+5) > 0 || rumdata[crum][30])
+    z[1] = 0;
+    if(z[5] > 0 || rumdata[crum][30])
       drawsq(x,y);
     }
   if(type == 2) {
-    damage(num,*(c+2) + *(c+12));
+    damage(num,c[2] + c[12]);
     }
   return(1);
 }
@@ -58,16 +58,16 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
     }
   c = crumobj[i];
   *c = id;
-  *(c+1) = take;
-  *(c+2) = trap;
-  *(c+3) = con;
-  *(c+4) = nmsg;
-  *(c+5) = hide;
-  *(c+6) = x;
-  *(c+7) = y;
-  *(c+8) = vis;
+  c[1] = take;
+  c[2] = trap;
+  c[3] = con;
+  c[4] = nmsg;
+  c[5] = hide;
+  c[6] = x;
+  c[7] = y;
+  c[8] = vis;
   zline[x][y][1] = i;
-  if(*(c+8) == 1 && (rumdata[crum][30] == 1 || zline[x][y][5] == 1) ) 
+  if(c[8] == 1 && (rumdata[crum][30] == 1 || zline[x][y][5] == 1) ) 
     drawsq(x,y);
   return(i);
 }
@@ -133,14 +133,14 @@ int blowup(int x, int y)
   for(i=0;i<5;i++) {
     explode(x,y,0);
   }
-  if(*(z+2) > 0 || (curmon[0][24] == x && curmon[0][25] ==y) ) {
-    destroy(2,*(z+2));
+  if(z[2] > 0 || (curmon[0][24] == x && curmon[0][25] ==y) ) {
+    destroy(2,z[2]);
   }
-  if(*(z+1) > 0 && crumobj[*(z+1)][0] != 49) {
-    c = crumobj[*(z+1)];
-    if(*(c+3) != 0 || *(c+2) != 0)
+  if(z[1] > 0 && crumobj[z[1]][0] != 49) {
+    c = crumobj[z[1]];
+    if(c[3] != 0 || c[2] != 0)
       return(1);
-    destroy(1,*(z+1));
+    destroy(1,z[1]);
   }
   return(1);
 }

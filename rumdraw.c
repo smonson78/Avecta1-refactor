@@ -169,9 +169,9 @@ void rumdraw(char *pan)
     c = crumobj[i]; 
     if (c[0] != 0) {
       // objnum++;
-      if (*(c+2) != 0) {
+      if (c[2] != 0) {
         triglist[0]++;
-        triglist[i] = *(c+2);
+        triglist[i] = c[2];
       }
     }
   }

@@ -26,7 +26,7 @@ int16_t animate()
       x += rnd(3) - 1;
       y += rnd(3) - 1;
       z = zline[x][y];
-      if((m = *(z+6)) != 0) {
+      if((m = z[6]) != 0) {
          blt(bitmap[130 + 2*m + rnd(2)],16*x,16*y,addr);
       }
    }
@@ -36,25 +36,25 @@ int16_t animate()
       prev = (prev > grflist[0] ? 1 : prev);
       j = grflist[prev];
       c = curmon[j];
-      if(*c == 0 || *(c+30) != crum)
+      if(*c == 0 || c[30] != crum)
       return(1);
       time = 0;
-      x = *(c+24);
-      y = *(c+25);
+      x = c[24];
+      y = c[25];
       z = zline[x][y];
-      if(!*(z+5) && !rumdata[crum][30] && j > 3)
+      if(!z[5] && !rumdata[crum][30] && j > 3)
       return(1);
-      *(c+17) = ( *(c+17) == 1 ? 0 : 1);
+      c[17] = ( c[17] == 1 ? 0 : 1);
       mouse_off();
       storsc(storbuf[j],16*x,16*y,1,addr);
-      blt(bitmap[*(c+4) + 66*(*(c+17))],x*16,y*16,addr);
-      if(*(c+35) > 0) {
+      blt(bitmap[c[4] + 66*(c[17])],x*16,y*16,addr);
+      if(c[35] > 0) {
          blt(bitmap[128],16*x,16*y,addr);
-         *(c+35) -= 1;
+         c[35] -= 1;
          } 
-      if( (m = *(z+6)) != 0)
+      if( (m = z[6]) != 0)
       blt(bitmap[130 + 2*m],16*x,16*y,addr);
-      if(*(z+4) == 1) {
+      if(z[4] == 1) {
          for(m=0;m<2;m++)
          for(n=0;n<2;toggle(2*x+m,2*y+(n++),0,addr));
       }

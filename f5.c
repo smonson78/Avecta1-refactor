@@ -22,7 +22,7 @@ int i5(int pc)
   int16_t x, y;
   int object, top = 0, bot = 0, type;
   uint8_t *c = curmon[pc];
-  char scratch[18],*w = (pc == 0 ? pname : name[*(c+3)]);
+  char scratch[18],*w = (pc == 0 ? pname : name[c[3]]);
 
   if(outside)
     return(0);
@@ -49,19 +49,19 @@ int i5(int pc)
   winker = 0;
   clrinp();
   if((type == 1 && ret == 0) || type == 0) { /* this is a drag option */
-    if(x == *(c+24) && y == *(c+25)) { /* going for an eat in hand */
-      if(*(c+45) == 0 && (*(c+46) == 0 || *(c+46) == 81)) {
+    if(x == c[24] && y == c[25]) { /* going for an eat in hand */
+      if(c[45] == 0 && (c[46] == 0 || c[46] == 81)) {
         error(27);
         return(0);
         }
-      if(*(c+45) != 0 && *(c+46) != 0 && *(c+46) != 81) 
+      if(c[45] != 0 && c[46] != 0 && c[46] != 81) 
         self = error(31);
       else 
-        self = (*(c+45) == 0 ? 2 : 1 );
-      *(c+8) = *(c+44+self);
-      *(c+10) = 1;
-      *(c+15) = 5;
-      *(c+16) = 4;
+        self = (c[45] == 0 ? 2 : 1 );
+      c[8] = *(c+44+self);
+      c[10] = 1;
+      c[15] = 5;
+      c[16] = 4;
       return(1);
       }  /* now continue with drag */
     if((object = zline[x][y][1]) == 0) {
@@ -76,12 +76,12 @@ int i5(int pc)
       error(5);
       return(0);
       }
-    if(*(c+45) > 0 && *(c+46) > 0) {
+    if(c[45] > 0 && c[46] > 0) {
     error(29);
     return(0);
     }
-    *(c+7) = *(c+8) = *(c+10) = 0;
-    *(c+9) = object;
+    c[7] = c[8] = c[10] = 0;
+    c[9] = object;
     header(w);
     domsg(1);
     winker = pc+1;
@@ -92,24 +92,24 @@ int i5(int pc)
       error(1);
       return(0);
       }
-    *(c+5) = x;
-    *(c+6) = y;
-    *(c+15) = 5;
+    c[5] = x;
+    c[6] = y;
+    c[15] = 5;
     if(object > 0 && crumobj[object][0] < 41)
-      time = 3*(*(c+50) - weight[crumobj[object][0]]);
+      time = 3*(c[50] - weight[crumobj[object][0]]);
     else
       time = 5;
     time = (time < 1 ? 4 : time);
     time = (time > 20 ? 20 : time); 
-    *(c+16) = time;
-    *(c+34) = 0;
+    c[16] = time;
+    c[34] = 0;
     return(1);
     }
   else {
-    *(c+8) = scratch[ret];
-    *(c+10) = 1;
-    *(c+15) = 5;
-    *(c+16) = 6;
+    c[8] = scratch[ret];
+    c[10] = 1;
+    c[15] = 5;
+    c[16] = 6;
     }
   return(1);
 }
@@ -121,36 +121,36 @@ int i5(int pc)
 int o5(int pc)
 {
   uint8_t *z, *c = curmon[pc];
-  char *w, *w1 = (pc == 0 ? &pname[0] : name[*(c+3)]);
-  int flag = 1,x1,y1,x2,y2,j = *(c+10),x = *(c+5),y = *(c+6),k;
+  char *w, *w1 = (pc == 0 ? &pname[0] : name[c[3]]);
+  int flag = 1,x1,y1,x2,y2,j = c[10],x = c[5],y = c[6],k;
 
-  if(!handman(pc,*(c+8),*(c+9),!j)) {
+  if(!handman(pc,c[8],c[9],!j)) {
     return(1);
   }
 
   if (j == 1) {
-    w = obj[*(c+8)];
-    if (eats[*(c+8) - 40] == 0) {
+    w = obj[c[8]];
+    if (eats[c[8] - 40] == 0) {
       prnt("-> %s attempts to consume the %s, but such a thing is clearly impossible!  "
         "It is apparent that %s is becoming a little strange.", w1, w, w1, NULL, NULL, NULL);
-      *(c+8) = 0;
+      c[8] = 0;
       return(1);
     } else {
       prnt("-> %s swallows the %s!", w1, w, NULL, NULL, NULL, NULL);
-      if(*(c+8) != *(c+45) && *(c+8) != *(c+46))
-        takeout(pc,*(c+8));
-      if(*(c+8) == *(c+45)) {
-        *(c+45) = 0;
+      if(c[8] != c[45] && c[8] != c[46])
+        takeout(pc,c[8]);
+      if(c[8] == c[45]) {
+        c[45] = 0;
         return(1);
         }
-      if(*(c+8) == *(c+46))
-        *(c+46) = 0;
+      if(c[8] == c[46])
+        c[46] = 0;
       return(1);
     }
   }
    
   if (j == 0) {
-    j = *(c+9);
+    j = c[9];
     x = crumobj[j][6];
     y = crumobj[j][7];
     if(!adjac(pc,x,y))
@@ -160,36 +160,36 @@ int o5(int pc)
       prnt("-> %s attempts to drag the %s, but that is impossible!", w1, obj[k], NULL, NULL, NULL, NULL);
       return(1);
       }
-    if(k < 41 && *(c+50) + rnd(3) < weight[k]) {
+    if(k < 41 && c[50] + rnd(3) < weight[k]) {
       flag = 1; 
       prnt("-> %s is unable to budge the %s.", w1, obj[k], NULL, NULL, NULL, NULL);
       }
     else {  
-      if(*(c+24) == *(c+5) && *(c+25) == *(c+6))
+      if(c[24] == c[5] && c[25] == c[6])
         return(1);
-      nextxy(*(c+24),*(c+25),*(c+5),*(c+6),*(c+24),*(c+25),&x1,&y1);
-      x2 = x + x1 - *(c+24);
-      y2 = y + y1 - *(c+25);
+      nextxy(c[24],c[25],c[5],c[6],c[24],c[25],&x1,&y1);
+      x2 = x + x1 - c[24];
+      y2 = y + y1 - c[25];
       z = zline[x2][y2];
-      if(*z != 1 || *(z+1) != 0 || (*(z+2) > 0 && *(z+2) != pc) ||
+      if(*z != 1 || z[1] != 0 || (z[2] > 0 && z[2] != pc) ||
         (curmon[0][24] == x2 && curmon[0][25] == y2 && pc != 0) ) {
         flag = 1;
         prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j][0]], w1, NULL, NULL, NULL, NULL);
         }
       else {
-        *(c+26) = *(c+5);
-        *(c+27) = *(c+6);
+        c[26] = c[5];
+        c[27] = c[6];
         flag = 1;  
         if(i4(pc)) {
           flag = o4(pc);
-          *(c+9) = j;
+          c[9] = j;
           move(j,0,x2,y2);
           }
-        *(c+15) = 5;
+        c[15] = 5;
         if(!flag) {
           if(k < 41)
-            *(c+16) += 4 - *(c+50) + weight[k];
-          *(c+16) = (*(c+16) < 0 ? 1 : *(c+16));
+            c[16] += 4 - c[50] + weight[k];
+          c[16] = (c[16] < 0 ? 1 : c[16]);
           }
         }
       }
@@ -236,12 +236,12 @@ int prhand(int pc)
 int handman(int pc, int inv, int rum, int flag)
 {
   uint8_t *c = curmon[pc];
-  char *w1 = (pc == 0 ? pname : name[*(c+3)]);
+  char *w1 = (pc == 0 ? pname : name[c[3]]);
   int l;	
 
-  if (rum != 0 || (flag == 1 && inv != *(c+45) && inv != *(c+46)) ) {
-    if (*(c+45) > 0 && *(c+46) > 0) {
-      l = (*(c+46) != 81 ? 1 : 0);
+  if (rum != 0 || (flag == 1 && inv != c[45] && inv != c[46]) ) {
+    if (c[45] > 0 && c[46] > 0) {
+      l = (c[46] != 81 ? 1 : 0);
       if(putaway(pc,*(c+45+l)) == 0 && pc != 3) {
         error(7);
         return(0);

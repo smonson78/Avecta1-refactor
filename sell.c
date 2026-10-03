@@ -63,7 +63,7 @@ int sell(int npc)
     pass(npc);
     return(1);
     }
-  if (!c[5] && !c[8] && *(h+49) < selllist[i][1]) {
+  if (!c[5] && !c[8] && h[49] < selllist[i][1]) {
     prnt("-> The merchant looks down his long nose at %s and sniffs `I believe "
       "the merchandise I handle is currently outside of your financial purview.  I "
       "suggest you leave and go to a cheaper business.'", pname, NULL, NULL, NULL, NULL, NULL);
@@ -115,7 +115,7 @@ int sell(int npc)
       instring(row, col, str, 4, 0);
       hold = usedline = 0;
       amount = atoi(str);
-      if(amount <= 0 || amount > *(h+49)) {
+      if(amount <= 0 || amount > h[49]) {
         if(amount <= 0)
           prnt("-> The merchant snarls `You are deranged!'", NULL, NULL, NULL, NULL, NULL, NULL);
         else
@@ -190,7 +190,7 @@ int sell(int npc)
   offer!  It is done!'  He fetches the %s from the locked case and gives \
   it to %s.",
             obj[(uint8_t)selllist[i][0]],pname, NULL, NULL, NULL, NULL);
-      *(h+49) -= amount;
+      h[49] -= amount;
       selllist[i][3] = 2;
       done = 1;
       c[15] = 8;
@@ -238,13 +238,13 @@ if(c[48] == 0 || !los(npc,x,y) || ex == 8) {
           break;
         k = 1 + rnd(13);
         o = crumobj[k];
-        j = *(o+3);
+        j = o[3];
         if(*o == 0 || j == 0 || j == 15 || j == 16 || j == 13 || j == 8 
            || j == 20 || j == 21 || j == 19 || j == 23 || j == 25 || j == 4
-           || j == 5 || *(o+5) == -2 || adjac(npc,*(o+6),*(o+7)) )
+           || j == 5 || o[5] == -2 || adjac(npc,o[6],o[7]) )
           continue;
-        x = *(o+6);
-        y = *(o+7);
+        x = o[6];
+        y = o[7];
         c[48] = k;
         break;
         } while (1);

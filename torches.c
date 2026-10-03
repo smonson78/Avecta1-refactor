@@ -14,12 +14,12 @@ int setlite(int pc, int dx, int dy)
   int x,y;
   if(rumdata[crum][30])
     return(1);
-  x = *(c+24);
-  y = *(c+25);
+  x = c[24];
+  y = c[25];
   Vsync();
   vbl_animation_off();
   drawsq(x,y);
-  if(*(c+41) == 0) {
+  if(c[41] == 0) {
     drawsq(x-dx,y-dy);
     return(0);
     }
@@ -68,8 +68,8 @@ int litetrol(int x, int y, int s)
           flag = 0; /* shut down flag */
           for(l=0;l<=3;l++) { /* don't shut down square if 1-4 charac there */
               c = curmon[l];
-              if(*c != 0 && *(c+30) == crum 
-                && *(c+24) == x+i && *(c+25) == y+k) {
+              if(*c != 0 && c[30] == crum 
+                && c[24] == x+i && c[25] == y+k) {
                 flag = 1;
                 break;
                 }
@@ -109,30 +109,30 @@ void drawsq(int x, int y)
   fillsq(x,y);
   if(i == 2)
     return;
-  pc = *(z+2);
+  pc = z[2];
   if(!pc)
     pc = (curmon[0][24] == x && curmon[0][25] == y ? 0 : -1);
   x *= 16;
   y *= 16;
-  if(*(z+1) != 0 && crumobj[*(z+1)][8] == 1)
-    blt(bitmap[crumobj[*(z+1)][0]],x,y,addr);
+  if(z[1] != 0 && crumobj[z[1]][8] == 1)
+    blt(bitmap[crumobj[z[1]][0]],x,y,addr);
   if(pc >= 0) { 
     c = curmon[pc];
     *c = 0;
     Vsync();
     *c = 1;
     storsc(storbuf[pc],x,y,0,addr);
-    blt(bitmap[*(c+4)],x,y,addr);
+    blt(bitmap[c[4]],x,y,addr);
     }
-  if(*(z+6) != 0) {
-    blt(bitmap[130 + 2*(*(z+6))],x,y,addr);
+  if(z[6] != 0) {
+    blt(bitmap[130 + 2*(z[6])],x,y,addr);
   }
 }
 
 void drawman(int pc, int x, int y)
 {
     uint8_t *c = curmon[pc];
-    if(pc < 4 && *(c+41) > 0) {
+    if(pc < 4 && c[41] > 0) {
       litetrol(x,y,1);
     }
     if(zline[x][y][5] > 0 || rumdata[crum][30] || pc < 4) {

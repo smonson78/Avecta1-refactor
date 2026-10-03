@@ -11,13 +11,13 @@
 int i13(int pc)
 {
   uint8_t *c = curmon[pc];
-  char *w = (pc == 0 ? pname : name[*(c+3)]);
+  char *w = (pc == 0 ? pname : name[c[3]]);
   int ret,tar;
   int16_t x, y;
 
   if(outside)
     return(0);
-  if(*(c+45) == 0) {
+  if(c[45] == 0) {
     error(27);
     return(0);
     }
@@ -36,10 +36,10 @@ int i13(int pc)
     error(8);
     return(0);
     }
-  *(c+7) = tar;
-  *(c+8) = *(c+9) = 0;
-  *(c+15) = 13;
-  *(c+16) = *(c+11);
+  c[7] = tar;
+  c[8] = c[9] = 0;
+  c[15] = 13;
+  c[16] = c[11];
   return(1);
 }
 
@@ -47,20 +47,20 @@ int o13(int pc)
 {
   uint8_t *c = curmon[pc];
   uint8_t *z, *t;
-  char *wt,*w = (pc == 0 ? pname : name[*(c+3)]);
-  int tar = *(c+7),x,y,d,miss,i,j,k;
+  char *wt,*w = (pc == 0 ? pname : name[c[3]]);
+  int tar = c[7],x,y,d,miss,i,j,k;
   t = curmon[tar];
-  x = *(t+24);
-  y = *(t+25);
-  d = dist(*(c+24),*(c+25),0,x,y,0);
-  wt = (tar == 0 ? pname : name[*(t+3)]);
+  x = t[24];
+  y = t[25];
+  d = dist(c[24],c[25],0,x,y,0);
+  wt = (tar == 0 ? pname : name[t[3]]);
   if(!los(pc,x,y)) {
-    prnt("-> %s cannot see %s to give the %s!", w, wt, obj[*(c+45)], NULL, NULL, NULL);
+    prnt("-> %s cannot see %s to give the %s!", w, wt, obj[c[45]], NULL, NULL, NULL);
     return(1);
     }
   if(!adjac(pc,x,y)) { /* gotta throw the damned thing */
     miss = 0;
-    if(rnd(100) > 5*(*(c+50)) - 5*d )
+    if(rnd(100) > 5*(c[50]) - 5*d )
       miss = 1;
     i = j = k = 0;
     if(miss || zline[x][y][1] != 0) {
@@ -71,41 +71,41 @@ int o13(int pc)
           } while(k < 20 && (zline[x+i][y+j][1] != 0 || zline[x+i][y+j][0] != 1));
         }
     if(k == 20) {
-      prnt("-> %s cannot spot a place to which to throw the %s!", w, obj[*(c+45)], NULL, NULL, NULL, NULL);
+      prnt("-> %s cannot spot a place to which to throw the %s!", w, obj[c[45]], NULL, NULL, NULL, NULL);
       return(1);
       }    
-    prnt("-> %s throws the %s to %s!", w, obj[*(c+45)], wt, NULL, NULL, NULL);
+    prnt("-> %s throws the %s to %s!", w, obj[c[45]], wt, NULL, NULL, NULL);
     k = rumslot();
     z = crumobj[k];
     if(k > 13) { 
-      storobj(*(c+45),x+i,y+j);
-      rumdata[crum][134+k] = *(c+45);
+      storobj(c[45],x+i,y+j);
+      rumdata[crum][134+k] = c[45];
       }
-    *z = *(c+45);
-    *(z+1) = 1;
-    *(z+6) = x+i;
-    *(z+7) = y+j;
-    *(z+4) = *(c+45);
-    *(z+5) = -1;
-    *(z+8) = 1;
-    *(z+2) = *(z+3) = 0;
-    *(c+45) = 0;
+    *z = c[45];
+    z[1] = 1;
+    z[6] = x+i;
+    z[7] = y+j;
+    z[4] = c[45];
+    z[5] = -1;
+    z[8] = 1;
+    z[2] = z[3] = 0;
+    c[45] = 0;
     zline[x+i][y+j][1] = k;
     if(rumdata[crum][30] || zline[x+i][y+j][5] > 0)
         drawsq(x+i,y+j);
     return(1);
     }
-  prnt("-> %s gives the %s to %s.", w, obj[*(c+45)], wt, NULL, NULL, NULL);
-  if(*(t+45) != 0)
-    putaway(tar,*(t+45));
-  *(c+8) = *(c+45);
-  *(t+45) = *(c+45);
-  if(*(t+45) == 45) {
-    *(t+44) = *(c+44);
-    *(c+44) = 0;
+  prnt("-> %s gives the %s to %s.", w, obj[c[45]], wt, NULL, NULL, NULL);
+  if(t[45] != 0)
+    putaway(tar,t[45]);
+  c[8] = c[45];
+  t[45] = c[45];
+  if(t[45] == 45) {
+    t[44] = c[44];
+    c[44] = 0;
     }
-  if(*(t+32) == 0 && *(t+45) < 46 && *(t+45) > 40 )
-    *(t+32) = *(t+45);
-  *(c+45) = 0;
+  if(t[32] == 0 && t[45] < 46 && t[45] > 40 )
+    t[32] = t[45];
+  c[45] = 0;
   return(1);
 }

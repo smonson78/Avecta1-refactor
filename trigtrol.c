@@ -14,8 +14,8 @@ void trigtrol(int pc)
     return;
   }
 
-  x = *(c+24);
-  y = *(c+25);
+  x = c[24];
+  y = c[25];
 
   for(i=1;i<25;i++) {
     if(triglist[i] == 0) {
@@ -25,15 +25,15 @@ void trigtrol(int pc)
     trapvec = triglist[i];
     t = trigval[trapvec];
     type = *t;
-    x1 = (*(t+1))%16;
-    y1 = (*(t+1))/16;
+    x1 = (t[1])%16;
+    y1 = (t[1])/16;
     flag = 1;
 
     for(j=1;j<32;j *= 2) {
       if( (j & type) ) {
         switch(j) { 
             case 1:
-              if(*(c+24) != x1 || *(c+25) != y1)
+              if(c[24] != x1 || c[25] != y1)
                   flag = 0;
               break;
             case 2:
@@ -48,12 +48,12 @@ void trigtrol(int pc)
                 }
                 inv = invnpc[pc];    
                 for(l=1;l<11;l++) {
-                  if( *(inv+l) == *(t+4) ) {
+                  if( *(inv+l) == t[4] ) {
                     hold = 1;
                     break;
                   }
                 }
-                if(*(c+45) == *(t+4) || *(c+46) == *(t+4)) {
+                if(c[45] == t[4] || c[46] == t[4]) {
                   hold = 1;
                 }
                 if( (j == 4 && hold == 0) || (j == 8 && hold == 1) ) {
@@ -61,13 +61,13 @@ void trigtrol(int pc)
                 }
                 break;
             case 16:
-                if(*(c+15) != *(t+3)) {
+                if(c[15] != t[3]) {
                   flag = 0;
                 }
-                if(*(t+2) != 0 && *(c+9) != *(t+2)) {
+                if(t[2] != 0 && c[9] != t[2]) {
                   flag = 0;
                 }
-                if( *(t+4) != 0 && *(c+8) != *(t+4)) {
+                if( t[4] != 0 && c[8] != t[4]) {
                   flag = 0;
                 }
                 break;
@@ -75,7 +75,7 @@ void trigtrol(int pc)
         }
       }
     if (flag) {
-      trapres(pc,*(t+5),x,y);
+      trapres(pc,t[5],x,y);
     }
   }
 }

@@ -206,7 +206,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             mouse_on();
          } 
 
-      if(newx < 16 && newy < 8 && (*z == 1 || (*z == 2 && *(z+1) != 0 ) ) ) {
+      if(newx < 16 && newy < 8 && (*z == 1 || (*z == 2 && z[1] != 0 ) ) ) {
          if(newx != oldx || newy != oldy) {
             Vsync();
             if (tflag) {
@@ -226,19 +226,19 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
                rflag = 0;
             }
 
-            if (*(z+5) > 0 || light || (*(z+2) > 0 && *(z+2) < 4) || 
-                  (winker > 0 && *(c+24) == newx && *(c+25) == newy) ) {
+            if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
+                  (winker > 0 && c[24] == newx && c[25] == newy) ) {
                Vsync();
                for(j=0;j<2;j++) 
                   for(k=0;k<2;toggle(2*newx+j,2*newy+(k++),0,addr));
-               *(z+4) = 1;
+               z[4] = 1;
                rflag = 1;
             }
             oldx = newx;
             oldy = newy;
-            if (mflag == 0 && mode && *(z+2) > 3 && (*(z+5) > 0 || light) 
-                  && curmon[*(z+2)][31] < 4 ) {
-               mflag = curmon[*(z+2)][33];
+            if (mflag == 0 && mode && z[2] > 3 && (z[5] > 0 || light) 
+                  && curmon[z[2]][31] < 4 ) {
+               mflag = curmon[z[2]][33];
                Vsync();
                toggle(32,mflag,7,addr);             
             }
@@ -358,12 +358,12 @@ int lom(int pc, int x, int y)
    while ( (x != x2) || (y != y2) ) {
       if (q == 1) {
          z = zline[x][y];
-         z1 = crumobj[*(z+1)][0];
-         if(*(z+1) != 0 ) {
+         z1 = crumobj[z[1]][0];
+         if(z[1] != 0 ) {
             if(z1 < 41 && z1 > 1)
             return(0);
             }
-         if (*(z+2) != 0 || *z == 0 || ( *z == 2 && z1 == 0))
+         if (z[2] != 0 || *z == 0 || ( *z == 2 && z1 == 0))
             return(0);    
          q = 0;  /* all this is stored in zline array  for each room     */
          }
@@ -419,8 +419,8 @@ int los(int pc, int x, int y)
    while ( (x != x2) || (y != y2) ) {
       if (q == 1) {
          z = zline[x][y];
-         z1 = crumobj[*(z+1)][0];
-         if(*z != 1 || ( *(z+1) != 0 && z1 == 1) )
+         z1 = crumobj[z[1]][0];
+         if(*z != 1 || ( z[1] != 0 && z1 == 1) )
             return(0);    
          q = 0;  /* all this is stored in zline array  for each room     */
       }
@@ -563,20 +563,20 @@ int move(int obj, int flag, int x, int y)
             if(i == 0 && j == 0)
                   continue;
             z = zline[x+i][y+j];
-            if (*z == 1 && *(z+1) == 0 && *(z+2) == 0 &&
+            if (*z == 1 && z[1] == 0 && z[2] == 0 &&
                   (curmon[0][24] != x+i || curmon[0][25] != y+j)) {
                if(obj > 13)
                   xobj(*c,crum);
                zline[x][y][1] = 0;
                if(light || zline[x][y][5] > 0)
                   drawsq(x,y);
-               *(z+1) = obj;
-               *(c+6) = x+i;
-               *(c+7) = y+j;
+               z[1] = obj;
+               c[6] = x+i;
+               c[7] = y+j;
                if(obj > 13) {
                   storobj(*c,x+i,y+j);
                }
-               if(light || *(z+5) > 0) {
+               if(light || z[5] > 0) {
                   drawsq(x+i,y+j);
                }
                done = 1;
@@ -590,11 +590,11 @@ int move(int obj, int flag, int x, int y)
    }
 
    if(!flag) {
-      zline[*(c+6)][*(c+7)][1] = 0;
-      if(light || zline[*(c+6)][*(c+7)][5] > 0)
-         drawsq(*(c+6),*(c+7));
-      *(c+6) = x;
-      *(c+7) = y;
+      zline[c[6]][c[7]][1] = 0;
+      if(light || zline[c[6]][c[7]][5] > 0)
+         drawsq(c[6],c[7]);
+      c[6] = x;
+      c[7] = y;
       zline[x][y][1] = obj;
       if(light || zline[x][y][5] > 0)
          drawsq(x,y);
@@ -710,7 +710,7 @@ int status(int pc)
   int16_t i, j;
   int ret,flag = 0;
   uint8_t *c = curmon[pc];
-  char scratch[3],*w = (pc == 0 ? pname : name[*(c+3)]);
+  char scratch[3],*w = (pc == 0 ? pname : name[c[3]]);
 
    if (pc > 3)
     return(1);
@@ -728,16 +728,16 @@ int status(int pc)
       printf("        ");
       textsix(1,260,16*i-7,strlen(statword[i]),statword[i]);
       }
-   textsix(1,260,33,strlen(obj[*(c+45)]),obj[*(c+45)]);
-   textsix(1,260,49,strlen(obj[*(c+46)]),obj[*(c+46)]);
-   sprintf(scratch,"%d",*(c+2) - *(c+1));
+   textsix(1,260,33,strlen(obj[c[45]]),obj[c[45]]);
+   textsix(1,260,49,strlen(obj[c[46]]),obj[c[46]]);
+   sprintf(scratch,"%d",c[2] - c[1]);
    textsix(1,300,9,2,scratch);
-   if(*(c+47)>0)
+   if(c[47]>0)
    sprintf(scratch,"%c",'P');
    else
    sprintf(scratch,"%c",'G');
    textsix(1,314,9,1,scratch);
-   sprintf(scratch,"%d",*(c+14));
+   sprintf(scratch,"%d",c[14]);
    textsix(1,300,17,strlen(scratch),scratch);
    v_rvoff(handle);
    for(i=5;i<9;i++)
@@ -752,14 +752,14 @@ int status(int pc)
       case 1:
       case 2:
          if(ret == 2) {
-            if(*(c+41) > 0) {
-               *(c+46) = 0;
-               litetrol(*(c+24),*(c+25),0);
+            if(c[41] > 0) {
+               c[46] = 0;
+               litetrol(c[24],c[25],0);
                } 
-            if(*(c+41) > 64) 
-               *(c+42) += 1;
-            if(*(c+41) > 0)
-               *(c+41) = 0;
+            if(c[41] > 64) 
+               c[42] += 1;
+            if(c[41] > 0)
+               c[41] = 0;
             }
          j = invent(pc);
          if(j == 0) {
@@ -778,8 +778,8 @@ int status(int pc)
             }
          takeout(pc,j);
          *(c+44+ret) = j;
-         if(*(c+45) < 46 && *(c+45) > 40)
-            *(c+32) = *(c+45);
+         if(c[45] < 46 && c[45] > 40)
+            c[32] = c[45];
          break;
       case 3:
          invent(pc);
@@ -820,8 +820,8 @@ int listinv(int pc, char *scratch)
    v_rvoff(handle);
    textsix(1,260,1,9,"INVENTORY");
    prhand(pc);
-   *(scratch+1) = *(c+45);
-   *(scratch+2) = *(c+46);
+   *(scratch+1) = c[45];
+   *(scratch+2) = c[46];
    for(j=1;j<14;j++) {
    if(*(o+j) != 0) {
       bot++;
@@ -831,10 +831,10 @@ int listinv(int pc, char *scratch)
    }
    textsix(1,260,25+bot*8,9,"No Choice");
    textsix(1,260,33+8*bot,7,"Torches");
-   sprintf(word,"%d",*(c+42));
+   sprintf(word,"%d",c[42]);
    textsix(1,308,33+8*bot,strlen(word),word);
    textsix(1,260,41 + 8*bot,4,"Gold");
-   sprintf(word,"%d",*(c+49));
+   sprintf(word,"%d",c[49]);
    textsix(1,308,41 + 8*bot,strlen(word),word);
    Vsync();
    vbl_animation_on();

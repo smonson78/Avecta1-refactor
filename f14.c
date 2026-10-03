@@ -34,9 +34,9 @@ int i14(int pc)
     error(3);
     return 0;
   }
-  *(c+7) = tar;
-  *(c+15) = 14;
-  *(c+16) = 1;
+  c[7] = tar;
+  c[15] = 14;
+  c[16] = 1;
   return 1;
 }
 
@@ -44,19 +44,19 @@ int o14(int pc)
 {
   uint8_t *c = curmon[curmon[pc][7]];
   curmon[pc][8] = curmon[pc][9] = 0;
-  if (*(c+38)) {
-    *(c+38) = 0;
-    prnt("-> %s allows %s to make decisions!", pname, name[*(c+3)], NULL, NULL, NULL, NULL);
+  if (c[38]) {
+    c[38] = 0;
+    prnt("-> %s allows %s to make decisions!", pname, name[c[3]], NULL, NULL, NULL, NULL);
     return 1;
   }
 
-  prnt("-> %s issues orders to %s!", pname, name[*(c+3)], NULL, NULL, NULL, NULL);
+  prnt("-> %s issues orders to %s!", pname, name[c[3]], NULL, NULL, NULL, NULL);
 
-  if (*(c+16) != 0) {
-    *(c+15) = 8;
-    *(c+16) = 1;
+  if (c[16] != 0) {
+    c[15] = 8;
+    c[16] = 1;
   }
-  *(c+38) = 1;
+  c[38] = 1;
 
   return 1;
 }

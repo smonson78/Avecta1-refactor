@@ -25,27 +25,27 @@ int dotop(int pc)
   vs_curaddress(handle,2,33);
   v_eeol(handle);
   textsix(1,260,9,1,"H");
-  sprintf(scratch,"%d",*(c+2) - *(c+1));
+  sprintf(scratch,"%d",c[2] - c[1]);
   textsix(1,269,9,strlen(scratch),scratch);
-  if(*(c+47) > 0)
+  if(c[47] > 0)
     sprintf(scratch,"%c",'P');
   else
     sprintf(scratch,"%c",'G');
   textsix(1,281,9,1,scratch);
   textsix(1,290,9,1,"S");
-  sprintf(scratch,"%d",*(c+14));
+  sprintf(scratch,"%d",c[14]);
   textsix(1,299,9,strlen(scratch),scratch);
   
-  if(*(c+21) == 0)
+  if(c[21] == 0)
     sprintf(scratch, "%c", ' ');
   else {
-    if (*(c+19) == 12)
+    if (c[19] == 12)
       l = 'A';
-    if (*(c+19) == 11)
+    if (c[19] == 11)
       l = 'S';
-    if (*(c+19) == 43)
+    if (c[19] == 43)
       l = 'V';
-    if (*(c+19) == 54)
+    if (c[19] == 54)
       l = 'I';
     }
   sprintf(scratch, "%c", l);
@@ -61,7 +61,7 @@ int input(int pc)
   int i,j,ret;
   uint8_t *c = curmon[pc];
   uint8_t *z = NULL;
-  char *w = (pc == 0 ? pname : name[*(c+3)]);
+  char *w = (pc == 0 ? pname : name[c[3]]);
   
   if (pc > 3)
     return(0);
@@ -73,7 +73,7 @@ com:
   if (((pc == 0) && (c[15] == 1)) || ((pc < 4) && c[38] && (c[15] == 1)) ) {
     combat = comwind(pc);
   }
-  if( (pc == 0 || (pc < 4 && *(c+38) ) )  && combat)
+  if( (pc == 0 || (pc < 4 && c[38] ) )  && combat)
     return(1);
 
 top:
@@ -96,7 +96,7 @@ top:
   v_bar(handle,vxy);
   Vsync();
 
-  *(c+31) = 0;
+  c[31] = 0;
   winker = pc+1;
   vbl_animation_on();
 
@@ -109,7 +109,7 @@ top:
     }
 
     if(ret == 0 || ret == 14) {
-        if( (*(c+24) == x && *(c+25) == y) || ret == 14) {
+        if( (c[24] == x && c[25] == y) || ret == 14) {
           i = status(pc); /* if status returns a 0 it fixed the action */
 
           if(!i)
@@ -124,10 +124,10 @@ top:
           i = 1;
         }
 
-        j = crumobj[*(z+1)][0];
+        j = crumobj[z[1]][0];
 
-        if( (j > 0 && j < 41) || (*(z+2) < 4 && pc > 0 && *(z+2) > 0) 
-            || (*z == 2 && *(z+2) == 0) )
+        if( (j > 0 && j < 41) || (z[2] < 4 && pc > 0 && z[2] > 0) 
+            || (*z == 2 && z[2] == 0) )
           i = 1;
     }
   } while (i == 1); 
@@ -141,12 +141,12 @@ top:
 
   if (ret == 0) {
     if (z[2] != 0) {
-      *(c+7) = *(z+2);
-      if(*(z+2) > 3)  {
+      c[7] = z[2];
+      if(z[2] > 3)  {
         combat = 1;
-        if(!pc || (pc < 4 && *(c+38)) ) {
-          *(c+15) = 1;
-          *(c+39) = *(c+7);
+        if(!pc || (pc < 4 && c[38]) ) {
+          c[15] = 1;
+          c[39] = c[7];
           goto com;
           }
         else
@@ -154,17 +154,17 @@ top:
         }
       else {
         if(pc == 0) {
-            i = status(*(c+7));
+            i = status(c[7]);
             if(!i) 
-              curmon[*(c+7)][15] = 8;
+              curmon[c[7]][15] = 8;
             }
         else
             goto top;     
         }
       }
     else {
-      *(c+26) = x;
-      *(c+27) = y;
+      c[26] = x;
+      c[27] = y;
       return(4);
       }
   }
@@ -182,13 +182,13 @@ top:
 // Draw the command window
 int comwind(int pc)
 {
-  uint8_t *c = curmon[pc], *c1 = curmon[*(c+39)];
+  uint8_t *c = curmon[pc], *c1 = curmon[c[39]];
   char scratch[3];
-  char *w = (pc == 0 ? pname : name[*(c+3)]);
+  char *w = (pc == 0 ? pname : name[c[3]]);
   int16_t x, y;
   int i,j,ret;
-  if(!*(c+39) || *c1 == 0 || *(c1+30) != crum || !adjac(pc,*(c1+24),*(c1+25)) ) {
-    *(c+34) = *(c+39) = *(c+7) = 0;
+  if(!c[39] || *c1 == 0 || *(c1+30) != crum || !adjac(pc,*(c1+24),*(c1+25)) ) {
+    c[34] = c[39] = c[7] = 0;
     clrinp();
     return(0);
   }
@@ -208,21 +208,21 @@ int comwind(int pc)
   textsix(1,260,57,8,"Options:");
   v_rvoff(handle);
   textsix(1,260,1,strlen(w),w);
-  sprintf(scratch,"%d",*(c+2) - *(c+1));
+  sprintf(scratch,"%d",c[2] - c[1]);
   textsix(1,280,9,strlen(scratch),scratch);
-  if(*(c+47) == 0)
+  if(c[47] == 0)
     sprintf(scratch,"%c",'G');
   else
     sprintf(scratch,"%c",'P');
   textsix(1,294,9,1,scratch);
-  textsix(1,260,17,strlen(obj[*(c+45)]),obj[*(c+45)]);
-  if(*(c+34) < -1 || *(c+34) > 1)
-    *(c+34) = 0;
-  if(*(c+34) == 1)
+  textsix(1,260,17,strlen(obj[c[45]]),obj[c[45]]);
+  if(c[34] < -1 || c[34] > 1)
+    c[34] = 0;
+  if(c[34] == 1)
     textsix(1,260,25,3,"Hit");
-  if(*(c+34) == -1)
+  if(c[34] == -1)
     textsix(1,260,25,4,"Miss");
-  if(*(c+34) == 0)
+  if(c[34] == 0)
     textsix(1,260,25,4," -- ");
   textsix(1,260,33,strlen(name[*(c1+3)]),name[*(c1+3)]);
   i = (*(c1+1) * 4)/(*(c1+2));
@@ -245,22 +245,22 @@ int comwind(int pc)
   clrinp();
 
   if(ret == 11 || ret == 12) {
-    *(c+40) = *(c+39) = *(c+34) = 0;
+    c[40] = c[39] = c[34] = 0;
     return(0);
     }
   if(ret == 0) {
-    if(zline[x][y][2] == *(c+39)) { 
-      *(c+40) = 2;
+    if(zline[x][y][2] == c[39]) { 
+      c[40] = 2;
       return(1);
       }
     else {
-      *(c+34) = *(c+39) = *(c+40) = 0;
+      c[34] = c[39] = c[40] = 0;
       return(0);
       }
     }
   else
     ret -= 7;
-  *(c+40) = ret;
+  c[40] = ret;
   return 1;
 }
 

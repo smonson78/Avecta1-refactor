@@ -104,14 +104,14 @@ int init(int flag) {
   *c = 1;
 
   // Maybe starting stats on some character... the player?
-  *(c+46) = *(c+45) = 
-    *(c+31) = *(c+32) = *(c+33) = *(c+34) = *(c+35) = *(c+1) = 0;
-  *(c+59) = 2;
-  *(c+42) = 20;
-  *(c+41) = 0;
-  *(c+32) = 2;
-  *(c+33) = 4;
-  *(c+4) = 81;
+  c[46] = c[45] = 
+    c[31] = c[32] = c[33] = c[34] = c[35] = c[1] = 0;
+  c[59] = 2;
+  c[42] = 20;
+  c[41] = 0;
+  c[32] = 2;
+  c[33] = 4;
+  c[4] = 81;
 
   // Clear all of invnpc[4][20]
   // for (j = 0; j < 4; j++) {
@@ -124,12 +124,12 @@ int init(int flag) {
   invnpc[0][0] = 1;
   invnpc[0][2] = 42;
 
-  *(c+44) = 50;
-  *(c+47) = 0;
-  *(c+49) = 50;
+  c[44] = 50;
+  c[47] = 0;
+  c[49] = 50;
 
   if (flag == 2) {
-    *(c+14) = 6*(*(c+51));
+    c[14] = 6*(c[51]);
     texwin();
     return 1;
   }
@@ -138,12 +138,12 @@ int init(int flag) {
   val[1] = 3;
   val[2] = 1;
 
-  *(c+37) = 5 + 20 * val[2];
-  *(c+50) = 3 + 2 * val[1];
-  *(c+14) = 6 * val[0];
-  *(c+51) = val[0];
-  *(c+2) = 50;
-  *(c+11) = 4;
+  c[37] = 5 + 20 * val[2];
+  c[50] = 3 + 2 * val[1];
+  c[14] = 6 * val[0];
+  c[51] = val[0];
+  c[2] = 50;
+  c[11] = 4;
 
   texwin();
 
@@ -294,10 +294,10 @@ int loadnew() {
     }
 
     police = 0;
-    *(c+55) = 53;
-    *(c+56) = 3;
-    *(c+57) = 3;
-    *(c+59) = 2;
+    c[55] = 53;
+    c[56] = 3;
+    c[57] = 3;
+    c[59] = 2;
     for (i = 0; i < 4; i++) {
       selllist[i][3] = 0;
     }
@@ -369,14 +369,14 @@ int loadnew() {
   Fread(fhandle, (long)5330, fillpic);
 
   if (dungeon == 0) {
-    *(c+4) = 125;
-    if(*(c+47) > 0 && *(c+14) > 0)
-      *(c+47) = 0;
-    *(c+41) = 0;
+    c[4] = 125;
+    if(c[47] > 0 && c[14] > 0)
+      c[47] = 0;
+    c[41] = 0;
     Fseek((long)5330, fhandle, 0);
     Fread(fhandle, (long)5200, bitmap[21]);
   } else {
-    *(c+4) = 81;
+    c[4] = 81;
   }
   Fclose(fhandle);
 
@@ -409,10 +409,10 @@ int loadnew() {
     }
   Fclose(fhandle);
   dismax = specbuf[21];
-  *(c+24) = specbuf[22];
-  *(c+25) = specbuf[23];
+  c[24] = specbuf[22];
+  c[25] = specbuf[23];
   winroom = specbuf[24];
-  *(c+30) = specbuf[25];
+  c[30] = specbuf[25];
   police = specbuf[34];
   specbuf[31] = d1;
   specbuf[32] = d2;
@@ -420,8 +420,8 @@ int loadnew() {
   if(old != 0 && new == 1)
     specbuf[30+old] = 1;  /* inform this dungeon the old one is dirty */
   if(new == 0 && lev != 0 ) {
-    *(c+24) = 6;
-    *(c+25) = 3;
+    c[24] = 6;
+    c[25] = 3;
     lev = specbuf[28] = 1;
     }
   for(i=1;i<4;i++) {
