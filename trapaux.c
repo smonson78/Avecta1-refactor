@@ -28,7 +28,7 @@ int destroy(int type, int num)
   z = zline[x][y];
   if(type == 1) {
     for(i=0;i<9;i++)
-      *(c+i) = 0;
+      c[i] = 0;
     *(z+1) = 0;
     if(*(z+5) > 0 || rumdata[crum][30])
       drawsq(x,y);

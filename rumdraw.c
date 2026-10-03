@@ -138,7 +138,7 @@ void rumdraw(char *pan)
   // 5 things, 14..18
   for (i = 14; i < 19; i++) {
     c = crumobj[i];
-    // for (j = 0; j < 9; *(c+(j++)) = 0) {
+    // for (j = 0; j < 9; c[(j++]) = 0) {
     // }
 
     // Blank it out

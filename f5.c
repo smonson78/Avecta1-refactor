@@ -224,8 +224,8 @@ int prhand(int pc)
     }
   v_rvoff(handle);
   for(i=0;i<2;i++) {
-    if(*(c+45+i) != 0)
-      sprintf(scratch, "%s", obj[*(c+45+i)]);
+    if(c[45+i] != 0)
+      sprintf(scratch, "%s", obj[c[45+i]]);
     else
       sprintf(scratch, "%s", "Empty");
     textsix(1,260,9+8*i,strlen(scratch),scratch);
@@ -248,10 +248,10 @@ int handman(int pc, int inv, int rum, int flag)
         }
       if(inv != 0 && pc != 3)
         prnt("-> %s puts away the %s in order to handle the %s.",
-          w1, obj[*(c+45+l)], obj[inv], NULL, NULL, NULL);
+          w1, obj[c[45+l]], obj[inv], NULL, NULL, NULL);
       if(rum != 0 && pc != 3)
-        prnt("-> %s puts away the %s to free a hand.", w1, obj[*(c+45+l)], NULL, NULL, NULL, NULL);
-      *(c+45+l) = 0;
+        prnt("-> %s puts away the %s to free a hand.", w1, obj[c[45+l]], NULL, NULL, NULL, NULL);
+      c[45+l] = 0;
     }
   }
   return(1);

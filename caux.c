@@ -383,6 +383,7 @@ int lom(int pc, int x, int y)
    return(1);  /* if it makes it all the way through then los is open */         
 }
 
+// Line-Of-Sight, I guess
 int los(int pc, int x, int y)
 {
    int x2,y2,i,j,q;
@@ -390,6 +391,7 @@ int los(int pc, int x, int y)
    uint8_t *c0 = curmon[pc];
    uint8_t *z;
    char z1;
+
    x2 = *(c0+24); /* fetch the x-coordinate of the PC */
    y2 = *(c0+25); /* fetch the y-coordinate of the PC */
    i = (x2-x);            /* find difference between target and PC */
@@ -461,13 +463,14 @@ void nextxy(int xlo, int ylo, int xhi, int yhi, int xnow, int ynow, int *xnext, 
    if (j != 0)
       signy = j/rolly;
    do {
-      if(line(xlo,ylo,xhi,yhi,xnow+signx,ynow+signy)) {
+      if (line(xlo,ylo,xhi,yhi,xnow+signx,ynow+signy)) {
          *xnext = xnow + signx;
          *ynext = ynow + signy;
          k = 0;
          break;
       }
-      if(line(xlo,ylo,xhi,yhi,xnow+signx,ynow)) {
+
+      if (line(xlo,ylo,xhi,yhi,xnow+signx,ynow)) {
          *xnext = xnow + signx;
          *ynext = ynow;
          signy = 0;
@@ -760,15 +763,15 @@ int status(int pc)
             }
          j = invent(pc);
          if(j == 0) {
-            if(!putaway(pc,*(c+44+ret))) {
+            if (!putaway(pc,c[44+ret])) {
                error(7);
                break;
-               }
-            *(c+44+ret) = 0;
+            }
+            c[44+ret] = 0;
             break;
             } 
-         if(*(c+44+ret) != 0 ) { 
-            if(!putaway(pc,*(c+44+ret))) {
+         if(c[44+ret] != 0 ) { 
+            if(!putaway(pc,c[44+ret])) {
                error(7);
                break;
                }

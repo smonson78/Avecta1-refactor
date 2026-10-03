@@ -67,6 +67,7 @@ int damage(int pc, int level)
       toggle(32,*(c+33),7,addr);
       }
    }
+
    Vsync();
    vbl_animation_on();
    if(*(c+1) >= *(c+2) || level > *(c+2)) {
@@ -114,41 +115,42 @@ int damage(int pc, int level)
          if(j > 13) {
             rumdata[crum][134+j] = 41-pc;
             storobj(41-pc,x,y);
-            }
+         }
          *z = *(z+4) = 41-pc;
          *(z+1) = *(z+8) = 1;
          *(z+7) = *(c+25);
          *(z+6) = *(c+24);
          if(invnpc[pc][0] > 0) {
-            for(i=1;i<=13;i++) {
+            for (i=1;i<=13;i++) {
                if(invnpc[pc][i] != 0) {
-               putinto(j,invnpc[pc][i]);
-               invnpc[pc][i] = 0;
+                  putinto(j,invnpc[pc][i]);
+                  invnpc[pc][i] = 0;
                }
-               }
+            }
             invnpc[pc][0] = 0;
             *(z+5) = 1;
-            }       
-         else
+         } else {
             *(z+5) = 0;
+         }
          *(z+2) = *(z+3) = 0;
       }
       
-      if (light || zline[x][y][5] > 0) {
-         drawsq(x,y);
-      }
+         if (light || zline[x][y][5] > 0) {
+            drawsq(x,y);
+         }
 
-      for(i=0;i<60;*(c+(i++)) = 0)
-         // Delay loop
-         ;
-      return(1);
-   } else {
-      undorep();
-      prnt("   -- ! %s IS PASSING OUT ! --",w);
-      stormon();
-      combat = 0;
-      return(-1);
-   }
+         for (i=0; i < 60; i++) {
+            c[i] = 0;
+         }
+         
+         return 1;
+      } else {
+         undorep();
+         prnt("   -- ! %s IS PASSING OUT ! --",w);
+         stormon();
+         combat = 0;
+         return(-1);
+      }
    }
    if( pc < 4 && (old*4)/(*(c+2)) < (i = (*(c+1)*4)/(*(c+2))) ) {
       prnt("-> %s's damage is now %s!",w,wordmod[i]);

@@ -431,7 +431,7 @@ int loadnew() {
   for(i=4;i<12;i++) {
     c = curmon[i];
     for(j=0;j<60;j++)
-      *(c+j) = 0;
+      c[j] = 0;
     }
   for(i=0;i<20;i++)
     invtrig[i] = specbuf[i+1];
