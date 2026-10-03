@@ -127,19 +127,26 @@ int o7(int pc)
   int i,k,l,inv = *(c+8),r = *(c+9),x = *(c+5),y = *(c+6),j = *(c+10),id;
 
   *(c+18) = 7;
-  if(j > 0)
+  if (j > 0) {
     r = 0;
-  if(!handman(pc,inv,r,j))
-    return(1);
-  if(j > 0 && (k = zline[x][y][1]) == 0 && slotnum() == 0) {
+  }
+  
+  if (!handman(pc,inv,r,j)) {
+    return 1;
+  }
+
+  if (j > 0 && (k = zline[x][y][1]) == 0 && slotnum() == 0) {
     prnt("-> Supernatural forces prevent %s from dropping the %s!", w1,
         obj[*(c+8)], NULL, NULL, NULL, NULL);
-    return(1);
-    }
-  if(j > 0 && k != 0) {
+    return 1;
+  }
+
+  // FIXME this hangs the game when putting the scimitar into the door. In the original 
+  // executable, you get the error "The door is closed" instead
+  if (j > 0 && k != 0) {
     prnt("-> %s puts the %s in the %s.", w1, obj[*(c+8)], obj[crumobj[k][0]], NULL, NULL, NULL);
     crumobj[k][5] = 1;
-    takeout(pc,*(c+8));
+    takeout(pc, c[8]);
     if(*(c+45) == *(c+8))
       *(c+45) = 0;
     else {

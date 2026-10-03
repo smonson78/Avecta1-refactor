@@ -34,7 +34,7 @@ extern int16_t vxy[4];
 
 extern uint8_t curmon[12][60];
 extern uint8_t permon[][23];
-extern uint8_t selllist[][4];
+extern int8_t selllist[][4];
 
 // These are all to do with TOS/GEM
 extern int16_t contrl[12], intin[128], intout[128], ptsin[128], ptsout[128];

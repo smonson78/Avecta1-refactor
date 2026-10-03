@@ -33,9 +33,14 @@ int16_t lxy[4] = {0, 127, 319-75, 128};
 int16_t vxy[4] = {255, 0, 255, 199};
 
 MFDB psrc, pdes;
-char *savname[] = {"OUTSIDE.DAT","DEMON.DAT","TROND.DAT","CAVE.DAT","DDEMON.DAT","DTROND.DAT","DCAVE.DAT"};
+char *savname[] = {"OUTSIDE.DAT", "DEMON.DAT", "TROND.DAT", "CAVE.DAT", "DDEMON.DAT", "DTROND.DAT", "DCAVE.DAT"};
 int fromout = 0, new = 0, lev = 0;
-int monster = 0, hold = 0, police = 0;
+int monster = 0, hold = 0;
+
+// "Police" is a flag that is 0 when the police are not after you, but if set to 1 then you are 
+// wanted by the police and will be pursued until your death.
+int police = 0;
+
 int usedline = 0, prev = 0, prevy = 0;
 int row, col = 2;
 int grflist[13];
@@ -92,8 +97,13 @@ char *name[] = {
   "orc","crusher","flamer","rat","bartender","rogue"
 };
 
-// This is used by practically everything. No idea what it does yet
-uint8_t curmon[12][60] = { {1,4,50,0,81,5,60,8,0,0,0,4,3,90,10} };
+// This refers to either the player or every character.
+// 44 - number of arrows owned
+// 49 - how much gold they have
+uint8_t curmon[12][60] = {
+  // curmon 0 - the player. Only 15 default bytes populated out of 60.
+  {1, 4, 50, 0, 81, 5, 60, 8, 0, 0, 0, 4, 3, 90, 10},
+};
 
 uint8_t invnpc[4][20];
 
@@ -126,10 +136,18 @@ uint8_t permon[][23] = {
   /* rogue */     {1,0,35,22,120,20,30,16,70,12,100,3,4,96,0,12,0,60,60,60,7,0,0}
 };
 
-uint8_t selllist[][4] = { {81,3,5,0},
-                        {42,10,20,0},
-                        {69,25,35,0},
-                        {45,20,30,0} };
+// Storekeepers
+int8_t selllist[][4] = {
+  // 0 = item that they sell
+  // 1 = minimum price they will accept
+  // 2 = 
+  // 3 = 0 if friendly, 2 if they like you, -1 if you stole from them
+  {81, 3, 5, 0},
+  {42, 10, 20, 0},
+  {69, 25, 35, 0},
+  {45, 20, 30, 0}
+};
+
 char weight[41] = {0,-1,4,7,10,17,-1,18,8,-1,-1,20,-1,-1,16,8,8,-1,7,8,
                    -1,-1,16,20,-1,-1,-1,8,-1,14,-1,-1,-1,-1,-1,-1,-1,-1,-1,
                    -1,12};
@@ -209,7 +227,7 @@ char *com[] = {"the ",
                "   item"};
 char fname[] = "grafx.dat";
 
-// Player name (?)
+// Player name.
 char pname[20];
 
 /* load the collection of trees into memory */

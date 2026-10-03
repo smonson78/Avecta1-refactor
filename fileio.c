@@ -6,16 +6,18 @@
 #include "gemdefs.h"
 #include "startaux.h"
 
+// Load a save game
+// When flow == 1, save the game
+// When flow == 2, restore a saved game
 int fileio(int flow) {
   int16_t button;
   int i, j, filehandle;
-  //int *length;
   uint32_t length;
   uint8_t *r = rumdata[crum];
-  char check,*c;
-  // FIXME get a definition for struct DTA.
-  char dta[44];
+  uint8_t check,*c;
+  DTA dta;
   
+  // Use a GEM file selector to get the save file name
   vs_curaddress(handle,1,1);
   v_eeos(handle);
   mouse_on();
@@ -24,38 +26,34 @@ int fileio(int flow) {
   vs_curaddress(handle,1,1);
   v_eeos(handle);
   init(1);
-  if (button == 0) {
-    return(-2);
-  }
-  filehandle = Fopen(filename,0);
-  if(flow == 2 && filehandle < 0) {
-    return(-1);
-    }
-  if (flow == 2) {
-    Fsetdta(dta);
-    Fsfirst(filename, 0);
-    // This is a hack and we don't wanna do silly stuff.
-    //length = &dta[26];
-    // ...instead we will do it the long yet sane way
-    length = dta[26];
-    length <<= 8;
-    length |= dta[27];
-    length << 8;
-    length |= dta[28];
-    length << 8;
-    length |= dta[29];
 
-    //if(*length != 14546) {
-    if(length != 14546) {
-      return(-1);
-    }
-    }
-  if(flow == 1 && filehandle < 0)
-    filehandle = Fcreate(filename,0);
-  if(filehandle < 0) {
+  if (button == 0) {
+    return -2;
+  }
+  
+  filehandle = Fopen(filename, 0);
+
+  if (flow == 2 && filehandle < 0) {
     return(-1);
+  }
+
+  if (flow == 2) {
+    Fsetdta(&dta);
+    Fsfirst(filename, 0);
+    if (dta.d_length != 14546) {
+      return -1;
     }
-  if(flow == 1) {
+  }
+
+  if (flow == 1 && filehandle < 0) {
+    filehandle = Fcreate(filename, 0);
+  }
+
+  if (filehandle < 0) {
+    return -1;
+  }
+
+  if (flow == 1) {
     specbuf[26] = outside;
     specbuf[27] = curmon[0][59];
     specbuf[28] = lev;
@@ -63,13 +61,14 @@ int fileio(int flow) {
     specbuf[34] = police;
     specbuf[37] = fromout;
 
-    for(i=0;i<13;i++) {
+    for (i = 0; i < 13; i++) {
       c = crumobj[i+1];
-      for(j=0;j<9;j++)
-        *(r+31+9*i+j) = *(c+j);
+      for (j = 0; j < 9; j++) {
+        r[31 + (9 * i) + j] = c[j];
+      }
     }
 
-    // Clearly rumdata[][] is 12560 bytes long and contains 80x157 char strings
+    // Writes 14546 bytes to save the game.
     if (Fwrite(filehandle,(long)12560,rumdata) < 12560 || 
       Fwrite(filehandle,(long)320,putbuf) < 320 ||
       Fwrite(filehandle,(long)480,trigval) < 480 ||
@@ -85,6 +84,7 @@ int fileio(int flow) {
       Fclose(filehandle);
     }
   }
+
   if(flow == 2) {
     Fseek((long)13387,filehandle,0);
     Fread(filehandle,(long)1,&check);

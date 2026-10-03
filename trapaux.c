@@ -152,10 +152,11 @@ int getword(char *comp)
   hold = 0;
   usedline = 0;
 
-  if(strcmp(junk,comp) != 0) 
-    return(0);
-  else 
-    return(1);
+  if (strcmp(junk, comp) != 0) {
+    return 0;
+  } else {
+    return 1;
+  }
 }
 
 int rumslot()
@@ -171,17 +172,6 @@ int rumslot()
   rumdata[crum][152] = 0;
   return 18;
 }
-
-// Never called
-// void makeslot(int numb)
-// {
-//   int i;
-//   if((numb = (numb - slotnum())) <= 0)
-//     return(1);
-//   for(i=13;i>13-numb;i--) {
-//     destroy(1,i);
-//   }
-// }
 
 int slotnum()
 {
