@@ -10,6 +10,8 @@
 #include "cinput.h"
 #include "texwin.h"
 
+#include "debug.h"
+
 void domsg(int i) {
   int x = 256, y = 8, w = 64, h = 40;
   char scratch[10];
@@ -156,7 +158,6 @@ int init(int flag) {
 
 int ruminit()
 {
-  //int i;
   uint8_t *c = curmon[1];
 
   // Zero out 660 bytes
@@ -394,7 +395,12 @@ int loadnew() {
   d1 = specbuf[31];
   d2 = specbuf[32];
   d3 = specbuf[33];
-  Fread(fhandle,(long)12560,rumdata); 
+
+  // Load initial rumdata into both arrays
+  Fread(fhandle,(long)12560, new_rumdata);
+  memcpy(rumdata, new_rumdata, 12560);
+  // check_rumdata(); 
+
   Fread(fhandle,(long)320,putbuf);
   Fread(fhandle,(long)480,trigval);
   Fread(fhandle,(long)40,specbuf);

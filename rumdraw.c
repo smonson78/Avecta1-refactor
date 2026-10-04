@@ -33,7 +33,7 @@ void trans(int16_t *bit, int16_t *stor)
 
 void setfill(int k)
 {
-  uint8_t *r = rumdata[crum];
+  room_data_t *r = &new_rumdata[crum];
 
   if (k == 2) {
     // Clear background with pattern 1 (solid fill), colour 0 (background)
@@ -42,9 +42,9 @@ void setfill(int k)
     return;
   }
 
-  int pattern = r[16 + 3 * k];
-  int style = r[17 + 3 * k];
-  int colour = r[18 + 3 * k];
+  int pattern = r->room_bg[k].room_bg_pattern;
+  int style = r->room_bg[k].room_bg_style;
+  int colour = r->room_bg[k].room_bg_colour;
 
   vsf_color(handle, colour);
 
@@ -56,9 +56,6 @@ void setfill(int k)
     vsf_style(handle, style);
 
   } else {
-    // So uhhh rumdata[crum][17] is 3 bytes per floor tile (k), with the first byte being the sprite number
-    // in fillpic[41].
-    
     trans(fillpic[style], crudbuf);
     
     // Install 4 bitplanes from crudbuf to the AES pattern buffer
@@ -72,8 +69,7 @@ void setfill(int k)
 // Erase 16 text lines from (1, 1) to (1, 16)
 void rumclear()
 {
-  int i;
-  for (i = 1; i < 17; i++) {
+  for (int i = 1; i < 17; i++) {
     vs_curaddress(handle, i, 1);
     v_eeol(handle);
   }
@@ -85,7 +81,6 @@ int abs(int x)
 {
   return x < 0 ? -x : x;
 }
-
 
 void click()
 {

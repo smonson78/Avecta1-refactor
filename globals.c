@@ -111,6 +111,12 @@ char *name[] = {
 //   45 - poison mode
 //   50 - physical strength
 
+// It's almost impossible to move curmon[] from an array of chars to a structure.
+// The author has done lots of very strange things such as have pointers that might
+// be to different arrays at different times, and the offsets still have to work.
+// Goodbye strongly typed language.
+// I will leave this one until last.
+
 uint8_t curmon[12][60] = {
   // curmon 0 - the player. Only 15 default bytes populated out of 60.
   {1, 4, 50, 0, 81, 5, 60, 8, 0, 0, 0, 4, 3, 90, 10},
@@ -250,7 +256,10 @@ char *verblist[] = {"Cast ","Examine","Drag/Eat","Search","Take/Drop","Wait",
 
 uint8_t zline[16][8][7];                    
 
+room_data_t new_rumdata[80];
+uint8_t (*new_rumdata_as_array)[80][sizeof(room_data_t)] = (uint8_t (*)[80][sizeof(room_data_t)])&new_rumdata;
 uint8_t rumdata[80][157];
+
 // Per room (157 bytes):
 // - 0   = oldx and oldy (4 bits each) - x in lower, y in upper
 // - 1   = another set of xy coords
