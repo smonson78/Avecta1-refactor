@@ -12,7 +12,7 @@ int setlite(int pc, int dx, int dy)
 {
   uint8_t *c = curmon[pc];
   int x,y;
-  if(rumdata[crum][30])
+  if (new_rumdata[crum].room_has_bg)
     return(1);
   x = c[24];
   y = c[25];
@@ -30,12 +30,13 @@ int setlite(int pc, int dx, int dy)
   return 0;
 }
 
+// Light a torch
 int litetrol(int x, int y, int s)
 {
   int i,j,k,a,flag,l;
   uint8_t *c;
 
-  if(rumdata[crum][30]) /* if room is naturally lit */
+  if (new_rumdata[crum].room_has_bg) /* if room is naturally lit */
     return(1);          /* don't sweat torches  */
 
   for (i = -2;i <= 2;i++) { /* do that funny shaped pattern around square */
@@ -50,7 +51,7 @@ int litetrol(int x, int y, int s)
         j = 2;
     }
 
-    for(k = -j;k <= j;k++) {
+    for(k = -j; k <= j; k++) {
       if(x+i>15 || x+i<0 || y+k>7 || y+k<0 || zline[x+i][y+k][0] == 0) {
         continue; /* if off display surface or square is void */
       }
@@ -132,10 +133,10 @@ void drawsq(int x, int y)
 void drawman(int pc, int x, int y)
 {
     uint8_t *c = curmon[pc];
-    if(pc < 4 && c[41] > 0) {
+    if (pc < 4 && c[41] > 0) {
       litetrol(x,y,1);
     }
-    if(zline[x][y][5] > 0 || rumdata[crum][30] || pc < 4) {
+    if (zline[x][y][5] > 0 || new_rumdata[crum].room_has_bg || pc < 4) {
       drawsq(x,y);
     }
 }

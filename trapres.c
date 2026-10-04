@@ -15,10 +15,13 @@
 
 #include "f2.h"
 
+#include "debug.h"
+
 void trapres(int pc, int type, int x, int y)
 {
   uint8_t *c = curmon[pc];
   uint8_t *z = zline[x][y];
+
   char *s1, *s2, str[20];
   int flag, flag2, flag3, i, j;
 
@@ -946,20 +949,28 @@ abbey don't notice subtleties such as that.",
     pass(i);
     undorep();
     flag = flag2 = flag3 = 0;
-    if (takeout(0, 64))
+
+    if (takeout(0, 64)) {
       flag = 1;
-    if (curmon[0][45] == 64 || curmon[0][46] == 64)
+    }
+    if (curmon[0][45] == 64 || curmon[0][46] == 64) {
       flag = 1;
+    }
+
     if (flag)
     {
-      if (rumdata[50][0] == 0)
-      {
-        prnt("-> A hideous creature stirs! Its once proud clothes \
-hang in tatters. Its mouth works slowly, as if every word were painful. `Weth\
-wicker's ... you have it ... must give it ... to me now.'", NULL, NULL, NULL, NULL, NULL, NULL);
+      // Room 50 special case
+      //if (rumdata[50][0] == 0)
+      if (new_rumdata[50].room_oldxy == 0) {
+        prnt("-> A hideous creature stirs! Its once proud clothes "
+          "hang in tatters. Its mouth works slowly, as if every word were painful. `Weth"
+          "wicker's ... you have it ... must give it ... to me now.'",
+          NULL, NULL, NULL, NULL, NULL, NULL);
+
         flag2 = 1;
         goto prolog;
       }
+
     take:
       prnt("-> `Please ... forgive me ... %s ... I must take ... the \
 book.' The ghastly vision waves its skeletal hands and Wethwicker's All the \
@@ -1028,15 +1039,22 @@ Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
     }
     if (!flag)
     {
-      if (rumdata[50][0] == 0)
+      //if (rumdata[50][0] == 0)
+      if (new_rumdata[50].room_oldxy == 0)
       {
         prnt("-> The terrifying vision of life in death stirs slowly. Inex\
 plicably, %s decides not to strike out at the horror immediately!",
              s2, NULL, NULL, NULL, NULL, NULL);
         flag3 = 1;
+
+        
         rumdata[50][0] = 1;
+        new_rumdata[50].room_oldxy = 1;
+        check_rumdata("trapres");
+
         goto prolog;
       }
+
     moan:
       prnt("-> `Wethwicker's' the creature moans, `you must ... find it\
  ... please. I ... must conserve ... my strength.' And it slumps forward, as \
@@ -1047,6 +1065,7 @@ if in a coma.", NULL, NULL, NULL, NULL, NULL, NULL);
       curmon[0][27] = curmon[0][29] = 4;
       break;
     }
+    
   prolog:
     prnt("-> The horrid creature's mouth works, and it utters words in a slow"
       " and tortured manner, `Please ... believe me ... %s ... I am not a "

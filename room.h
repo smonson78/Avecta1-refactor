@@ -39,11 +39,28 @@ typedef struct {
   // - 21  = background tile 2 colour
   room_background_t room_bg[2];
 
+  //actmon(o[22], o[23], o[24], o[25]);
+
   // - 22  = type of monsters in this room (that can be heard through a door)
+  //         (or the type that spawns when you're in there)
   uint8_t room_monster_type;
-  
-  // - 23 to 29 - unknown  
-  uint8_t room_unknown_2[7];
+
+  // - 23  = unknown flag to actmon
+  uint8_t room_monster_nm;
+
+  // - 24  = monsters x
+  uint8_t room_monster_x;
+  // - 25  = monsters y
+  uint8_t room_monster_y;
+
+  // - 26 - percentage chance of monsters appearing I think
+  uint8_t room_unknown_2;
+  // - 27
+  uint8_t room_shopkeeper_id;
+  // - 28
+  uint8_t room_unknown_4;
+  // - 29
+  uint8_t room_unknown_5;
 
   // - 30  = room has background graphics if non-zero
   uint8_t room_has_bg;

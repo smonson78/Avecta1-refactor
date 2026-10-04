@@ -14,6 +14,8 @@
 #include "torches.h"
 #include "timetrol.h"
 
+#include "debug.h"
+
 /*****************************************************************************/
 /* TACMODE runs the tactical mode of the game, and continues until the hero  */
 /* is victorious or leaves the room, or everyone is dead.  It returns the    */
@@ -145,18 +147,30 @@ int tacmode() {
       }
 
       o = rumdata[crum];
-      if (mode == 0 && rnd(100) < o[26]) {
-        actmon(o[22], o[23], o[24], o[25]);
+      room_data_t *new_o = &new_rumdata[crum];
+
+      if (mode == 0 && rnd(100) < new_o->room_unknown_2) {
+        //actmon(o[22], o[23], o[24], o[25]);
+        actmon(new_o->room_monster_type, new_o->room_monster_nm, new_o->room_monster_x, new_o->room_monster_y);
         
-        if (o[29] != 0) {
-          prnt(msg[o[29] + 80*dungeon], NULL, NULL, NULL, NULL, NULL, NULL);
+        //if (o[29] != 0) {
+        if (new_o->room_unknown_5 != 0) {
+          // Flavour text for room.
+          prnt(msg[new_o->room_unknown_5 + 80 * dungeon], NULL, NULL, NULL, NULL, NULL, NULL);
         }
         
-        if (mode && permon[o[22]].intell_routine < 4 && (dungeon != 2 || crum != 31)) {
+        //if (mode && permon[o[22]].intell_routine < 4 && (dungeon != 2 || crum != 31)) {
+        if (mode 
+          && permon[new_o->room_monster_type].intell_routine < 4 
+          && (dungeon != 2 || crum != 31)) {
           prnt("      ***  A MELEE BEGINS!  ***", NULL, NULL, NULL, NULL, NULL, NULL);
         }
         
+        // Old
         o[26] = o[27];
+        // New
+        new_o->room_unknown_2 = new_o->room_shopkeeper_id;
+        check_rumdata("tacmode");
       }
     }
 
@@ -164,7 +178,7 @@ int tacmode() {
 
     for (i=0; i < 12; i++) {
       c = curmon[i];
-      if( *c == 1 && c[30] ==  crum) {
+      if (c[0] == 1 && c[30] ==  crum) {
         if(i > 3 && c[31] < 4) {
           monster++;
           if(c[38] == 0)
@@ -197,7 +211,7 @@ int tacmode() {
     for (i=1;i<=actlist[0];i++) {
       n = actlist[i];
       c = curmon[n];
-      if(*c && c[30] == crum)
+      if (c[0] && c[30] == crum)
         j = (*outverb[c[15]])(n);
 
       if ((n == 0 || (n == 1 && c[38])) && j == 0 && (p=Bconstat(2)) != 0) {

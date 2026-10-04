@@ -69,7 +69,7 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
   c[7] = y;
   c[8] = vis;
   zline[x][y][1] = i;
-  if(c[8] == 1 && (rumdata[crum][30] == 1 || zline[x][y][5] == 1) ) 
+  if(c[8] == 1 && (new_rumdata[crum].room_has_bg == 1 || zline[x][y][5] == 1) ) 
     drawsq(x,y);
   return(i);
 }

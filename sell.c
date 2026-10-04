@@ -13,8 +13,10 @@
 int sell(int npc)
 {
   int done = 0, num = 1, j, amount;
+
+  // get storekeeper ID from room data
   //int i = rumdata[crum][27];
-  int i = new_rumdata[crum].room_unknown_2[4];
+  int i = new_rumdata[crum].room_shopkeeper_id;
 
   // The shopkeeper:
   uint8_t *c = curmon[npc];
@@ -26,7 +28,7 @@ int sell(int npc)
   // Old
   rumdata[crum][26] = 0;
   // New
-  new_rumdata[crum].room_unknown_2[3] = 0;
+  new_rumdata[crum].room_unknown_2 = 0;
   check_rumdata("sell");
 
   c[39] = 0;
