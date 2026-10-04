@@ -6,7 +6,7 @@
 #include "debug.h"
 
 // Compare the two rumdata arrays to ensure correctness
-void check_rumdata() {
+void check_rumdata(char *location) {
   for (int r = 0; r < 80; r++) {
     room_data_t *new_room = &new_rumdata[r];
     
@@ -18,6 +18,7 @@ void check_rumdata() {
         // Clear screen
         printf("\eE");
         printf("Inconsisntency in rumdata!\n");
+        printf("Location: %s\n", location);
         printf("Room %d, byte %d\n", r, b);
         printf("rumdata: 0x%02x vs new_rumdata: 0x%02x\n", old, new);
         Cconin();

@@ -6,6 +6,8 @@
 #include "torches.h"
 #include "caux.h"
 
+#include "debug.h"
+
 // Transfer data from bit to stor
 // bit[] is in bitplanes (4 bitplane words for a group of 16 pixels)
 // stor is all the words for first bitplane, then second bitplane, etc
@@ -48,13 +50,9 @@ void setfill(int k)
 
   vsf_color(handle, colour);
 
-  // k seems to be the pattern type 0-2
-  //if (*(r + 16 + 3 * k) > 0) {
-  // This was a signed >0 comparison on raw bytes, so I've changed it to 0xff so that I can keep the format as uint8_t
   if (pattern != 0xff) {
     vsf_interior(handle, pattern);
     vsf_style(handle, style);
-
   } else {
     trans(fillpic[style], crudbuf);
     
@@ -94,7 +92,7 @@ void click()
   } while (status != 0);
 }  
 
-int fillsq(int x, int y)
+void fillsq(int x, int y)
 {
   int16_t pxy[4];
   pxy[0] = 16 * x;
@@ -104,7 +102,6 @@ int fillsq(int x, int y)
   
   // VDI filled rectangle
   vr_recfl(handle, pxy);
-  return(1);
 }
 
 void rumdraw(char *pan)
@@ -116,6 +113,7 @@ void rumdraw(char *pan)
   uint8_t *c;
 
   uint8_t *r = rumdata[crum];
+  room_data_t *new_r = &new_rumdata[crum];
 
   // Set up room data by copying from rundata[crum][] to crumobj[]
   // Do 13 times, for a maximum of 13 objects in each room
@@ -126,7 +124,8 @@ void rumdraw(char *pan)
     // Copy 9 bytes from rumdata into crumobj[i + 1] 0..8, which is all of the crumobj object
     for (j = 0; j < 9; j++) {
       //*(c + j) = *(r + 31 + (9 * i) + j);
-      c[j] = r[31 + (9 * i) + j];
+      //c[j] = r[31 + (9 * i) + j];
+      c[j] = new_r->object[i].unknown[j];
     }
   }
 
@@ -185,7 +184,7 @@ void rumdraw(char *pan)
     
     c = invnpc[i];
     
-    if (*c == 0) {
+    if (c[0] == 0) {
       continue;
     }
 
@@ -296,7 +295,7 @@ void rumdraw(char *pan)
 
   // This seems to want to draw in some plain background stuff
   //if (*(r + 30)) {
-  if (r[30]) {
+  if (new_r->room_has_bg) {
 
     // We're just doing 0 and 1 - the two types of background tiles for this room.
     // Loop 0 only does something indoors
@@ -349,7 +348,8 @@ void rumdraw(char *pan)
       int obj_y = c[7];
 
       if (c[8]) {
-        if (r[30]) {
+        // if (r[30]) {
+        if (new_r->room_has_bg) {
           // Draw the sprite for room object
           blt(bitmap[c[0]], obj_x * 16, obj_y *16, addr);
         }
@@ -362,35 +362,63 @@ void rumdraw(char *pan)
   }
 
   // 5 more bytes in rumdata[crum][148...152]
-  for (i = 148; i < 153; i++) {
+  // for (i = 148; i < 153; i++) {
+  for (i = 0; i < 5; i++) {
+
+    // r[i] but with a better name
+    int thing = new_r->room_unknown_3[i];
     
-    if (r[i] == 0) {
+    // we're doing 0..4 now
+    if (thing == 0) {
       // Nothing there?
       continue;
     }
 
-    j = 1;
+    // Now we're going to start on 1, and go up 3 each time. There is a 3-byte structure there.
+    // For some reason we're going to keep checking right past the end of the structure into 
+    // other unrelated data like background colours.
+    // Perhaps let's just limit ourselves to the 5 that we know exist.
+    // We're ONLY looking for this in rumdata[0] rather than "r".
+    // Probably rumdata[0] is a different data structure!
 
-    while (j < 157 && (rumdata[0][j] != r[i] || rumdata[0][j + 2] != crum)) {
-      j += 3;
+    // j = 1;
+    // while (j < 157 && (rumdata[0][j] != thing || rumdata[0][j + 2] != crum)) {
+    j = 0;
+    while (j < 52 && (room_zero.unknown2[j].thing_id != thing || room_zero.unknown2[j].room_id != crum)) {
+      j += 1;
     }
 
-    if (j >= 157) {
-      r[i] = 0;
+    // Didn't find the thing we wanted - so kill whatever this thing was.
+    //if (j >= 157) {
+    if (j >= 52) {
+      r[148 + i] = 0;
+      new_r->room_unknown_3[i] = 0;
       continue;
     }
 
     // Meaning offset 14...18
-    c = crumobj[i - 134];
-    x = rumdata[0][j + 1] % 16;
-    y = rumdata[0][j + 1] / 16;
+    //c = crumobj[i - 134];
+    c = crumobj[14 + i];
+    // Get some coords
+    // x = rumdata[0][j + 1] % 16;
+    // y = rumdata[0][j + 1] / 16;
+    x = room_zero.unknown2[j].thing_xy % 16;
+    y = room_zero.unknown2[j].thing_xy / 16;
+
+    // Now we know the room 0 structure is:
+    // 0 - the unknown thing ID
+    // 1 - XY coords
+    // 2 - room number
+    // We may be looking at rumdata[0] as a [52][3] of these. 
 
     // They've walked off the board apparently
-    if (x > 15 || y > 7)
+    if (x > 15 || y > 7) {
       continue;
+    }
 
-    c[0] = r[i];
-    zline[x][y][1] = i - 134; // 14..18
+    c[0] = new_r->room_unknown_3[i];
+    //zline[x][y][1] = i - 134; // 14..18
+    zline[x][y][1] = 14 + i; // 14..18
     invtrap(c[0]);
     c[1] = 1;
     c[2] = 0;
@@ -401,7 +429,8 @@ void rumdraw(char *pan)
     c[7] = y;
     c[8] = 1;
 
-    if (rumdata[crum][30]) {
+    //if (rumdata[crum][30]) {
+    if (new_rumdata[crum].room_has_bg) {
       drawsq(x, y);
     }
   }
@@ -480,4 +509,6 @@ void rumdraw(char *pan)
       }
     }
   }
+  
+  check_rumdata("rumdraw");
 }

@@ -399,6 +399,8 @@ int loadnew() {
   // Load initial rumdata into both arrays
   Fread(fhandle,(long)12560, new_rumdata);
   memcpy(rumdata, new_rumdata, 12560);
+  // Special room zero data
+  memcpy(&room_zero, new_rumdata, 157);
   // check_rumdata(); 
 
   Fread(fhandle,(long)320,putbuf);

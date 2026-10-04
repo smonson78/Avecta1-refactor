@@ -260,6 +260,8 @@ room_data_t new_rumdata[80];
 uint8_t (*new_rumdata_as_array)[80][sizeof(room_data_t)] = (uint8_t (*)[80][sizeof(room_data_t)])&new_rumdata;
 uint8_t rumdata[80][157];
 
+room_zero_data_t room_zero;
+
 // Per room (157 bytes):
 // - 0   = oldx and oldy (4 bits each) - x in lower, y in upper
 // - 1   = another set of xy coords
@@ -292,7 +294,7 @@ uint8_t triglist[25];
 // crumobj[][] is used to hold data about objects in the current room
 uint8_t crumobj[19][9];
 // The first dimension is the objects in the room.
-// 0      - unknown
+// 0      - sprite number
 // 1..13  - 13 room objects like furniture copied from rumdata[]
 // 14..18 - Blanked out to zeroes on room entry
 
