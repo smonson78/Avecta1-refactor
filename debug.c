@@ -17,7 +17,7 @@ void check_rumdata(char *location) {
       if (new != old) {
         // Clear screen
         printf("\eE");
-        printf("Inconsisntency in rumdata!\n");
+        printf("Inconsistency in rumdata!\n");
         printf("Location: %s\n", location);
         printf("Room %d, byte %d\n", r, b);
         printf("rumdata: 0x%02x vs new_rumdata: 0x%02x\n", old, new);

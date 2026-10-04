@@ -12,6 +12,8 @@
 
 #include "f5.h"
 
+#include "debug.h"
+
 // Weird to split these out but whatever
 // Read character, no echo
 int read_char_no_echo() {
@@ -36,7 +38,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
     c = curmon[winker-1];
   }
 
-  light = rumdata[crum][30];
+  light = new_rumdata[crum].room_has_bg;
 
   // Clear keyboard buffer by reading everything
   while (check_char_waiting() != 0) {
@@ -346,7 +348,7 @@ int lom(int pc, int x, int y)
    l = abs(j);
    if(k < 2 && l < 2)  /* always adjacent will make it through */
    return(1);
-   if(!zline[x][y][5] && !rumdata[crum][30] && pc < 4) /* the square is dark */
+   if(!zline[x][y][5] && !new_rumdata[crum].room_has_bg && pc < 4) /* the square is dark */
    return(0);
    if (i != 0)
       i = ( i/k ); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
@@ -404,7 +406,7 @@ int los(int pc, int x, int y)
       return(1);
    }
 
-   if (!zline[x][y][5] && !rumdata[crum][30] && pc < 4) {
+   if (!zline[x][y][5] && !new_rumdata[crum].room_has_bg && pc < 4) {
       /* the square is dark */
       return(0);
    }
@@ -554,9 +556,10 @@ int move(int obj, int flag, int x, int y)
 {
    uint8_t *c = crumobj[obj];
    uint8_t *z;
-   int done, i, j, light = rumdata[crum][30];
+   int done, i, j;
+   int light = new_rumdata[crum].room_has_bg;
 
-   if(flag) {
+   if (flag) {
       done = 0;
       for(i = -1;i <= 1;i++) {
          for(j = -1;j <= 1;j++) {
@@ -672,19 +675,43 @@ int remove(int rumobj, int thing)
    return(1);
 } 
 
+// Put an object into the room_zero array
 int storobj(int thing, int x, int y)
 {
-   int i=1;
+   // Room Zero
    uint8_t *r = rumdata[0];
-   while(*(r+i) != 0 && i <157) {
-      i += 3;
+
+   // int i = 1;
+   // while (r[i] != 0 && i < 157) {
+   //    i += 3;
+   // }
+
+   int i;
+   for (i = 0; i < 52; i++) {
+      if (room_zero.unknown2[i].thing_id == 0) {
+         break;
+      }
    }
-   if(i >= 157)
-      return(0);
-   *(r+i) = thing;
-   *(r+i+1) = 16*y + x;
-   *(r+i+2) = crum;
-   return(1);
+
+   // if (i >= 157)
+   //    return 0;
+   if (i >= 52) {
+      return 0;
+   }
+
+   // Old rumdata[0]
+   r[i * 3 + 1] = thing;
+   r[i * 3 + 2] = 16*y + x;
+   r[i * 3 + 3] = crum;
+
+   // New room_zero
+   room_zero.unknown2[i].thing_id = thing;
+   room_zero.unknown2[i].thing_xy = (16 * y) + x;
+   room_zero.unknown2[i].room_id = crum;   
+
+   check_rumdata("storobj");
+
+   return 1;
 }
 
 int xobj(int thing, int room)

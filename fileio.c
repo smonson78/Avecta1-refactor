@@ -6,6 +6,8 @@
 #include "gemdefs.h"
 #include "startaux.h"
 
+#include "debug.h"
+
 // Load a save game
 // When flow == 1, save the game
 // When flow == 2, restore a saved game
@@ -33,7 +35,7 @@ int fileio(int flow) {
   filehandle = Fopen(filename, 0);
 
   if (flow == 2 && filehandle < 0) {
-    return(-1);
+    return -1;
   }
 
   if (flow == 2) {
@@ -52,6 +54,7 @@ int fileio(int flow) {
     return -1;
   }
 
+  // SAVE GAME
   if (flow == 1) {
     specbuf[26] = outside;
     specbuf[27] = curmon[0][59];
@@ -68,7 +71,11 @@ int fileio(int flow) {
     }
 
     // Writes 14546 bytes to save the game.
-    if (Fwrite(filehandle,(long)12560,rumdata) < 12560 || 
+    //if (Fwrite(filehandle,(long)12560,rumdata) < 12560 || 
+    if (
+      // Room zero, then the other rooms
+      Fwrite(filehandle,(long)157,&room_zero) < 157 || 
+      Fwrite(filehandle,(long)12403,&new_rumdata[1]) < 12403 || 
       Fwrite(filehandle,(long)320,putbuf) < 320 ||
       Fwrite(filehandle,(long)480,trigval) < 480 ||
       Fwrite(filehandle,(long)40,specbuf) < 40 ||
@@ -84,16 +91,20 @@ int fileio(int flow) {
     }
   }
 
-  if(flow == 2) {
+  // LOAD GAME
+  if (flow == 2) {
     Fseek((long)13387,filehandle,0);
     Fread(filehandle,(long)1,&check);
-    if(curmon[0][59] != check && dungeon != 2) {
+    if (curmon[0][59] != check && dungeon != 2) {
       Fclose(filehandle);
       return(0);
-      }
-    else
+    } else {
       Fseek((long)0,filehandle,0);
-    if(Fread(filehandle,(long)12560,rumdata) < 12560 || 
+    }
+    
+    //if (Fread(filehandle,(long)12560,new_rumdata) < 12560 || 
+    if (Fread(filehandle,(long)157,&room_zero) < 157 ||
+      Fread(filehandle,(long)12403,&new_rumdata[1]) < 12403 ||
       Fread(filehandle,(long)320,putbuf) < 320 ||
       Fread(filehandle,(long)480,trigval) < 480 ||
       Fread(filehandle,(long)40,specbuf) < 40 ||
@@ -111,9 +122,11 @@ int fileio(int flow) {
       police = specbuf[34];
       outside = specbuf[26];
       crum = curmon[0][30];
-      for(i=0;i<20;i++)
-          invtrig[i] = specbuf[i+1];
+      for (i=0;i<20;i++) {
+        invtrig[i] = specbuf[i+1];
+      }
       Fclose(filehandle);
+
       if (outside || fromout) {
         specbuf[32] = 1;
         filehandle = Fopen("FILL.DAT",0);
@@ -132,6 +145,12 @@ int fileio(int flow) {
         Fclose(filehandle);
       }            
     }
+
+    // Set up room zero and legacy data after loading files
+    memcpy(rumdata, &room_zero, 157);
+    // Special room zero data
+    memcpy(rumdata + 1, &new_rumdata[1], 12403);
+    check_rumdata("fileio");
   }
 
   return 1;
