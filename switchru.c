@@ -149,7 +149,7 @@ int switchrum() {
           c[8] = 1;
           Vsync(); 
 
-          blt(bitmap[c[0]], 16 * x, 16 * y, addr);
+          blt(bitmap[c[0]], 16 * x, 16 * y);
 
           zline[x][y][1] = i;
         }

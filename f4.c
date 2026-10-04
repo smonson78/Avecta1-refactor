@@ -96,7 +96,7 @@ int o4(int pc)
       if (i > 1 || pc < 4 || !flag)
          storsc(storbuf[pc], x - xroll, y - yroll, 1, addr); /* restores the screen */
       storsc(storbuf[pc], x, y, 0, addr);
-      blt(bitmap[*(c + 4)], x, y, addr);
+      blt(bitmap[*(c + 4)], x, y);
    }
    *(c + 34) = 0;
    *(c + 35) = 0;
@@ -112,7 +112,7 @@ int o4(int pc)
       fillsq(xnow, ynow);
    }
    if (*(z + 6))
-      blt(bitmap[132], 16 * xnow, 16 * ynow, addr);
+      blt(bitmap[132], 16 * xnow, 16 * ynow);
    Vsync();
    vbl_animation_on();
    if (*(c + 28) == *(c + 26) && *(c + 29) == *(c + 27))

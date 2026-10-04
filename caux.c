@@ -78,12 +78,13 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
                if(rflag) {
                Vsync();
                zline[oldx][oldy][4] = 0;
-               for(j=0;j<2;j++) {
-                  for( k=0; k<2; toggle(2*oldx+j,2*oldy+(k++),0,addr))
-                     ;
+               for (j = 0; j < 2; j++) {
+                  for (k = 0; k < 2; k++) {
+                     toggle(2 * oldx + j, 2 * oldy + k, 0);
+                  }
                }
                if(mflag>0 && mode) {
-                  toggle(32,mflag,7,addr);
+                  toggle(32,mflag,7);
                   mflag = 0;
                   }
                }
@@ -120,13 +121,16 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       if (type == 0 && (newx > 15 || newy > 7) ) {
          if(rflag) { 
             Vsync();
-            for(j=0;j<2;j++) {
-               for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+            for (j = 0; j < 2; j++) {
+               for (k = 0; k < 2; k++) {
+                  toggle(2 * oldx + j, 2 * oldy + k, 0);
+
+               }
             }
 
             zline[oldx][oldy][4] = 0;
             if(mflag>0 && mode) {
-               toggle(32,mflag,7,addr);
+               toggle(32,mflag,7);
                mflag = 0;
             }
             rflag = 0;
@@ -152,18 +156,20 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             Vsync();
             mouse_off();
             tflag = 0;
-            toggle(32,oldline,7,addr);
+            toggle(32,oldline,7);
             mouse_on();
          }
 
          if (rflag && !inrflag) {
             Vsync();
-            for(j=0;j<2;j++) {
-               for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+            for (j = 0; j < 2; j++) {
+               for(k = 0; k < 2; k++) {
+                  toggle(2 * oldx + j, 2 * oldy + k, 0);
+               }
             }
             zline[oldx][oldy][4] = 0;
             if (mflag > 0 && mode) {
-               toggle(32,mflag,7,addr);
+               toggle(32,mflag,7);
                mflag = 0;
             }
             rflag = 0;
@@ -190,7 +196,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
          tflag = 0;
          Vsync();
          mouse_off();
-         toggle(32,oldline,7,addr);
+         toggle(32,oldline,7);
          mouse_on();
          } 
          oldline = newline;
@@ -204,7 +210,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             tflag = 0;
             Vsync();
             mouse_off();
-            toggle(32,oldline,7,addr);
+            toggle(32,oldline,7);
             mouse_on();
          } 
 
@@ -213,16 +219,19 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             Vsync();
             if (tflag) {
                tflag = 0;
-               toggle(32,oldline,7,addr);
+               toggle(32,oldline,7);
             } 
             mouse_off();
             if (oldx != -1 && rflag) {
                Vsync();
-               for(j=0;j<2;j++) 
-                  for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+               for (j = 0; j < 2; j++) {
+                  for (k = 0; k < 2; k++) {
+                     toggle(2 * oldx + j, 2 * oldy + k, 0);
+                  }
+               }
                zline[oldx][oldy][4] = 0;
                if(mflag > 0 && mode) {
-                  toggle(32,mflag,7,addr);
+                  toggle(32,mflag,7);
                   mflag = 0;
                   }
                rflag = 0;
@@ -231,8 +240,11 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
                   (winker > 0 && c[24] == newx && c[25] == newy) ) {
                Vsync();
-               for(j=0;j<2;j++) 
-                  for(k=0;k<2;toggle(2*newx+j,2*newy+(k++),0,addr));
+               for (j = 0; j < 2; j++) {
+                  for (k = 0; k < 2; k++) {
+                     toggle(2*newx+j,2*newy+k,0);
+                  }
+               }
                z[4] = 1;
                rflag = 1;
             }
@@ -242,7 +254,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
                   && curmon[z[2]][31] < 4 ) {
                mflag = curmon[z[2]][33];
                Vsync();
-               toggle(32,mflag,7,addr);             
+               toggle(32,mflag,7);             
             }
             mouse_on();
          }
@@ -250,11 +262,15 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
          if(rflag) {
             mouse_off();
             Vsync();
-            for(j=0;j<2;j++) 
-               for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+            for (j = 0; j < 2; j++) {
+               for (k = 0; k < 2; k++) {
+                  toggle(2 * oldx + j, 2 * oldy + k, 0);
+               }
+            }
+
             zline[oldx][oldy][4] = 0;
             if(mflag > 0 && mode) {
-               toggle(32,mflag,7,addr);
+               toggle(32,mflag,7);
                mflag = 0;
                }
             mouse_on();
@@ -268,11 +284,14 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
          if(rflag) {
             mouse_off();
             Vsync();
-            for(j=0;j<2;j++) 
-               for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+            for(j=0;j<2;j++) {
+               for(k=0;k<2;k++) {
+                  toggle(2*oldx+j,2*oldy+k,0);
+               }
+            }
             zline[oldx][oldy][4] = 0;
             if(mflag > 0 && mode) {
-               toggle(32,mflag,7,addr);
+               toggle(32,mflag,7);
                mflag = 0;
                }
             mouse_on();
@@ -285,8 +304,8 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             Vsync();
             mouse_off();
             if(oldline != -1 && tflag && oldx > 15) 
-               toggle(32,oldline,7,addr);
-            toggle(32,newline,7,addr);
+               toggle(32,oldline,7);
+            toggle(32,newline,7);
             tflag = 1;
             oldline = newline;
             oldx = newx;
@@ -297,7 +316,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
          if(tflag) {
             Vsync();
             mouse_off();
-            toggle(32,oldline,7,addr);
+            toggle(32,oldline,7);
             tflag = 0;
             mouse_on();
             }
@@ -312,15 +331,18 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
         mouse_off();
         Vsync();
 
-        if(rflag) {
+        if (rflag) {
           zline[oldx][oldy][4] = 0;
-          for(j=0;j<2;j++) 
-              for(k=0;k<2;toggle(2*oldx+j,2*oldy+(k++),0,addr));
+          for (j = 0; j < 2; j++) {
+            for (k = 0; k < 2; k++) {
+               toggle(2*oldx+j,2*oldy+k,0);
+            }
           }
+         }
         if(tflag) 
-          toggle(32,oldline,7,addr);
+          toggle(32,oldline,7);
         if(mflag > 0 && mode) 
-          toggle(32,mflag,7,addr);
+          toggle(32,mflag,7);
         *x = oldx;
         *y = oldy;
         if(tflag)

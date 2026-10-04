@@ -351,7 +351,7 @@ void rumdraw(char *pan)
         // if (r[30]) {
         if (new_r->room_has_bg) {
           // Draw the sprite for room object
-          blt(bitmap[c[0]], obj_x * 16, obj_y *16, addr);
+          blt(bitmap[c[0]], obj_x * 16, obj_y *16);
         }
 
         zline[obj_x][obj_y][1] = i; // put the object ID into position 1

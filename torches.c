@@ -115,18 +115,19 @@ void drawsq(int x, int y)
     pc = (curmon[0][24] == x && curmon[0][25] == y ? 0 : -1);
   x *= 16;
   y *= 16;
-  if(z[1] != 0 && crumobj[z[1]][8] == 1)
-    blt(bitmap[crumobj[z[1]][0]],x,y,addr);
+  if (z[1] != 0 && crumobj[z[1]][8] == 1) {
+    blt(bitmap[crumobj[z[1]][0]],x,y);
+  }
   if(pc >= 0) { 
     c = curmon[pc];
     *c = 0;
     Vsync();
     *c = 1;
     storsc(storbuf[pc],x,y,0,addr);
-    blt(bitmap[c[4]],x,y,addr);
+    blt(bitmap[c[4]],x,y);
     }
   if(z[6] != 0) {
-    blt(bitmap[130 + 2*(z[6])],x,y,addr);
+    blt(bitmap[130 + 2*(z[6])],x,y);
   }
 }
 

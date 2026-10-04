@@ -374,7 +374,7 @@ int o2(int pc)
              c[8] = 1;
              zline[c[6]][c[7]][1] = i;
              if (new_rumdata[crum].room_has_bg || zline[c[6]][c[7]][5] > 0)
-                blt(bitmap[*c],16*(c[6]),16*(c[7]),addr);
+                blt(bitmap[*c],16*(c[6]),16*(c[7]));
               }       
           }
       break;

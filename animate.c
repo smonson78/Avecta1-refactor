@@ -13,7 +13,7 @@ int16_t animate()
 {
    int m,n,j;
    int x,y;
-   uint8_t *c,*z;
+   uint8_t *c, *z;
 
    time++;
 
@@ -28,7 +28,7 @@ int16_t animate()
       y += rnd(3) - 1;
       z = zline[x][y];
       if ((m = z[6]) != 0) {
-         blt(bitmap[130 + 2*m + rnd(2)],16*x,16*y,addr);
+         blt(bitmap[130 + 2*m + rnd(2)],16*x,16*y);
       }
    }
 
@@ -55,20 +55,23 @@ int16_t animate()
 
       mouse_off();
       storsc(storbuf[j], 16*x, 16*y, 1, addr);
-      blt(bitmap[c[4] + 66*(c[17])], x*16, y*16, addr);
+      blt(bitmap[c[4] + 66*(c[17])], x*16, y*16);
 
       if (c[35] > 0) {
-         blt(bitmap[128],16*x,16*y,addr);
+         blt(bitmap[128],16*x,16*y);
          c[35] -= 1;
       } 
 
       if ((m = z[6]) != 0) {
-         blt(bitmap[130 + 2*m],16*x,16*y,addr);
+         blt(bitmap[130 + 2*m],16*x,16*y);
       }
 
       if (z[4] == 1) {
-         for(m=0;m<2;m++)
-         for(n=0;n<2;toggle(2*x+m,2*y+(n++),0,addr));
+         for (m = 0; m < 2; m++) {
+            for (n = 0; n < 2; n++) {
+               toggle(2 * x + m, 2 * y + n, 0);
+            }
+         }
       }
 
       mouse_on();

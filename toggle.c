@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "globals.h"
 
 // Unknown function
 
@@ -47,7 +48,7 @@ top:     move.w (R9),R4
 // --- 12 unknown
 // --- 14 addr - unused?
 // "loops" is actually one less than the number of loops, so 0 for 1 loop or 7 for 8 loops.
-void toggle(int x, int y, int loops, int16_t *addr) {
+void toggle(int x, int y, int loops) {
   // The code here was obtained by disassembling the executable. The file 
   // distributed with the source does not work.
 

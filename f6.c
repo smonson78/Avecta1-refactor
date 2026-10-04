@@ -78,7 +78,7 @@ int o6(int pc)
             prnt("-> %s discovers a hidden %s!", w, obj[*o], NULL, NULL, NULL, NULL);
             c[18] = 0;
             if (new_rumdata[crum].room_has_bg || zline[x+i][y+j][5] > 0) {
-              blt(bitmap[*o],16*(x+i),16*(y+j), addr);
+              blt(bitmap[*o],16*(x+i),16*(y+j));
             }
             z[1] = k;
             if(o[3] != 0)

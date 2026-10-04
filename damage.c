@@ -75,12 +75,13 @@ int damage(int pc, int level)
    c[35] = 2;
    Vsync();
    vbl_animation_off();
-   if(pc < 4 || light || zline[x][y][5] > 0)
-      blt(bitmap[128],16*x,16*y,addr);
+   if (pc < 4 || light || zline[x][y][5] > 0) {
+      blt(bitmap[128],16*x,16*y);
+   }
    if(pc > 3 && mode) {
    for(i=0;i<8;i++) {
       Vsync(); 
-      toggle(32,c[33],7,addr);
+      toggle(32,c[33],7);
       }
    }
 

@@ -39,7 +39,7 @@ void attack(int pc, int xdes, int ydes) {
     Vsync();
     storsc(storbuf[pc],xnow + xadd*i,ynow + yadd*i,1,addr);
     storsc(storbuf[pc],xnow + xadd*(2+i),ynow + yadd*(2+i),0,addr);
-    blt(bitmap[bit],xnow + xadd*(2+i),ynow + yadd*(2+i),addr);
+    blt(bitmap[bit],xnow + xadd*(2+i),ynow + yadd*(2+i));
   }
 
   for (i = 8; i > 0; i -= 2) {
@@ -48,13 +48,13 @@ void attack(int pc, int xdes, int ydes) {
     storsc(storbuf[pc],xnow + xadd*i,ynow + yadd*i,1,addr);
     storsc(storbuf[pc],xnow + xadd*(i-2),ynow + yadd*(i-2),0,addr);
     if (i != 2 || flag) {
-      blt(bitmap[bit],xnow + xadd*(i-2),ynow + yadd*(i-2),addr);
+      blt(bitmap[bit],xnow + xadd*(i-2),ynow + yadd*(i-2));
     }
   }
 
   if ((i = zline[xnow/16][ynow/16][6]) > 0) {
     Vsync();
-    blt(bitmap[130 + 2*i],xnow,ynow,addr);
+    blt(bitmap[130 + 2*i],xnow,ynow);
   }
 
   Vsync();

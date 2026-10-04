@@ -21,7 +21,9 @@ extern char fname[];
 
 extern int16_t oldpal[16];
 extern int16_t newpal[16];
-extern void *addr;
+
+// Logical screen address
+extern uint16_t *addr;
 
 extern char pname[20];
 

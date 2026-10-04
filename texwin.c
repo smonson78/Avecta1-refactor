@@ -1,19 +1,6 @@
 #include "globals.h"
 #include "blt.h"
 
-// bitmap 131 would be at offset 131 * 130 bytes = 17030 bytes.
-// File shows that there's data in the sprite.
-// 0041206 ff 00 ff 00 ff 00 ff 00 ff 80 ff 80 ff 80 ff 80
-// 0041226 ff c0 ff c0 ff c0 ff c0 ff 00 ff 00 ff 00 ff 00
-// 0041246 fe 00 fe 00 fe 00 fe 00 ff c0 ff c0 ff c0 ff c0
-// 0041266 ff 80 ff 80 ff 80 ff 80 ff 40 ff 40 ff 40 ff 40
-// 0041306 ff 00 ff 00 ff 00 ff 00 ff 80 ff 80 ff 80 ff 80
-// 0041326 ff c0 ff c0 ff c0 ff c0 ff 80 ff 80 ff 80 ff 80
-// 0041346 ff 00 ff 00 ff 00 ff 00 fc 80 fc 80 fc 80 fc 80
-// 0041366 fe 00 fe 00 fe 00 fe 00 ff 00 ff 00 ff 00 ff 00
-// 0041406 00 83 <-- probably rubbish
-
-
 // Putting the scroll where the text appears on the screen
 void texwin()
 {
@@ -24,18 +11,18 @@ void texwin()
   // Maybe the sides of the scroll.
   for (i = 16; i < 25; i += 2) {
     // row 15, i.e. pixel 240
-    blt(bitmap[131], 16 * 15, 8 * i, addr);
-    blt(bitmap[199], 0, 8 * i, addr);
+    blt(bitmap[131], 16 * 15, 8 * i);
+    blt(bitmap[199], 0, 8 * i);
   }
 
   // Now the 4 corners. bitmap 129 on the left, 130 on the right.
-  blt(bitmap[129], 0, 128, addr);
-  blt(bitmap[129], 0, 186, addr);
+  blt(bitmap[129], 0, 128);
+  blt(bitmap[129], 0, 186);
   
   // left shift: 2 as expected
 
-  blt(bitmap[130], (16 * 15) - 2, 128, addr);
-  blt(bitmap[130], (16 * 15) - 2, 186, addr);
+  blt(bitmap[130], (16 * 15) - 2, 128);
+  blt(bitmap[130], (16 * 15) - 2, 186);
 
   // Reverse video
   v_rvon(handle);
