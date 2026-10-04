@@ -361,7 +361,7 @@ int o2(int pc)
          setlite(target,t[24] - x,t[25] - y); 
       x = c[26];
       y = c[27];
-      if(zline[t[24]][t[25]][5] > 0 || rumdata[crum][30]) {
+      if(zline[t[24]][t[25]][5] > 0 || new_rumdata[crum].room_has_bg) {
         explode(x,y,0);
         drawsq(x,y);
         }
@@ -373,7 +373,7 @@ int o2(int pc)
           if(c[8] == 0) {
              c[8] = 1;
              zline[c[6]][c[7]][1] = i;
-             if(rumdata[crum][30] || zline[c[6]][c[7]][5] > 0)
+             if (new_rumdata[crum].room_has_bg || zline[c[6]][c[7]][5] > 0)
                 blt(bitmap[*c],16*(c[6]),16*(c[7]),addr);
               }       
           }
@@ -385,7 +385,7 @@ int o2(int pc)
     case 17: /* block head */
       flag = 0;
       for(i=0;i<4;i++) {
-        if(curmon[i][0] && curmon[i][30] == pursuit[2]) {
+        if (curmon[i][0] && curmon[i][30] == pursuit[2]) {
            prnt("-> %s holds the %s spell to wait for friends!", w, spell[num-1], NULL, NULL, NULL, NULL);
            flag = 1;
            break;

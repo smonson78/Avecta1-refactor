@@ -8,9 +8,13 @@
 
 #include "f4.h"
 
+#include "debug.h"
+
 int sell(int npc)
 {
-  int done = 0,num = 1,i = rumdata[crum][27],j,amount;
+  int done = 0, num = 1, j, amount;
+  //int i = rumdata[crum][27];
+  int i = new_rumdata[crum].room_unknown_2[4];
 
   // The shopkeeper:
   uint8_t *c = curmon[npc];
@@ -19,7 +23,12 @@ int sell(int npc)
   uint8_t *h = curmon[0];
   char str[6], temp[3];
 
+  // Old
   rumdata[crum][26] = 0;
+  // New
+  new_rumdata[crum].room_unknown_2[3] = 0;
+  check_rumdata("sell");
+
   c[39] = 0;
   c[32] = 6;
   for (j = 4; j < 12; j++) {

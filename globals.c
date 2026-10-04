@@ -292,14 +292,18 @@ uint8_t triglist[25];
 
 // This was declared as [18][9] but is accessed as [19][9] in trapaux.c
 // crumobj[][] is used to hold data about objects in the current room
+// hence "current room objects" -> crumobj
 uint8_t crumobj[19][9];
 // The first dimension is the objects in the room.
-// 0      - sprite number
+// 0 - unknown
 // 1..13  - 13 room objects like furniture copied from rumdata[]
 // 14..18 - Blanked out to zeroes on room entry
 
 // Each 9-byte object structure is copied from rumdata:
-// 0 - if something is here
+// 0      - object ID
+//          ...object ID is an index into obj[] for names, for example
+//          ...and into bitmap data too
+// 3 - (for doors) the room number that it leads to
 // 6 - object X coord
 // 7 - object Y coord
 // 8 - if the object is visible

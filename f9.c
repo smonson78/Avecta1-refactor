@@ -113,7 +113,7 @@ int o9(int pc)
       return(1);
       }
   z[2] = 0;
-  if(z[5] > 0 || rumdata[c[30]][30]) {
+  if(z[5] > 0 || new_rumdata[c[30]].room_has_bg) {
     Vsync();
     storsc(storbuf[pc],16*x,16*y,1,addr);
     }

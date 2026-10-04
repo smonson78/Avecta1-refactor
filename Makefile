@@ -11,8 +11,8 @@ INSTALL=/home/simon/atari-hd/AVECTA
 
 IDIOTIC_GCC_BULLSHIT=--param=min-pagesize=0
 STD_CFLAGS=-m68000 -fomit-frame-pointer -fno-builtin -I. -I$(LIBTOS) -ffreestanding -ffunction-sections $(IDIOTIC_GCC_BULLSHIT)
-CFLAGS=-Os -g -Wall $(STD_CFLAGS)
-CXXFLAGS=-Os -g -Wall -fno-exceptions -fno-rtti $(STD_CFLAGS)
+CFLAGS=-O2 -g -Wall $(STD_CFLAGS)
+CXXFLAGS=-O2 -g -Wall -fno-exceptions -fno-rtti $(STD_CFLAGS)
 
 LDLIBS=-lgcc $(LIBTOS)/libtos.a $(LIBGCC)
 LDFLAGS=-m68000 -nostdlib -Wl,--relocatable -L..

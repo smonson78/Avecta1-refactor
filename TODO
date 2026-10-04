@@ -1,7 +1,10 @@
 v_justified() calls crash in libtos. Commented out for now
 
 - When loading AVESIM1.SAV and then attacking a pedestrian, then damaging a guard,
-  then placing the cursor over one of the guards, the game crashes within a few frames.
-  Confirmed the original game doesn't do that.
+  the game crashes within a few seconds. Confirmed the original game doesn't do that.
+  Also confirmed that the first commit before starting refactoring didn't do it either
+  (1a1b538ee8dfc441381ae3fd3dc0a56d73a6a42d).
+
+
 
 

@@ -717,13 +717,18 @@ int storobj(int thing, int x, int y)
 int xobj(int thing, int room)
 {
    int i = 1;
+   // Room zero
    uint8_t *r = rumdata[0];
+
    while( ( *(r+i) != thing || *(r+i+2) != room) && i < 157) {
       i += 3;
    }
+
    if (i >= 157)
       return(0);
+
    *(r+i) = *(r+i+1) = *(r+i+2) = 0;
+   
    return(1);
 }
 

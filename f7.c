@@ -10,6 +10,9 @@
 
 #include "f5.h"
 
+#include "debug.h"
+
+
 /******************************************************************************/
 /* I7() is a  call to initialize a TAKE/DROP.      It must be adjacent and    */
 /* takeable, which means its type must be greater than 40.                    */
@@ -119,12 +122,13 @@ else { /* this is a drop out of inventory */
 /* TAKE/DROP output function.                                               */
 /****************************************************************************/
 
+// pc = player (0) or character (1 or more)
 int o7(int pc)
 {
   uint8_t *c = curmon[pc];
   uint8_t *t, *z;
-  char *w,*w1 = (pc == 0 ? pname : name[c[3]]);
-  int i,k,l,inv = c[8],r = c[9],x = c[5],y = c[6],j = c[10],id;
+  char *w, *w1 = (pc == 0 ? pname : name[c[3]]);
+  int i,k,l,inv = c[8],r = c[9],x = c[5],y = c[6],j = c[10], id;
 
   c[18] = 7;
   if (j > 0) {
@@ -155,15 +159,22 @@ int o7(int pc)
       }
     putinto(k,c[8]);  
     }
-  if(j > 0 && k == 0) {
+  if (j > 0 && k == 0) {
     c[9] = 0;
     i = rumslot();
     prnt("-> %s puts the %s down.", w1, obj[c[8]], NULL, NULL, NULL, NULL);
     z = crumobj[i];
-    if(i > 13) { 
+    
+    if (i > 13) { 
       storobj(c[8],x,y);
+      // Old
       rumdata[crum][134+i] = c[8];
-      }
+      // New
+      new_rumdata[crum].room_unknown_3[i - 14] = c[8];
+
+      check_rumdata("o7");
+    }
+
     takeout(pc,c[8]);
     if(c[45] == c[8])
         c[45] = 0;
@@ -187,10 +198,12 @@ int o7(int pc)
     z[8] = 1;
     z[2] = z[3] = 0;
     zline[x][y][1] = i;
-    if(zline[x][y][5] > 0 || rumdata[crum][30])
+    if (zline[x][y][5] > 0 || new_rumdata[crum].room_has_bg) {
       drawsq(x,y);
     }
-  if(j > 0) {
+  }
+
+  if (j > 0) {
     for(k=0;k<40;k++) {
       if(c[8] == 0)
         break;
@@ -207,41 +220,61 @@ int o7(int pc)
           }
         }
       }
-    }
-  if(j > 0 && c[8] == 80) {
+  }
+
+  if (j > 0 && c[8] == 80) {
     c[52] = c[30];
-    c[53] = x + 16*y;
+    c[53] = x + (16 * y);
     prnt("-> The seeking shard imprints the room!", NULL, NULL, NULL, NULL, NULL, NULL);
   }
 
-  if(j == 0) {
+  if (j == 0) {
     x = crumobj[c[9]][6];
     y = crumobj[c[9]][7];
-    if(!adjac(pc,x,y))
-      return(1);
+    if (!adjac(pc,x,y)) {
+      return 1;
+    }
+
     id = zline[x][y][1];
+
     k = crumobj[id][0];
-    if(k < 41)
-      return(1);
+    if (k < 41) {
+      return 1;
+    }
+
     l = (c[45] == 0 ? 0 : 1);
     *(c+45+l) = k;
     invtrap(k);
     w = obj[k];
+
     prnt("-> %s takes the %s into hand.", w1, w, NULL, NULL, NULL, NULL); 
-    for(j=0;j<9;j++) 
+    for (j = 0; j < 9; j++) {
+      // Zero out all of crumobj[id] because the object is no longer in the room
       crumobj[id][j] = 0;
-    if(id > 13) {
-      xobj(crumobj[id][0],crum);
-      rumdata[crum][134+id] = 0;
-      }
+    }
+
+    if (id > 13) {
+      // Delete object from room
+      // I would think crumobj[id][0] is always 0 here given the last block.
+      xobj(crumobj[id][0], crum);
+
+      // Old
+      rumdata[crum][134 + id] = 0;
+      // New
+      new_rumdata[crum].room_unknown_3[id - 14] = 0;
+      check_rumdata("o7 position 2");
+    }
+
     zline[x][y][1] = 0;
     c[5] = x;
     c[6] = y;
     c[8] = k;
-    if(k < 46 && k > 40 && c[32] == 0)
+    if (k < 46 && k > 40 && c[32] == 0) {
       c[32] = k;
-    attack(pc,x,y);
-    if(rumdata[crum][30] || zline[x][y][5] > 0) {
+    }
+    attack(pc, x, y);
+
+    if (new_rumdata[crum].room_has_bg || zline[x][y][5] > 0) {
       drawsq(x,y);
     }
   }

@@ -30,7 +30,7 @@ int actmon(int type, int nm, int x, int y)
     c[0] = p->in_use;
     c[1] = p->unknown1;
     c[2] = p->unknown2;
-    c[3] = p->unknown3;
+    c[3] = p->monster_name_id;
     c[4] = p->unknown4;
     c[5] = p->unknown5;
     c[6] = p->unknown6;
@@ -120,7 +120,7 @@ int actmon(int type, int nm, int x, int y)
     c[0] = p->in_use;
     c[1] = p->unknown1;
     c[2] = p->unknown2;
-    c[3] = p->unknown3;
+    c[3] = p->monster_name_id;
     c[4] = p->unknown4;
     c[5] = p->unknown5;
     c[6] = p->unknown6;

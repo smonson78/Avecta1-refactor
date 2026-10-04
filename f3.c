@@ -130,8 +130,7 @@ int o3(int pc)
       prnt("-> %s takes out the %s to examine.", w1, obj[object], NULL, NULL, NULL, NULL);
     }
     prnt("-> %s examines the %s.", w1, obj[object], NULL, NULL, NULL, NULL);
-    if (!rumdata[crum][30] && !zline[x][y][5])
-    {
+    if (!new_rumdata[crum].room_has_bg && !zline[x][y][5]) {
       prnt("-> It is too dark for %s to see anything!", w1, NULL, NULL, NULL, NULL, NULL);
       return (1);
     }

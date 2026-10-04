@@ -10,17 +10,20 @@
 #include "start.h"
 #include "blt.h"
 
+#include "debug.h"
+
 void stormon();
 int getmon(int room);
 
-// God knows what's going on in this mess
-// Switch... Room? It might be.
+// Switch room, and the associated housekeeping
 int switchrum() {
   int d, i, j, x = 0, y = 0, xn, yn, oldrum;
   uint8_t *p = curmon[0];
 
   // It must be room data. There are 80 of these and crum might be "current room"
   uint8_t *r = rumdata[crum];
+  room_data_t *new_r = &new_rumdata[crum];
+
   uint8_t *c;
 
   char pan[12];
@@ -31,12 +34,15 @@ int switchrum() {
       c = crumobj[i+1];
 
       // Each of these iterations is for one object inside the current room.
+      // Copy 9 bytes for each
       for (j = 0; j < 9; j++) {
         // Copy the objects data from the current room array data back into storage in rumdata[]
         // Maybe because we're leaving the room which suggests p[30] is a room number
         r[31 + (9 * i) + j] = c[j];
+        new_r->object[i].unknown[j] = c[j];
       }
     }
+    check_rumdata("switchrum 1");
 
     // Init pursuit[3] to all zeroes
     // for(i=0;i<3;pursuit[i++] = 0)
@@ -50,7 +56,7 @@ int switchrum() {
       c = curmon[i];
       c[35] = 0;
 
-      if (*c == 1 && c[30] == crum  && (i < 4 || c[38] == 0) && 
+      if (*c == 1 && c[30] == crum && (i < 4 || c[38] == 0) && 
         (i < 4 || c[39] < 4) && c[58] != 16 &&
         c[31] < 4 && (dungeon != 2 || c[58] == 17) &&
         (i < 4 || (c[36] == 0 && c[13] > rnd(100)) ) ) {
@@ -189,20 +195,28 @@ int switchrum() {
     trigtrol(0);
   }
 
-  if (rumdata[crum][30]) {
+  // If the new room the player has moved into is lit
+  if (new_rumdata[crum].room_has_bg) {
+    
+    // Search for a torch in curmon 0 to 3
     i = 0;
-    for(j=0;j<4;j++) {
+    for (j = 0; j < 4; j++) {
       c = curmon[j];
-      if(c[41] > 0) { 
+      
+      // Some odd calculations in here
+      if (c[41] > 0) { 
+        // This means it was a lit torch
         i = 1;
-        c[42] += 1;
-        c[41] = 0;
+        c[42] += 1; // Maybe this is the number of unlit torches
+        c[41] = 0; // Now it's not a lit torch
         c[46] = 0;
-        }
       }
+    }
 
-    if(i)
+    // Player was holding a lit torch when moving into a lit room
+    if (i) {
       prnt("-> The lit torch is snuffed and put away.", NULL, NULL, NULL, NULL, NULL, NULL);
+    }
   }
 
   return 0;
@@ -275,7 +289,7 @@ int getmon(int room)
           c[0] = p->in_use;
           c[1] = p->unknown1;
           c[2] = p->unknown2;
-          c[3] = p->unknown3;
+          c[3] = p->monster_name_id;
           c[4] = p->unknown4;
           c[5] = p->unknown5;
           c[6] = p->unknown6;

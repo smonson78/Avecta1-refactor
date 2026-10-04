@@ -39,8 +39,11 @@ typedef struct {
   // - 21  = background tile 2 colour
   room_background_t room_bg[2];
 
-  // - 22 to 29 - unknown
-  uint8_t room_unknown_2[8];
+  // - 22  = type of monsters in this room (that can be heard through a door)
+  uint8_t room_monster_type;
+  
+  // - 23 to 29 - unknown  
+  uint8_t room_unknown_2[7];
 
   // - 30  = room has background graphics if non-zero
   uint8_t room_has_bg;

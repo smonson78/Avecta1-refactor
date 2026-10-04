@@ -30,7 +30,7 @@ int o4(int pc)
    uint8_t *z;
    char id, *w;
    int flag, xroll, yroll, i, xnow = *(c + 24), ynow = *(c + 25), x = *(c + 28), y = *(c + 29);
-   int j, light = rumdata[crum][30];
+   int j, light = new_rumdata[crum].room_has_bg;
 
    z = zline[x][y];
    id = crumobj[*(z + 1)][0];

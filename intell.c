@@ -396,10 +396,12 @@ do {
        c[29] = ydes;
        break;
     case 2:
-       c[26] = rumdata[crum][155];
-       c[27] = rumdata[crum][156];
-       flag = 0;
-       break;
+      //  c[26] = rumdata[crum][155];
+      //  c[27] = rumdata[crum][156];
+      c[26] = new_rumdata[crum].room_unknown_3[7];
+      c[27] = new_rumdata[crum].room_unknown_3[8];
+      flag = 0;
+      break;
     }
   } while (flag == 0);
 
@@ -574,7 +576,7 @@ int friend(int npc)
   uint8_t *c = curmon[npc];
   int i, j, x = curmon[0][24], y = curmon[0][25];
 
-  if (npc < 4 && rumdata[crum][30] == 0 && c[41] < 3 && c[42] > 0) {
+  if (npc < 4 && new_rumdata[crum].room_has_bg == 0 && c[41] < 3 && c[42] > 0) {
     c[10] = 1;
     c[15] = 12;
     c[16] = 6;
