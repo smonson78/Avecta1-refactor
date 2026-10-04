@@ -7,6 +7,8 @@
 #include "torches.h"
 #include "damage.h"
 
+#include "debug.h"
+
 int rumslot();
 
 int destroy(int type, int num)
@@ -15,7 +17,7 @@ int destroy(int type, int num)
   uint8_t *z;
   uint8_t *c;
 
-  if(type == 1) {
+  if (type == 1) {
     c = crumobj[num];
     x = c[6];
     y = c[7];
@@ -24,18 +26,18 @@ int destroy(int type, int num)
     c = curmon[num];
     x = c[24];
     y = c[25];
-    }
+  }
   z = zline[x][y];
-  if(type == 1) {
+  if (type == 1) {
     for(i=0;i<9;i++)
       c[i] = 0;
     z[1] = 0;
-    if(z[5] > 0 || rumdata[crum][30])
+    if (z[5] > 0 || new_rumdata[crum].room_has_bg)
       drawsq(x,y);
-    }
-  if(type == 2) {
+  }
+  if (type == 2) {
     damage(num,c[2] + c[12]);
-    }
+  }
   return(1);
 }
 
@@ -161,15 +163,23 @@ int getword(char *comp)
 
 int rumslot()
 {
-  int i;
-  for(i = 1; i < 19; i++) {
-    if(crumobj[i][0] == 0) {
+  // Search through crumobj[18][9] looking for one with nothing in it.
+  // If no spaces found, we'll "destroy" some fixed item and zero out part of the current room data.
+  // Note bug here, it should really stop at 17 but continues to 18 which is the 19th one.
+  for (int i = 1; i < 19; i++) {
+    if (crumobj[i][0] == 0) {
       return i;
     }
   }
 
   destroy(1, 18);
   rumdata[crum][152] = 0;
+  new_rumdata[crum].room_unknown_3[4] = 0;
+
+  check_rumdata("rumslot");
+
+  // I guess we're saying "use slot 18". Did we destroy item 18 in the array to make space?
+  // Or does 18 mean "not found" since the array actually ends at 17?
   return 18;
 }
 

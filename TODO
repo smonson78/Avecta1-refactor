@@ -1,7 +1,7 @@
 v_justified() calls crash in libtos. Commented out for now
 
-- STORSC - asm func (done)
-- TOGGLE (done)
-
+- When loading AVESIM1.SAV and then attacking a pedestrian, then damaging a guard,
+  then placing the cursor over one of the guards, the game crashes within a few frames.
+  Confirmed the original game doesn't do that.
 
 

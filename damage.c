@@ -11,40 +11,52 @@
 #include "blt.h"
 #include "toggle.h"
 
+#include "debug.h"
+
+// pc = monster/character index
+// level = 
 int damage(int pc, int level)
 {
    uint8_t *c = curmon[pc];
    uint8_t *z1, *z;
    char *w = (pc == 0 ? pname : name[c[3]]);
-   int newpolice = 1,old,light,i,j,k,l,x = c[24],y = c[25];
+   int newpolice = 1, old, i, j, k, l;
+   int x = c[24], y = c[25];
 
-   if(police)
+   if (police) {
       newpolice = 0;
-   if(c[30] != crum)
-      return(1);
+   }
+   if (c[30] != crum) {
+      return 1;
+   }
       
-   light = rumdata[crum][30];
+   int light = new_rumdata[crum].room_has_bg;
+
    level -= c[12];
-   level = (level < 1 ? 0 : level );
+   level = level < 1 ? 0 : level;
+
    old = c[1];
    c[1] += level;
    c[1] = ( c[1] > c[2] ? c[2] : c[1] );
    if(pc > 3 && c[31] < 4 && mode) {
       i = (c[1] * 4)/(c[2]);
-      if(i > 3) {
-         *c = 0;
+      if (i > 3) {
+         c[0] = 0;
          i = 4;
-         }
-      if(c[36] == 1 && c[1] < c[2])
-      i = 5;
-      if(c[38] && *c == 1)
-      i = 6;
+      }
+      if (c[36] == 1 && c[1] < c[2]) {
+         i = 5;
+      }
+      if (c[38] && c[0] == 1) {
+         i = 6;
+      }
       Vsync();
       textsix(0,313,1+8*(c[33]),1," ");
       textsix(1,313,1+8*(c[33]),1,mod[i]);
       }
-   if(level == 0)
-   return(1);
+      if (level == 0) {
+         return(1);
+      }
    if(pc > 3 && (c[31] > 3  || (c[38] && curmon[0][39] == pc)) && crum != 31) {
    if(c[31] > 3 && c[52] == 0) {
       c[52] = 1;
@@ -78,23 +90,32 @@ int damage(int pc, int level)
    c[1] = c[2];
    *c = 0;
    zline[x][y][2] = 0;
-   if(pc > 0) {
-      if(pc > 3 && c[58] != 16)
+   if (pc > 0) {
+      if (pc > 3 && c[58] != 16) {
          prnt("-> The %s has been slain!", w, NULL, NULL, NULL, NULL, NULL);
-      if(newpolice && police) {
+      }
+
+      if (newpolice && police) {
          prnt("-> And an evil deed it was!  %s will pay for this heinous crime!",
                pname, NULL, NULL, NULL, NULL, NULL);
-         }
-      if(pc > 3 && c[58] == 16)
+      }
+
+      if (pc > 3 && c[58] == 16) {
          prnt("->  MELKTHROP IS SLAIN!!!", NULL, NULL, NULL, NULL, NULL, NULL);
-      if(pc < 4) {
+      }
+
+      if (pc < 4) {
          j = rumslot();
          z = crumobj[j];
+
          prnt("-> %s IS DEAD!", w, NULL, NULL, NULL, NULL, NULL);
-         if(c[41] > 0)
+
+         if (c[41] > 0) {
             litetrol(x,y,0);
+         }
+
          i = zline[x][y][1];
-         if(i != 0 && crumobj[i][3] != 0) {
+         if (i != 0 && crumobj[i][3] != 0) {
             storsc(storbuf[pc],16*x,16*y,1,addr);
             do {
                i = 1 - rnd(3);
@@ -108,18 +129,34 @@ int damage(int pc, int level)
             c[24] = x;
             c[25] = y;
             storsc(storbuf[pc],16*x,16*y,0,addr);
-            if(l != 0 && crumobj[l][0] > 40)
+
+            if(l != 0 && crumobj[l][0] > 40) {
                putaway(pc,crumobj[l][0]);
-            } 
+            }
+         } 
          zline[x][y][1] = j;
-         if(c[45] != 0)
+
+         if (c[45] != 0) {
             putaway(pc,c[45]);
-         if(c[46] != 0 && c[41] == 0)
-            putaway(pc,c[46]);
-         if(j > 13) {
-            rumdata[crum][134+j] = 41-pc;
-            storobj(41-pc,x,y);
          }
+
+         if (c[46] != 0 && c[41] == 0) {
+            putaway(pc,c[46]);
+         }
+         
+         // j came from rumslot() BTW, it could be (1..18)
+         // with 134 added to it that becomes (135 .. 152)
+         // and with the > 13 limitation that then becomes (148..152) which is room_unknown_3
+         if (j > 13) {
+            // Old
+            rumdata[crum][134 + j] = 41 - pc;
+            // New
+            new_rumdata[crum].room_unknown_3[j - 14] = 41 - pc;
+
+            storobj(41 - pc,x,y);
+            check_rumdata("damage");
+         }
+
          *z = z[4] = 41-pc;
          z[1] = z[8] = 1;
          z[7] = c[25];
