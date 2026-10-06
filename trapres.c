@@ -1,3 +1,5 @@
+#include "tos_compat.h"
+
 #include "globals.h"
 #include "explode.h"
 #include "fireball.h"

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include <libc.h>
 #include <gemdos.h>
 #include <xbios.h>
 #include <aes.h>
@@ -17,8 +18,5 @@ void linea_init(LINEA **parameter_block, FONT_HDR ***sysfont_pointers);
 void linea_textblock_transfer();
 void linea_showmouse();
 void linea_hidemouse();
-
-
-#define VBL_LIST ((volatile int16_t (**)())0x4ce)
 
 #endif

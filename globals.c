@@ -46,8 +46,8 @@ int row, col = 2;
 int grflist[13];
 int winroom;
 
-int (*inverb[])()  = {i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14};
-int (*outverb[])() = {o0,o1,o2,o3,o4,o5,o6,o7,o8,o9,o10,o11,o12,o13,o14};
+int (*inverb[])(int pc)  = {i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14};
+int (*outverb[])(int pc) = {o0,o1,o2,o3,o4,o5,o6,o7,o8,o9,o10,o11,o12,o13,o14};
 
 int winker = 0, winktime = 0, combat = 0;
 char *posture[] = {"All Out","Standard","Defensive","Fall Back"};
@@ -78,7 +78,7 @@ int mode = 0, dismax;
 int pursuit[3] = {0, 0, 0};
 uint8_t trigval[80][6];
 char invtrig[20];
-char *path = "a:*.SAV";
+char path[64] = "a:*.SAV";
 char *filename = "________.___";
 char *spell[] = {
   "Cure","Search","Freeze","Unvenom","Vorpal",

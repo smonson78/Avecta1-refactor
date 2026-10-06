@@ -1,3 +1,5 @@
+#include "tos_compat.h"
+
 #include <stdint.h>
 #include <libc.h>
 #include "globals.h"

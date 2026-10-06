@@ -1,4 +1,6 @@
 
+#include "tos_compat.h"
+
 #include "globals.h"
 #include "gemdefs.h"
 #include "text.h"

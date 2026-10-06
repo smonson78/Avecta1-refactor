@@ -1,0 +1,44 @@
+#ifndef GEMDOS_H_
+#define GEMDOS_H_
+
+#include "tos.h"
+#include "aes.h"
+
+typedef uint16_t compat_FILE;
+
+// FIXME: these should be O_... but dlmalloc has used them!
+#define GEMDOS_RDONLY 1
+#define GEMDOS_WRONLY 2
+#define GEMDOS_RDWR 4
+
+typedef struct
+{
+  int8_t d_reserved[21];    /* Reserved for GEMDOS */
+  uint8_t d_attrib;         /* File attributes     */
+  uint16_t d_time;          /* Time                */
+  uint16_t d_date;          /* Date                */
+  uint32_t d_length;        /* File length         */
+  int8_t d_fname[14];       /* Filename            */
+} DTA;
+
+int32_t gemdos_super(void *stack);
+
+/* Drives/paths */
+int16_t Dgetdrv();
+
+/* File IO */
+int16_t Fcreate(const char *fname, int16_t attr);
+int32_t Fopen(const char *fname, int16_t mode);
+void Fclose(compat_FILE handle);
+int32_t Fwrite(compat_FILE handle, int32_t count, void *buf);
+int32_t Fread(compat_FILE handle, int32_t count, void *buf);
+int32_t Fseek(int32_t offset, int16_t handle, int16_t seekmode);
+void Fsetdta(const DTA *buf);
+int32_t Fsfirst(const char *filename, int16_t attr);
+
+/* Time and date */
+uint32_t Tgettime();
+uint16_t Tsettime(uint16_t time);
+uint16_t Tsetdate(uint16_t date);
+
+#endif

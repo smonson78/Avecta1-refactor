@@ -9,8 +9,8 @@
 #include <libc.h>
 
 // The iX() and oX() mechanism
-extern int (*inverb[])();
-extern int (*outverb[])();
+extern int (*inverb[])(int pc);
+extern int (*outverb[])(int pc);
 
 extern int16_t handle;
 extern MFDB psrc, pdes;
@@ -115,7 +115,7 @@ extern int grflist[13];
 extern int winroom;
 
 // Save game path
-extern char *path;
+extern char path[64];
 extern char *filename;
 
 extern int outside, dungeon;

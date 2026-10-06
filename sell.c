@@ -1,4 +1,6 @@
 
+#include "tos_compat.h"
+
 #include "globals.h"
 #include "caux.h"
 #include "trapaux.h"

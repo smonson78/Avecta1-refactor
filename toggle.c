@@ -1,3 +1,5 @@
+#include "tos_compat.h"
+
 #include <stdint.h>
 #include "globals.h"
 
@@ -66,19 +68,19 @@ void toggle(int x, int y, int loops) {
     //int16_t *a0 = addr;
 
     // 2e5a:	c2fc 0500      	muluw #1280,%d1
-    uint32_t d1 = y * 1280;
+    //uint32_t d1 = y * 1280;
 
     // 2e5e:	c0fc 0004      	muluw #4,%d0
-    uint32_t d0 = x * 4;
+    //uint32_t d0 = x * 4;
 
     // 2e62:	d280           	addl %d0,%d1
-    d1 += d0;
+    //d1 += d0;
 
     // d1 = (x * 4) + (y * 1280);
 
     // 2e64:	d1c1           	addal %d1,%a0
     //a0 += d1 / 2; // halved because of 16 bit pointer width
-    int16_t *a0 = addr + (y * 640) + (x * 2);
+    uint16_t *a0 = addr + (y * 640) + (x * 2);
 
     // 2e66:	4285           	clrl %d5
     // 2e68:	3a3c 0007      	movew #7,%d5
@@ -88,7 +90,7 @@ void toggle(int x, int y, int loops) {
     //do {
     for (int loop = 0; loop < 8; loop++) {
       // 2e6c:	2248           	moveal %a0,%a1
-      int16_t *a1 = a0;
+      uint16_t *a1 = a0;
 
       // 2e6e:	3602           	movew %d2,%d3
       // int16_t d3 = d2; //the unknown value, 0 or 7. This is how many times to loop (1 or 8):

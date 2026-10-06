@@ -1,3 +1,4 @@
+#include "tos_compat.h"
 #include "globals.h"
 #include "gemdefs.h"
 #include "caux.h"
@@ -32,7 +33,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
   int light, keybd = 0, keystk = 0, mflag=0,rflag=0, tflag = 0,inrflag,intflag = 0;
   uint8_t *z;
   uint8_t *c = NULL;
-  char *string, letter;
+  char *string, letter = 0;
 
   if (winker != 0) {
     c = curmon[winker-1];
@@ -67,11 +68,12 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       if (keybd != 0 && keystk) {
          keystk = 0;
          for(i=0;i<keybd;i++) {
-         if(keybd == 13)
+         if (keybd == 13) {
             string = verblist[i];
-         else
+         } else {
             string = posture[i];
-         if( letter == ' ' || *string == letter || *string == (letter-32) ) {
+         }
+         if (letter == ' ' || *string == letter || *string == (letter-32) ) {
                mouse_off();
                top(1);
                clrinp();
