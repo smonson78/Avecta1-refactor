@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#include "globals.h"
+
 compat_FILE *compat_stdin = (compat_FILE *)0;
 compat_FILE *compat_stdout = (compat_FILE *)1;
 compat_FILE *compat_stdaux = (compat_FILE *)2;
@@ -220,7 +222,71 @@ int16_t compat_isdigit(char c)
 }
 
 void emit_console(char **x, char c) {
-	Cconout(c);
+	// printf("Emit multi printing letter %c (0x%02x) at position %d,%d\n",
+	// 	c, c, globals.x_text, globals.y_text);
+
+	GLOBAL_LOCK();
+
+	if (c == '\e') {
+		globals.escape_status = 1;
+		GLOBAL_UNLOCK();
+		return;
+	}
+
+	// Clear screen
+	if (globals.escape_status == 1 && c == 'E') {
+		globals.x_text = 0;
+		globals.y_text = 0;
+		globals.escape_status = 0;
+
+		SDL_FillRect(video.surf, NULL, SDL_MapRGB(video.surf->format, 0, 0, 0));
+
+		GLOBAL_UNLOCK();
+		return;
+	}
+
+	if (c == '\n') {
+		globals.x_text = 0;
+		if (globals.y_text <= 23) {
+			globals.y_text++;
+		}
+
+		GLOBAL_UNLOCK();
+		return;
+	}
+
+	SDL_Colour colour = {255, 255, 255};
+	char out[2];
+	out[0] = c;
+	out[1] = 0;
+
+	// Render into a temporary surface
+	SDL_Surface *t = TTF_RenderText_Blended(globals.font, out, colour);
+	if (t == NULL) {
+		exit(1);
+	}
+
+	//SDL_SetSurfaceBlendMode(t, SDL_BLENDMODE_BLEND);
+	
+	// Define the output rectangle
+	SDL_Rect dest;
+	dest.x = globals.x_text * 8;
+	dest.y = globals.y_text * 8;
+	dest.w = 8;
+	dest.h = 8;
+
+	// Blit text background
+	SDL_FillRect(video.surf, &dest, SDL_MapRGB(video.surf->format, 0, 0, 128));  // Dark blue for test
+
+	// Blit the text
+	SDL_BlitSurface(t, NULL, video.surf, &dest);
+	SDL_FreeSurface(t);
+
+	// Move along
+	if (globals.x_text < 39) {
+		globals.x_text++;
+	}
+	GLOBAL_UNLOCK();
 }
 
 void emit_string(char **x, char c) {
@@ -233,10 +299,8 @@ int compat_printf(const char *format, ...)
   va_list arg;
   int done;
 
-	printf("> ");
-
   va_start(arg, format);
-  done = vfprintf(stdout, format, arg);
+  done = compat_vfprintf(emit_console, NULL, format, arg);
   va_end(arg);
 
   return done;
@@ -248,7 +312,9 @@ int compat_sprintf(char *dest, const char *format, ...)
   int done;
 
   va_start(arg, format);
-  done = vsprintf(dest, format, arg);
+	char *dest_copy = dest;
+  done = compat_vfprintf(emit_string, &dest_copy, format, arg);
+	*dest_copy = '\0';
   va_end(arg);
 
   return done;

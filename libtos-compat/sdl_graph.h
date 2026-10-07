@@ -2,7 +2,7 @@
 #define __SDL_GRAPH_H
 
 //#define SDL_FULLSCREEN
-//#define SDL_SCREENSURFACE
+#define SDL_SCREENSURFACE
 
 #include <stdint.h>
 
@@ -57,6 +57,7 @@ typedef struct {
 #endif
 
 	uint32_t width, height;
+	int multiplier; // For when the window will be scaled bigger than the video memory, e.g. 2x
 	void *pixels;
 	int pitch;
 
@@ -64,7 +65,7 @@ typedef struct {
 
 extern video_t video;
 
-void setup_sdl(int width, int height);
+void setup_sdl(int width, int height, int multiplier);
 void shutdown_sdl();
 void sdl_flip();
 

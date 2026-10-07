@@ -9,10 +9,11 @@ void sdl_error_fail() {
 	exit(1);
 }
 
-void setup_sdl(int width, int height)
+void setup_sdl(int width, int height, int multiplier)
 {
 	video.width = width;
 	video.height = height;
+	video.multiplier = multiplier;
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		sdl_error_fail();
@@ -55,7 +56,7 @@ void setup_sdl(int width, int height)
 	video.win = SDL_CreateWindow("SDL2 Test",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
-		video.width, video.height, 0);
+		video.width * video.multiplier, video.height * video.multiplier, 0);
 #endif
 
 	if (video.win == NULL) {
@@ -78,13 +79,13 @@ void setup_sdl(int width, int height)
 	printf("SDL using software rendering.\n");
 	/* Create a software renderer */
 	video.surf = SDL_CreateRGBSurface(0, video.width, video.height, 32,
-			0, 0, 0, 0);
+			SDL_RMASK, SDL_GMASK, SDL_BMASK, SDL_AMASK);
 	if (video.surf == NULL)
 	{
-		std::string temp = "SDL error: ";
-		temp += SDL_GetError();
-		throw std::runtime_error(temp);
+		fprintf(stderr, "SDL error: %s\n", SDL_GetError());
+		exit(1);
 	}
+	SDL_SetSurfaceBlendMode(video.surf, SDL_BLENDMODE_BLEND);
 
 	video.tex = SDL_CreateTexture(video.render_hardware,  SDL_PIXELFORMAT_ARGB8888,
 			SDL_TEXTUREACCESS_STREAMING, video.width, video.height);

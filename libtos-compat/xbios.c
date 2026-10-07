@@ -1,4 +1,7 @@
+#include <stdio.h>
 #include "xbios.h"
+
+#include "globals.h"
 
 int32_t xbios_supexec(int32_t (*func)())
 {
@@ -7,6 +10,7 @@ int32_t xbios_supexec(int32_t (*func)())
 
 // Get screen logical base address
 void *Logbase() {
+  printf("Logbase()\n");
   return 0;
 }
 
@@ -16,4 +20,5 @@ void *Physbase() {
 }
 
 void Setpalette(int16_t palptr[16]) {
+  printf("Setpalette()\n");
 }

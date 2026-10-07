@@ -24,8 +24,6 @@ int main()
    int old, i, j;
    uint8_t *c = curmon[0];
 
-   printf("This is the game!\n");
-
    // Clear screen
    printf("\eE");
    

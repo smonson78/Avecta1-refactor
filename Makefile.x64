@@ -25,7 +25,7 @@ OBJS=start.o globals.o gemdefs.o \
 
 all: $(TARGET)
 
-$(TARGET): $(TARGET)-shim.elf
+$(TARGET): $(TARGET)-shim.elf $(LIB_COMPAT)/atari-compat.a 
 	$(CC) -o $(TARGET) $^ $(LDLIBS)
 
 $(TARGET)-combined.elf: $(OBJS)
