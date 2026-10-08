@@ -3,7 +3,7 @@
 
 #include "tos.h"
 
-#include "globals.h"
+#include "st_globals.h"
 
 int16_t (*VBL_LIST[16])(void);
 

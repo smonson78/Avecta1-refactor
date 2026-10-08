@@ -3,6 +3,8 @@
 
 #include <libc.h>
 
+#include "tos_compat.h"
+
 /*******************************************************************************
 * BLT(SPRITE,XPIX,YPIX,ADDR) takes the address of a sprite in memory = SPRITE, *
 * the X,Y coordinates in pixels, and the logical screen address = ADDR and puts*
@@ -11,6 +13,8 @@
 
 // Sprites are always 16x16 pixels.
 void blt(uint16_t *sprite, int xpix, int ypix) {
+
+  //printf("blt %p -> %p\n", sprite, addr);
 
   uint16_t *dest = addr + (ypix * 80) + ((xpix / 16) * 4);
   uint16_t shift = 16 - (xpix % 16);

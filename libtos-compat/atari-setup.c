@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include "globals.h"
+#include "st_globals.h"
 
 #include "linea.h"
 
 // I don't actually know what the default palette is.
-int16_t default_palette[16] = {0, 0xfff, 0xf00, 0x0f0, 0x00f, 0xff0, 0xf0f, 0x0ff, 
-	0x777, 0xf77, 0x7f7, 0x77f, 0x700, 0x070, 0x007, 0x333 };
+int16_t default_palette[16] = {0, 0x777, 0x700, 0x070, 0x007, 0x770, 0x707, 0x077, 
+	0x333, 0x733, 0x373, 0x337, 0x300, 0x030, 0x003, 0x222 };
 
 void atari_setup() {
   linea_setup();
@@ -38,4 +38,19 @@ void atari_setup() {
 
 	globals.video.current_colour = 1;
 	globals.video.current_bgcolour = 0;
+
+	// File handles
+	for (int i = 0; i < 64; i++) {
+		globals.file_handles[i] = 0;
+	}
+}
+
+void atari_shutdown() {
+	free(globals.video.st_logbase);
+
+	for (int i = 0; i < 64; i++) {
+		if (globals.file_handles[i] != NULL) {
+			fclose(globals.file_handles[i]);
+		}
+	}	
 }

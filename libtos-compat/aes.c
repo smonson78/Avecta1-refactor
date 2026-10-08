@@ -4,6 +4,8 @@
 #include "tos.h"
 #include "libc.h"
 
+#include "st_globals.h"
+
 // static AESPB c;
 // static VDIPB v;
 
@@ -193,6 +195,8 @@ int16_t vswr_mode(int16_t handle, int16_t mode)
 // Set palette colour
 int16_t vs_color(int16_t handle, int16_t color_index, int16_t *rgb_in)
 {
+   printf("vs_col() %d to 0x%03x\n", color_index, *rgb_in);
+   globals.video.palette[color_index] = *rgb_in;
    return 0;
 }
 

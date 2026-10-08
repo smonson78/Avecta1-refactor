@@ -2,6 +2,8 @@
 #define __GLOBALS_H
 
 #include <pthread.h>
+#include <stdio.h>
+
 #include "sdl_graph.h"
 
 #include "xbios.h"
@@ -40,6 +42,9 @@ typedef struct {
 	int exit;
 
 	sdl_video_impl_t video;
+
+	FILE *file_handles[64];
+
 } globals_t;
 
 #define GLOBAL_LOCK() pthread_mutex_lock(&globals.lock) 

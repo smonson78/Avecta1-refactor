@@ -29,7 +29,7 @@ void linea_setup() {
 
 // LINE-A initialisation (get parameter blocks)
 void linea_init(LINEA **parameter_block, FONT_HDR ***sysfont_pointers) {
-  printf("linea_init()\n");
+  // printf("linea_init()\n");
   *parameter_block = &linea_parameter_block;
   *sysfont_pointers = system_font_pointers;
 }

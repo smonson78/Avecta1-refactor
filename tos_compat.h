@@ -2,7 +2,7 @@
 #define __TOS_COMPAT_H
 
 #if defined TOS_COMPAT
-  #define printf compat_printf
+  #define printf(...) compat_printf(__VA_ARGS__)
   #define sprintf compat_sprintf
   #define strlen compat_strlen
   #define strcmp compat_strcmp
@@ -17,6 +17,8 @@
   // This is not part of TOS, but it IS on a normal POSIX machine and will be called by the NVIDIA driver
   #define remove compat_remove
 
+#else
+  #define endianness_fix(buf, words, length) {}
 #endif
 
 

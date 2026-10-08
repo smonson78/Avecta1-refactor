@@ -20,7 +20,7 @@ void texwin()
   // Now the 4 corners. bitmap 129 on the left, 130 on the right.
   blt(bitmap[129], 0, 128);
   blt(bitmap[129], 0, 186);
-  
+
   // left shift: 2 as expected
 
   blt(bitmap[130], (16 * 15) - 2, 128);
@@ -43,16 +43,5 @@ void texwin()
   
   // Normal video
   v_rvoff(handle);
-
-  // Test drawing a background sprite:
-  // blt(fillpic[1], 0, 0, addr);
-  // blt(fillpic[2], 16, 0, addr);
-  // blt(fillpic[3], 32, 0, addr);
-  // blt(fillpic[4], 48, 0, addr);
-  // blt(fillpic[5], 64, 0, addr);
-  // Cconin();
-  
-
-
 }
 

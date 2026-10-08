@@ -336,6 +336,7 @@ int stinit() {
    // Create drive letter
    path[0] = 'a' + i;
 
+   // Set colour 0 to black
    num = 1;
    rgb[0] = 0;
    rgb[1] = 0;

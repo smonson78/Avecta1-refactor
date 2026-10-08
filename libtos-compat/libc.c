@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include "globals.h"
+#include "st_globals.h"
 
 compat_FILE *compat_stdin = (compat_FILE *)0;
 compat_FILE *compat_stdout = (compat_FILE *)1;
@@ -238,15 +238,15 @@ void emit_console(char **x, char c) {
 		globals.video.x_text = 0;
 		globals.video.y_text = 0;
 		globals.video.escape_status = 0;
-
-		SDL_FillRect(video.surf, NULL, SDL_MapRGB(video.surf->format, 0, 0, 0));
+		
+		// TODO because we are actually going to use the ST video memory now
+		// SDL_FillRect(video.surf, NULL, SDL_MapRGB(video.surf->format, 0, 0, 0));
 
 		GLOBAL_UNLOCK();
 		return;
 	}
 
 	if (c == '\n') {
-		globals.video.x_text = 0;
 		if (globals.video.y_text <= 23) {
 			globals.video.y_text++;
 		}
@@ -254,6 +254,13 @@ void emit_console(char **x, char c) {
 		GLOBAL_UNLOCK();
 		return;
 	}
+
+	if (c == '\r') {
+		globals.video.x_text = 0;
+
+		GLOBAL_UNLOCK();
+		return;
+	}	
 
 	SDL_Colour colour = {255, 255, 255};
 	char out[2];
@@ -267,7 +274,7 @@ void emit_console(char **x, char c) {
 	}
 
 	// The offset (either 0 or 8) within the 16-pixel video word
-	int shift = (globals.video.x_text % 2) != 0;
+	int shift = (globals.video.x_text % 2) == 0;
 	uint16_t mask = shift ? 0x00ff : 0xff00;
 
 	for (int line = 0; line < 8; line++) {
@@ -293,7 +300,7 @@ void emit_console(char **x, char c) {
 		// Move the pixel data into the bitplanes
 		for (int pixel = 0; pixel < 8; pixel++) {
 			// Just use colour 1 for now
-			uint16_t colour = src[7 - pixel] > 0 ? globals.video.current_colour : globals.video.current_bgcolour;
+			uint16_t colour = src[pixel] > 0 ? globals.video.current_colour : globals.video.current_bgcolour;
 
 			// Move the bitplanes along 1 pixel before starting
 			plane0 <<= 1;

@@ -7,7 +7,7 @@
 #include "sdl_graph.h"
 
 #include "atari-setup.h"
-#include "globals.h"
+#include "st_globals.h"
 
 // System variables
 int screen_width = 320;
@@ -191,7 +191,7 @@ int main()
 	shutdown_sdl();
 	GLOBAL_UNLOCK();
 
-	free(globals.video.st_logbase);
+	atari_shutdown();
 
 	return EXIT_SUCCESS;
 }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "sdl_graph.h"
-#include "globals.h"
+#include "st_globals.h"
 
 video_t video;
 
@@ -134,15 +134,13 @@ void sdl_flip()
 				int colour = (plane0 & 1) | (plane1 & 2) | (plane2 & 4) | (plane3 & 8);
 
 				uint16_t pal = globals.video.palette[colour];
-				int red = (pal >> 8) & 0xf;
-				red = (red << 4) | red;
-				int green = (pal >> 4) & 0xf;
-				green = (green << 4) | green;
-				int blue = pal & 0xf;
-				blue = (blue << 4) | blue;
-				*dest = RGB(red, green, blue);
-
-				dest++;
+				int red = (pal >> 8) & 0b111;
+				red = (red << 5) | (red << 2);
+				int green = (pal >> 4) & 0b111;
+				green = (green << 5) | (green << 2);
+				int blue = pal & 0b111;
+				blue = (blue << 5) | (blue << 2);
+				dest[15 - shift] = RGB(red, green, blue);
 
 				// Move down for the next pixel
 				plane0 >>= 1;
@@ -151,7 +149,7 @@ void sdl_flip()
 				plane3 >>= 1;
 			}
 
-			
+			dest += 16;
 		}
 	}
 

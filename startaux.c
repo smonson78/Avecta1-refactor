@@ -14,6 +14,8 @@
 
 #include "debug.h"
 
+#include "compat.h"
+
 void domsg(int i) {
   int x = 256, y = 8, w = 64, h = 40;
   char scratch[10];
@@ -361,6 +363,8 @@ int loadnew() {
     return 0;
   }
   Fread(fhandle, (long)26000, bitmap[0]);
+  endianness_fix(bitmap, 13000, 16);
+
   Fclose(fhandle);
 
   // Now load the first part of FILL.DAT
