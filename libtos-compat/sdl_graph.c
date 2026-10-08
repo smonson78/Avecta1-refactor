@@ -133,12 +133,14 @@ void sdl_flip()
 			for (int shift = 0; shift < 16; shift++) {
 				int colour = (plane0 & 1) | (plane1 & 2) | (plane2 & 4) | (plane3 & 8);
 
-				// TODO: palette
-				if (colour > 0) {
-					*dest = RGB(255, 255, 255);
-				} else {
-					*dest = RGB(0, 0, 0);
-				}
+				uint16_t pal = globals.video.palette[colour];
+				int red = (pal >> 8) & 0xf;
+				red = (red << 4) | red;
+				int green = (pal >> 4) & 0xf;
+				green = (green << 4) | green;
+				int blue = pal & 0xf;
+				blue = (blue << 4) | blue;
+				*dest = RGB(red, green, blue);
 
 				dest++;
 

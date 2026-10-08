@@ -266,16 +266,6 @@ void emit_console(char **x, char c) {
 		exit(1);
 	}
 
-	// Blit text background
-	// SDL_FillRect(video.surf, &dest, SDL_MapRGB(video.surf->format, 0, 0, 0));  // Dark blue for test
-
-	// // Blit the text
-	// SDL_BlitSurface(t, NULL, video.surf, &dest);
-	// SDL_FreeSurface(t);
-
-	// Now we need to copy the pixels from the character cell to the ST memory block.
-	// SDL_LockSurface(video.surf);
-
 	// The offset (either 0 or 8) within the 16-pixel video word
 	int shift = (globals.video.x_text % 2) != 0;
 	uint16_t mask = shift ? 0x00ff : 0xff00;
@@ -303,7 +293,7 @@ void emit_console(char **x, char c) {
 		// Move the pixel data into the bitplanes
 		for (int pixel = 0; pixel < 8; pixel++) {
 			// Just use colour 1 for now
-			int colour = src[7 - pixel] > 0 ? 1 : 0;
+			uint16_t colour = src[7 - pixel] > 0 ? globals.video.current_colour : globals.video.current_bgcolour;
 
 			// Move the bitplanes along 1 pixel before starting
 			plane0 <<= 1;
@@ -337,17 +327,10 @@ void emit_console(char **x, char c) {
 		dest[1] |= plane1;
 		dest[2] |= plane2;
 		dest[3] |= plane3;
-		// This SHOULD produce all white squares
-		// dest[0] |= mask;
-		// dest[1] |= mask;
-		// dest[2] |= mask;
-		// dest[3] |= mask;
-
 	}
 
 	// SDL_UnlockSurface(video.surf);
 	SDL_FreeSurface(t);
-
 
 	// Move the text cursor along
 	if (globals.video.x_text < 39) {
@@ -473,3 +456,4 @@ int compat_atoi(const char *number) {
 
 	return acc;
 }
+

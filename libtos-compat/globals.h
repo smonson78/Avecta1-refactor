@@ -15,6 +15,7 @@ typedef struct {
 
 	// Text cursor
 	int x_text, y_text;
+	int current_colour, current_bgcolour;
 	int escape_status;
 
 	// just here to do the built-in font until I get something better
