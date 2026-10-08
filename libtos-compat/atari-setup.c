@@ -2,6 +2,7 @@
 #include "st_globals.h"
 
 #include "linea.h"
+#include "bios.h"
 
 // I don't actually know what the default palette is.
 int16_t default_palette[16] = {0, 0x777, 0x700, 0x070, 0x007, 0x770, 0x707, 0x077, 
@@ -18,11 +19,13 @@ void atari_setup() {
 
 	// For text escape sequences
 	globals.video.escape_status = 0;
-	
+	globals.video.reverse_video = 0;
+
   // keyboard buffer
 	globals.keybuf[0] = 0;
+
+	// Video memory
 	globals.video.st_logbase = malloc(32000);
-	// TODO check result
 	if (!globals.video.st_logbase) {
 		fprintf(stderr, "No video memory.\n");
 		exit(1);
@@ -36,13 +39,19 @@ void atari_setup() {
 		globals.video.palette[i] = default_palette[i];
 	}
 
-	globals.video.current_colour = 1;
+	globals.video.current_colour = 15;
 	globals.video.current_bgcolour = 0;
 
 	// File handles
 	for (int i = 0; i < 64; i++) {
 		globals.file_handles[i] = 0;
 	}
+
+	// VBL queue
+	for (int i = 0; i < 8; i++) {
+		VBL_LIST[i] = 0;
+	}
+	globals.video.vbl_queue = &VBL_LIST;
 }
 
 void atari_shutdown() {

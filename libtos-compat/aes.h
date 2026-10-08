@@ -165,7 +165,7 @@ int16_t evnt_multi(int16_t ev_mflags,  int16_t ev_mbclicks,
     int16_t *ev_mbreturn);
 
 // VDI
-int16_t vs_color(int16_t handle, int16_t color_index, int16_t *rgb_in);
+void vs_color(int16_t handle, int16_t color_index, int16_t *rgb_in);
 int16_t vsf_color(int16_t handle, int16_t color_index);
 int16_t vst_color(int16_t handle, int16_t color_index);
 

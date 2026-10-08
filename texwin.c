@@ -21,8 +21,6 @@ void texwin()
   blt(bitmap[129], 0, 128);
   blt(bitmap[129], 0, 186);
 
-  // left shift: 2 as expected
-
   blt(bitmap[130], (16 * 15) - 2, 128);
   blt(bitmap[130], (16 * 15) - 2, 186);
 

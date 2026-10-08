@@ -3,6 +3,8 @@
 #include "sdl_graph.h"
 #include "st_globals.h"
 
+#include "bios.h"
+
 video_t video;
 
 void sdl_error_fail() {
@@ -155,7 +157,6 @@ void sdl_flip()
 
 	SDL_UnlockSurface(video.surf);
 
-
 #ifdef SDL_SCREENSURFACE
 	/* Update the video memory from the software renderer's surface first */
 	SDL_UpdateTexture(video.tex, NULL, video.surf->pixels, video.surf->pitch);
@@ -163,6 +164,14 @@ void sdl_flip()
 #endif
 	/* Present the frame onscreen at the next vertical blank */
 	SDL_RenderPresent(video.render_hardware);
+
+	// Run the VBL handlers installed on the ST virtual machine
+	for (int i = 0; i < 8; i++) {
+		if (VBL_LIST[i] != NULL) {
+			VBL_LIST[i]();
+		}
+	}
+
 }
 
 void shutdown_sdl()

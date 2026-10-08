@@ -5,7 +5,8 @@
 
 int32_t xbios_supexec(int32_t (*func)())
 {
-  return 0;
+  printf("Supexec() running\n");
+  return func();
 }
 
 // Get screen logical base address

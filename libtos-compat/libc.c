@@ -262,6 +262,7 @@ void emit_console(char **x, char c) {
 		return;
 	}	
 
+	// Render the text in any colour here
 	SDL_Colour colour = {255, 255, 255};
 	char out[2];
 	out[0] = c;
@@ -299,8 +300,10 @@ void emit_console(char **x, char c) {
 
 		// Move the pixel data into the bitplanes
 		for (int pixel = 0; pixel < 8; pixel++) {
-			// Just use colour 1 for now
-			uint16_t colour = src[pixel] > 0 ? globals.video.current_colour : globals.video.current_bgcolour;
+			int fg_colour = globals.video.reverse_video ? globals.video.current_bgcolour : globals.video.current_colour;
+			int bg_colour = globals.video.reverse_video ? globals.video.current_colour : globals.video.current_bgcolour;
+
+			uint16_t colour = src[pixel] > 0 ? fg_colour : bg_colour;
 
 			// Move the bitplanes along 1 pixel before starting
 			plane0 <<= 1;

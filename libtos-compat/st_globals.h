@@ -19,12 +19,15 @@ typedef struct {
 	int x_text, y_text;
 	int current_colour, current_bgcolour;
 	int escape_status;
+	int reverse_video;
 
 	// just here to do the built-in font until I get something better
 	TTF_Font *font;	
 
 	uint16_t palette[16];
 
+	// VBL handlers installed
+	int16_t (*(*vbl_queue)[8])(void);
 } sdl_video_impl_t;
 
 typedef struct {

@@ -5,6 +5,7 @@
 #include "libc.h"
 
 #include "st_globals.h"
+#include "gfx.h"
 
 // static AESPB c;
 // static VDIPB v;
@@ -171,20 +172,47 @@ void v_gtext(int16_t handle, int16_t x, int16_t y, const char *string)
 }
 
 void v_rvon(int16_t handle) {
+   GLOBAL_LOCK();
+   globals.video.reverse_video = 1;
+   GLOBAL_UNLOCK();
 }
 
 void v_rvoff(int16_t handle) {
+   GLOBAL_LOCK();
+   globals.video.reverse_video = 0;
+   GLOBAL_UNLOCK();   
 }
 
 void v_eeol(int16_t handle) {
 }
 
 void v_eeos(int16_t handle) {
+   // Erase to end of screen
+   GLOBAL_LOCK();
+
+   // To the end of the line (may not be full screen width)
+   filled_rect(globals.video.x_text * 8, globals.video.y_text * 8,
+      320 - (globals.video.x_text * 8), 8,
+      globals.video.current_bgcolour);
+
+   // From there to the end of the screen
+   if (globals.video.y_text < 24) {
+      int start_line = (globals.video.y_text * 8) + 8;
+       filled_rect(0, start_line,
+          320, 200 - start_line,
+          globals.video.current_bgcolour);
+   }
+
+   GLOBAL_UNLOCK();
 }
 
 // Move the cursor to the current row and column
 void vs_curaddress (int16_t handle, int16_t row, int16_t column) {
-   printf("vs_curaddress\n");
+   //printf("vs_curaddress\n");
+   GLOBAL_LOCK();
+   globals.video.x_text = column - 1;
+   globals.video.y_text = row - 1;
+   GLOBAL_UNLOCK();
 }
 
 int16_t vswr_mode(int16_t handle, int16_t mode)
@@ -193,11 +221,12 @@ int16_t vswr_mode(int16_t handle, int16_t mode)
 }
 
 // Set palette colour
-int16_t vs_color(int16_t handle, int16_t color_index, int16_t *rgb_in)
+void vs_color(int16_t handle, int16_t color_index, int16_t *rgb_in)
 {
-   printf("vs_col() %d to 0x%03x\n", color_index, *rgb_in);
+   //printf("vs_col() %d to 0x%03x\n", color_index, *rgb_in);
+   GLOBAL_LOCK();   
    globals.video.palette[color_index] = *rgb_in;
-   return 0;
+   GLOBAL_UNLOCK();
 }
 
 // Set fill colour

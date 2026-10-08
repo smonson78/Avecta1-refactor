@@ -5,8 +5,6 @@
 
 #include "st_globals.h"
 
-int16_t (*VBL_LIST[16])(void);
-
 // BIOS console input
 int32_t Bconin(const int16_t dev) {
     int16_t result;

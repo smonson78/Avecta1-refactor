@@ -1,4 +1,9 @@
 #include <stdint.h>
+#include "tos_compat.h"
+
+#include <libc.h>
+#include "bios.h"
+
 #include "animate.h"
 #include "gemdefs.h"
 

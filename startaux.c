@@ -13,7 +13,6 @@
 #include "texwin.h"
 
 #include "debug.h"
-
 #include "compat.h"
 
 void domsg(int i) {
@@ -193,12 +192,14 @@ int error(int i) {
 }
 
 int32_t savpal() {
-  volatile int16_t *j;
+  volatile uint16_t *j;
   int i;
-  j = (volatile int16_t *)0xFF8240; // Must be the address of the palette in TOS
-  for (i=0; i<16; i++) {
+
+  j = SHIFTER_PALETTE;
+  for (i = 0; i < 16; i++) {
     oldpal[i] = *(j+i);
   }
+
   return 0;
 }
 

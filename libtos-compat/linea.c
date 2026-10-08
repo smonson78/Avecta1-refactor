@@ -38,9 +38,10 @@ void linea_textblock_transfer() {
 }
 
 void linea_showmouse() {
-  printf("linea_showmouse()\n");
+  // These are mostly used to avoid screen corruption so we probably don't need to even bother
+  //printf("linea_showmouse()\n");
 }
 
 void linea_hidemouse() {
-  printf("linea_hidemouse()\n");
+  //printf("linea_hidemouse()\n");
 }
