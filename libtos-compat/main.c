@@ -16,7 +16,7 @@ int screen_height = 200;
 globals_t globals;
 
 #define FRAMELIMIT 50
-#define SHOW_FRAMERATE
+//#define SHOW_FRAMERATE
 
 // This is the Atari game - Avecta 1 in this case
 extern void compat_main();

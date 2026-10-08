@@ -5,7 +5,6 @@
 
 int32_t xbios_supexec(int32_t (*func)())
 {
-  printf("Supexec() running\n");
   return func();
 }
 

@@ -26,8 +26,14 @@ typedef struct {
 
 	uint16_t palette[16];
 
-	// VBL handlers installed
+	// VBL handlers installed (pointer to array elsewhere)
 	int16_t (*(*vbl_queue)[8])(void);
+
+	// User-defined fill pattern
+	int16_t udpat[64];
+	int udpat_planes;
+	int interior_fill_pattern;
+	int current_2d_colour;
 } sdl_video_impl_t;
 
 typedef struct {

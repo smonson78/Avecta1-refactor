@@ -52,6 +52,11 @@ void atari_setup() {
 		VBL_LIST[i] = 0;
 	}
 	globals.video.vbl_queue = &VBL_LIST;
+
+	// 2D object
+	globals.video.udpat_planes = 1;
+	globals.video.interior_fill_pattern = 0;
+	globals.video.current_2d_colour = 1;
 }
 
 void atari_shutdown() {

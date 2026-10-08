@@ -156,6 +156,34 @@ int16_t evnt_multi (int16_t ev_mflags,  int16_t ev_mbclicks,
 
 void vr_recfl(int16_t handle, int16_t *pxyarray)
 {
+   printf("vr_recfl(%d,%d - %d,%d)\n", pxyarray[0], pxyarray[1], pxyarray[2], pxyarray[3]);
+   GLOBAL_LOCK();
+   switch (globals.video.interior_fill_pattern) {
+      case 0: 
+         // Hollow
+         printf("(vr_recfl unhandled style 0)\n");
+         break;
+      case 1: 
+         // Solid
+         // TODO: colour
+         filled_rect(pxyarray[0], pxyarray[1], 
+            pxyarray[2] - pxyarray[0], pxyarray[3] - pxyarray[1], globals.video.current_2d_colour);
+         break;
+      case 2: 
+         // Pattern
+         printf("(vr_recfl unhandled style 2)\n");
+         break;
+      case 3: 
+         // Hatch
+         printf("(vr_recfl unhandled style 3)\n");
+         break;
+      case 4: 
+         // User-defined style
+         pattern_rect(pxyarray[0], pxyarray[1], 
+            pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, (uint16_t *)globals.video.udpat);
+         break;
+   }
+   GLOBAL_UNLOCK();
 }
 
 void v_bar(int16_t handle, int16_t *pxyarray)
@@ -232,6 +260,9 @@ void vs_color(int16_t handle, int16_t color_index, int16_t *rgb_in)
 // Set fill colour
 int16_t vsf_color(int16_t handle, int16_t color_index)
 {
+   GLOBAL_LOCK();
+   globals.video.current_2d_colour = color_index;
+   GLOBAL_UNLOCK();
    return 0;
 }
 
@@ -242,16 +273,26 @@ int16_t vst_color(int16_t handle, int16_t color_index)
 
 int16_t vsf_interior(int16_t handle, int16_t style)
 {
+   GLOBAL_LOCK();
+   globals.video.interior_fill_pattern = style;
+   GLOBAL_UNLOCK();
    return 0;
 }
 
 void vsf_udpat(int16_t handle, int16_t *pfill_pat, int16_t planes)
 {
+   GLOBAL_LOCK();
+   for (int i = 0; i < planes * 16; i++) {
+      globals.video.udpat[i] = pfill_pat[i];
+   }
+   globals.video.udpat_planes = planes;
+   GLOBAL_UNLOCK();
 }
 
 // Set clipping rectangle
 void vs_clip(int16_t handle, int16_t clip_flag, int16_t *pxyarray)
 {
+   printf("vs_clip(%d,%d - %d,%d)\n", pxyarray[0], pxyarray[1], pxyarray[2], pxyarray[3]);
 }
 
 void vro_cpyfm(int16_t handle, int16_t vr_mode, int16_t *pxyarray, MFDB *psrcMFDB, MFDB *pdesMFDB)
@@ -265,7 +306,8 @@ void vqf_attributes(int16_t handle, int16_t *attrib)
 
 int16_t vsf_style(int16_t handle, int16_t style_index)
 {
-    return 0;
+   printf("vsf_style(%d)\n", style_index);   
+   return 0;
 }
 
 int16_t vsf_perimeter(int16_t handle, int16_t per_vis)
