@@ -4,22 +4,33 @@
 #include <pthread.h>
 #include "sdl_graph.h"
 
+#include "xbios.h"
+
 // Global Atari virtual machine state
 
 typedef struct {
+
+	// ST video memory, always 32000 bytes
+	uint16_t *st_logbase;
+
+	// Text cursor
+	int x_text, y_text;
+	int escape_status;
+
+	// just here to do the built-in font until I get something better
+	TTF_Font *font;	
+
+	uint16_t palette[16];
 
 } sdl_video_impl_t;
 
 typedef struct {
 
+	// Global lock for machine state
 	pthread_mutex_t lock;
 
 	// The current position of the mouse pointer
 	int x_mouse, y_mouse;
-
-	// Text cursor
-	int x_text, y_text;
-	int escape_status;
 
 	// Keyboard buffer
 	int keybuf[1];
@@ -27,9 +38,7 @@ typedef struct {
 	// Game will end when set
 	int exit;
 
-	// just here to do the built-in font until I get something better
-	TTF_Font *font;
-
+	sdl_video_impl_t video;
 } globals_t;
 
 #define GLOBAL_LOCK() pthread_mutex_lock(&globals.lock) 

@@ -6,6 +6,7 @@
 
 #include "sdl_graph.h"
 
+#include "atari-setup.h"
 #include "globals.h"
 
 // System variables
@@ -63,16 +64,7 @@ int main()
 
 	globals.exit = false;
 	pthread_mutex_init(&globals.lock, NULL);
-	//globals.font = TTF_OpenFont("FreeSans.ttf", 8);
-	globals.font = TTF_OpenFont("Bescii-Mono.ttf", 8);
-	if (!globals.font) {
-		fprintf(stderr, "Font not loaded.\n");
-		exit(1);
-	}
-	// For text escape sequences
-	globals.escape_status = 0;
-	// keyboard buffer
-	globals.keybuf[0] = 0;
+	atari_setup();
 	
 	// Spawn a new thread for the game
 	if (pthread_create(&game_thread, NULL, run_atari_game, (void*)NULL) != 0) {
@@ -194,10 +186,12 @@ int main()
 
 	GLOBAL_LOCK();
 	pthread_mutex_destroy(&globals.lock);
-	TTF_CloseFont(globals.font);
+	TTF_CloseFont(globals.video.font);
 
 	shutdown_sdl();
 	GLOBAL_UNLOCK();
+
+	free(globals.video.st_logbase);
 
 	return EXIT_SUCCESS;
 }

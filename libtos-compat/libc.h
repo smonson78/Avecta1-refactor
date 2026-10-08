@@ -13,7 +13,7 @@
 #endif
 
 extern compat_FILE *compat_stdout;
-extern void _exit(uint16_t retval);
+extern void compat_exit(uint16_t retval);
 
 struct memblock_t {
     struct memblock_t *next;

@@ -11,12 +11,13 @@ int32_t xbios_supexec(int32_t (*func)())
 // Get screen logical base address
 void *Logbase() {
   printf("Logbase()\n");
-  return 0;
+  return globals.video.st_logbase;
 }
 
 // Get screen physical base address
 void *Physbase() {
-  return 0;
+  printf("Physbase()\n");
+  return globals.video.st_logbase;
 }
 
 void Setpalette(int16_t palptr[16]) {

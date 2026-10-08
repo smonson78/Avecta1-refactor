@@ -19,6 +19,7 @@ int32_t Bconin(const int16_t dev) {
 }
 
 int16_t Bconstat(const int16_t dev) {
+    //printf("Bconstat\n");
     int16_t result;
 	GLOBAL_LOCK();
     result = globals.keybuf[0];

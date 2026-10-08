@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "sdl_graph.h"
+#include "globals.h"
 
 video_t video;
 
@@ -113,6 +114,48 @@ void setup_sdl(int width, int height, int multiplier)
 
 void sdl_flip()
 {
+	// Copy ST video memory to the screen surface
+	SDL_LockSurface(video.surf);
+	for (int line = 0; line < 200; line++) {
+		// Start of ST memory video scanline
+		uint16_t *src = globals.video.st_logbase + (line * 80);
+		uint32_t *dest = video.surf->pixels + (video.surf->pitch * line);
+
+		for (int word = 0; word < 20; word++) {
+			// Read 4 bitplanes
+			uint32_t plane0 = src[0];
+			uint32_t plane1 = src[1] << 1;
+			uint32_t plane2 = src[2] << 2;
+			uint32_t plane3 = src[3] << 3;
+			src += 4;
+
+			// Copy 16 pixels
+			for (int shift = 0; shift < 16; shift++) {
+				int colour = (plane0 & 1) | (plane1 & 2) | (plane2 & 4) | (plane3 & 8);
+
+				// TODO: palette
+				if (colour > 0) {
+					*dest = RGB(255, 255, 255);
+				} else {
+					*dest = RGB(0, 0, 0);
+				}
+
+				dest++;
+
+				// Move down for the next pixel
+				plane0 >>= 1;
+				plane1 >>= 1;
+				plane2 >>= 1;
+				plane3 >>= 1;
+			}
+
+			
+		}
+	}
+
+	SDL_UnlockSurface(video.surf);
+
+
 #ifdef SDL_SCREENSURFACE
 	/* Update the video memory from the software renderer's surface first */
 	SDL_UpdateTexture(video.tex, NULL, video.surf->pixels, video.surf->pitch);

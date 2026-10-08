@@ -318,7 +318,7 @@ int stinit() {
    // Save palette
    save_palette();
 
-   if(Getrez() != 0) {
+   if (Getrez() != 0) {
       mouse_on();
       form_alert(1,"[1][Reboot in Low Rez!][OK]");
       mouse_off();

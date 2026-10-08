@@ -12,5 +12,4 @@ void *Physbase();
 
 void Setpalette(int16_t palptr[16]);
 
-
 #endif

@@ -58,6 +58,9 @@ typedef struct
             (*fill_abort)();        /* 118: Tests seedfill               */
 } LINEA;
 
+
+void linea_setup();
+
 void linea_init(LINEA **parameter_block, FONT_HDR ***sysfont_pointers);
 void linea_textblock_transfer();
 void linea_showmouse();

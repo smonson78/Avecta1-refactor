@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 #include "aes.h"
 #include "tos.h"
 #include "libc.h"
@@ -119,6 +120,7 @@ int16_t appl_write(int16_t ap_wid, int16_t ap_wlength, void *ap_wpbuff)
 
 int16_t form_alert(int16_t fo_adefbttn, const char *fo_astring)
 {
+   printf("Form alert: %s\n", fo_astring);
    return 0;
 }
 
@@ -180,6 +182,7 @@ void v_eeos(int16_t handle) {
 
 // Move the cursor to the current row and column
 void vs_curaddress (int16_t handle, int16_t row, int16_t column) {
+   printf("vs_curaddress\n");
 }
 
 int16_t vswr_mode(int16_t handle, int16_t mode)

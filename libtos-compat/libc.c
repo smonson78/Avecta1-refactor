@@ -228,16 +228,16 @@ void emit_console(char **x, char c) {
 	GLOBAL_LOCK();
 
 	if (c == '\e') {
-		globals.escape_status = 1;
+		globals.video.escape_status = 1;
 		GLOBAL_UNLOCK();
 		return;
 	}
 
 	// Clear screen
-	if (globals.escape_status == 1 && c == 'E') {
-		globals.x_text = 0;
-		globals.y_text = 0;
-		globals.escape_status = 0;
+	if (globals.video.escape_status == 1 && c == 'E') {
+		globals.video.x_text = 0;
+		globals.video.y_text = 0;
+		globals.video.escape_status = 0;
 
 		SDL_FillRect(video.surf, NULL, SDL_MapRGB(video.surf->format, 0, 0, 0));
 
@@ -246,9 +246,9 @@ void emit_console(char **x, char c) {
 	}
 
 	if (c == '\n') {
-		globals.x_text = 0;
-		if (globals.y_text <= 23) {
-			globals.y_text++;
+		globals.video.x_text = 0;
+		if (globals.video.y_text <= 23) {
+			globals.video.y_text++;
 		}
 
 		GLOBAL_UNLOCK();
@@ -260,31 +260,98 @@ void emit_console(char **x, char c) {
 	out[0] = c;
 	out[1] = 0;
 
-	// Render into a temporary surface
-	SDL_Surface *t = TTF_RenderText_Blended(globals.font, out, colour);
+	// Render into a temporary 8-bit (palette) surface
+	SDL_Surface *t = TTF_RenderText_Solid(globals.video.font, out, colour);
 	if (t == NULL) {
 		exit(1);
 	}
 
-	//SDL_SetSurfaceBlendMode(t, SDL_BLENDMODE_BLEND);
-	
-	// Define the output rectangle
-	SDL_Rect dest;
-	dest.x = globals.x_text * 8;
-	dest.y = globals.y_text * 8;
-	dest.w = 8;
-	dest.h = 8;
-
 	// Blit text background
-	SDL_FillRect(video.surf, &dest, SDL_MapRGB(video.surf->format, 0, 0, 128));  // Dark blue for test
+	// SDL_FillRect(video.surf, &dest, SDL_MapRGB(video.surf->format, 0, 0, 0));  // Dark blue for test
 
-	// Blit the text
-	SDL_BlitSurface(t, NULL, video.surf, &dest);
+	// // Blit the text
+	// SDL_BlitSurface(t, NULL, video.surf, &dest);
+	// SDL_FreeSurface(t);
+
+	// Now we need to copy the pixels from the character cell to the ST memory block.
+	// SDL_LockSurface(video.surf);
+
+	// The offset (either 0 or 8) within the 16-pixel video word
+	int shift = (globals.video.x_text % 2) != 0;
+	uint16_t mask = shift ? 0x00ff : 0xff00;
+
+	for (int line = 0; line < 8; line++) {
+		// Start of ST memory video scanline
+
+		// The word in which the target character cell exists
+		// 640 words = 8 scanlines
+		// 4 words = one 16-bit pixel block of 4 scanlines
+		uint16_t *dest = globals.video.st_logbase 
+			+ (globals.video.y_text * 640) // Start of the line where the character cell starts
+			+ (line * 80) // Current line within the character cell
+			+ ((globals.video.x_text / 2) * 4); // pixel block (4 words) within that line
+
+		// The source surface is just 8 * 8 pixels, or at least the part we care about
+		uint8_t *src = t->pixels + (t->pitch * line);
+
+		// Create empty bitplanes for this line of 8 pixels
+		uint16_t plane0 = 0;
+		uint16_t plane1 = 0;
+		uint16_t plane2 = 0;
+		uint16_t plane3 = 0;
+
+		// Move the pixel data into the bitplanes
+		for (int pixel = 0; pixel < 8; pixel++) {
+			// Just use colour 1 for now
+			int colour = src[7 - pixel] > 0 ? 1 : 0;
+
+			// Move the bitplanes along 1 pixel before starting
+			plane0 <<= 1;
+			plane1 <<= 1;
+			plane2 <<= 1;
+			plane3 <<= 1;
+
+			// Add the new pixel bits to the bitplanes
+			plane0 |= colour & 1;
+			plane1 |= (colour >> 1) & 1;
+			plane2 |= (colour >> 2) & 1;
+			plane3 |= (colour >> 3) & 1;
+		}
+
+		// Shift for even characters, don't shift for odd
+		if (shift) {
+			plane0 <<= 8;
+			plane1 <<= 8;
+			plane2 <<= 8;
+			plane3 <<= 8;
+		}
+
+		// Mask out the destination pixels in the ST video memory
+		dest[0] &= mask;
+		dest[1] &= mask;
+		dest[2] &= mask;
+		dest[3] &= mask;
+
+		// Add the pixel values
+		dest[0] |= plane0;
+		dest[1] |= plane1;
+		dest[2] |= plane2;
+		dest[3] |= plane3;
+		// This SHOULD produce all white squares
+		// dest[0] |= mask;
+		// dest[1] |= mask;
+		// dest[2] |= mask;
+		// dest[3] |= mask;
+
+	}
+
+	// SDL_UnlockSurface(video.surf);
 	SDL_FreeSurface(t);
 
-	// Move along
-	if (globals.x_text < 39) {
-		globals.x_text++;
+
+	// Move the text cursor along
+	if (globals.video.x_text < 39) {
+		globals.video.x_text++;
 	}
 	GLOBAL_UNLOCK();
 }
@@ -367,7 +434,8 @@ int compat_strcmp(const char *first, const char *second) {
 
 void compat_exit(uint16_t retval)
 {
-	_exit(retval);
+	//exit(retval);
+	printf("exit()!\n");
 }
 
 void compat_abort() {
