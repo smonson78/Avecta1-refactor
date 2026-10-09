@@ -17,19 +17,7 @@ void textbig(const char s, int x, int y)
 
   linea_init(&parameter_block, &sysfont_pointers);
 
-  // Get the parameter block
-  // __asm__ __volatile__
-  // (
-  //   ".short 0xa000\n\t"      // Call Line-A initialisation
-  //   "move.l %%a0,%0\n\t"     // Get address of parameter block from a0
-  //   "move.l %%a1,%1\n\t"     // Get address of system font pointer array from a1
-  // : "=r"(parameter_block), "=r"(sysfont_pointers) /* outputs */
-  // : /* inputs */
-  // : "d0", "d1", "d2", "a0", "a1", "a2" /* clobbered regs */
-  // );
-
   // movea.l 8(a1),a3      * a3 holds third fontheader address
-
   FONT_HDR *font = sysfont_pointers[2];
 
   // move.l 76(a3),84(a0)  * move font data address into line A 

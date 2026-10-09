@@ -212,6 +212,15 @@ void v_rvoff(int16_t handle) {
 }
 
 void v_eeol(int16_t handle) {
+   // Erase to end of line
+   GLOBAL_LOCK();
+
+   // To the end of the line (may not be full screen width)
+   filled_rect(globals.video.x_text * 8, globals.video.y_text * 8,
+      320 - (globals.video.x_text * 8), 8,
+      globals.video.current_bgcolour);
+
+   GLOBAL_UNLOCK();
 }
 
 void v_eeos(int16_t handle) {

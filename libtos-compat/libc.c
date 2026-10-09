@@ -6,6 +6,7 @@
 #include <ctype.h>
 
 #include "st_globals.h"
+#include "gfx.h"
 
 compat_FILE *compat_stdin = (compat_FILE *)0;
 compat_FILE *compat_stdout = (compat_FILE *)1;
@@ -238,9 +239,9 @@ void emit_console(char **x, char c) {
 		globals.video.x_text = 0;
 		globals.video.y_text = 0;
 		globals.video.escape_status = 0;
-		
-		// TODO because we are actually going to use the ST video memory now
-		// SDL_FillRect(video.surf, NULL, SDL_MapRGB(video.surf->format, 0, 0, 0));
+		globals.video.reverse_video = 0;
+
+		filled_rect(0, 0, 320, 200, 0);
 
 		GLOBAL_UNLOCK();
 		return;
@@ -260,87 +261,12 @@ void emit_console(char **x, char c) {
 
 		GLOBAL_UNLOCK();
 		return;
-	}	
-
-	// Render the text in any colour here
-	SDL_Colour colour = {255, 255, 255};
-	char out[2];
-	out[0] = c;
-	out[1] = 0;
-
-	// Render into a temporary 8-bit (palette) surface
-	SDL_Surface *t = TTF_RenderText_Solid(globals.video.font, out, colour);
-	if (t == NULL) {
-		exit(1);
 	}
 
-	// The offset (either 0 or 8) within the 16-pixel video word
-	int shift = (globals.video.x_text % 2) == 0;
-	uint16_t mask = shift ? 0x00ff : 0xff00;
+	int fg_colour = globals.video.reverse_video ? globals.video.current_bgcolour : globals.video.current_colour;
+	int bg_colour = globals.video.reverse_video ? globals.video.current_colour : globals.video.current_bgcolour;
 
-	for (int line = 0; line < 8; line++) {
-		// Start of ST memory video scanline
-
-		// The word in which the target character cell exists
-		// 640 words = 8 scanlines
-		// 4 words = one 16-bit pixel block of 4 scanlines
-		uint16_t *dest = globals.video.st_logbase 
-			+ (globals.video.y_text * 640) // Start of the line where the character cell starts
-			+ (line * 80) // Current line within the character cell
-			+ ((globals.video.x_text / 2) * 4); // pixel block (4 words) within that line
-
-		// The source surface is just 8 * 8 pixels, or at least the part we care about
-		uint8_t *src = t->pixels + (t->pitch * line);
-
-		// Create empty bitplanes for this line of 8 pixels
-		uint16_t plane0 = 0;
-		uint16_t plane1 = 0;
-		uint16_t plane2 = 0;
-		uint16_t plane3 = 0;
-
-		// Move the pixel data into the bitplanes
-		for (int pixel = 0; pixel < 8; pixel++) {
-			int fg_colour = globals.video.reverse_video ? globals.video.current_bgcolour : globals.video.current_colour;
-			int bg_colour = globals.video.reverse_video ? globals.video.current_colour : globals.video.current_bgcolour;
-
-			uint16_t colour = src[pixel] > 0 ? fg_colour : bg_colour;
-
-			// Move the bitplanes along 1 pixel before starting
-			plane0 <<= 1;
-			plane1 <<= 1;
-			plane2 <<= 1;
-			plane3 <<= 1;
-
-			// Add the new pixel bits to the bitplanes
-			plane0 |= colour & 1;
-			plane1 |= (colour >> 1) & 1;
-			plane2 |= (colour >> 2) & 1;
-			plane3 |= (colour >> 3) & 1;
-		}
-
-		// Shift for even characters, don't shift for odd
-		if (shift) {
-			plane0 <<= 8;
-			plane1 <<= 8;
-			plane2 <<= 8;
-			plane3 <<= 8;
-		}
-
-		// Mask out the destination pixels in the ST video memory
-		dest[0] &= mask;
-		dest[1] &= mask;
-		dest[2] &= mask;
-		dest[3] &= mask;
-
-		// Add the pixel values
-		dest[0] |= plane0;
-		dest[1] |= plane1;
-		dest[2] |= plane2;
-		dest[3] |= plane3;
-	}
-
-	// SDL_UnlockSurface(video.surf);
-	SDL_FreeSurface(t);
+	render_text_char(fg_colour, bg_colour, c, globals.video.x_text * 8, globals.video.y_text * 8, 8, 8, globals.video.font);
 
 	// Move the text cursor along
 	if (globals.video.x_text < 39) {

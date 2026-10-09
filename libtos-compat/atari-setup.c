@@ -17,6 +17,12 @@ void atari_setup() {
 		exit(1);
 	}
 
+	globals.video.small_font = TTF_OpenFont("Bescii-Mono.ttf", 6);
+	if (!globals.video.small_font) {
+		fprintf(stderr, "Font not loaded.\n");
+		exit(1);
+	}	
+
 	// For text escape sequences
 	globals.video.escape_status = 0;
 	globals.video.reverse_video = 0;
@@ -66,5 +72,8 @@ void atari_shutdown() {
 		if (globals.file_handles[i] != NULL) {
 			fclose(globals.file_handles[i]);
 		}
-	}	
+	}
+
+	TTF_CloseFont(globals.video.font);
+	TTF_CloseFont(globals.video.small_font);
 }

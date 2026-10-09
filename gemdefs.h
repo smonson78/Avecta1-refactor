@@ -9,6 +9,10 @@
 #include <aes.h>
 #include <linea.h>
 
+extern FONT_HDR *binary_font0_bin_start;
+extern FONT_HDR *binary_font1_bin_start;
+extern FONT_HDR *binary_font2_bin_start;
+
 // Not in my library yet, but needed:
 void vbl_animation_off();
 void vbl_animation_on();

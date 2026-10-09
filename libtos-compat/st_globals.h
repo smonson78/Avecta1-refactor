@@ -22,7 +22,8 @@ typedef struct {
 	int reverse_video;
 
 	// just here to do the built-in font until I get something better
-	TTF_Font *font;	
+	TTF_Font *font;
+	TTF_Font *small_font; // 6x7 pixels I think
 
 	uint16_t palette[16];
 

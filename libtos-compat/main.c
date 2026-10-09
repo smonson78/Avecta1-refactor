@@ -185,13 +185,11 @@ int main()
 	// delete mode;
 
 	GLOBAL_LOCK();
-	pthread_mutex_destroy(&globals.lock);
-	TTF_CloseFont(globals.video.font);
-
+	atari_shutdown();
 	shutdown_sdl();
 	GLOBAL_UNLOCK();
 
-	atari_shutdown();
+	pthread_mutex_destroy(&globals.lock);
 
 	return EXIT_SUCCESS;
 }
