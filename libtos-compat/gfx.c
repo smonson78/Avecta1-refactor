@@ -6,6 +6,11 @@
 
 void filled_rect(int x, int y, int w, int h, int colour) {
 
+  if ((x + w) > 320 || (y + h) > 200 || x < 0 || y < 0) {
+    printf("Invalid filled rect call %d,%d %dx%d\n", x, y, w, h);
+    exit(1);
+  }
+
   //printf("filled rect %d,%d %dx%d\n", x, y, w, h);
   uint16_t *start_line = globals.video.st_logbase + (y * 80);
 
@@ -14,7 +19,7 @@ void filled_rect(int x, int y, int w, int h, int colour) {
   uint16_t *dst = start_line + (x / 16) * 4;
   int offset = x % 16;
  
-  int num_blocks = 1 + ((offset + w) / 16);
+  int num_blocks = ((offset + w) + 15) / 16;
 
   // Calculate the left mask
   uint32_t left_mask = 0x0000ffff >> offset;

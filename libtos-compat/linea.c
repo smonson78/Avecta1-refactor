@@ -117,8 +117,6 @@ void linea_textblock_transfer() {
 
   GLOBAL_LOCK();
   render_text_char(
-    // globals.video.reverse_video ? linea_parameter_block.text_bg : linea_parameter_block.text_fg,
-    // globals.video.reverse_video ? linea_parameter_block.text_fg : linea_parameter_block.text_bg,
     linea_parameter_block.text_fg,
     linea_parameter_block.text_bg,
     linea_parameter_block.fbase,
@@ -131,6 +129,7 @@ void linea_textblock_transfer() {
     linea_parameter_block.fwidth / 2,
     linea_parameter_block.wrt_mode);
   GLOBAL_UNLOCK();
+  printf("Finished linea_textblock_transfer()\n");
 }
 
 void linea_showmouse() {

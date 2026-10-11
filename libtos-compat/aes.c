@@ -183,7 +183,9 @@ void vr_recfl(int16_t handle, int16_t *pxyarray)
             pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, (uint16_t *)globals.video.udpat);
          break;
    }
+  
    GLOBAL_UNLOCK();
+   printf("v_eeos() done\n");
 }
 
 void v_bar(int16_t handle, int16_t *pxyarray)
@@ -214,11 +216,12 @@ void v_rvoff(int16_t handle) {
 void v_eeol(int16_t handle) {
    // Erase to end of line
    GLOBAL_LOCK();
-
+   printf("v_eeol()\n");
    // To the end of the line (may not be full screen width)
    filled_rect(globals.video.x_text * 8, globals.video.y_text * 8,
       320 - (globals.video.x_text * 8), 8,
       globals.video.current_bgcolour);
+   printf("v_eeol() done\n");
 
    GLOBAL_UNLOCK();
 }
@@ -227,6 +230,7 @@ void v_eeos(int16_t handle) {
    // Erase to end of screen
    GLOBAL_LOCK();
 
+   printf("v_eeos()\n");
    // To the end of the line (may not be full screen width)
    filled_rect(globals.video.x_text * 8, globals.video.y_text * 8,
       320 - (globals.video.x_text * 8), 8,
@@ -239,6 +243,7 @@ void v_eeos(int16_t handle) {
           320, 200 - start_line,
           globals.video.current_bgcolour);
    }
+   printf("v_eeos() done\n");
 
    GLOBAL_UNLOCK();
 }

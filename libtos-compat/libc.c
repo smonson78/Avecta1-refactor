@@ -242,7 +242,7 @@ void emit_console(char **x, char c) {
 		globals.video.escape_status = 0;
 		globals.video.reverse_video = 0;
 
-		filled_rect(0, 0, 320, 200, 0);
+		//filled_rect(0, 0, 320, 200, 0);
 
 		GLOBAL_UNLOCK();
 		return;
