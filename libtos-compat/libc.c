@@ -285,7 +285,7 @@ void emit_console(char **x, char c) {
     globals.video.y_text * 8, 
     8, 
     8,
-    (p->form_width + 15) / 16,
+    p->form_width / 2,
     2);
 
 	// Move the text cursor along

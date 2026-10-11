@@ -54,18 +54,15 @@ void convert_font_hdr(FONT_HDR_ROM *src, FONT_HDR *dst) {
     // We can just point directly to the source table, as it's in bytes
     dst->hor_table = next;
     next += codepoints;
-    //printf("Allocating %d bytes for hor_table\n", codepoints);
   } else {
     dst->hor_table = 0;
   }
 
   if (src->off_table) {
     int size = 2 * (codepoints + 1);
-    //printf("Allocating %d bytes for off_table\n", size);
     dst->off_table = malloc(size);
     memcpy(dst->off_table, next, size);
-    //printf("  Fixing endianness\n");
-    //endianness_fix(dst->off_table, codepoints, 16);
+    endianness_fix(dst->off_table, codepoints, 16);
     next += size;
   } else {
     dst->off_table = 0;
@@ -75,7 +72,6 @@ void convert_font_hdr(FONT_HDR_ROM *src, FONT_HDR *dst) {
   printf("Allocating %d bytes for dat_table which was at offset %d\n", size, next - (uint8_t *)src);
   dst->dat_table = malloc(size);
   memcpy(dst->dat_table, next, size);
-  //printf("  Fixing endianness\n");
   endianness_fix(dst->dat_table, size / 2, 16);  
 }
 

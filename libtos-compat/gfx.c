@@ -277,7 +277,6 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
   uint16_t *start_line = globals.video.st_logbase + (dsty * 80);
 
   // Do once per line in the character cell
-  // But just one line for tests
   for (int line = 0; line < height; line++) {
 
     // How many pixels into that word is the first pixel of the character
@@ -290,7 +289,6 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
 
     // How many words will we need to do?
     int total_words = (dst_offset + width - 1 + 15) / 16;
-    // printf("  Total words: %d\n", total_words);
 
     int font_word = (srcx / 16) + (line * fontwidth);
     int font_off = srcx % 16;
@@ -343,14 +341,15 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
       // printf("    Mask: 0x%04x\n", mask);
       
       printf("    Font raw data: %08x\n", pixels);
-      // Get a copy and shift to left edge
+      // Get a copy and shift the pixels we want to line up with the left edge of the low word
       uint32_t copy_pixels = pixels >> (16 - font_off);
       printf("    Preshift:      %08x\n", copy_pixels);
       // Shift right to target position
+      // TODO ...could do both shifts in one operation
 
-      copy_pixels >>= dst_offset; // this shifts it right off.
+      copy_pixels >>= dst_offset; // now it's lined up with the character cell onscreen
 
-      // Mask it off to the character cell
+      // Mask it off to the character cell within this screen word
       printf("    Font data:     %08x\n", copy_pixels);
       copy_pixels &= mask;
       printf("    Mask:          %04x\n", mask);
@@ -399,7 +398,7 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
 
       // font offset goes up by the number of pixels drawn
       font_off += pixels_this_word;
-      // Move font data up to high word if needed
+      // Move font data up to high word if it starts to fall off the end at the right
       if (font_off > 16) {
         font_off -= 16;
         pixels <<= 16;
@@ -409,13 +408,14 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
         printf("    ...now %d font pixels\n", font_pixels);
       }
 
-      // Set up pixels for next word
+      // Set up number of pixels for next word, which will be the number left to draw up to 
+      // the maximum of the word size (16).
       pixels_this_word = 16;
       if (pixels_this_word > pixels_left) {
         pixels_this_word = pixels_left;
       }
 
-      // dst_offset only applies to the first word in the line
+      // dst_offset only applies to the first word in the line, so zero it out now
       dst_offset = 0;
     }
   }
