@@ -4,6 +4,7 @@
 #include "osbind.h"
 #include "gemdefs.h"
 #include "textbig.h"
+#include "text.h"
 
 void prntbig(char *s, int x, int y)
 {
@@ -16,6 +17,8 @@ void prntbig(char *s, int x, int y)
 
     x += 16;
     i++;
+
+    // This seems silly
     if (x >= 310) {
       x = 0;
       y += 6;
@@ -38,9 +41,9 @@ int title() {
 
   Vsync();
 
-  prntbig(" AVECTA I", 4, 1);
-  prntbig(" -EBORA-", 4, 5);
-
+  prntbig("AVECTA I", 5, 1);
+  prntbig("-EBORA-", 5, 5);
+  
   vst_color(handle, 2);
 
   printf("Copyright Mark Swanson\n");

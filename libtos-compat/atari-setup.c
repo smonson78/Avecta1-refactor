@@ -68,6 +68,8 @@ void atari_setup() {
 void atari_shutdown() {
 	free(globals.video.st_logbase);
 
+	linea_destroy();
+
 	for (int i = 0; i < 64; i++) {
 		if (globals.file_handles[i] != NULL) {
 			fclose(globals.file_handles[i]);

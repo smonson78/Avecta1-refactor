@@ -260,7 +260,6 @@ int16_t vswr_mode(int16_t handle, int16_t mode)
 // Set palette colour
 void vs_color(int16_t handle, int16_t color_index, int16_t *rgb_in)
 {
-   //printf("vs_col() %d to 0x%03x\n", color_index, *rgb_in);
    GLOBAL_LOCK();   
    globals.video.palette[color_index] = *rgb_in;
    GLOBAL_UNLOCK();
@@ -275,8 +274,13 @@ int16_t vsf_color(int16_t handle, int16_t color_index)
    return 0;
 }
 
+// Set text colour
 int16_t vst_color(int16_t handle, int16_t color_index)
 {
+   GLOBAL_LOCK();
+   // This is only supposed to apply to VDI calls
+   //globals.video.current_colour = color_index;
+   GLOBAL_UNLOCK();
    return 0;
 }
 

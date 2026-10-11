@@ -28,7 +28,13 @@ int16_t Bconstat(const int16_t dev) {
 
 int32_t Cconin()
 {
-    return 0;
+    int16_t result;
+	GLOBAL_LOCK();
+    result = globals.keybuf[0];
+    globals.keybuf[0] = 0;
+	GLOBAL_UNLOCK();
+
+    return result;
 }
 
 int32_t Cconis()

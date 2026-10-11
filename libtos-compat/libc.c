@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <ctype.h>
+#include "linea.h"
 
 #include "st_globals.h"
 #include "gfx.h"
@@ -266,7 +267,26 @@ void emit_console(char **x, char c) {
 	int fg_colour = globals.video.reverse_video ? globals.video.current_bgcolour : globals.video.current_colour;
 	int bg_colour = globals.video.reverse_video ? globals.video.current_colour : globals.video.current_bgcolour;
 
-	render_text_char(fg_colour, bg_colour, c, globals.video.x_text * 8, globals.video.y_text * 8, 8, 8, globals.video.font);
+	printf("Colours: %d/%d %03x/%03x\n", fg_colour, bg_colour, globals.video.palette[fg_colour], globals.video.palette[bg_colour]);
+
+	FONT_HDR *p = system_font_pointers[1];
+	// render_text_char(fg_colour, bg_colour, p->dat_table,
+	// 	p->off_table[c - p->first_ade], 0,
+	// 	globals.video.x_text * 8, globals.video.y_text * 8, 8, 8, p->form_width / 16);
+
+	filled_rect(globals.video.x_text * 8, globals.video.y_text * 8, 8, 8, bg_colour);
+  render_text_char(
+    fg_colour,
+    bg_colour,
+    p->dat_table,
+    p->off_table[c - p->first_ade],
+    0,
+    globals.video.x_text * 8,
+    globals.video.y_text * 8, 
+    8, 
+    8,
+    (p->form_width + 15) / 16,
+    2);
 
 	// Move the text cursor along
 	if (globals.video.x_text < 39) {

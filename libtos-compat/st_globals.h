@@ -46,6 +46,7 @@ typedef struct {
 	int x_mouse, y_mouse;
 
 	// Keyboard buffer
+	// TODO do something better than this
 	int keybuf[1];
 
 	// Game will end when set

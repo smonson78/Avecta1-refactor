@@ -52,7 +52,7 @@ void textbig(const char s, int x, int y)
   // move.w #254,d3
   // mulu #256,d3
   // move.w d3,66(a0)
-  parameter_block->dda_inc = (0xfe << 8); // "scaling increment"
+  parameter_block->dda_inc = 0xfe00; // "scaling increment"
 
   // move.w #1,90(a0)      * Thickened text
   parameter_block->style = 1;
