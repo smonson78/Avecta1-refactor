@@ -11,18 +11,6 @@ int16_t default_palette[16] = {0, 0x777, 0x700, 0x070, 0x007, 0x770, 0x707, 0x07
 void atari_setup() {
   linea_setup();
 
-	globals.video.font = TTF_OpenFont("Bescii-Mono.ttf", 8);
-	if (!globals.video.font) {
-		fprintf(stderr, "Font not loaded.\n");
-		exit(1);
-	}
-
-	globals.video.small_font = TTF_OpenFont("Bescii-Mono.ttf", 6);
-	if (!globals.video.small_font) {
-		fprintf(stderr, "Font not loaded.\n");
-		exit(1);
-	}	
-
 	// For text escape sequences
 	globals.video.escape_status = 0;
 	globals.video.reverse_video = 0;
@@ -75,7 +63,4 @@ void atari_shutdown() {
 			fclose(globals.file_handles[i]);
 		}
 	}
-
-	TTF_CloseFont(globals.video.font);
-	TTF_CloseFont(globals.video.small_font);
 }

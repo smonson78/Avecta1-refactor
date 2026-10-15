@@ -21,15 +21,13 @@ typedef struct {
 	int escape_status;
 	int reverse_video;
 
-	// just here to do the built-in font until I get something better
-	TTF_Font *font;
-	TTF_Font *small_font; // 6x7 pixels I think
-
 	uint16_t palette[16];
 
 	// VBL handlers installed (pointer to array elsewhere)
 	int16_t (*(*vbl_queue)[8])(void);
 
+
+	// VDI:
 	// User-defined fill pattern
 	int16_t udpat[64];
 	int udpat_planes;

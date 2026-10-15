@@ -183,10 +183,10 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
    char *c[6];
 
    vsf_interior(handle, 1);
-   vsf_color(handle,0);
+   vsf_color(handle, 0);
    v_bar(handle, lxy);
    vsf_interior(handle, 1);
-   vsf_color(handle,1);
+   vsf_color(handle, 1);
    c[0] = s2;
    c[1] = s3;
    c[2] = s4;
@@ -199,24 +199,27 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
    mouse_off();
    Vsync();
    vbl_animation_off();
+
+   // Reverse video meaning draw in background colour 0?
    v_rvon(handle);
-   while( l - i > 0) {
+
+   while (l - i > 0) {
       j = 0;
-      while (*(s1+i) != 32 && *(s1+i) != '%' && l-i > 0) {
-         buffer[j++] = *(s1+i);
+      while (s1[i] != ' ' && s1[i] != '%' && l - i > 0) {
+         buffer[j++] = s1[i];
          i++;
       }
 
-      if (*(s1+i) == 32 || l-i == 0 ) { 
+      if (s1[i] == ' ' || l - i == 0 ) { 
          buffer[j] = '\0';
          len = strlen(buffer);
       }
 
-      if (*(s1+i) == '%') {
+      if (s1[i] == '%') {
          i++;
          len = strlen(c[k]);
          k++;
-         if (*(s1+i+1) != 32) {
+         if (s1[i + 1] != ' ') {
             per = 1;
          }
       }
@@ -232,22 +235,36 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
       per = 0;
 
       if (row > 25) {
-         vs_curaddress(handle,17,2);
+         vs_curaddress(handle, 17, 2);
          printf("                              ");
-         vsf_interior(handle,1);
-         vsf_color(handle,0);
-         v_bar(handle,lxy);
-         vsf_interior(handle,1);
-         vsf_color(handle,1);
+
+         // Interior fill style: solid
+         vsf_interior(handle, 1);
+         vsf_color(handle, 0);
+         // A line right under the commands box
+         v_bar(handle, lxy);
+
+         // It's still 1 from before... right?
+         vsf_interior(handle, 1);
+         vsf_color(handle, 1);
 
          for (m = 0; m < 4; m++) {
-            pxy[1] = 136-2*m;
-            pxy[3] = 199-2*m;
-            pxy[5] = 134-2*m;
-            pxy[7] = 197-2*m;
-            bxy[1] = 198-2*m;
-            bxy[3] = 199-2*m;
+            // The source rectangle is from X=12 to X=244, with the following Y-coords:
+            pxy[1] = 136 - 2 * m;
+            pxy[3] = 199 - 2 * m;
+
+            // And the dest, 2 pixels higher. Indicating that we'll move up 2 pixels with each loop
+            // for a total of 8.
+            pxy[5] = 134 - 2 * m;
+            pxy[7] = 197 - 2 * m;
+
+            bxy[1] = 198 - 2 * m;
+            bxy[3] = 199 - 2 * m;
+
+            // 3=S-ONLY mode which means replace destination with source
             vro_cpyfm(handle, 3, pxy, &psrc, &pdes);
+
+            // And then draw the bottom edge back in, blank.
             v_bar(handle, bxy);
          }
 
@@ -270,10 +287,10 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
          }
       }
 
-      if(*(s1+i) == ' ' || l-i == 0) {
-         textsix(1,6*col,8*(row-1),len,buffer);
+      if (s1[i] == ' ' || l - i == 0) {
+         textsix(1, 6 * col, 8 * (row - 1), len, buffer);
       } else {
-         textsix(1,6*col,8*(row-1),len,c[k-1]);
+         textsix(1, 6 * col, 8 * (row - 1), len, c[k - 1]);
          col--;
       }
 
@@ -281,6 +298,7 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
       i++;
    }
 
+   // Back to normal colour
    v_rvoff(handle);
    usedline += lines;
    vbl_animation_on();

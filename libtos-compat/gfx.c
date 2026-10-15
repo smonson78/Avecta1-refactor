@@ -269,14 +269,13 @@ void blit_surface_to_st_video(int fg_colour, int bg_colour, int x, int y, int wi
 void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, int srcy, int dstx, int dsty, 
   int width, int height, int fontwidth, int wrt_mode) {
 
-  printf("render_text_char at %d,%d size %dx%d:\n", dstx, dsty, width, height);
-  printf("  Cell source coords %d,%d\n", srcx, srcy);
-  //printf("  colours %d,%d\n", fg_colour, bg_colour);
+  // printf("render_text_char at %d,%d size %dx%d:\n", dstx, dsty, width, height);
+  // printf("  Cell source coords %d,%d\n", srcx, srcy);
 
   // Which word contains the first pixel of the character
   int x = dstx / 16;
 
-  printf("  Destination offset is %d\n", dstx % 16);
+  // printf("  Destination offset is %d\n", dstx % 16);
 
   // Screen line on which the character begins
   uint16_t *start_line = globals.video.st_logbase + (dsty * 80);
@@ -287,7 +286,7 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
     // How many pixels into that word is the first pixel of the character
     int dst_offset = dstx % 16;
 
-    printf("  Line %d\n", line);
+    // printf("  Line %d\n", line);
 
     // Word in that line in which we must start
     uint16_t *dst = start_line + (line * 80) + (x * 4);
@@ -313,18 +312,18 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
     // Number of font pixels in the accumulator
     int font_pixels = 16 - font_off;
 
-    printf("    Start pixels 0x%08x (%d)", pixels, font_pixels);
-    printf("    Font offs %d\n", font_off);
+    // printf("    Start pixels 0x%08x (%d)", pixels, font_pixels);
+    // printf("    Font offs %d\n", font_off);
 
     int pixels_left = width;
 
     // Which word are we calculating among the different words that we need to update
     for (int word = 0; word < total_words; word++) {
 
-      printf("    --- Word number %d\n", word);
-      printf("    Pixels left: %d\n", pixels_left);
-      printf("    This word we need %d font pixels\n", pixels_this_word);
-      printf("    This word we have %d font pixels\n", font_pixels);
+      // printf("    --- Word number %d\n", word);
+      // printf("    Pixels left: %d\n", pixels_left);
+      // printf("    This word we need %d font pixels\n", pixels_this_word);
+      // printf("    This word we have %d font pixels\n", font_pixels);
 
       if (font_pixels < pixels_this_word) {
         // Get more font pixels into the low word
@@ -332,8 +331,8 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
 
         // Adjust count. Doesn't matter if this is higher than the actual number.
         font_pixels += 16;
-        printf("    ...getting more pixels.\n");
-        printf("    Start pixels 0x%08x (%d)", pixels, font_pixels);
+        // printf("    ...getting more pixels.\n");
+        // printf("    Start pixels 0x%08x (%d)", pixels, font_pixels);
       }
 
       // Build the character cell mask for the current word
@@ -345,38 +344,25 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
 
       // printf("    Mask: 0x%04x\n", mask);
       
-      printf("    Font raw data: %08x\n", pixels);
+      // printf("    Font raw data: %08x\n", pixels);
       // Get a copy and shift the pixels we want to line up with the left edge of the low word
       uint32_t copy_pixels = pixels >> (16 - font_off);
-      printf("    Preshift:      %08x\n", copy_pixels);
+      // printf("    Preshift:      %08x\n", copy_pixels);
       // Shift right to target position
       // TODO ...could do both shifts in one operation
 
       copy_pixels >>= dst_offset; // now it's lined up with the character cell onscreen
 
       // Mask it off to the character cell within this screen word
-      printf("    Font data:     %08x\n", copy_pixels);
+      // printf("    Font data:     %08x\n", copy_pixels);
       copy_pixels &= mask;
-      printf("    Mask:          %04x\n", mask);
-      printf("    Font masked:   %04x\n", copy_pixels);
+      // printf("    Mask:          %04x\n", mask);
+      // printf("    Font masked:   %04x\n", copy_pixels);
 
       //printf("    Screen word:   %04x\n", dst[0]);
 
       // Mask out the character cell in the current word
       // printf("    Original:      %04x\n", dst[0]);
-      if (wrt_mode == 0) {
-        // REPLACE mode
-        // It seems this is not actually correct:
-        // dst[0] &= ~mask;
-        // dst[1] &= ~mask;
-        // dst[2] &= ~mask;
-        // dst[3] &= ~mask;
-        // // Fill with background colour
-        // dst[0] |= (bg_colour & 1) ? 0xffff : 0;
-        // dst[1] |= (bg_colour & 2) ? 0xffff : 0;
-        // dst[2] |= (bg_colour & 4) ? 0xffff : 0;
-        // dst[3] |= (bg_colour & 8) ? 0xffff : 0;
-      }
 
       if (wrt_mode == 0) {
         // REPLACE mode
@@ -391,10 +377,10 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
         dst[3] |= (fg_colour & 8) ? copy_pixels : 0;
       } else if (wrt_mode == 2) {
         // XOR mode
-        dst[0] ^= (fg_colour & 1) ? copy_pixels : 0;
-        dst[1] ^= (fg_colour & 2) ? copy_pixels : 0;
-        dst[2] ^= (fg_colour & 4) ? copy_pixels : 0;
-        dst[3] ^= (fg_colour & 8) ? copy_pixels : 0;
+        dst[0] ^= copy_pixels;
+        dst[1] ^= copy_pixels;
+        dst[2] ^= copy_pixels;
+        dst[3] ^= copy_pixels;
       }
       // Move to next word.
       dst += 4;
@@ -408,9 +394,9 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
         font_off -= 16;
         pixels <<= 16;
         font_pixels -= pixels_this_word;
-        printf("    ...moved font data back up to high word: %08x\n", pixels);
-        printf("    ...new font_off is %d\n", font_off);
-        printf("    ...now %d font pixels\n", font_pixels);
+        // printf("    ...moved font data back up to high word: %08x\n", pixels);
+        // printf("    ...new font_off is %d\n", font_off);
+        // printf("    ...now %d font pixels\n", font_pixels);
       }
 
       // Set up number of pixels for next word, which will be the number left to draw up to 

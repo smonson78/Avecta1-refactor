@@ -52,7 +52,6 @@ int title() {
   // v_justified(handle, 60, 140, "Copyright Mark Swanson", 16, 0, 0);
   // v_justified(handle, 6, 180, "Select option: (Q)uit,(N)ew,(R)estore", 31, 0, 0);
 
-  // Too much maths
   do {
     do {
       rgb[0] = Random();

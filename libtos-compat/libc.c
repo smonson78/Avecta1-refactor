@@ -267,7 +267,7 @@ void emit_console(char **x, char c) {
 	int fg_colour = globals.video.reverse_video ? globals.video.current_bgcolour : globals.video.current_colour;
 	int bg_colour = globals.video.reverse_video ? globals.video.current_colour : globals.video.current_bgcolour;
 
-	printf("Colours: %d/%d %03x/%03x\n", fg_colour, bg_colour, globals.video.palette[fg_colour], globals.video.palette[bg_colour]);
+	// printf("Colours: %d/%d %03x/%03x\n", fg_colour, bg_colour, globals.video.palette[fg_colour], globals.video.palette[bg_colour]);
 
 	FONT_HDR *p = system_font_pointers[1];
 	// render_text_char(fg_colour, bg_colour, p->dat_table,

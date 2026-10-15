@@ -110,8 +110,8 @@ void linea_init(LINEA **parameter_block, FONT_HDR ***sysfont_pointers) {
 }
 
 void linea_textblock_transfer() {
-  printf("linea_textblock_transfer()\n");
-  printf("font: %d %p\n", linea_parameter_block.fwidth, linea_parameter_block.fbase);
+  // printf("linea_textblock_transfer()\n");
+  // printf("font: %d %p\n", linea_parameter_block.fwidth, linea_parameter_block.fbase);
 
   //linea_debug();
 
@@ -129,7 +129,7 @@ void linea_textblock_transfer() {
     linea_parameter_block.fwidth / 2,
     linea_parameter_block.wrt_mode);
   GLOBAL_UNLOCK();
-  printf("Finished linea_textblock_transfer()\n");
+  // printf("Finished linea_textblock_transfer()\n");
 }
 
 void linea_showmouse() {

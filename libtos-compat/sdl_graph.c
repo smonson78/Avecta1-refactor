@@ -183,7 +183,6 @@ void shutdown_sdl()
 #endif
 	SDL_DestroyRenderer(video.render_hardware);
 	SDL_DestroyWindow(video.win);
-	TTF_Quit();
 	SDL_Quit();
 }
 

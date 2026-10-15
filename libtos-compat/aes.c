@@ -156,7 +156,7 @@ int16_t evnt_multi (int16_t ev_mflags,  int16_t ev_mbclicks,
 
 void vr_recfl(int16_t handle, int16_t *pxyarray)
 {
-   printf("vr_recfl(%d,%d - %d,%d)\n", pxyarray[0], pxyarray[1], pxyarray[2], pxyarray[3]);
+   // printf("vr_recfl(%d,%d - %d,%d)\n", pxyarray[0], pxyarray[1], pxyarray[2], pxyarray[3]);
    GLOBAL_LOCK();
    switch (globals.video.interior_fill_pattern) {
       case 0: 
@@ -165,7 +165,6 @@ void vr_recfl(int16_t handle, int16_t *pxyarray)
          break;
       case 1: 
          // Solid
-         // TODO: colour
          filled_rect(pxyarray[0], pxyarray[1], 
             pxyarray[2] - pxyarray[0], pxyarray[3] - pxyarray[1], globals.video.current_2d_colour);
          break;
@@ -185,11 +184,14 @@ void vr_recfl(int16_t handle, int16_t *pxyarray)
    }
   
    GLOBAL_UNLOCK();
-   printf("v_eeos() done\n");
+   // printf("vr_recfl() done\n");
 }
 
+// Mostly the same as vr_recfl
 void v_bar(int16_t handle, int16_t *pxyarray)
 {
+   // Draw 2D filled bar
+   vr_recfl(handle, pxyarray);
 }
 
 void v_ellipse(int16_t handle, int16_t x, int16_t y, int16_t xradius,
@@ -216,12 +218,12 @@ void v_rvoff(int16_t handle) {
 void v_eeol(int16_t handle) {
    // Erase to end of line
    GLOBAL_LOCK();
-   printf("v_eeol()\n");
+   // printf("v_eeol()\n");
    // To the end of the line (may not be full screen width)
    filled_rect(globals.video.x_text * 8, globals.video.y_text * 8,
       320 - (globals.video.x_text * 8), 8,
       globals.video.current_bgcolour);
-   printf("v_eeol() done\n");
+   // printf("v_eeol() done\n");
 
    GLOBAL_UNLOCK();
 }
@@ -230,7 +232,7 @@ void v_eeos(int16_t handle) {
    // Erase to end of screen
    GLOBAL_LOCK();
 
-   printf("v_eeos()\n");
+   // printf("v_eeos()\n");
    // To the end of the line (may not be full screen width)
    filled_rect(globals.video.x_text * 8, globals.video.y_text * 8,
       320 - (globals.video.x_text * 8), 8,
@@ -243,7 +245,7 @@ void v_eeos(int16_t handle) {
           320, 200 - start_line,
           globals.video.current_bgcolour);
    }
-   printf("v_eeos() done\n");
+   // printf("v_eeos() done\n");
 
    GLOBAL_UNLOCK();
 }
@@ -313,8 +315,13 @@ void vs_clip(int16_t handle, int16_t clip_flag, int16_t *pxyarray)
    printf("vs_clip(%d,%d - %d,%d)\n", pxyarray[0], pxyarray[1], pxyarray[2], pxyarray[3]);
 }
 
+// Copy onscreen rectangle 
 void vro_cpyfm(int16_t handle, int16_t vr_mode, int16_t *pxyarray, MFDB *psrcMFDB, MFDB *pdesMFDB)
 {
+   printf("vro_cpyfm()\n");
+   GLOBAL_LOCK();
+   GLOBAL_UNLOCK();
+   printf("vro_cpyfm() done\n");
 }
 
 // Get fill attributes
