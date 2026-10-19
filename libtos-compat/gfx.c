@@ -266,10 +266,16 @@ void pattern_rect(int x, int y, int w, int h, uint16_t *bitmap) {
     // Work register for pixels
     uint32_t d6 = 0;
 
-    uint32_t bitplane0 = bitmap[0] << shift;
-    uint32_t bitplane1 = bitmap[16] << shift;
-    uint32_t bitplane2 = bitmap[32] << shift;
-    uint32_t bitplane3 = bitmap[48] << shift;
+    // Swap bytes in word
+    uint16_t gfx0 = (bitmap[0] << 8) | (bitmap[0] >> 8);
+    uint16_t gfx1 = (bitmap[16] << 8) | (bitmap[16] >> 8);
+    uint16_t gfx2 = (bitmap[32] << 8) | (bitmap[32] >> 8);
+    uint16_t gfx3 = (bitmap[48] << 8) | (bitmap[48] >> 8);
+
+    uint32_t bitplane0 = gfx0 << shift;
+    uint32_t bitplane1 = gfx1 << shift;
+    uint32_t bitplane2 = gfx2 << shift;
+    uint32_t bitplane3 = gfx3 << shift;
 
     // OR them all together in the 32-bit word
     d6 = bitplane0 | bitplane1 | bitplane2 | bitplane3;
