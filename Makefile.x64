@@ -4,8 +4,9 @@ OBJCOPY=objcopy
 # https://github.com/smonson78/smonson-libtos
 LIB_COMPAT=libtos-compat
 
+OPT=-O2
 STD_CFLAGS=-fno-builtin -Wno-format -I. -I$(LIB_COMPAT)
-CFLAGS=-O2 -g -Wall $(STD_CFLAGS) -DTOS_COMPAT
+CFLAGS=$(OPT) -g -Wall $(STD_CFLAGS) -DTOS_COMPAT
 
 LDLIBS=-lc $(LIB_COMPAT)/atari-compat.a -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_gfx -lm -lpthread
 LDFLAGS=-nostdlib -L..

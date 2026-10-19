@@ -182,7 +182,6 @@ int ruminit()
 }
 
 int error(int i) {
-  printf("Error %d\n", i);
   Vsync();
   vbl_animation_off();
   mouse_on();

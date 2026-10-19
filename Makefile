@@ -9,7 +9,7 @@ LIBTOS=/home/simon/dev/smonson-libtos
 # This is where I keep my Hatari virtual hard drive
 INSTALL=/home/simon/atari-hd/AVECTA
 
-#OPT=-O2
+OPT=-O2
 IDIOTIC_GCC_BULLSHIT=--param=min-pagesize=0
 STD_CFLAGS=-m68000 -fomit-frame-pointer -fno-builtin -I. -I$(LIBTOS) -ffreestanding -ffunction-sections $(IDIOTIC_GCC_BULLSHIT)
 CFLAGS=$(OPT) -g -Wall $(STD_CFLAGS)

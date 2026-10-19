@@ -159,7 +159,101 @@ int16_t appl_write(int16_t ap_wid, int16_t ap_wlength, void *ap_wpbuff)
 int16_t form_alert(int16_t fo_adefbttn, const char *fo_astring)
 {
    printf("Form alert: %s\n", fo_astring);
-   return 0;
+
+   // Example format [2][ Do you wish to  ][Abort|Quit|File]
+   // First number, icon: 0 - none, 1 - !, 2 - ?, 3 - stop sign
+   int icon = 2;
+   char message[1024];
+   const char *p = fo_astring;
+
+   // Find icon number
+   while (*p == ' ') {
+      p++;
+   }
+   // Skip [
+   p++;
+   icon = *p++ - '0';
+   // printf("Icon number is %d\n", icon);
+   // Skip ] character
+   p++;
+   // Skip [ character
+   p++;
+   int c = 0;
+   while (c < 1023 && *p != ']') {
+      if (*p == '|') {
+         message[c] = '\n';
+      } else {
+         message[c] = *p;
+      }
+      c++;
+      p++;
+   }
+   // Terminating NUL
+   message[c] = '\0';
+   // printf("Message is %s\n", message);
+   
+   // Skip ] character
+   p++;
+   // Skip [ character
+   p++;
+
+   // Get buttons
+
+   // SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Alert", fo_astring, NULL);
+
+   // Let's assume there are 5
+   c = 0;
+   int name_pos = 0;
+   char button_names[5][80];
+   SDL_MessageBoxButtonData buttons[5];
+
+   while (c < 5 && *p != ']' && *p != '\0') {
+      if (*p == '|') {
+         button_names[c][name_pos] = '\0';
+         // printf("Button %d name is %s\n", c, button_names[c]);
+
+         buttons[c].flags = 0;
+         buttons[c].buttonid = c + 1;
+         buttons[c].text = button_names[c];
+         c++;
+         name_pos = 0;
+      } else {
+         button_names[c][name_pos++] = *p;
+      }
+
+      p++;
+   }
+   // Terminate last button name
+   button_names[c][name_pos] = '\0';
+   buttons[c].flags = 0;
+   buttons[c].buttonid = c + 1;
+   buttons[c].text = button_names[c];
+   // printf("Button %d name is %s\n", c, button_names[c]);
+
+
+   const SDL_MessageBoxData messageboxdata = {
+      icon == 2 ? SDL_MESSAGEBOX_INFORMATION : SDL_MESSAGEBOX_WARNING,               // Flags (INFORMATION, WARNING, ERROR)
+      NULL,                                     // Parent window (NULL means standalone)
+      "Action Required",                          // Dialog Title (UTF-8 string)
+      message,     // Dialog Message text
+      c + 1,                   // Total number of buttons
+      buttons,                                  // Pointer to button array
+      NULL                              // Pointer to color scheme
+   };
+
+   int buttonid;
+   if (SDL_ShowMessageBox(&messageboxdata, &buttonid) < 0) {
+      SDL_Log("Error displaying message box: %s", SDL_GetError());
+      SDL_Quit();
+      return 1;
+   }
+
+   // buttonid has the button selected or -1 for closed without a choice
+
+
+   // Return 1, 2, 3 etc for button selected
+
+   return buttonid;
 }
 
 int16_t form_dial(int16_t fo_diflag, int16_t fo_dilittlx, int16_t fo_dilittly, int16_t fo_dilittlw,
