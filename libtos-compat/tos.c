@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include <SDL2/SDL_timer.h>
+
 #include "tos.h"
 
 #include "st_globals.h"
@@ -8,12 +10,19 @@
 // BIOS console input
 int32_t Bconin(const int16_t dev) {
     int16_t result;
-	GLOBAL_LOCK();
-    result = globals.keybuf[0];
-    globals.keybuf[0] = 0;
-	GLOBAL_UNLOCK();
+    do {
+        GLOBAL_LOCK();
+        result = globals.keybuf[0];
 
-    return result;
+        if (result) {
+            globals.keybuf[0] = 0;
+            GLOBAL_UNLOCK();
+            return result;
+        }
+        GLOBAL_UNLOCK();
+        SDL_Delay(20);
+
+    } while (1);
 }
 
 int16_t Bconstat(const int16_t dev) {
@@ -28,18 +37,13 @@ int16_t Bconstat(const int16_t dev) {
 
 int32_t Cconin()
 {
-    int16_t result;
-	GLOBAL_LOCK();
-    result = globals.keybuf[0];
-    globals.keybuf[0] = 0;
-	GLOBAL_UNLOCK();
-
-    return result;
+    // 2 = console
+    return Bconin(2);
 }
 
 int32_t Cconis()
 {
-    return 0;
+    return Bconstat(2);
 }
 
 void Cconws(const char* s)
@@ -53,7 +57,12 @@ void Cconout(const uint16_t ch)
 
 int32_t Cnecin()
 {
-    return 0;
+    int16_t result;
+    GLOBAL_LOCK();
+    result = globals.keybuf[0];
+    globals.keybuf[0] = 0;
+    GLOBAL_UNLOCK();
+    return result;
 }
 
 void *Malloc(int32_t number)

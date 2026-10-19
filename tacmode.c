@@ -15,6 +15,7 @@
 #include "timetrol.h"
 
 #include "debug.h"
+#include "tos_compat.h"
 
 /*****************************************************************************/
 /* TACMODE runs the tactical mode of the game, and continues until the hero  */
@@ -214,7 +215,7 @@ int tacmode() {
       if (c[0] && c[30] == crum)
         j = (*outverb[c[15]])(n);
 
-      if ((n == 0 || (n == 1 && c[38])) && j == 0 && (p=Bconstat(2)) != 0) {
+      if ((n == 0 || (n == 1 && c[38])) && j == 0 && (p = Bconstat(2)) != 0) {
         p = Bconin(2) & 0xff;
         if (p == ' ') {
           c[16] = 0;
@@ -246,8 +247,8 @@ int tacmode() {
               }
 
               if (k == -1) {
-                  if((k=error(17)) > 1) {
-                    if(k == 2)
+                  if ((k=error(17)) > 1) {
+                    if (k == 2)
                         return(-2);
                     if(k == 3 && !outside && !fromout) {
                         k = error(19);
@@ -263,11 +264,15 @@ int tacmode() {
                     }
                   else 
                     l = 0;
-                  }
-              if (l == 1)
-                  l = (*inverb[k])(n);
-              if (l == -1)
-                  return(-1);
+              }
+
+              if (l == 1) {
+                l = (*inverb[k])(n);
+              }
+
+              if (l == -1) {
+                return -1;
+              }
             }
           } while(l == 0);        
         }

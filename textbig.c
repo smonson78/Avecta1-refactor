@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include "gemdefs.h"
+#include "tos_compat.h"
+
 // Initalise LINE-A aka linea_init()
 
 // These line-a structures should be in libtos

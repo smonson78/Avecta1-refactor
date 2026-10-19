@@ -11,7 +11,7 @@ void filled_rect(int x, int y, int w, int h, int colour) {
     exit(1);
   }
 
-  //printf("filled rect %d,%d %dx%d\n", x, y, w, h);
+  // printf("filled rect %d,%d %dx%d colour %d\n", x, y, w, h, colour);
   uint16_t *start_line = globals.video.st_logbase + (y * 80);
 
   // Draw the left edge of the rectangle first.
@@ -23,9 +23,10 @@ void filled_rect(int x, int y, int w, int h, int colour) {
 
   // Calculate the left mask
   uint32_t left_mask = 0x0000ffff >> offset;
-  // Do we also need to mask the right edge here with 0s?
+
+  // Mask the right edge here also with 0s if needed
   if (w < (16 - offset)) {
-    left_mask &= 0xffff0000 >> (16 - offset - w);
+    left_mask &= 0xffff << (16 - offset - w);
   }
 
   // Calculate the right mask - this will only need truncating on the right end
@@ -86,15 +87,173 @@ void filled_rect(int x, int y, int w, int h, int colour) {
       } else {
         // Middle section
         // Insert the colour - no need for masks
-        dst[0] = left_plane0;
-        dst[1] = left_plane1;
-        dst[2] = left_plane2;
-        dst[3] = left_plane3;        
+        dst[0] = plane0;
+        dst[1] = plane1;
+        dst[2] = plane2;
+        dst[3] = plane3;        
       }
 
       dst += 4;
 
     }
+  }
+}
+
+// It's hard to tell if this is working or not
+// Copy screen rectangle from x,y wxh to dx,dy
+void copy_rect(int x, int y, int w, int h, int dx, int dy) {
+  // Copying buffer - the size of the screen
+  uint16_t buffer[16000];
+  uint16_t *p = buffer;
+
+  printf("Copy rect! %dx%d %dx%d --> %d,%d\n", x, y, w, h, dx, dy);
+
+  // First, let's find the source offset within the screen memory word
+  int src_off = x % 16;
+
+  // And the index of that word within the video line. We will use this offset once per line.
+  int src_start_index = (x / 16) * 4;
+
+  uint16_t *line = globals.video.st_logbase + (y * 80);
+
+  int num_words = (w + 15) / 16;
+
+  for (int yloop = 0; yloop < h; yloop++) {
+
+    // Start on the first word of the line
+    int i = src_start_index;
+    uint32_t bitplane0 = line[i++];
+    uint32_t bitplane1 = line[i++];
+    uint32_t bitplane2 = line[i++];
+    uint32_t bitplane3 = line[i++];
+
+    for (int word = 0; word < num_words; word++) {
+      // Get the next word of the source data in this accumulator.
+      // Look 4 words ahead to get the same colour plane.
+      // This read either doesn't help at all, in the case of offset = 0
+      // or else it gets the second part of a word that is split across the word boundary.
+
+      if (src_off > 0) {
+        // This check should stop it from going off the end of screen memory
+        bitplane0 <<= 16;
+        bitplane0 |= line[i++];
+
+        bitplane1 <<= 16;
+        bitplane1 |= line[i++];
+
+        bitplane2 <<= 16;
+        bitplane2 |= line[i++];
+
+        bitplane3 <<= 16;
+        bitplane3 |= line[i++];
+      } else {
+        i += 4;
+      }
+
+      // Store 4 bitplane words in the buffer, word-aligned
+      *(p++) = (bitplane0 << src_off) >> 16;
+      // FIXME just go right
+      *(p++) = (bitplane1 << src_off) >> 16;
+      *(p++) = (bitplane2 << src_off) >> 16;
+      *(p++) = (bitplane3 << src_off) >> 16;
+    }
+
+    // Move to next line
+    line += 80;
+  }
+
+  // Now store in destination
+  int dst_start_index = (dx / 16) * 4;
+  int dst_off = dx % 16;
+
+  line = globals.video.st_logbase + (dy * 80);
+
+  // Restart at beginning of buffer
+  p = buffer;
+
+  for (int yloop = 0; yloop < h; yloop++) {
+
+    int i = dst_start_index;
+
+    // How many pixels are left in each line will be in temp_w
+    int temp_w = w;
+
+    // The number of pixels that appear in the final screen word written, or 0 if the last word
+    // lines up perfectly with the end of the screen word
+    int m = (dst_off + w) % 16;
+
+    for (int word = 0; word < num_words; word++) {
+      // Get 4 bitplanes from buffer
+      uint16_t bitplane0 = *(p++);
+      uint16_t bitplane1 = *(p++);
+      uint16_t bitplane2 = *(p++);
+      uint16_t bitplane3 = *(p++);
+
+      // Make a mask for the pixels involved for the pixels that fall on the left of the word 
+      // boundary
+      // e.g.   | 0000111111111111 |
+      uint16_t mask = 0xffff >> dst_off;
+
+      // Combine with a mask for the right side if the number of pixels in this word is less
+      // than needed to reach the word boundary.
+      uint16_t r_mask = 0xffff;
+      if (temp_w < (16 - dst_off)) {
+        r_mask <<= 16 - m;
+        // e.g. | 1111111111000000 |
+        mask &= r_mask;
+        // e.g. | 0000111111000000 | for a 6-pixel wide image at X=4
+      }
+
+      // Less than 16 pixels to go in this word, so we will also need to mask for the length.
+      // uint16_t r_mask = 0xffff << (temp_w < 16 ? (16 - temp_w) : 0);
+      // mask &= r_mask;
+
+      // Mask out the destination pixels, then copy the bitplane data into position
+      line[i] &= ~mask; // these 4 masks appear to be working OK
+      line[i] |= (bitplane0 >> dst_off) & mask;
+
+      line[i + 1] &= ~mask;
+      line[i + 1] |= (bitplane1 >> dst_off) & mask;
+
+      line[i + 2] &= ~mask;
+      line[i + 2] |= (bitplane2 >> dst_off) & mask;
+
+      line[i + 3] &= ~mask;
+      line[i + 3] |= (bitplane3 >> dst_off) & mask;
+
+      // Make a mask for the pixels involved for the pixels that fall on the right of the word 
+      // boundary, if it hangs over.
+      if (dst_off > 0) {
+        // This is a right-side mask 
+        // If there are less than 16 pixels left to go then we're on the final word, so we'll also
+        // mask for the image width here.
+        if (temp_w < 16) {
+          // Mask off up to the end of the image width
+          mask = 0xffff << (16 - m);
+        } else {
+          // Mask off up to the full size of the source image data word
+          mask = 0xffff << (16 - dst_off);
+        }
+        // Mask out the destination pixels
+        line[i + 4] &= ~mask; 
+        line[i + 4] |= (bitplane0 << (16 - dst_off)) & mask;
+        line[i + 5] &= ~mask;
+        line[i + 5] |= (bitplane1 << (16 - dst_off)) & mask;
+        line[i + 6] &= ~mask;
+        line[i + 6] |= (bitplane2 << (16 - dst_off)) & mask;
+        line[i + 7] &= ~mask;
+        line[i + 7] |= (bitplane3 << (16 - dst_off)) & mask;
+      }
+
+      // Move to next 4 bitplanes
+      i += 4;
+
+      // Reduce remaining width counter
+      temp_w -= 16;
+    }
+
+    // Move to next line
+    line += 80;
   }
 }
 
@@ -411,4 +570,50 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
     }
   }
 
+}
+
+void putpixel(int x, int y, int colour) {
+  int dest_word = (y * 80) + ((x / 16) * 4);
+  int mask = 0x8000 >> (x % 16);
+
+  // Clear pixel value
+  globals.video.st_logbase[dest_word] &= ~mask;
+  globals.video.st_logbase[dest_word + 1] &= ~mask;
+  globals.video.st_logbase[dest_word + 2] &= ~mask;
+  globals.video.st_logbase[dest_word + 3] &= ~mask;
+
+  // Set colour value
+  globals.video.st_logbase[dest_word] |= (colour & 1) ? mask : 0;
+  globals.video.st_logbase[dest_word + 1] |= (colour & 2) ? mask : 0;
+  globals.video.st_logbase[dest_word + 2] |= (colour & 4) ? mask : 0;
+  globals.video.st_logbase[dest_word + 3] |= (colour & 8) ? mask : 0;
+}
+
+/* Bresenham's Algorithm */
+void plotline(int x0, int y0, int x1, int y1, uint32_t colour)
+{
+	int dx = abs(x1 - x0);
+	int dy = -abs(y1 - y0);
+	int sx = x0 < x1 ? 1 : -1;
+	int sy = y0 < y1 ? 1 : -1;
+	int err = dx + dy, e2; /* error value e_xy */
+
+	while(1) {
+		putpixel(x0, y0, colour);
+
+    if (x0 == x1 && y0 == y1) {
+			break;
+    }
+
+		e2 = err << 1;
+		if (e2 >= dy) {
+			err += dy;
+			x0 += sx;
+		}
+
+		if (e2 <= dx) {
+			err += dx;
+			y0 += sy;
+		}
+	}
 }

@@ -14,6 +14,7 @@
 
 #include "debug.h"
 #include "compat.h"
+#include "tos_compat.h"
 
 void domsg(int i) {
   int x = 256, y = 8, w = 64, h = 40;
@@ -181,6 +182,7 @@ int ruminit()
 }
 
 int error(int i) {
+  printf("Error %d\n", i);
   Vsync();
   vbl_animation_off();
   mouse_on();

@@ -38,6 +38,35 @@ int16_t colour_screen;
 int16_t x_max;
 int16_t y_max;
 
+// VDI does a stupid palette translation
+int get_vdi_colour(int index) {
+   switch (index) {
+      case 1:
+         return 15;
+      case 4:
+      case 12:
+         return index;
+      case 2:
+      case 3:
+      case 8:
+      case 9:
+      case 10:
+      case 11:
+         return index - 1;
+      case 5:
+      case 13:
+         return index + 1;
+      case 6:
+         return index - 3;
+      case 7:
+      case 15:
+         return index - 2;
+      case 14:
+         return 4;
+   }
+   return 0;
+}
+
 void set_screen_attr()
 {
 }
@@ -156,7 +185,7 @@ int16_t evnt_multi (int16_t ev_mflags,  int16_t ev_mbclicks,
 
 void vr_recfl(int16_t handle, int16_t *pxyarray)
 {
-   // printf("vr_recfl(%d,%d - %d,%d)\n", pxyarray[0], pxyarray[1], pxyarray[2], pxyarray[3]);
+   printf("vr_recfl(style %d)\n", globals.video.interior_fill_pattern);
    GLOBAL_LOCK();
    switch (globals.video.interior_fill_pattern) {
       case 0: 
@@ -166,7 +195,8 @@ void vr_recfl(int16_t handle, int16_t *pxyarray)
       case 1: 
          // Solid
          filled_rect(pxyarray[0], pxyarray[1], 
-            pxyarray[2] - pxyarray[0], pxyarray[3] - pxyarray[1], globals.video.current_2d_colour);
+            pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, 
+            get_vdi_colour(globals.video.current_2d_colour));
          break;
       case 2: 
          // Pattern
@@ -179,7 +209,8 @@ void vr_recfl(int16_t handle, int16_t *pxyarray)
       case 4: 
          // User-defined style
          pattern_rect(pxyarray[0], pxyarray[1], 
-            pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, (uint16_t *)globals.video.udpat);
+            pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, 
+            (uint16_t *)globals.video.udpat);
          break;
    }
   
@@ -320,6 +351,11 @@ void vro_cpyfm(int16_t handle, int16_t vr_mode, int16_t *pxyarray, MFDB *psrcMFD
 {
    printf("vro_cpyfm()\n");
    GLOBAL_LOCK();
+   copy_rect(pxyarray[0], pxyarray[1], 
+      pxyarray[2] - pxyarray[0] + 1, 
+      pxyarray[3] - pxyarray[1] + 1,
+      pxyarray[4], pxyarray[5]
+   );
    GLOBAL_UNLOCK();
    printf("vro_cpyfm() done\n");
 }

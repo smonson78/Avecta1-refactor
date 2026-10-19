@@ -3,9 +3,9 @@
 #include <gemdos.h>
 #include <xbios.h>
 
-#include "osbind.h"
+//#include "osbind.h"
 #include "gemdefs.h"
-#include "words.h"
+//#include "words.h"
 #include "globals.h"
 
 #include "startaux.h"
@@ -203,6 +203,12 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
    // Reverse video meaning draw in background colour 0?
    v_rvon(handle);
 
+   // Mark end of scroll area
+   // uint16_t mark[4] = {bxy[2], 100, bxy[2], 130};
+   // vsf_color(handle, 2);
+   // v_bar(handle, mark);
+   // vsf_color(handle, 1);
+
    while (l - i > 0) {
       j = 0;
       while (s1[i] != ' ' && s1[i] != '%' && l - i > 0) {
@@ -264,15 +270,24 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
             // 3=S-ONLY mode which means replace destination with source
             vro_cpyfm(handle, 3, pxy, &psrc, &pdes);
 
+            // Cconin();
+
             // And then draw the bottom edge back in, blank.
             v_bar(handle, bxy);
+
+            // Cconin();
+
+            // Because the PC is way faster
+            Vsync();            
          }
 
          row = 25;
+         
          if ((usedline + lines > 7 
             && hold == 1 
             && l-i > 40) 
             || usedline + lines > 8) {
+
             textsix(1, 204, 8 * 24, 6, "[More]");
             hold = 0;
             usedline = 0;

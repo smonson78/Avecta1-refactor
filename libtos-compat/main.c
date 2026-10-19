@@ -118,6 +118,8 @@ int main()
 				if (event.key.keysym.sym == SDLK_F1) {
 					printf("F1 pressed\n");
 					globals.exit = true; 
+				} else if (event.key.keysym.sym == SDLK_RETURN) {
+					globals.keybuf[0] = '\r';
 				}
 				break;
 
