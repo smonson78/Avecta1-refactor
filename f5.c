@@ -24,7 +24,8 @@ int i5(int pc)
   int16_t x, y;
   int object, top = 0, bot = 0, type;
   uint8_t *c = curmon[pc];
-  char scratch[18],*w = (pc == 0 ? pname : name[c[3]]);
+  char scratch[18];
+  char *w = (pc == 0 ? pname : name[c[3]]);
 
   if(outside)
     return(0);

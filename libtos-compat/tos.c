@@ -92,4 +92,11 @@ int16_t Getrez()
 
 void Vsync()
 {
+    GLOBAL_LOCK();
+    globals.video.game_waits_for_vsync = 1;
+    GLOBAL_UNLOCK();
+
+    do {
+        SDL_Delay(1);
+    } while (globals.video.game_waits_for_vsync == 1);
 }

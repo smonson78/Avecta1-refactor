@@ -15,6 +15,9 @@ typedef struct {
 	// ST video memory, always 32000 bytes
 	uint16_t *st_logbase;
 
+	// Set by game, cleared on vsync flip
+	int game_waits_for_vsync;
+
 	// Text cursor
 	int x_text, y_text;
 	int current_colour, current_bgcolour;
@@ -25,7 +28,6 @@ typedef struct {
 
 	// VBL handlers installed (pointer to array elsewhere)
 	int16_t (*(*vbl_queue)[8])(void);
-
 
 	// VDI:
 	// User-defined fill pattern
@@ -42,6 +44,7 @@ typedef struct {
 
 	// The current position of the mouse pointer
 	int x_mouse, y_mouse;
+	int mouse_buttons; // bit 0: left, bit 1: right
 
 	// Keyboard buffer
 	// TODO do something better than this
@@ -58,6 +61,11 @@ typedef struct {
 
 #define GLOBAL_LOCK() pthread_mutex_lock(&globals.lock) 
 #define GLOBAL_UNLOCK() pthread_mutex_unlock(&globals.lock)
+
+#define VSYNC_LOCK() pthread_mutex_lock(&globals.video.vsync) 
+#define VSYNC_UNLOCK() pthread_mutex_unlock(&globals.video.vsync)
+
+#define VSYNC_LOCK_FLIP() do{ globals.video.game_waits_for_vsync = 0; } while(0)
 
 // This is in main.c
 extern globals_t globals;

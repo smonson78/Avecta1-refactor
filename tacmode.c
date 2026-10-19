@@ -53,13 +53,13 @@ int xmon(int room, int bit, int x, int y)
 
 
 int tacmode() {
-  int flag,i,j = 0,k,l,n,p,timer=0,x,y;
+  int flag, i, j = 0, k, l, n, p, timer = 0, x, y;
   int actlist[13];
   uint8_t *c;
   uint8_t *o;
   
   do {
-    for(i = 0; i < 13; i++) {
+    for (i = 0; i < 13; i++) {
       grflist[i] = 0;
       actlist[i] = 0;
     }
@@ -76,67 +76,79 @@ int tacmode() {
 
     if (timer % 5 == 0) {
       timetrol();
-      if(pursuit[0] != 0) {
+
+      if (pursuit[0] != 0) {
         pursuit[0]--;
         flag = 0;
 
         if (pursuit[0] == 0 && (mode == 0 || pursuit[1] != 0) ) {
-          for(i=1;i<12;i++) {
-              c = curmon[i];
-              if(*c == 0 || c[30] != pursuit[2] || flag > 0 || c[31] > 3)
+          for (i = 1; i < 12; i++) {
+            c = curmon[i];
+
+            if (c[0] == 0 || c[30] != pursuit[2] || flag > 0 || c[31] > 3) {
+              continue;
+            }
+
+            for (j = 0; j < 14; j++) {
+              
+              o = crumobj[j];
+              if (o[0] == 0 || flag > 0) {
                 continue;
-              for(j=0;j<14;j++) {
-                o = crumobj[j];
-                if (o[0] == 0 || flag > 0)
-                  continue;
-                if(o[3] == pursuit[2]) {
-                  x = o[6];
-                  y = o[7];
-
-                  if(zline[x][y][2] != 0 || (curmon[0][24] == x &&
-                                              curmon[0][25] == y ) ) {
-                    pursuit[0] += 2;
-                    flag = 2;
-                    break;
-                  }
-
-                  zline[x][y][2] = i; 
-                  xmon(c[30],c[4],c[24],c[25]);
-                  c[24] = x;
-                  c[25] = y;
-                  c[16] = 1;
-                  c[15] = 8;
-                  c[26] = curmon[0][24];
-                  c[27] = curmon[0][25];
-                  c[30] = crum;
-                  drawman(i,x,y);
-                  dorep();
-                  if(i > 3 && c[31] < 4)
-                    mode = 1;
-                  flag = 1;
-                  pursuit[1]--;
-                  if(pursuit[1] > 0) {
-                    pursuit[0] += 2;
-                  } else {
-                    pursuit[0] = 0;
-                    pursuit[1] = 0;
-                    pursuit[2] = 0;
-                  }
-                } 
               }
+
+              if (o[3] == pursuit[2]) {
+                x = o[6];
+                y = o[7];
+
+                if(zline[x][y][2] != 0 || (curmon[0][24] == x && curmon[0][25] == y)) {
+                  pursuit[0] += 2;
+                  flag = 2;
+                  break;
+                }
+
+                zline[x][y][2] = i; 
+                xmon(c[30], c[4], c[24], c[25]);
+                c[24] = x;
+                c[25] = y;
+                c[16] = 1;
+                c[15] = 8;
+                c[26] = curmon[0][24];
+                c[27] = curmon[0][25];
+                c[30] = crum;
+
+                drawman(i, x, y);
+                dorep();
+
+                if (i > 3 && c[31] < 4) {
+                  mode = 1;
+                }
+                flag = 1;
+                pursuit[1]--;
+                
+                if(pursuit[1] > 0) {
+                  pursuit[0] += 2;
+                } else {
+                  pursuit[0] = 0;
+                  pursuit[1] = 0;
+                  pursuit[2] = 0;
+                }
+              } 
+            }
           }
 
           if (i == 12 && flag == 0) {
-            for(i=0;i<3;pursuit[i++] = 0);
+            for (i = 0; i < 3; i++) {
+              pursuit[i] = 0;
+            }
           }
         }
       }
 
       if (police && rnd(100) < 15) {
 
-        for (i=1;i<17;i++) {
+        for (i = 1; i < 17; i++) {
           o = crumobj[i];
-          if(o[3] != 0) {
+          if (o[3] != 0) {
             break;
           }
         }
@@ -177,37 +189,39 @@ int tacmode() {
 
     monster = 0;
 
-    for (i=0; i < 12; i++) {
+    for (i = 0; i < 12; i++) {
       c = curmon[i];
-      if (c[0] == 1 && c[30] ==  crum) {
-        if(i > 3 && c[31] < 4) {
+      if (c[0] == 1 && c[30] == crum) {
+        if (i > 3 && c[31] < 4) {
           monster++;
-          if(c[38] == 0)
+          if (c[38] == 0) {
             monster++;
+          }
         }
         grflist[0]++;
         grflist[grflist[0]] = i;
         c[16] -= 1;
-        if(c[16] == 0) {
+        if (c[16] == 0) {
           actlist[0] += 1;
           actlist[actlist[0]] = i;
         }
       }
     }
 
-    if(mode == 1 && monster < 2 && curmon[0][0] == 1 && curmon[0][30] == crum) { 
+    if (mode == 1 && monster < 2 && curmon[0][0] == 1 && curmon[0][30] == crum) { 
       mode = 0;
       undorep();
     }
 
-    if(monster > 1 && curmon[0][0] == 1 && curmon[0][30] == crum) {
+    if (monster > 1 && curmon[0][0] == 1 && curmon[0][30] == crum) {
       mode = 1;
     }
 
     timer++;
 
-    if (actlist[0] == 0 || !curmon[0][0] )
-        continue;
+    if (actlist[0] == 0 || !curmon[0][0]) {
+      continue;
+    }
 
     for (i=1;i<=actlist[0];i++) {
       n = actlist[i];
@@ -223,14 +237,21 @@ int tacmode() {
         }
       }
 
-      if(c[15] != 8 || !outside)
+      if (c[15] != 8 || !outside) {
         trigtrol(n);
-      if(curmon[0][0] == 0)
-        return(-1);
-      if(curmon[0][30] != crum)
-        return(0);
-      if(j == -1 && n == 0)
-        return(0);
+      }
+
+      if (curmon[0][0] == 0) {
+        return -1;
+      }
+
+      if (curmon[0][30] != crum) {
+        return 0;
+      }
+
+      if (j == -1 && n == 0) {
+        return 0;
+      }
 
       if ( n > 3 || (n < 4 && n > 0 && c[38] == 0)) {
         intell(n);
@@ -247,23 +268,31 @@ int tacmode() {
               }
 
               if (k == -1) {
-                  if ((k=error(17)) > 1) {
-                    if (k == 2)
-                        return(-2);
-                    if(k == 3 && !outside && !fromout) {
-                        k = error(19);
-                        if(k == 1)
-                          l = 0;
-                        if(k == 2)
-                          return(-4);
-                        if(k == 3)
-                          return(-5);
-                        }
-                    else
-                        l = 0;
+                if ((k = error(17)) > 1) {
+                  if (k == 2) {
+                    return -2;
+                  }
+
+                  if (k == 3 && !outside && !fromout) {
+                    k = error(19);
+
+                    if (k == 1) {
+                      l = 0;
                     }
-                  else 
+
+                    if (k == 2) {
+                      return -4;
+                    }
+
+                    if (k == 3) {
+                      return -5;
+                    }
+                  } else {
                     l = 0;
+                  }
+                } else {
+                  l = 0;
+                }
               }
 
               if (l == 1) {
@@ -274,7 +303,7 @@ int tacmode() {
                 return -1;
               }
             }
-          } while(l == 0);        
+          } while (l == 0);        
         }
       }
     }

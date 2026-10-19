@@ -82,11 +82,12 @@ int main()
 		while (last_tick < cur_tick / 8) {
 
 			// Update the mouse position
-			SDL_PumpEvents();
-			SDL_GetMouseState(&globals.x_mouse, &globals.y_mouse);
 			GLOBAL_LOCK();
+			SDL_PumpEvents();
+			uint32_t buttons = SDL_GetMouseState(&globals.x_mouse, &globals.y_mouse);
 			globals.x_mouse--;
 			globals.y_mouse--;
+			globals.mouse_buttons = (buttons & SDL_BUTTON(1) ? 1 : 0) | (buttons & SDL_BUTTON(2) ? 2 : 0);
 			GLOBAL_UNLOCK();
 
 			// Game loop:

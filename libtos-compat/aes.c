@@ -100,6 +100,12 @@ void vq_extnd (int16_t handle, int16_t owflag, int16_t *work_out)
 
 void vq_mouse(int16_t handle, int16_t *pstatus, int16_t *x, int16_t *y)
 {
+   GLOBAL_LOCK();
+   // Assume double-size pixels
+   *x = globals.x_mouse / 2;
+   *y = globals.y_mouse / 2;
+   *pstatus = globals.mouse_buttons;
+   GLOBAL_UNLOCK();
 }
 
 void v_opnvwk(int16_t *work_in, int16_t *handle, int16_t *work_out)
