@@ -191,7 +191,7 @@ int16_t evnt_multi (int16_t ev_mflags,  int16_t ev_mbclicks,
 
 void vr_recfl(int16_t handle, int16_t *pxyarray)
 {
-   printf("vr_recfl(style %d)\n", globals.video.interior_fill_pattern);
+   // printf("vr_recfl(style %d)\n", globals.video.interior_fill_pattern);
    GLOBAL_LOCK();
    switch (globals.video.interior_fill_pattern) {
       case 0: 
@@ -355,7 +355,7 @@ void vs_clip(int16_t handle, int16_t clip_flag, int16_t *pxyarray)
 // Copy onscreen rectangle 
 void vro_cpyfm(int16_t handle, int16_t vr_mode, int16_t *pxyarray, MFDB *psrcMFDB, MFDB *pdesMFDB)
 {
-   printf("vro_cpyfm()\n");
+   // printf("vro_cpyfm()\n");
    GLOBAL_LOCK();
    copy_rect(pxyarray[0], pxyarray[1], 
       pxyarray[2] - pxyarray[0] + 1, 
@@ -363,7 +363,7 @@ void vro_cpyfm(int16_t handle, int16_t vr_mode, int16_t *pxyarray, MFDB *psrcMFD
       pxyarray[4], pxyarray[5]
    );
    GLOBAL_UNLOCK();
-   printf("vro_cpyfm() done\n");
+   // printf("vro_cpyfm() done\n");
 }
 
 // Get fill attributes
@@ -373,7 +373,7 @@ void vqf_attributes(int16_t handle, int16_t *attrib)
 
 int16_t vsf_style(int16_t handle, int16_t style_index)
 {
-   printf("vsf_style(%d)\n", style_index);   
+   // printf("vsf_style(%d)\n", style_index);   
    return 0;
 }
 

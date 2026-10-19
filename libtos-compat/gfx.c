@@ -106,7 +106,7 @@ void copy_rect(int x, int y, int w, int h, int dx, int dy) {
   uint16_t buffer[16000];
   uint16_t *p = buffer;
 
-  printf("Copy rect! %dx%d %dx%d --> %d,%d\n", x, y, w, h, dx, dy);
+  // printf("Copy rect! %dx%d %dx%d --> %d,%d\n", x, y, w, h, dx, dy);
 
   // First, let's find the source offset within the screen memory word
   int src_off = x % 16;

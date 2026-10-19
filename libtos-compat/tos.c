@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <SDL2/SDL_timer.h>
 
@@ -82,7 +83,7 @@ int32_t Mshrink(void *block, int32_t newsize)
 
 int32_t Random()
 {
-    return 0;
+    return random();
 }
 
 int16_t Getrez()
