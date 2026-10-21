@@ -4,7 +4,10 @@
 #include "gemdefs.h"
 
 #include "tos.h"
+
+#if defined TOS_COMPAT
 #include "bios.h"
+#endif
 
 // Switch off the VBL handler
 int32_t off() {

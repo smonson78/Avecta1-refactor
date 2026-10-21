@@ -2,7 +2,10 @@
 #include "tos_compat.h"
 
 #include <libc.h>
+
+#if defined TOS_COMPAT
 #include "bios.h"
+#endif
 
 #include "animate.h"
 #include "gemdefs.h"

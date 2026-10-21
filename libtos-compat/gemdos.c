@@ -4,6 +4,18 @@
 
 #include "st_globals.h"
 
+int get_free_file_handle() {
+  // Find an empty file handle
+  for (int i = 0; i < 64; i++) {
+    if (globals.file_handles[i] == 0) {
+      return i;
+    }
+  }
+
+  fprintf(stderr, "Out of file handles.\n");
+  exit(1);
+}
+
 int32_t gem_super(void *stack)
 {
   return 0;
@@ -16,56 +28,101 @@ int16_t Dgetdrv()
 
 int16_t Fcreate(const char *fname, int16_t attr)
 {
-  return 0;
+  printf("Fcreate(%s)\n", fname);
+
+  GLOBAL_LOCK();
+  int index = get_free_file_handle();
+
+  FILE *handle = fopen(fname, "w");
+  if (handle) {
+    globals.file_handles[index] = handle;
+  } else {
+    index = -1;
+  }
+  GLOBAL_UNLOCK();
+
+  // Return the index in the array of the file handle 
+  return index;
 }
 
 int32_t Fopen(const char *fname, int16_t mode)
 {
-  int handle;
-  printf("Fopen(%s)\n", fname);
+  printf("Fopen(%s, %d)\n", fname, mode);
 
-  int i;
-  for (i = 0; i < 64; i++) {
-    if (globals.file_handles[i] == 0) {
-      handle = i; 
-      break;
-    }
+  GLOBAL_LOCK();
+  int index = get_free_file_handle();
+
+  char posix_mode[3];
+  if (mode == 0) {
+    strcpy(posix_mode, "r");
+  } else if (mode == 1) {
+    strcpy(posix_mode, "w");
+  } else {
+    strcpy(posix_mode, "w+");
   }
 
-  if (i == 64) {
-    fprintf(stderr, "Out of file handles.\n");
-    exit(1);
+  FILE *handle = fopen(fname, "rb");
+  if (handle) {
+    globals.file_handles[index] = handle;
+  } else {
+    index = -1;
   }
+  GLOBAL_UNLOCK();
 
-  globals.file_handles[i] = fopen(fname, "rb");
-
-  return handle;
+  // Return the index in the array of the file handle 
+  return index;
 }
 
-void Fclose(const compat_FILE handle)
+void Fclose(const compat_FILE index)
 {
-  printf("Fclose(%d)\n", handle);
+  printf("Fclose(%d)\n", index);
+  GLOBAL_LOCK();
+  FILE *handle = globals.file_handles[index];
+  if (handle) {
+    fclose(handle);
+    globals.file_handles[index] = NULL;
+  }
+  GLOBAL_UNLOCK();
 }
 
 int32_t Fwrite(compat_FILE handle, int32_t count, void *buf)
 {
   printf("Fwrite %d bytes\n", count);
-  return 0;
+  GLOBAL_LOCK();
+  if (handle < 0 || handle > 64) {
+    fprintf(stderr, "Invalid file handle.\n");
+    exit(1);
+  }
+  FILE *h = globals.file_handles[handle];
+  int result = fwrite(buf, 1, count, h);
+  GLOBAL_UNLOCK();
+
+  if (result != 1) {
+    return 0;
+  }
+
+  printf("Fwrite wrote %d bytes\n", count);
+
+  return count;
 }
 
 int32_t Fread(compat_FILE handle, int32_t count, void *buf)
 {
   printf("Fread %d bytes\n", count);
+  
+  GLOBAL_LOCK();
   if (handle < 0 || handle > 64) {
     fprintf(stderr, "Invalid file handle.\n");
     exit(1);
   }
   FILE *h = globals.file_handles[handle];
   int result = fread(buf, 1, count, h);
+  GLOBAL_UNLOCK();
+
   if (result != 1) {
     return 0;
   }
-
+  
   return count;
 }
 

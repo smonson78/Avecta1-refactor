@@ -2,13 +2,15 @@ CC=gcc
 SDL_INCLUDE=
 OBJCOPY=objcopy
 
-DEFS=-DSDL_HWRENDER -DTILEMAP_HWRENDER
-#DEFS=-DSDL_HWRENDER -DTILEMAP_HWRENDER -DSDL_FULLSCREEN
+DEFS=
+#DEFS=-DSDL_FULLSCREEN
 
 LDLIBS=-lSDL3 -lm
 
 OPT=-O2
-CFLAGS=$(OPT) -g -Wall $(SDL_INCLUDE) $(DEFS) -fno-builtin -Wno-builtin-declaration-mismatch -nostdlib -ffreestanding
+DEBUG_FLAGS=-fsanitize=address -fno-omit-frame-pointer -g3
+CFLAGS=$(OPT) -Wall $(SDL_INCLUDE) $(DEFS) -fno-builtin -Wno-builtin-declaration-mismatch \
+	-nostdlib -ffreestanding $(DEBUG_FLAGS)
 
 TOS_OBJS=libc.o aes.o bios.o xbios.o tos.o gemdos.o aes_window.o linea.o main.o atari-setup.o \
 	compat.o gfx.o font0.o font1.o font2.o

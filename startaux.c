@@ -13,7 +13,7 @@
 #include "texwin.h"
 
 #include "debug.h"
-#include "compat.h"
+
 #include "tos_compat.h"
 
 void domsg(int i) {
@@ -66,28 +66,33 @@ void undomsg() {
   vbl_animation_on();
 }
 
+// Flag = 1 means "draw the text window and then return"
 int init(int flag) {
   int i;
   char val[3];
   uint8_t *c;
 
+  debug_printf("init() running\n");
+
   // Move cursor to position (1, 1)
   vs_curaddress(handle, 1, 1);
   // Clear screen to end
   v_eeos(handle);
+  debug_printf("init() cleared screen\n");
 
   row = 17;
   if (flag == 1) {
     texwin();
-    return(1);
+    return 1;
   }
 
   dungeon = 2;
   outside = 0;
 
+  debug_printf("init() setting curmon\n");
   for (i = 4; i < 12; i++) {
     // From 4 to 11 ( in a [0 .. 11] block)
-    c = curmon[i];
+    // c = curmon[i];
 
     // Clear the entire line of 60 chars
     // for (j = 0; j < 60; j++) {
@@ -106,8 +111,8 @@ int init(int flag) {
   c = curmon[0];
   crum = -1;
 
-  // equivalent to curmon[0][0] = 0
-  *c = 1;
+  // equivalent to curmon[0][0] = 1
+  c[0] = 1;
 
   // Maybe starting stats on the player.
   c[46] = c[45] = c[31] = c[32] = c[33] = c[34] = c[35] = c[1] = 0;
@@ -136,7 +141,7 @@ int init(int flag) {
   c[49] = 50;
 
   if (flag == 2) {
-    c[14] = 6*(c[51]);
+    c[14] = 6 * c[51];
     texwin();
     return 1;
   }
@@ -152,7 +157,9 @@ int init(int flag) {
   c[2] = 50;
   c[11] = 4;
 
+  debug_printf("init() drawing texwin\n");
   texwin();
+  debug_printf("init() done drawing texwin\n");
 
   usedline = 0;
   hold = 0;
@@ -185,7 +192,7 @@ int error(int i) {
   Vsync();
   vbl_animation_off();
   mouse_on();
-  i = form_alert(1,errmsg[i]);
+  i = form_alert(1, errmsg[i]);
   mouse_off();
   Vsync();
   vbl_animation_on();

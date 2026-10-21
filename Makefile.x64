@@ -5,8 +5,9 @@ OBJCOPY=objcopy
 LIB_COMPAT=libtos-compat
 
 OPT=-O2
+SANITISE=-fsanitize=address -g3 -fno-omit-frame-pointer
 STD_CFLAGS=-fno-builtin -Wno-format -I. -I$(LIB_COMPAT)
-CFLAGS=$(OPT) -g -Wall $(STD_CFLAGS) -DTOS_COMPAT
+CFLAGS=$(OPT) -Wall $(STD_CFLAGS) -DTOS_COMPAT $(SANITISE) 
 
 LDLIBS=-lc $(LIB_COMPAT)/atari-compat.a -lSDL3 -lm -lpthread
 LDFLAGS=-nostdlib -L..
@@ -27,7 +28,7 @@ OBJS=start.o globals.o gemdefs.o \
 all: $(TARGET)
 
 $(TARGET): $(TARGET)-shim.elf $(LIB_COMPAT)/atari-compat.a 
-	$(CC) -o $(TARGET) $^ $(LDLIBS)
+	$(CC) -o $(TARGET) $(SANITISE) $^ $(LDLIBS)
 
 $(TARGET)-combined.elf: $(OBJS)
 	$(LD) -o $@ -r $^

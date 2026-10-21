@@ -81,7 +81,7 @@ int pursuit[3] = {0, 0, 0};
 uint8_t trigval[80][6];
 char invtrig[20];
 char path[64] = "a:*.SAV";
-char *filename = "________.___";
+// char *filename = "________.___";
 char *spell[] = {
   "Cure","Search","Freeze","Unvenom","Vorpal",
   "Speed","Armor","Disarm","Bolt","Thief",

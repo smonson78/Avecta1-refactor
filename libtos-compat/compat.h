@@ -4,5 +4,6 @@
 #include <stdint.h>
 
 void endianness_fix(void *buf, uint32_t words, int length);
+int compat_debug_printf(const char *format, ...);
 
 #endif

@@ -12,6 +12,8 @@
 
 #include "debug.h"
 
+#include "tos_compat.h"
+
 void stormon();
 int getmon(int room);
 
@@ -19,6 +21,8 @@ int getmon(int room);
 int switchrum() {
   int d, i, j, x = 0, y = 0, xn, yn, oldrum;
   uint8_t *p = curmon[0];
+
+  debug_printf("> switchrum()\n");
 
   // It must be room data. There are 80 of these and crum might be "current room"
   uint8_t *r = rumdata[crum];
@@ -71,6 +75,8 @@ int switchrum() {
     }
   }
 
+  debug_printf("-- switchrum point 1\n");
+
   if (p[30] == 127) {
     stormon();
     pursuit[0] = pursuit[1] = pursuit[2] = 0;
@@ -83,8 +89,9 @@ int switchrum() {
     fromout = 0;
   }
 
-  if(fromout == 2)
+  if (fromout == 2) {
     fromout = 1;
+  }
 
   p[15] = 8;
   p[16] = 1;
@@ -125,6 +132,8 @@ int switchrum() {
   if (crum == 70) 
     return(1);
 
+  debug_printf("-- switchrum point 2\n");
+
   // ROOM DRAW hopefully
   rumdraw(pan);
 
@@ -158,6 +167,8 @@ int switchrum() {
     }
   }
 
+  debug_printf("-- switchrum point 3\n");
+
   /* got into the room through a trap */
   if (oldrum == crum || i == 14) {
     x = p[24];
@@ -172,10 +183,11 @@ int switchrum() {
   drawman(0, x, y);
 
   if (oldrum == crum) {
-    for(i=1;i<12;i++) { 
-      if(pan[i-1] == 1)
-          curmon[i][36] = 1;
+    for (i = 1; i < 12; i++) { 
+      if (pan[i - 1] == 1) {
+        curmon[i][36] = 1;
       }
+    }
   }
 
   getmon(crum);
@@ -218,6 +230,8 @@ int switchrum() {
       prnt("-> The lit torch is snuffed and put away.", NULL, NULL, NULL, NULL, NULL, NULL);
     }
   }
+
+  debug_printf("< switchrum()\n");
 
   return 0;
 }
