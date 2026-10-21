@@ -29,158 +29,155 @@ int main()
 
    // Clear screen
    printf("\eE");
-   while (1) {
-
-   }
    
-//    if (stinit() == 0 || ruminit() == 1) {
-//       goto end;
-//    }
+   if (stinit() == 0 || ruminit() == 1) {
+      goto end;
+   }
 
-//    graf_mouse(0, (MFORM *)intin);
+   graf_mouse(0, (MFORM *)intin);
 
-//    // j = Random();
-//    // Seed the random number generator maybe? No other references to srand in here
-//    // srand(j); 
+   // j = Random();
+   // Seed the random number generator maybe? No other references to srand in here
+   // srand(j); 
 
-//    i = title();
-//    debug_printf("Title returned code %d\n", i);
+   i = title();
+   debug_printf("Title returned code %d\n", i);
 
-//    if (i == 1) {
-//       // 'n' for New Games was pressed
-//       new = 0;
-//    } else {
-//       new = 1;
-//    }
+   if (i == 1) {
+      // 'n' for New Games was pressed
+      new = 0;
+   } else {
+      new = 1;
+   }
 
-//    specbuf[29] = new;
-//    crum = -1;
+   specbuf[29] = new;
+   crum = -1;
 
-//    while (i != 0) {
-//       j = 1;
+   while (i != 0) {
+      j = 1;
 
-//       switch(i) {
+      switch(i) {
          
-//       case 1:
-//          // New Game
-//          i = init(0);
-//          break;
-//       case 2:
-//          // Restore Game
-//          j = fileio(2);
-//          if (j == -1) {
-//             mouse_on();
-//             form_alert(1, errmsg[18]);
-//             mouse_off();
-//          }
-//          i = 0;
-//          break;
-//       default:
-//          // 0 - Quit
-//          i = 0;
-//          break;
-//       }
+      case 1:
+         // New Game
+         i = init(0);
+         break;
+      case 2:
+         // Restore Game
+         j = fileio(2);
+         if (j == -1) {
+            mouse_on();
+            form_alert(1, errmsg[18]);
+            mouse_off();
+         }
+         i = 0;
+         break;
+      default:
+         // 0 - Quit
+         i = 0;
+         break;
+      }
 
-//       // The room is NOT drawn at this point
+      // The room is NOT drawn at this point
 
-//       while (i == 0 && j > 0) {
-//          // does this once before Leveth speaks, then again after changing rooms before he speaks the second time.
-//          // Cconin();
-//          i = switchrum();
+      while (i == 0 && j > 0) {
+         // does this once before Leveth speaks, then again after changing rooms before he speaks the second time.
+         // Cconin();
+         i = switchrum();
 
-//          if (i > 0) {
-//             Vsync();
-//             vbl_animation_off();
-//             continue;
-//          }
+         if (i > 0) {
+            Vsync();
+            vbl_animation_off();
+            continue;
+         }
 
-//          i = tacmode();
+         i = tacmode();
 
-//          Vsync();
-//          vbl_animation_off();
-//       }
+         Vsync();
+         vbl_animation_off();
+      }
 
-//       // doesn't reach here 
+      // doesn't reach here 
 
-//       switch(i) {
-//          case -5:
-//             if ((j=fileio(2)) == -1) {
-//                mouse_on();
-//                form_alert(1,errmsg[18]);
-//                mouse_off();
-//             }
-//             if (j == 0) {
-//                mouse_on();
-//                form_alert(1,errmsg[33]);
-//                mouse_off();
-//             }
-//             i = 3;
-//             break;
-//          case -4: /* this is the store game option */
-//             if((j=fileio(1)) == -1) {
-//                form_alert(1,errmsg[18]);
-//             }
-//             i = 3;
-//             break;
-//          case -2:
-//             i = 0;
-//             break;
-//          case -1:
-//             i = console();
-//             break;
-//          case 1: 
-//             congratulate();
-//             i = 0;
-//             break;
-//          case 2: /* dungeon switch */
+      switch(i) {
+         case -5:
+            if ((j=fileio(2)) == -1) {
+               mouse_on();
+               form_alert(1,errmsg[18]);
+               mouse_off();
+            }
+            if (j == 0) {
+               mouse_on();
+               form_alert(1,errmsg[33]);
+               mouse_off();
+            }
+            i = 3;
+            break;
+         case -4: /* this is the store game option */
+            if((j=fileio(1)) == -1) {
+               form_alert(1,errmsg[18]);
+            }
+            i = 3;
+            break;
+         case -2:
+            i = 0;
+            break;
+         case -1:
+            i = console();
+            break;
+         case 1: 
+            congratulate();
+            i = 0;
+            break;
+         case 2: /* dungeon switch */
 
-//             old = dungeon;
-//             if (dungeon != 0) {
-//                c[54] = c[4];
-//                c[59] = 0;
-//             } else {
-//                police = 0;
-//                if (c[46] == 81) {
-//                   c[46] = 0;
-//                }
-//                c[52] = c[53] = 0;
-//                c[56] = c[24];
-//                c[57] = c[25];
-//                c[55] = crum;
-//             }
+            old = dungeon;
+            if (dungeon != 0) {
+               c[54] = c[4];
+               c[59] = 0;
+            } else {
+               police = 0;
+               if (c[46] == 81) {
+                  c[46] = 0;
+               }
+               c[52] = c[53] = 0;
+               c[56] = c[24];
+               c[57] = c[25];
+               c[55] = crum;
+            }
 
-//             if (loadnew() == 0) {
-//                mouse_on();
-//                i = 0;
-//                form_alert(1, errmsg[32]);
-//                mouse_off();
-//                break;
-//             }
+            if (loadnew() == 0) {
+               mouse_on();
+               i = 0;
+               form_alert(1, errmsg[32]);
+               mouse_off();
+               break;
+            }
 
-//             if (old != 0) {
-//                c[30] = c[55];
-//                c[4] = 125;
-//                c[24] = c[56];
-//                c[25] = c[57];
-//                outside = 1;
-//             } else {
-//                c[4] = c[54];
-//                outside = 0;
-//                c[54] = 0;
-//             }
+            if (old != 0) {
+               c[30] = c[55];
+               c[4] = 125;
+               c[24] = c[56];
+               c[25] = c[57];
+               outside = 1;
+            } else {
+               c[4] = c[54];
+               outside = 0;
+               c[54] = 0;
+            }
             
-//             i = 3;
-//             break;  
-//          default:
-//             i = title();
-//             break;
-//          }
-//    }
-// end:
-//    Setpalette(oldpal);
-//    mouse_on();
-//    v_clsvwk(handle);
-//    appl_exit();
+            i = 3;
+            break;  
+         default:
+            i = title();
+            break;
+         }
+   }
+end:
+   Setpalette(oldpal);
+   mouse_on();
+   v_clsvwk(handle);
+   appl_exit();
    return 0;
 }
 

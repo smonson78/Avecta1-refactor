@@ -14,12 +14,17 @@
 // Sprites are always 16x16 pixels.
 void blt(uint16_t *sprite, int xpix, int ypix) {
 
-  //printf("blt %p -> %p\n", sprite, addr);
+  debug_printf("> blt() to %d,%d\n", xpix, ypix);
 
   uint16_t *dest = addr + (ypix * 80) + ((xpix / 16) * 4);
   uint16_t shift = 16 - (xpix % 16);
 
   for (int i = 0; i < 16; i++) {
+    if (ypix + i >= 200) {
+      // Don't go off the bottom of video memory
+      return;
+    }
+
     // Work register for pixels
     uint32_t d6 = 0;
 

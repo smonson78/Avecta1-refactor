@@ -396,7 +396,8 @@ int16_t bitmap[200][65];
 // The number of objects in the current room - never used.
 //int objnum;
 
-int storbuf[12][130], num,time=0;
+int storbuf[12][130], num;
+int time = 0;
 int firebuff[130];
 int16_t contrl[12], intin[128], intout[128], ptsin[128], ptsout[128];
 int16_t work_in[11], work_out[57];
