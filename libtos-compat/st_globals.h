@@ -68,6 +68,8 @@ typedef struct {
 	sdl_video_impl_t video;
 
 	FILE *file_handles[64];
+	// Used like stat()
+	DTA *dta;
 
 } globals_t;
 

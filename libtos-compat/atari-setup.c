@@ -39,8 +39,9 @@ void atari_setup() {
 
 	// File handles
 	for (int i = 0; i < 64; i++) {
-		globals.file_handles[i] = 0;
+		globals.file_handles[i] = NULL;
 	}
+	globals.dta = NULL;
 
 	// VBL queue
 	for (int i = 0; i < 8; i++) {

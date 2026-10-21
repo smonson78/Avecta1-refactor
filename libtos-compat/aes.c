@@ -223,7 +223,6 @@ int16_t form_alert(int16_t fo_adefbttn, const char *fo_astring)
    buttons[c].text = button_names[c];
    // printf("Button %d name is %s\n", c, button_names[c]);
 
-
    const SDL_MessageBoxData messageboxdata = {
       icon == 2 ? SDL_MESSAGEBOX_INFORMATION : SDL_MESSAGEBOX_WARNING,               // Flags (INFORMATION, WARNING, ERROR)
       NULL,                                     // Parent window (NULL means standalone)
@@ -234,6 +233,8 @@ int16_t form_alert(int16_t fo_adefbttn, const char *fo_astring)
       NULL                              // Pointer to color scheme
    };
 
+   // FIXME: Move this to the main thread using the same mechanism that is there for file selectors.
+   // Otherwise it seems to have a memory leak.
    int buttonid;
    if (!SDL_ShowMessageBox(&messageboxdata, &buttonid)) {
       SDL_Log("Error displaying message box: %s", SDL_GetError());

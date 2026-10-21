@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/stat.h>
+
 #include "gemdos.h"
 
 #include "st_globals.h"
@@ -39,6 +41,8 @@ int16_t Fcreate(const char *fname, int16_t attr)
   } else {
     index = -1;
   }
+
+  printf("Fcreate returned file handle %d (%p)\n", index, globals.file_handles[index]);
   GLOBAL_UNLOCK();
 
   // Return the index in the array of the file handle 
@@ -54,10 +58,13 @@ int32_t Fopen(const char *fname, int16_t mode)
 
   char posix_mode[3];
   if (mode == 0) {
+    // Reading only
     strcpy(posix_mode, "r");
   } else if (mode == 1) {
+    // Writing only
     strcpy(posix_mode, "w");
   } else {
+    // Both reading and writing
     strcpy(posix_mode, "w+");
   }
 
@@ -67,6 +74,7 @@ int32_t Fopen(const char *fname, int16_t mode)
   } else {
     index = -1;
   }
+  printf("Fopen returned file handle %d (%p)\n", index, globals.file_handles[index]);
   GLOBAL_UNLOCK();
 
   // Return the index in the array of the file handle 
@@ -85,30 +93,31 @@ void Fclose(const compat_FILE index)
   GLOBAL_UNLOCK();
 }
 
-int32_t Fwrite(compat_FILE handle, int32_t count, void *buf)
+int32_t Fwrite(compat_FILE index, int32_t count, void *buf)
 {
-  printf("Fwrite %d bytes\n", count);
+  printf("Fwrite %d bytes to file handle %d (%p)\n", count, index, globals.file_handles[index]);
   GLOBAL_LOCK();
-  if (handle < 0 || handle > 64) {
+  if (index < 0 || index > 64) {
     fprintf(stderr, "Invalid file handle.\n");
     exit(1);
   }
-  FILE *h = globals.file_handles[handle];
-  int result = fwrite(buf, 1, count, h);
+
+  int result = fwrite(buf, count, 1, globals.file_handles[index]);
   GLOBAL_UNLOCK();
 
+  printf("Fwrite wrote %d bytes\n", result * count);
+
   if (result != 1) {
+    perror("Fwrite");
     return 0;
   }
-
-  printf("Fwrite wrote %d bytes\n", count);
 
   return count;
 }
 
 int32_t Fread(compat_FILE handle, int32_t count, void *buf)
 {
-  printf("Fread %d bytes\n", count);
+  printf("Fread %d bytes from file handle %d\n", count, handle);
   
   GLOBAL_LOCK();
   if (handle < 0 || handle > 64) {
@@ -116,27 +125,55 @@ int32_t Fread(compat_FILE handle, int32_t count, void *buf)
     exit(1);
   }
   FILE *h = globals.file_handles[handle];
-  int result = fread(buf, 1, count, h);
+  int result = fread(buf, count, 1, h);
   GLOBAL_UNLOCK();
 
+  printf("Fread read %d bytes\n", result * count);
+
   if (result != 1) {
+    perror("Fread");
     return 0;
   }
   
   return count;
 }
 
-int32_t Fseek(int32_t offset, int16_t handle, int16_t seekmode)
+int32_t Fseek(int32_t offset, int16_t index, int16_t seekmode)
 {
-  return 0;
+  printf("Fseek offset %d, mode %d from file handle %d\n", offset, seekmode, index);
+  GLOBAL_LOCK();
+  int mode;
+  if (seekmode == 0) {
+    mode = SEEK_SET;
+  } else if (seekmode == 1) {
+    mode = SEEK_CUR;
+  } else {
+    mode = SEEK_END;
+  }
+  int result = fseek(globals.file_handles[index], offset, mode);
+  GLOBAL_UNLOCK();
+  return result;
 }
 
 void Fsetdta(const DTA *dta)
 {
+  GLOBAL_LOCK();
+  globals.dta = (DTA *)dta;
+  GLOBAL_UNLOCK();
 }
 
 int32_t Fsfirst(const char *filename, int16_t attr)
 {
+  GLOBAL_LOCK();
+  if (globals.dta) {
+    // Get file info
+    struct stat statbuf;
+    if (stat(filename, &statbuf) == 0) {
+      globals.dta->d_length = statbuf.st_size;
+    }
+  }
+  GLOBAL_UNLOCK();
+
   return 0;
 }
 

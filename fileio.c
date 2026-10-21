@@ -35,28 +35,35 @@ int fileio(int flow) {
   if (button == 0) {
     return -2;
   }
-  
-  // Check whether the file exists by opening it for reading
-  filehandle = Fopen(filename, 0);
 
   debug_printf("fileio %d %d\n", flow, filehandle);
 
-  // File not found
-  if (flow == 2 && filehandle < 0) {
-    return -1;
-  }
-
   if (flow == 2) {
+    // Loading a saved game
+    filehandle = Fopen(filename, 0);
+
+    // File not found
+    if (filehandle < 0) {
+      return -1;
+    }
+
     Fsetdta(&dta);
     Fsfirst(filename, 0);
     if (dta.d_length != 14546) {
       return -1;
     }
-  }
-
-  // If saving, and file not found, then create the file
-  if (flow == 1 && filehandle < 0) {
-    filehandle = Fcreate(filename, 0);
+  } else if (flow == 1) {
+    // Saving the game
+    // In case the file already exists:
+    filehandle = Fopen(filename, 1);
+    if (filehandle < 0) {
+      // ..otherwise, try creating it
+      filehandle = Fcreate(filename, 0);
+      debug_printf("-- filehandle is ultimately %d\n", filehandle);
+    }
+  } else {
+    // there are only 2. This should be split into 2 functions.
+    return 0;
   }
 
   // An error creating the file
@@ -81,19 +88,19 @@ int fileio(int flow) {
     }
 
     // Writes 14546 bytes to save the game.
-    //if (Fwrite(filehandle,(long)12560,rumdata) < 12560 || 
+    //if (Fwrite(filehandle, (long)12560, rumdata) < 12560 || 
     if (
       // Room zero, then the other rooms
-      Fwrite(filehandle,(long)157, &room_zero) < 157 || 
-      Fwrite(filehandle,(long)12403, &new_rumdata[1]) < 12403 || 
-      Fwrite(filehandle,(long)320, putbuf) < 320 ||
-      Fwrite(filehandle,(long)480, trigval) < 480 ||
-      Fwrite(filehandle,(long)40, specbuf) < 40 ||
-      Fwrite(filehandle,(long)720, curmon) < 720 ||
-      Fwrite(filehandle,(long)6, pursuit) < 6  ||
-      Fwrite(filehandle,(long)20, pname) < 20 ||
-      Fwrite(filehandle,(long)80, invnpc) < 80 ||
-      Fwrite(filehandle,(long)320, monbuf) < 320 ) {
+      Fwrite(filehandle, (long)157, &room_zero) < 157 || 
+      Fwrite(filehandle, (long)12403, &new_rumdata[1]) < 12403 || 
+      Fwrite(filehandle, (long)320, putbuf) < 320 ||
+      Fwrite(filehandle, (long)480, trigval) < 480 ||
+      Fwrite(filehandle, (long)40, specbuf) < 40 ||
+      Fwrite(filehandle, (long)720, curmon) < 720 ||
+      Fwrite(filehandle, (long)6, pursuit) < 6  ||
+      Fwrite(filehandle, (long)20, pname) < 20 ||
+      Fwrite(filehandle, (long)80, invnpc) < 80 ||
+      Fwrite(filehandle, (long)320, monbuf) < 320 ) {
       Fclose(filehandle);
       return -1;
     } else {
@@ -103,26 +110,26 @@ int fileio(int flow) {
 
   // LOAD GAME
   if (flow == 2) {
-    Fseek((long)13387,filehandle,0);
-    Fread(filehandle,(long)1,&check);
+    Fseek((long)13387, filehandle, 0);
+    Fread(filehandle, (long)1, &check);
     if (curmon[0][59] != check && dungeon != 2) {
       Fclose(filehandle);
-      return(0);
+      return 0;
     } else {
-      Fseek((long)0,filehandle,0);
+      Fseek((long)0, filehandle, 0);
     }
     
     //if (Fread(filehandle,(long)12560,new_rumdata) < 12560 || 
-    if (Fread(filehandle,(long)157,&room_zero) < 157 ||
-      Fread(filehandle,(long)12403,&new_rumdata[1]) < 12403 ||
-      Fread(filehandle,(long)320,putbuf) < 320 ||
-      Fread(filehandle,(long)480,trigval) < 480 ||
-      Fread(filehandle,(long)40,specbuf) < 40 ||
-      Fread(filehandle,(long)720,curmon) < 720 ||
-      Fread(filehandle,(long)6,pursuit) < 6  ||
-      Fread(filehandle,(long)20,pname) < 20 ||
-      Fread(filehandle,(long)80,invnpc) < 80 ||
-      Fread(filehandle,(long)320,monbuf) < 320 ) {
+    if (Fread(filehandle, (long)157, &room_zero) < 157 ||
+      Fread(filehandle, (long)12403, &new_rumdata[1]) < 12403 ||
+      Fread(filehandle, (long)320, putbuf) < 320 ||
+      Fread(filehandle, (long)480, trigval) < 480 ||
+      Fread(filehandle, (long)40, specbuf) < 40 ||
+      Fread(filehandle, (long)720, curmon) < 720 ||
+      Fread(filehandle, (long)6, pursuit) < 6  ||
+      Fread(filehandle, (long)20, pname) < 20 ||
+      Fread(filehandle, (long)80, invnpc) < 80 ||
+      Fread(filehandle, (long)320, monbuf) < 320 ) {
       Fclose(filehandle);
       return -1;
     } else {
