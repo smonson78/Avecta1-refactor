@@ -6,32 +6,26 @@
 
 #include <stdint.h>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL3/SDL.h>
+//#include <SDL3/SDL_image.h>
+//#include <SDL3/SDL_ttf.h>
+//#include <SDL3/SDL2_gfxPrimitives.h>
 
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-#define SDL_AMASK	0x000000FF
-#define SDL_RMASK	0x0000FF00
-#define SDL_GMASK	0x00FF0000
-#define SDL_BMASK	0xFF000000
+#define SDL_PIXEL_FORMAT SDL_PIXELFORMAT_BGRA8888
 #define SDL_GETALPHA(x)	((x & SDL_AMASK))
 #define SDL_GETR(x)		((x & SDL_RMASK) >> 8)
 #define SDL_GETG(x)		((x & SDL_GMASK) >> 16)
 #define SDL_GETB(x)		((x & SDL_BMASK) >> 24)
-#define RGB(r,g,b) (SDL_AMASK|(b<<24)|(g<<16)|r<<8)
+#define RGB(r,g,b) (0xff|(b<<24)|(g<<16)|r<<8)
 #else
-#define SDL_AMASK	0xFF000000
-#define SDL_RMASK	0x00FF0000
-#define SDL_GMASK	0x0000FF00
-#define SDL_BMASK	0x000000FF
+#define SDL_PIXEL_FORMAT SDL_PIXELFORMAT_ARGB8888
 #define SDL_GETALPHA(x)	((x & SDL_AMASK) >> 24)
 #define SDL_GETR(x)		((x & SDL_RMASK) >> 16)
 #define SDL_GETG(x)		((x & SDL_GMASK) >> 8)
 #define SDL_GETB(x)		((x & SDL_BMASK))
-#define RGB(r,g,b) (SDL_AMASK|(r<<16)|(g<<8)|b)
+#define RGB(r,g,b) (0xff000000|(r<<16)|(g<<8)|b)
 #endif
 
 #define PUTPIXEL_REN(x, y, colour) do{SDL_SetRenderDrawColor(video.render_default, \
@@ -47,7 +41,6 @@ typedef struct {
 	SDL_Window *win;
 	SDL_Renderer *render_hardware;
 	SDL_Renderer *render_default;
-	SDL_RendererInfo info;
 
 #ifdef SDL_SCREENSURFACE
 	// Use a Surface that's blitted to a streaming texture once per frame

@@ -73,6 +73,7 @@ int main()
 	}
 
 	// Game main loop!
+	SDL_StartTextInput(video.win);
 	while (globals.exit == 0)
 	{
 		// SDL_GetTicks() gives us the number of milliseconds since the game started.
@@ -87,7 +88,7 @@ int main()
 			uint32_t buttons = SDL_GetMouseState(&globals.x_mouse, &globals.y_mouse);
 			globals.x_mouse--;
 			globals.y_mouse--;
-			globals.mouse_buttons = (buttons & SDL_BUTTON(1) ? 1 : 0) | (buttons & SDL_BUTTON(2) ? 2 : 0);
+			globals.mouse_buttons = (buttons & SDL_BUTTON_MASK(1) ? 1 : 0) | (buttons & SDL_BUTTON_MASK(2) ? 2 : 0);
 			GLOBAL_UNLOCK();
 
 			// Game loop:
@@ -115,22 +116,22 @@ int main()
 			switch (event.type)
 			{
 				// F1 to quit
-			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLK_F1) {
+			case SDL_EVENT_KEY_DOWN:
+				if (event.key.key == SDLK_F1) {
 					printf("F1 pressed\n");
 					globals.exit = true; 
-				} else if (event.key.keysym.sym == SDLK_RETURN) {
+				} else if (event.key.key == SDLK_RETURN) {
 					globals.keybuf[0] = '\r';
 				}
 				break;
 
 				// Window closed
-			case SDL_QUIT:
+			case SDL_EVENT_QUIT:
 				globals.exit = true; 
 				break;
 
 				// Any text entered
-			case SDL_TEXTINPUT:
+			case SDL_EVENT_TEXT_INPUT:
 				globals.keybuf[0] = event.text.text[0];
 				break;
 			}		

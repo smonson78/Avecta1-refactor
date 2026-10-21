@@ -8,7 +8,7 @@ OPT=-O2
 STD_CFLAGS=-fno-builtin -Wno-format -I. -I$(LIB_COMPAT)
 CFLAGS=$(OPT) -g -Wall $(STD_CFLAGS) -DTOS_COMPAT
 
-LDLIBS=-lc $(LIB_COMPAT)/atari-compat.a -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_gfx -lm -lpthread
+LDLIBS=-lc $(LIB_COMPAT)/atari-compat.a -lSDL3 -lm -lpthread
 LDFLAGS=-nostdlib -L..
 
 TARGET=avecta

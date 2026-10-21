@@ -213,7 +213,7 @@ int16_t form_alert(int16_t fo_adefbttn, const char *fo_astring)
          // printf("Button %d name is %s\n", c, button_names[c]);
 
          buttons[c].flags = 0;
-         buttons[c].buttonid = c + 1;
+         buttons[c].buttonID = c + 1;
          buttons[c].text = button_names[c];
          c++;
          name_pos = 0;
@@ -226,7 +226,7 @@ int16_t form_alert(int16_t fo_adefbttn, const char *fo_astring)
    // Terminate last button name
    button_names[c][name_pos] = '\0';
    buttons[c].flags = 0;
-   buttons[c].buttonid = c + 1;
+   buttons[c].buttonID = c + 1;
    buttons[c].text = button_names[c];
    // printf("Button %d name is %s\n", c, button_names[c]);
 
@@ -242,7 +242,7 @@ int16_t form_alert(int16_t fo_adefbttn, const char *fo_astring)
    };
 
    int buttonid;
-   if (SDL_ShowMessageBox(&messageboxdata, &buttonid) < 0) {
+   if (!SDL_ShowMessageBox(&messageboxdata, &buttonid)) {
       SDL_Log("Error displaying message box: %s", SDL_GetError());
       SDL_Quit();
       return 1;

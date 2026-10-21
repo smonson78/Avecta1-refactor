@@ -5,7 +5,7 @@ OBJCOPY=objcopy
 DEFS=-DSDL_HWRENDER -DTILEMAP_HWRENDER
 #DEFS=-DSDL_HWRENDER -DTILEMAP_HWRENDER -DSDL_FULLSCREEN
 
-LDLIBS=-lSDL2 -lSDL2_image -lSDL2_gfx -lm
+LDLIBS=-lSDL3 -lm
 
 OPT=-O2
 CFLAGS=$(OPT) -g -Wall $(SDL_INCLUDE) $(DEFS) -fno-builtin -Wno-builtin-declaration-mismatch -nostdlib -ffreestanding

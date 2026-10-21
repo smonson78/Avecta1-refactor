@@ -43,7 +43,7 @@ typedef struct {
 	pthread_mutex_t lock;
 
 	// The current position of the mouse pointer
-	int x_mouse, y_mouse;
+	float x_mouse, y_mouse;
 	int mouse_buttons; // bit 0: left, bit 1: right
 
 	// Keyboard buffer

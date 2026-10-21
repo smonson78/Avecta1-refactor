@@ -1,7 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "sdl_graph.h"
 #include "st_globals.h"
+
+#include <SDL3/SDL.h>
 
 #include "bios.h"
 
@@ -18,7 +21,8 @@ void setup_sdl(int width, int height, int multiplier)
 	video.height = height;
 	video.multiplier = multiplier;
 
-	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+	printf("SDL3 init\n");
+	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
 		sdl_error_fail();
 	}
 
@@ -28,38 +32,38 @@ void setup_sdl(int width, int height, int multiplier)
 
 	printf("SDL: %d Render Drivers on this system.\n", num_render_drivers);
 
-	for (int i = 0; i < num_render_drivers; i++)
-	{
-		SDL_GetRenderDriverInfo(i, &video.info);
-		printf("%d.\t%s\n", i, video.info.name);
-		printf("\tTexture formats:\n");
-		unsigned int format;
-		for (format = 0; format < video.info.num_texture_formats; format++)
-		{
-			int temp = video.info.texture_formats[format];
-			printf("\t[type=%d order=%d layout=%d bits=%d bytes=%d]\n",
-				(temp >> 24) & 0x7,
-				(temp >> 20) & 0x7,
-				(temp >> 16) & 0x7,
-				(temp >> 8) & 0xff,
-				temp & 0xff);
-		}
-	}
+	// for (int i = 0; i < num_render_drivers; i++)
+	// {
+	// 	SDL_PropertiesID props = SDL_GetRendererProperties(i);
+	// 	printf("%d.\t%s\n", i, SDL_Get);
+	// 	printf("\tTexture formats:\n");
+	// 	unsigned int format;
+	// 	for (format = 0; format < video.info.num_texture_formats; format++)
+	// 	{
+	// 		int temp = video.info.texture_formats[format];
+	// 		printf("\t[type=%d order=%d layout=%d bits=%d bytes=%d]\n",
+	// 			(temp >> 24) & 0x7,
+	// 			(temp >> 20) & 0x7,
+	// 			(temp >> 16) & 0x7,
+	// 			(temp >> 8) & 0xff,
+	// 			temp & 0xff);
+	// 	}
+	// }
 #endif
 
 
 #ifdef SDL_FULLSCREEN
 	/* Fullscreen */
-	video.win = SDL_CreateWindow("SDL2 Test",
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
-		0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	video.win = SDL_CreateWindow("AVECTA 1: Ebora",
+		width * video.multiplier,
+		height * video.multiplier,
+		SDL_WINDOW_FULLSCREEN_DESKTOP);
 #else
 	/* Windowed */
-	video.win = SDL_CreateWindow("SDL2 Test",
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
-		video.width * video.multiplier, video.height * video.multiplier, 0);
+	video.win = SDL_CreateWindow("AVECTA 1: Ebora",
+		width * video.multiplier,
+		height * video.multiplier,
+		0);
 #endif
 
 	if (video.win == NULL) {
@@ -67,32 +71,32 @@ void setup_sdl(int width, int height, int multiplier)
 	}
 
 	/* Create the native video renderer */
-	video.render_hardware = SDL_CreateRenderer(video.win, -1,
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	video.render_hardware = SDL_CreateRenderer(video.win, NULL);
 	if (video.render_hardware == NULL) {
 		sdl_error_fail();
 	}
 
-	SDL_GetRendererInfo(video.render_hardware, &video.info);
-	printf("SDL renderer in use: %s\n", video.info.name);
+	SDL_PropertiesID props = SDL_GetRendererProperties(video.render_hardware);
+	//SDL_GetRendererInfo(video.render_hardware, &video.info);
+	printf("SDL renderer in use: %s\n", SDL_GetStringProperty(props, SDL_PROP_RENDERER_NAME_STRING, 0));
 
 	video.render_default = video.render_hardware;
 
 #ifdef SDL_SCREENSURFACE
-	printf("SDL using software rendering.\n");
+	//printf("SDL using software rendering.\n");
 	/* Create a software renderer */
-	video.surf = SDL_CreateRGBSurface(0, video.width, video.height, 32,
-			SDL_RMASK, SDL_GMASK, SDL_BMASK, SDL_AMASK);
+	video.surf = SDL_CreateSurface(video.width, video.height, SDL_PIXEL_FORMAT);
 	if (video.surf == NULL)
 	{
 		fprintf(stderr, "SDL error: %s\n", SDL_GetError());
 		exit(1);
 	}
-	SDL_SetSurfaceBlendMode(video.surf, SDL_BLENDMODE_BLEND);
+	// SDL_SetSurfaceBlendMode(video.surf, SDL_BLENDMODE_BLEND);
 
 	video.tex = SDL_CreateTexture(video.render_hardware,  SDL_PIXELFORMAT_ARGB8888,
 			SDL_TEXTUREACCESS_STREAMING, video.width, video.height);
-	printf("Blend mode: %d\n", SDL_SetTextureBlendMode(video.tex, SDL_BLENDMODE_BLEND));
+	SDL_SetTextureBlendMode(video.tex, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureScaleMode(video.tex, SDL_SCALEMODE_NEAREST);
 
 	// Make a software renderer for the Surface
 	video.render_surface = SDL_CreateSoftwareRenderer(video.surf);
@@ -107,11 +111,11 @@ void setup_sdl(int width, int height, int multiplier)
 #endif
 
 	//-------- TTF font library
-	if (TTF_Init() == -1)
-	{
-		fprintf(stderr, "SDL TTF library initialisation failed\n");
-		exit(1);
-	}
+	// if (TTF_Init() == -1)
+	// {
+	// 	fprintf(stderr, "SDL TTF library initialisation failed\n");
+	// 	exit(1);
+	// }
 }
 
 void sdl_flip()
@@ -163,7 +167,7 @@ void sdl_flip()
 #ifdef SDL_SCREENSURFACE
 	/* Update the video memory from the software renderer's surface first */
 	SDL_UpdateTexture(video.tex, NULL, video.surf->pixels, video.surf->pitch);
-	SDL_RenderCopy(video.render_hardware, video.tex, NULL, NULL);
+	SDL_RenderTexture(video.render_hardware, video.tex, NULL, NULL);
 #endif
 	/* Present the frame onscreen at the next vertical blank */
 	SDL_RenderPresent(video.render_hardware);
@@ -181,7 +185,7 @@ void shutdown_sdl()
 {
 #ifdef SDL_SCREENSURFACE
 	SDL_DestroyRenderer(video.render_surface);
-	SDL_FreeSurface(video.surf);
+	SDL_DestroySurface(video.surf);
 	SDL_DestroyTexture(video.tex);
 #endif
 	SDL_DestroyRenderer(video.render_hardware);
