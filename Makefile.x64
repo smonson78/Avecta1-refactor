@@ -4,8 +4,9 @@ OBJCOPY=objcopy
 # https://github.com/smonson78/smonson-libtos
 LIB_COMPAT=libtos-compat
 
-OPT=-O2
-SANITISE=-fsanitize=address -g3 -fno-omit-frame-pointer
+#OPT=-O2 -g
+OPT=-g
+SANITISE=-fsanitize=address -fno-omit-frame-pointer
 STD_CFLAGS=-fno-builtin -Wno-format -I. -I$(LIB_COMPAT)
 CFLAGS=$(OPT) -Wall $(STD_CFLAGS) -DTOS_COMPAT $(SANITISE) 
 
@@ -34,8 +35,9 @@ $(TARGET)-combined.elf: $(OBJS)
 	$(LD) -o $@ -r $^
 
 $(TARGET)-shim.elf: $(TARGET)-combined.elf
-	$(OBJCOPY) --redefine-sym main=compat_main --redefine-sym printf=compat_printf \
-	--redefine-sym vfprintf=compat_vfprintf --redefine-sym sprintf=compat_sprintf $^ $@ 
+	$(OBJCOPY) --redefine-sym main=compat_main \
+	--redefine-sym time=avecta_time \
+	$^ $@ 
 
 clean:
 	$(RM) $(TARGET) *.o *.elf

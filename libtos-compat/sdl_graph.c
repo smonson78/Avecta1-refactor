@@ -29,9 +29,9 @@ void setup_sdl(int width, int height, int multiplier)
 		sdl_error_fail();
 	}
 
-	int custom_events_start = SDL_RegisterEvents(2);
+	// int custom_events_start = SDL_RegisterEvents(2);
 
-	custom_event_save_file = custom_events_start;
+	// custom_event_save_file = custom_events_start;
 	//custom_event_load_file = custom_events_start + 1;
 
 #if 1
@@ -60,19 +60,19 @@ void setup_sdl(int width, int height, int multiplier)
 #endif
 
 
-// #ifdef SDL_FULLSCREEN
-// 	/* Fullscreen */
-// 	video.win = SDL_CreateWindow("AVECTA 1: Ebora",
-// 		width * video.multiplier,
-// 		height * video.multiplier,
-// 		SDL_WINDOW_FULLSCREEN);
-// #else
+#ifdef SDL_FULLSCREEN
+	/* Fullscreen */
+	video.win = SDL_CreateWindow("AVECTA 1: Ebora",
+		width * video.multiplier,
+		height * video.multiplier,
+		SDL_WINDOW_FULLSCREEN);
+#else
 	/* Windowed */
 	video.win = SDL_CreateWindow("AVECTA 1: Ebora",
 		width * multiplier,
 		height * multiplier,
 		0);
-// #endif
+#endif
 
 	if (video.win == NULL) {
 		sdl_error_fail();
@@ -183,7 +183,7 @@ void sdl_flip()
 	if (SDL_GetTextureSize(video.tex, &w, &h)) {
 			// h now contains the texture height in pixels
 	}	
-	printf("flip: %d, %f, %f\n", video.surf->pitch, w, h);
+	// printf("flip: %d, %f, %f\n", video.surf->pitch, w, h);
 
 
 	/* Update the video memory from the software renderer's surface first */
