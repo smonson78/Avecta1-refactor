@@ -8,6 +8,8 @@
 
 #include "debug.h"
 
+#include "tos_compat.h"
+
 // Transfer data from bit to stor
 // bit[] is in bitplanes (4 bitplane words for a group of 16 pixels)
 // stor is all the words for first bitplane, then second bitplane, etc
@@ -109,6 +111,8 @@ void rumdraw(char *pan)
   int top;
   int i, j, k;
 
+  debug_printf("> rumdraw()\n");  
+
   // c must be uint8_t or else we'll crash
   uint8_t *c;
 
@@ -129,6 +133,8 @@ void rumdraw(char *pan)
     }
   }
 
+  debug_printf("-- rumdraw did rumdata -> crumobj copies\n");
+
   // 5 things, 14..18
   for (i = 14; i < 19; i++) {
     c = crumobj[i];
@@ -140,6 +146,8 @@ void rumdraw(char *pan)
       c[j] = 0;
     }
   }
+
+  debug_printf("-- rumdraw blanked zline\n");
 
   // This is blanking out the entire zline array
   for (i = 0; i < 16; i++) {
@@ -170,6 +178,8 @@ void rumdraw(char *pan)
     }
   }
 
+  debug_printf("-- rumdraw did triglist setup\n");
+
   // Something about invisible traps
   for (i = 0; i < 4; i++) {
     c = curmon[i];
@@ -195,6 +205,8 @@ void rumdraw(char *pan)
       invtrap(c[j]);
     }
   }
+
+  debug_printf("-- rumdraw handled invisible traps\n");  
 
   int x, y;
 
@@ -509,6 +521,8 @@ void rumdraw(char *pan)
       }
     }
   }
+
+  debug_printf("< rumdraw()\n");  
   
   check_rumdata("rumdraw");
 }

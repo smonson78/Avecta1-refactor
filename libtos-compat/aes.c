@@ -4,11 +4,9 @@
 #include "tos.h"
 #include "libc.h"
 
+#include "sdl_graph.h"
 #include "st_globals.h"
 #include "gfx.h"
-
-// static AESPB c;
-// static VDIPB v;
 
 // this is the AES pointer block
 int16_t global[15];
@@ -24,11 +22,6 @@ int16_t vdi_control[12];
 // Make it easier to access iptr and iptr2 which are 32-bit pointers stored in 2 array members
 #define iptr(x) do{ vdi_control[7] = ((uint32_t)(x)) >> 16; vdi_control[8] = ((uint32_t)(x)); }while(0)
 #define iptr2(x) do{ vdi_control[9] = ((uint32_t)(x)) >> 16; vdi_control[10] = ((uint32_t)(x)); }while(0)
-
-// int16_t vdi_intin[1024];
-// int16_t vdi_intout[512];
-// int16_t vdi_ptsin[1024];
-// int16_t vdi_ptsout[256];
 
 int16_t screen_phandle;
 int16_t screen_vhandle;
@@ -249,7 +242,6 @@ int16_t form_alert(int16_t fo_adefbttn, const char *fo_astring)
    }
 
    // buttonid has the button selected or -1 for closed without a choice
-
 
    // Return 1, 2, 3 etc for button selected
 
@@ -513,5 +505,47 @@ void new_object(OBJECT *o, uint16_t type, void *spec, uint16_t x, uint16_t y,
 #endif
 
 int16_t fsel_input(char *fs_iinpath, char *fs_iinsel, int16_t *fs_iexbutton) {
+   // This is rather complicated because we can only show the file selector from the main thread.
+   // Therefore we will send an event queue message to show the dialog box
+
+   printf("fsel_input(%s, %s)\n", fs_iinpath, fs_iinsel);
+   GLOBAL_LOCK();
+   globals.game_waits_for_file_selector = 1;
+   GLOBAL_UNLOCK();
+
+   SDL_Event event;
+   SDL_zero(event);
+   event.type = custom_event_save_file;
+   file_selector_t data;
+   event.user.data1 = &data;
+
+   SDL_PushEvent(&event);
+   
+   // Now wait for the file selector to be done
+   do {
+     SDL_Delay(1);
+   } while (globals.game_waits_for_file_selector);
+
+   *fs_iexbutton = globals.fs_result.selected[0] == '\0' ? 0 : 1;
+   char *p = globals.fs_result.selected;
+   printf("Received back: %s\n", globals.fs_result.selected);
+   char *filename = globals.fs_result.selected;
+   // Search for last directory separator
+   while (*p) {
+      if (*p == '/') {
+         // printf("Separator seen: %s\n", p);
+         filename = p + 1;
+         // printf("Filename now: %s\n", filename);
+      }
+      p++;
+   }
+   // printf("Filename finally: %s\n", filename);   
+   strncpy(fs_iinsel, filename, 13);
+   // Force null terminator
+   fs_iinsel[12] = '\0';
+   // printf("...now fs_iinsel is: %s\n", fs_iinsel);
+
+   // printf("fsel_input() finished\n");
+
    return 0;
 }

@@ -1,8 +1,8 @@
 #include "tos_compat.h"
 
 #include <stdint.h>
+#include <string.h>
 #include "globals.h"
-#include "osbind.h"
 #include "mouse_off.h"
 #include "mouse_on.h"
 #include "gemdefs.h"
@@ -19,14 +19,16 @@ int fileio(int flow) {
   uint8_t *r = rumdata[crum];
   uint8_t check,*c;
   DTA dta;
+  char filename[13];
   
   // Use a GEM file selector to get the save file name
-  vs_curaddress(handle,1,1);
+  vs_curaddress(handle, 1, 1);
   v_eeos(handle);
   mouse_on();
+  strcpy(filename, "________.___");
   fsel_input(path, filename, &button);
   mouse_off();
-  vs_curaddress(handle,1,1);
+  vs_curaddress(handle, 1, 1);
   v_eeos(handle);
   init(1);
 
@@ -34,8 +36,12 @@ int fileio(int flow) {
     return -2;
   }
   
+  // Check whether the file exists by opening it for reading
   filehandle = Fopen(filename, 0);
 
+  debug_printf("fileio %d %d\n", flow, filehandle);
+
+  // File not found
   if (flow == 2 && filehandle < 0) {
     return -1;
   }
@@ -48,10 +54,12 @@ int fileio(int flow) {
     }
   }
 
+  // If saving, and file not found, then create the file
   if (flow == 1 && filehandle < 0) {
     filehandle = Fcreate(filename, 0);
   }
 
+  // An error creating the file
   if (filehandle < 0) {
     return -1;
   }
@@ -76,16 +84,16 @@ int fileio(int flow) {
     //if (Fwrite(filehandle,(long)12560,rumdata) < 12560 || 
     if (
       // Room zero, then the other rooms
-      Fwrite(filehandle,(long)157,&room_zero) < 157 || 
-      Fwrite(filehandle,(long)12403,&new_rumdata[1]) < 12403 || 
-      Fwrite(filehandle,(long)320,putbuf) < 320 ||
-      Fwrite(filehandle,(long)480,trigval) < 480 ||
-      Fwrite(filehandle,(long)40,specbuf) < 40 ||
-      Fwrite(filehandle,(long)720,curmon) < 720 ||
-      Fwrite(filehandle,(long)6,pursuit) < 6  ||
-      Fwrite(filehandle,(long)20,pname) < 20 ||
-      Fwrite(filehandle,(long)80,invnpc) < 80 ||
-      Fwrite(filehandle,(long)320,monbuf) < 320 ) {
+      Fwrite(filehandle,(long)157, &room_zero) < 157 || 
+      Fwrite(filehandle,(long)12403, &new_rumdata[1]) < 12403 || 
+      Fwrite(filehandle,(long)320, putbuf) < 320 ||
+      Fwrite(filehandle,(long)480, trigval) < 480 ||
+      Fwrite(filehandle,(long)40, specbuf) < 40 ||
+      Fwrite(filehandle,(long)720, curmon) < 720 ||
+      Fwrite(filehandle,(long)6, pursuit) < 6  ||
+      Fwrite(filehandle,(long)20, pname) < 20 ||
+      Fwrite(filehandle,(long)80, invnpc) < 80 ||
+      Fwrite(filehandle,(long)320, monbuf) < 320 ) {
       Fclose(filehandle);
       return -1;
     } else {

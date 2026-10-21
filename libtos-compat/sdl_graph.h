@@ -64,4 +64,6 @@ void sdl_flip();
 
 void plotline(int x0, int y0, int x1, int y1, uint32_t colour);
 
+extern int custom_event_save_file;
+
 #endif
