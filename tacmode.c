@@ -242,14 +242,14 @@ int tacmode() {
       continue;
     }
 
-    for (i=1;i<=actlist[0];i++) {
+    for (i = 1; i <= actlist[0]; i++) {
       n = actlist[i];
       c = curmon[n];
       if (c[0] && c[30] == crum) {
         j = (*outverb[c[15]])(n);
       }
 
-      // Get a keyboard command from the keyboard
+      // Get a keyboard command from the keyboard and check if it's a space character
       if ((n == 0 || (n == 1 && c[38])) && j == 0 && (p = Bconstat(2)) != 0) {
         p = Bconin(2) & 0xff;
         if (p == ' ') {

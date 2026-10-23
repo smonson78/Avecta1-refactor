@@ -115,253 +115,254 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       }
     }
 
-      vq_mouse(handle, &status, x, y);  /* sample mouse state */
+    vq_mouse(handle, &status, x, y);  /* sample mouse state */
 
-      // See where the cursor landed
-      newx = (*x)/16;
-      newy = (*y)/16;
-      newline = (*y)/8;
+    // See where the cursor landed
+    newx = (*x) / 16;
+    newy = (*y) / 16;
+    newline = (*y) / 8;
+    
+    if (newx < 16 && newy < 8) {
+        inrflag = 1;
+    } else {
+        inrflag = 0;
+    }
       
-      if (newx < 16 && newy < 8) {
-         inrflag = 1;
-      } else {
-         inrflag = 0;
-      }
-      
-      if (type == 0 && (newx > 15 || newy > 7) ) {
-         if(rflag) { 
-            Vsync();
-            for (j = 0; j < 2; j++) {
-               for (k = 0; k < 2; k++) {
-                  toggle(2 * oldx + j, 2 * oldy + k, 0);
-
-               }
-            }
-
-            zline[oldx][oldy][4] = 0;
-            if(mflag>0 && mode) {
-               toggle(32,mflag,7);
-               mflag = 0;
-            }
-            rflag = 0;
-         }
-         oldx = newx;
-         continue;
-      }
-
-      if (type == 1) {
-         if (newx < 16 && newy < 8) {
-            inrflag = 1;
-         } else{
-            inrflag = 0;
-         }
-
-         if (newx > 15 && newline >= top1 && newline <= bot) {
-            intflag = 1;
-         } else {
-            intflag = 0;
-         }
-
-         if (tflag && !intflag) {
-            Vsync();
-            mouse_off();
-            tflag = 0;
-            toggle(32,oldline,7);
-            mouse_on();
-         }
-
-         if (rflag && !inrflag) {
-            Vsync();
-            for (j = 0; j < 2; j++) {
-               for(k = 0; k < 2; k++) {
-                  toggle(2 * oldx + j, 2 * oldy + k, 0);
-               }
-            }
-            zline[oldx][oldy][4] = 0;
-            if (mflag > 0 && mode) {
-               toggle(32,mflag,7);
-               mflag = 0;
-            }
-            rflag = 0;
-         }
-
-         if (!intflag) {
-            oldline = newline;
-         }
-         
-         if (!inrflag) {  
-            if(!intflag) {
-               oldx = newx;
-            }
-            oldy = newy;
-         }
-
-         if(!intflag && !inrflag) {
-            continue;
-         }
-      }
-
-      if(type == 2 && (newx < 16 || newline < top1 || newline > bot ) ) {
-         if(tflag) {
-         tflag = 0;
-         Vsync();
-         mouse_off();
-         toggle(32,oldline,7);
-         mouse_on();
-         } 
-         oldline = newline;
-         oldx = newx;
-         continue;
-      }
-
-      if(type == 0 || (type == 1 && inrflag) ) {
-         z = zline[newx][newy];
-         if(tflag) {
-            tflag = 0;
-            Vsync();
-            mouse_off();
-            toggle(32,oldline,7);
-            mouse_on();
-         } 
-
-      if(newx < 16 && newy < 8 && (*z == 1 || (*z == 2 && z[1] != 0 ) ) ) {
-         if(newx != oldx || newy != oldy) {
-            Vsync();
-            if (tflag) {
-               tflag = 0;
-               toggle(32,oldline,7);
-            } 
-            mouse_off();
-            if (oldx != -1 && rflag) {
-               Vsync();
-               for (j = 0; j < 2; j++) {
-                  for (k = 0; k < 2; k++) {
-                     toggle(2 * oldx + j, 2 * oldy + k, 0);
-                  }
-               }
-               zline[oldx][oldy][4] = 0;
-               if(mflag > 0 && mode) {
-                  toggle(32,mflag,7);
-                  mflag = 0;
-                  }
-               rflag = 0;
-            }
-
-            if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
-                  (winker > 0 && c[24] == newx && c[25] == newy) ) {
-               Vsync();
-               for (j = 0; j < 2; j++) {
-                  for (k = 0; k < 2; k++) {
-                     toggle(2*newx+j,2*newy+k,0);
-                  }
-               }
-               z[4] = 1;
-               rflag = 1;
-            }
-            oldx = newx;
-            oldy = newy;
-            if (mflag == 0 && mode && z[2] > 3 && (z[5] > 0 || light) 
-                  && curmon[z[2]][31] < 4 ) {
-               mflag = curmon[z[2]][33];
-               Vsync();
-               toggle(32,mflag,7);             
-            }
-            mouse_on();
-         }
-      } else {
-         if(rflag) {
-            mouse_off();
-            Vsync();
-            for (j = 0; j < 2; j++) {
-               for (k = 0; k < 2; k++) {
-                  toggle(2 * oldx + j, 2 * oldy + k, 0);
-               }
-            }
-
-            zline[oldx][oldy][4] = 0;
-            if(mflag > 0 && mode) {
-               toggle(32,mflag,7);
-               mflag = 0;
-               }
-            mouse_on();
-            rflag = 0;
-            }
-         oldx = newx;
-         oldy = newy;
-         }
-      }
-      if(type == 2 || (type == 1 && intflag)) {
-         if(rflag) {
-            mouse_off();
-            Vsync();
-            for(j=0;j<2;j++) {
-               for(k=0;k<2;k++) {
-                  toggle(2*oldx+j,2*oldy+k,0);
-               }
-            }
-            zline[oldx][oldy][4] = 0;
-            if(mflag > 0 && mode) {
-               toggle(32,mflag,7);
-               mflag = 0;
-               }
-            mouse_on();
-            rflag = 0;
-            oldx = newx;
-            oldy = newy;
-            }
-      if(newx > 15 && newline >= top1 && newline <= bot) {
-         if(newline != oldline || oldx < 16) {
-            Vsync();
-            mouse_off();
-            if(oldline != -1 && tflag && oldx > 15) 
-               toggle(32,oldline,7);
-            toggle(32,newline,7);
-            tflag = 1;
-            oldline = newline;
-            oldx = newx;
-            mouse_on();
-            }
-         }
-      else {
-         if(tflag) {
-            Vsync();
-            mouse_off();
-            toggle(32,oldline,7);
-            tflag = 0;
-            mouse_on();
-            }
-         oldline = newline;
-         oldx = newx;
-         oldy = newy;
-         }
-      }
-
-      if (status != 0 && (rflag || tflag || 
-        (inrflag && winker > 0 && lom(winker-1,oldx,oldy)) ) ) {
-        mouse_off();
+    if (type == 0 && (newx > 15 || newy > 7) ) {
+      if (rflag) { 
         Vsync();
+        for (j = 0; j < 2; j++) {
+          for (k = 0; k < 2; k++) {
+            toggle(2 * oldx + j, 2 * oldy + k, 0);
+          }
+        }
 
+        zline[oldx][oldy][4] = 0;
+        if (mflag > 0 && mode) {
+          toggle(32, mflag, 7);
+          mflag = 0;
+        }
+        rflag = 0;
+      }
+
+      oldx = newx;
+      continue;
+    }
+
+    if (type == 1) {
+      if (newx < 16 && newy < 8) {
+        inrflag = 1;
+      } else{
+        inrflag = 0;
+      }
+
+      if (newx > 15 && newline >= top1 && newline <= bot) {
+        intflag = 1;
+      } else {
+        intflag = 0;
+      }
+
+      if (tflag && !intflag) {
+        Vsync();
+        mouse_off();
+        tflag = 0;
+        toggle(32,oldline,7);
+        mouse_on();
+      }
+
+      if (rflag && !inrflag) {
+        Vsync();
+        for (j = 0; j < 2; j++) {
+          for(k = 0; k < 2; k++) {
+            toggle(2 * oldx + j, 2 * oldy + k, 0);
+          }
+        }
+        zline[oldx][oldy][4] = 0;
+        if (mflag > 0 && mode) {
+          toggle(32, mflag, 7);
+          mflag = 0;
+        }
+        rflag = 0;
+      }
+
+      if (!intflag) {
+        oldline = newline;
+      }
+      
+      if (!inrflag) {  
+        if(!intflag) {
+          oldx = newx;
+        }
+        oldy = newy;
+      }
+
+      if (!intflag && !inrflag) {
+        continue;
+      }
+    }
+
+    if (type == 2 && (newx < 16 || newline < top1 || newline > bot ) ) {
+    if(tflag) {
+      tflag = 0;
+      Vsync();
+      mouse_off();
+      toggle(32,oldline,7);
+      mouse_on();
+      } 
+      oldline = newline;
+      oldx = newx;
+      continue;
+    }
+
+    if (type == 0 || (type == 1 && inrflag)) {
+      z = zline[newx][newy];
+      if (tflag) {
+        tflag = 0;
+        Vsync();
+        mouse_off();
+        toggle(32,oldline,7);
+        mouse_on();
+      } 
+
+      if (newx < 16 && newy < 8 && (*z == 1 || (*z == 2 && z[1] != 0 ) ) ) {
+        if(newx != oldx || newy != oldy) {
+          Vsync();
+          if (tflag) {
+            tflag = 0;
+            toggle(32,oldline,7);
+          } 
+          mouse_off();
+          if (oldx != -1 && rflag) {
+            Vsync();
+            for (j = 0; j < 2; j++) {
+              for (k = 0; k < 2; k++) {
+                toggle(2 * oldx + j, 2 * oldy + k, 0);
+              }
+            }
+            zline[oldx][oldy][4] = 0;
+            if(mflag > 0 && mode) {
+              toggle(32,mflag,7);
+              mflag = 0;
+              }
+            rflag = 0;
+          }
+
+          if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
+            (winker > 0 && c[24] == newx && c[25] == newy) ) {
+            Vsync();
+            for (j = 0; j < 2; j++) {
+              for (k = 0; k < 2; k++) {
+                  toggle(2*newx+j,2*newy+k,0);
+              }
+            }
+            z[4] = 1;
+            rflag = 1;
+          }
+          oldx = newx;
+          oldy = newy;
+          if (mflag == 0 && mode && z[2] > 3 && (z[5] > 0 || light) 
+            && curmon[z[2]][31] < 4 ) {
+            mflag = curmon[z[2]][33];
+            Vsync();
+            toggle(32,mflag,7);             
+          }
+          mouse_on();
+        }
+      } else {
         if (rflag) {
-          zline[oldx][oldy][4] = 0;
+          mouse_off();
+          Vsync();
           for (j = 0; j < 2; j++) {
             for (k = 0; k < 2; k++) {
-               toggle(2*oldx+j,2*oldy+k,0);
+              toggle(2 * oldx + j, 2 * oldy + k, 0);
             }
           }
-         }
-        if(tflag) 
-          toggle(32,oldline,7);
-        if(mflag > 0 && mode) 
-          toggle(32,mflag,7);
-        *x = oldx;
-        *y = oldy;
-        if(tflag)
-          *ret = oldline;
-        else
-          *ret = 0;
-        return(1);
+
+          zline[oldx][oldy][4] = 0;
+          if (mflag > 0 && mode) {
+            toggle(32,mflag,7);
+            mflag = 0;
+          }
+          mouse_on();
+          rflag = 0;
+        }
+        oldx = newx;
+        oldy = newy;
       }
-   } while (1);
+    }
+
+    if (type == 2 || (type == 1 && intflag)) {
+      if (rflag) {
+        mouse_off();
+        Vsync();
+        for (j=0;j<2;j++) {
+          for(k=0;k<2;k++) {
+            toggle(2*oldx+j,2*oldy+k,0);
+          }
+        }
+        zline[oldx][oldy][4] = 0;
+        if (mflag > 0 && mode) {
+          toggle(32,mflag,7);
+          mflag = 0;
+        }
+        mouse_on();
+        rflag = 0;
+        oldx = newx;
+        oldy = newy;
+      }
+    
+      if (newx > 15 && newline >= top1 && newline <= bot) {
+        if(newline != oldline || oldx < 16) {
+          Vsync();
+          mouse_off();
+          if(oldline != -1 && tflag && oldx > 15) 
+            toggle(32,oldline,7);
+          toggle(32,newline,7);
+          tflag = 1;
+          oldline = newline;
+          oldx = newx;
+          mouse_on();
+        }
+      } else {
+        if (tflag) {
+          Vsync();
+          mouse_off();
+          toggle(32,oldline,7);
+          tflag = 0;
+          mouse_on();
+        }
+        oldline = newline;
+        oldx = newx;
+        oldy = newy;
+      }
+    }
+
+    if (status != 0 && (rflag || tflag || 
+        (inrflag && winker > 0 && lom(winker-1,oldx,oldy)) ) ) {
+      mouse_off();
+      Vsync();
+
+      if (rflag) {
+        zline[oldx][oldy][4] = 0;
+        for (j = 0; j < 2; j++) {
+          for (k = 0; k < 2; k++) {
+            toggle(2*oldx+j,2*oldy+k,0);
+          }
+        }
+      }
+      if (tflag) 
+        toggle(32,oldline,7);
+      if (mflag > 0 && mode) 
+        toggle(32,mflag,7);
+      *x = oldx;
+      *y = oldy;
+      if (tflag)
+        *ret = oldline;
+      else
+        *ret = 0;
+      return(1);
+    }
+  } while (1);
 }
 
 
