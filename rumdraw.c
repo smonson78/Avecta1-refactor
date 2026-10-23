@@ -82,18 +82,6 @@ int abs(int x)
   return x < 0 ? -x : x;
 }
 
-void click()
-{
-  int16_t status, x, y;
-  do {
-      vq_mouse(handle, &status, &x, &y);
-  } while (status == 0);
-
-  do {
-      vq_mouse(handle, &status, &x, &y);
-  } while (status != 0);
-}  
-
 void fillsq(int x, int y)
 {
   int16_t pxy[4];
