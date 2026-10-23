@@ -342,11 +342,13 @@ void v_rvoff(int16_t handle) {
 void v_eeol(int16_t handle) {
   // Erase to end of line
   GLOBAL_LOCK();
+
+  int x = globals.video.x_text * 8;
+  int y = globals.video.y_text * 8;
+
   // printf("v_eeol()\n");
   // To the end of the line (may not be full screen width)
-  filled_rect(globals.video.x_text * 8, globals.video.y_text * 8,
-    320 - (globals.video.x_text * 8), 8,
-    globals.video.current_bgcolour);
+  filled_rect(x, y, 320 - x, 8, globals.video.current_bgcolour);
   // printf("v_eeol() done\n");
 
   GLOBAL_UNLOCK();
@@ -356,17 +358,17 @@ void v_eeos(int16_t handle) {
   // Erase to end of screen
   GLOBAL_LOCK();
 
+  int x = globals.video.x_text * 8;
+  int y = globals.video.y_text * 8;
+
   // printf("v_eeos()\n");
   // To the end of the line (may not be full screen width)
-  filled_rect(globals.video.x_text * 8, globals.video.y_text * 8,
-    320 - (globals.video.x_text * 8), 8,
-    globals.video.current_bgcolour);
+  filled_rect(x, y, 320 - x, 8, globals.video.current_bgcolour);
 
   // From there to the end of the screen
   if (globals.video.y_text < 24) {
-    int start_line = (globals.video.y_text * 8) + 8;
-      filled_rect(0, start_line,
-        320, 200 - start_line,
+    int start_line = y + 8;
+      filled_rect(0, start_line, 320, 200 - start_line,
         globals.video.current_bgcolour);
   }
   // printf("v_eeos() done\n");

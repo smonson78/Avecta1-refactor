@@ -80,7 +80,9 @@ int main()
          break;
       }
 
+      // This is the main loop 
       while (i == 0 && j > 0) {
+         debug_printf("> in main, the while loop with tacmode in it\n");
          // does this once before Leveth speaks, then again after changing rooms before he speaks the second time.
          // Cconin();
          i = switchrum();

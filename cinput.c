@@ -10,11 +10,15 @@
 
 int comwind(int pc);
 
+// This runs at the start of your movement
 void clrinp() {
   int i;
+  debug_printf("> clrinp()\n");
   Vsync();
-  for(i=3;i<17;i++) {
-    vs_curaddress(handle,i,33);
+  // Clear to end of line from line 3 to 16, column 33.
+  // That's 256,16 --> 319, 120
+  for (i = 3; i < 17; i++) {
+    vs_curaddress(handle, i, 33);
     v_eeol(handle);
   }
 } 
@@ -65,8 +69,9 @@ int input(int pc)
   uint8_t *z = NULL;
   char *w = (pc == 0 ? pname : name[c[3]]);
   
-  if (pc > 3)
-    return(0);
+  if (pc > 3) {
+    return 0;
+  }
 
   hold = usedline = 0;
   
@@ -75,10 +80,13 @@ com:
   if (((pc == 0) && (c[15] == 1)) || ((pc < 4) && c[38] && (c[15] == 1)) ) {
     combat = comwind(pc);
   }
-  if( (pc == 0 || (pc < 4 && c[38] ) )  && combat)
-    return(1);
+
+  if ((pc == 0 || (pc < 4 && c[38] ) )  && combat) {
+    return 1;
+  }
 
 top:
+  debug_printf("...input doing graphical stuff\n");
   Vsync();
   vbl_animation_off();
   header(w);
@@ -88,14 +96,14 @@ top:
   v_rvon(handle);
   printf("        ");
   v_rvoff(handle);
-  textsix(1,272,17,6,"Action");
-  for(i=2;i<15;i++) {
-    textsix(1,258,9 + 8*i,strlen(verblist[i-2]),verblist[i-2]);
+  textsix(1, 272, 17, 6,"Action");
+  for (i = 2; i < 15; i++) {
+    textsix(1, 258, 9 + 8 * i, strlen(verblist[i - 2]), verblist[i - 2]);
   }
-  vsf_interior(handle,0);
-  vsf_style(handle,0);
-  vsf_color(handle,0);
-  v_bar(handle,vxy);
+  vsf_interior(handle, 0);
+  vsf_style(handle, 0);
+  vsf_color(handle, 0);
+  v_bar(handle, vxy);
   Vsync();
 
   c[31] = 0;

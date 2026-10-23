@@ -31,7 +31,9 @@ void filled_rect(int x, int y, int w, int h, int colour) {
   }
 
   // Calculate the right mask - this will only need truncating on the right end
-  int right_offset = 15 - ((w + offset) % 16);
+  // This is the number of pixels in the rightmost word that are shown
+  int right_offset = (w + offset) % 16;
+
   uint32_t right_mask = 0xffff << right_offset;
 
   uint16_t plane0 = (colour & 1 ? 0xffff : 0);

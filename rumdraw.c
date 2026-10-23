@@ -69,6 +69,7 @@ void setfill(int k)
 // Erase 16 text lines from (1, 1) to (1, 16)
 void rumclear()
 {
+  debug_printf("> rumclear()\n");
   for (int i = 1; i < 17; i++) {
     vs_curaddress(handle, i, 1);
     v_eeol(handle);

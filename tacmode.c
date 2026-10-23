@@ -76,8 +76,13 @@ int tacmode() {
   int actlist[13];
   uint8_t *c;
   uint8_t *o;
+
+  debug_printf("> tacmode()\n");
   
   do {
+    // This happens multiple times per move. 4 times per 1-square move actually.
+
+    debug_printf("... in the main loop of tacmode()\n");
     for (i = 0; i < 13; i++) {
       grflist[i] = 0;
       actlist[i] = 0;
@@ -141,10 +146,11 @@ int tacmode() {
                 if (i > 3 && c[31] < 4) {
                   mode = 1;
                 }
+
                 flag = 1;
                 pursuit[1]--;
                 
-                if(pursuit[1] > 0) {
+                if (pursuit[1] > 0) {
                   pursuit[0] += 2;
                 } else {
                   pursuit[0] = 0;
@@ -163,6 +169,7 @@ int tacmode() {
         }
       }
 
+      // Bring the cops in after you've broken the law. 15% chance.
       if (police && rnd(100) < 15) {
 
         for (i = 1; i < 17; i++) {
@@ -274,7 +281,7 @@ int tacmode() {
         return 0;
       }
 
-      if ( n > 3 || (n < 4 && n > 0 && c[38] == 0)) {
+      if (n > 3 || (n < 4 && n > 0 && c[38] == 0)) {
         intell(n);
       } else {
         if (c[16] == 0) {
