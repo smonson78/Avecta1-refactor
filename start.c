@@ -62,8 +62,9 @@ int main()
          // New Game
          i = init(0);
          break;
+
       case 2:
-         // Restore Game
+         // Restore Game. 2 = load
          j = fileio(2);
          if (j == -1) {
             mouse_on();
@@ -72,13 +73,12 @@ int main()
          }
          i = 0;
          break;
+
       default:
          // 0 - Quit
          i = 0;
          break;
       }
-
-      // The room is NOT drawn at this point
 
       while (i == 0 && j > 0) {
          // does this once before Leveth speaks, then again after changing rooms before he speaks the second time.
@@ -97,40 +97,46 @@ int main()
          vbl_animation_off();
       }
 
-      // doesn't reach here 
-
-      switch(i) {
+      switch (i) {
          case -5:
-            if ((j=fileio(2)) == -1) {
+            if ((j = fileio(2)) == -1) {
                mouse_on();
-               form_alert(1,errmsg[18]);
+               form_alert(1, errmsg[18]);
                mouse_off();
             }
+
             if (j == 0) {
                mouse_on();
-               form_alert(1,errmsg[33]);
+               form_alert(1, errmsg[33]);
                mouse_off();
             }
+
             i = 3;
             break;
-         case -4: /* this is the store game option */
-            if((j=fileio(1)) == -1) {
-               form_alert(1,errmsg[18]);
+
+         /* this is the store game option */            
+         case -4:
+            if ((j = fileio(1)) == -1) {
+               form_alert(1, errmsg[18]);
             }
+
             i = 3;
             break;
+
          case -2:
             i = 0;
             break;
+
          case -1:
             i = console();
             break;
+
          case 1: 
             congratulate();
             i = 0;
             break;
-         case 2: /* dungeon switch */
 
+         case 2: /* dungeon switch */
             old = dungeon;
             if (dungeon != 0) {
                c[54] = c[4];
@@ -167,7 +173,8 @@ int main()
             }
             
             i = 3;
-            break;  
+            break;
+
          default:
             i = title();
             break;

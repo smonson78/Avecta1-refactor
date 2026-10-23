@@ -60,52 +60,60 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
   mouse_on();
 
   do {
+    // Read a command from the keyboard
     if (check_char_waiting() == -1) {
         keystk = 1;
         letter = read_char_no_echo();
     }
 
-      if (keybd != 0 && keystk) {
-         keystk = 0;
-         for(i=0;i<keybd;i++) {
-         if (keybd == 13) {
-            string = verblist[i];
-         } else {
-            string = posture[i];
-         }
-         if (letter == ' ' || *string == letter || *string == (letter-32) ) {
-               mouse_off();
-               top(1);
-               clrinp();
-               if(rflag) {
-               Vsync();
-               zline[oldx][oldy][4] = 0;
-               for (j = 0; j < 2; j++) {
-                  for (k = 0; k < 2; k++) {
-                     toggle(2 * oldx + j, 2 * oldy + k, 0);
-                  }
-               }
-               if(mflag>0 && mode) {
-                  toggle(32,mflag,7);
-                  mflag = 0;
-                  }
-               }
-               if(keybd == 13) {
-               if(letter == ' ')
-                  *ret = 16;
-               else
-                  *ret = i+3;
-               }
-               else {
-               if(letter == ' ')
-                  *ret = 12;
-               else
-                  *ret = 8 + i;
-               }
-               return(1);  
-               }
+    if (keybd != 0 && keystk) {
+      keystk = 0;
+      for (i = 0; i < keybd; i++) {
+        if (keybd == 13) {
+          string = verblist[i];
+        } else {
+          string = posture[i];
+        }
+
+        if (letter == ' ' || *string == letter || *string == (letter-32) ) {
+          mouse_off();
+          top(1);
+          clrinp();
+
+          if (rflag) {
+            Vsync();
+            zline[oldx][oldy][4] = 0;
+            
+            for (j = 0; j < 2; j++) {
+              for (k = 0; k < 2; k++) {
+                toggle(2 * oldx + j, 2 * oldy + k, 0);
+              }
             }
+
+            if (mflag>0 && mode) {
+              toggle(32, mflag,7);
+              mflag = 0;
+            }
+          }
+
+          if (keybd == 13) {
+            if (letter == ' ') {
+              *ret = 16;
+            } else {
+              *ret = i+3;
+            }
+          } else {
+            if (letter == ' ') {
+              *ret = 12;
+            } else {
+              *ret = 8 + i;
+            }
+          }
+
+          return 1;  
+        }
       }
+    }
 
       vq_mouse(handle, &status, x, y);  /* sample mouse state */
 
@@ -919,11 +927,12 @@ int listinv(int pc, char *scratch)
    return(bot);
 }
 
+// Clear this many text rows from column 33 to the end
 void top(int line)
 {
    int i;
-   for (i=2;i>=line;i--) {
-      vs_curaddress(handle,i,33);
+   for (i = 2; i >= line; i--) {
+      vs_curaddress(handle, i, 33);
       v_eeol(handle);
    }
 }

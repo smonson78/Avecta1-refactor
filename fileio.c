@@ -24,15 +24,20 @@ int fileio(int flow) {
   DTA dta;
   char filename[13];
   
-  // Use a GEM file selector to get the save file name
+  // Clear the screen
   vs_curaddress(handle, 1, 1);
   v_eeos(handle);
+
+  // Use a GEM file selector to get the save file name
   mouse_on();
   strcpy(filename, "________.___");
   fsel_input(path, filename, &button);
   mouse_off();
+
+  // Clear the screen again
   vs_curaddress(handle, 1, 1);
   v_eeos(handle);
+
   init(1);
 
   if (button == 0) {

@@ -259,8 +259,8 @@ char *verblist[] = {"Cast ","Examine","Drag/Eat","Search","Take/Drop","Wait",
 uint8_t zline[16][8][7];                    
 
 room_data_t new_rumdata[80];
-uint8_t (*new_rumdata_as_array)[80][sizeof(room_data_t)] = (uint8_t (*)[80][sizeof(room_data_t)])&new_rumdata;
-uint8_t rumdata[80][157];
+// uint8_t (*new_rumdata_as_array)[80][sizeof(room_data_t)] = (uint8_t (*)[80][sizeof(room_data_t)])&new_rumdata;
+// uint8_t rumdata[80][157];
 
 room_zero_data_t room_zero;
 

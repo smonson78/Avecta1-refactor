@@ -455,9 +455,9 @@ int loadnew() {
   Fread(fhandle,(long)12403, &new_rumdata[1]);
 
   // Copy to legacy rumdata[]
-  memcpy(rumdata, new_rumdata, 12560);
+  //memcpy(rumdata, new_rumdata, 12560);
   // Special room zero data
-  memcpy(rumdata, &room_zero, 157);
+  //memcpy(rumdata, &room_zero, 157);
   // check_rumdata(); 
 
   Fread(fhandle, (long)320, putbuf);

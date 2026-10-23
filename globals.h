@@ -85,8 +85,8 @@ extern uint8_t specbuf[40], putbuf[320];
 extern uint8_t zline[16][8][7];
 
 extern room_data_t new_rumdata[80];
-extern uint8_t (*new_rumdata_as_array)[80][sizeof(room_data_t)];
-extern uint8_t rumdata[80][157];
+//extern uint8_t (*new_rumdata_as_array)[80][sizeof(room_data_t)];
+//extern uint8_t rumdata[80][157];
 
 extern room_zero_data_t room_zero;
 
