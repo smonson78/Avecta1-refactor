@@ -16,7 +16,10 @@
 int fileio(int flow) {
   int16_t button;
   int i, j, filehandle;
-  uint8_t *r = rumdata[crum];
+  
+  //uint8_t *r = rumdata[crum];
+  room_data_t *r = &new_rumdata[crum];
+  
   uint8_t check,*c;
   DTA dta;
   char filename[13];
@@ -36,7 +39,7 @@ int fileio(int flow) {
     return -2;
   }
 
-  debug_printf("fileio %d %d\n", flow, filehandle);
+  debug_printf("fileio %d\n", flow);
 
   if (flow == 2) {
     // Loading a saved game
@@ -80,10 +83,12 @@ int fileio(int flow) {
     specbuf[34] = police;
     specbuf[37] = fromout;
 
+    // Copy all objects from current room into room data array
     for (i = 0; i < 13; i++) {
-      c = crumobj[i+1];
+      c = crumobj[i + 1];
       for (j = 0; j < 9; j++) {
-        r[31 + (9 * i) + j] = c[j];
+        //r[31 + (9 * i) + j] = c[j];
+        r->object[i].unknown[j] = c[j];
       }
     }
 
@@ -167,10 +172,10 @@ int fileio(int flow) {
     }
 
     // Set up room zero and legacy data after loading files
-    memcpy(rumdata, &room_zero, 157);
+    //memcpy(rumdata, &room_zero, 157);
     // Special room zero data
-    memcpy(rumdata + 1, &new_rumdata[1], 12403);
-    check_rumdata("fileio");
+    //memcpy(rumdata + 1, &new_rumdata[1], 12403);
+    //check_rumdata("fileio");
   }
 
   return 1;

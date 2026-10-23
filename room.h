@@ -10,12 +10,12 @@ typedef struct {
   uint8_t room_bg_colour;
 } room_background_t;
 
-typedef struct {
-  // 3 bytes
-  uint8_t object_id;
-  uint8_t object_xy;
-  uint8_t room_id;
-} room_unknown_t;
+// typedef struct {
+//   // 3 bytes
+//   uint8_t object_id;
+//   uint8_t object_xy;
+//   uint8_t room_id;
+// } room_unknown_t;
 
 typedef struct {
   // 9 bytes
@@ -29,7 +29,7 @@ typedef struct {
   uint8_t room_oldxy;
 
   // - 1   = another set of xy coords ...apparently byte 1 of a 3-byte structure
-  room_unknown_t room_unknown_obj[5];
+  uint8_t room_unknown_xy[15];
 
   // - 16  = background tile 1 pattern
   // - 17  = background tile 1 style
@@ -53,8 +53,8 @@ typedef struct {
   // - 25  = monsters y
   uint8_t room_monster_y;
 
-  // - 26 - percentage chance of monsters appearing I think
-  uint8_t room_unknown_2;
+  // - 26 - percentage chance of monsters appearing
+  uint8_t room_monsters_chance;
   // - 27
   uint8_t room_shopkeeper_id;
   // - 28

@@ -168,11 +168,11 @@ int o7(int pc)
     if (i > 13) { 
       storobj(c[8],x,y);
       // Old
-      rumdata[crum][134+i] = c[8];
+      // rumdata[crum][134+i] = c[8];
       // New
       new_rumdata[crum].room_unknown_3[i - 14] = c[8];
 
-      check_rumdata("o7");
+      // check_rumdata("o7");
     }
 
     takeout(pc,c[8]);
@@ -259,10 +259,10 @@ int o7(int pc)
       xobj(crumobj[id][0], crum);
 
       // Old
-      rumdata[crum][134 + id] = 0;
+      // rumdata[crum][134 + id] = 0;
       // New
       new_rumdata[crum].room_unknown_3[id - 14] = 0;
-      check_rumdata("o7 position 2");
+      // check_rumdata("o7 position 2");
     }
 
     zline[x][y][1] = 0;

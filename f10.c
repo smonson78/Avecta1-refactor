@@ -56,7 +56,7 @@ int o10(int pc)
 {
   int x, y, object, flag=0;
   uint8_t *c = curmon[pc], *o;
-  uint8_t *r;
+  //uint8_t *r;
   room_data_t *new_r;
   char *w = (pc == 0 ? pname : name[c[3]]);
 
@@ -64,7 +64,7 @@ int o10(int pc)
   y = c[6];
   object = c[9];
   o = crumobj[object];
-  r = rumdata[o[3]];
+  // r = rumdata[o[3]];
   new_r = &new_rumdata[o[3]];
 
   if (object != zline[x][y][1]) {
@@ -85,7 +85,8 @@ int o10(int pc)
     flag = 1;
   }
 
-  if (o[3] != 0 && r[22] != 0 && rnd(100) < r[26] && rnd(100) < c[37]) {
+  //if (o[3] != 0 && r[22] != 0 && rnd(100) < r[26] && rnd(100) < c[37]) {
+  if (o[3] != 0 && new_r->room_monster_type != 0 && (rnd(100) < new_r->room_monsters_chance) && rnd(100) < c[37]) {
     flag = 1; 
     prnt("-> %s hears one or more %ss through the %s!", w,
         //name[permon[r[22]].unknown3],

@@ -175,10 +175,10 @@ int rumslot()
   }
 
   destroy(1, 18);
-  rumdata[crum][152] = 0;
+  // rumdata[crum][152] = 0;
   new_rumdata[crum].room_unknown_3[4] = 0;
 
-  check_rumdata("rumslot");
+  // check_rumdata("rumslot");
 
   // I guess we're saying "use slot 18". Did we destroy item 18 in the array to make space?
   // Or does 18 mean "not found" since the array actually ends at 17?

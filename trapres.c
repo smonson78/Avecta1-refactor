@@ -1050,9 +1050,9 @@ plicably, %s decides not to strike out at the horror immediately!",
         flag3 = 1;
 
         
-        rumdata[50][0] = 1;
+        // rumdata[50][0] = 1;
         new_rumdata[50].room_oldxy = 1;
-        check_rumdata("trapres");
+        // check_rumdata("trapres");
 
         goto prolog;
       }

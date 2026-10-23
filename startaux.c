@@ -304,7 +304,7 @@ int loadnew() {
 
   old = dungeon;
   if (new == 0) {
-    if(specbuf[32]) {
+    if (specbuf[32]) {
       flag = 1;
     }
 
@@ -342,7 +342,7 @@ int loadnew() {
   if (dungeon != 0 && new != 0) {
     specbuf[30 + dungeon] = 1;  /* gotta set the dirty flag on that dungeon */
 
-    fhandle = Fopen(savname[dungeon + (3 * specbuf[30 + dungeon])], 0);
+    fhandle = Fopen(savname[dungeon + (3 * specbuf[30 + dungeon])], 1);
     if (fhandle < 0) {
       fhandle = Fcreate(savname[dungeon + (3 * specbuf[30 + dungeon])], 0);
     }
@@ -351,13 +351,15 @@ int loadnew() {
       return 0;
     }
 
-    if (Fwrite(fhandle,(long)12560,rumdata) < 12560 ||
-      Fwrite(fhandle,(long)320,putbuf) < 320 ||
-      Fwrite(fhandle,(long)480,trigval) < 480 ||
-      Fwrite(fhandle,(long)40,specbuf) < 40 ||
-      Fwrite(fhandle,(long)320,monbuf) < 320) {
-          Fclose(fhandle);
-          return 0;
+    //if (Fwrite(fhandle,(long)12560,rumdata) < 12560 ||
+    if (Fwrite(fhandle, (long)157, &room_zero) < 157 ||
+      Fwrite(fhandle, (long)12403, &new_rumdata[1]) < 12403 ||
+      Fwrite(fhandle, (long)320, putbuf) < 320 ||
+      Fwrite(fhandle, (long)480, trigval) < 480 ||
+      Fwrite(fhandle, (long)40, specbuf) < 40 ||
+      Fwrite(fhandle, (long)320, monbuf) < 320) {
+        Fclose(fhandle);
+        return 0;
     }
 
     Fclose(fhandle);
@@ -448,10 +450,14 @@ int loadnew() {
   d3 = specbuf[33];
 
   // Load initial rumdata into both arrays
-  Fread(fhandle,(long)12560, new_rumdata);
+  //Fread(fhandle,(long)12560, new_rumdata);
+  Fread(fhandle,(long)157, &room_zero);
+  Fread(fhandle,(long)12403, &new_rumdata[1]);
+
+  // Copy to legacy rumdata[]
   memcpy(rumdata, new_rumdata, 12560);
   // Special room zero data
-  memcpy(&room_zero, new_rumdata, 157);
+  memcpy(rumdata, &room_zero, 157);
   // check_rumdata(); 
 
   Fread(fhandle, (long)320, putbuf);

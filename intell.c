@@ -11,7 +11,7 @@
 #include "f4.h"
 #include "f6.h"
 
-int sillymsg(int npc);
+void sillymsg(int npc);
 void alert(int npc);
 int matt(int npc);
 int friend(int npc);
@@ -28,111 +28,117 @@ int intell(int npc)
   uint8_t *c = curmon[npc];
   uint8_t *t;
   int done = 0; /* this will give the ith step in the intelligence routine */
-  char type = c[31],step;
+  char type = c[31], step;
   int j, flag;
 
-if(!*c)
-  return(0);
-if(npc < 4 || (npc > 3 && c[38] == 1))
-  type = 4;
-step = type;
-c[40] = 0;
-while(!done) {
-  switch(step) {
-    case 1: /* sets up the standard berserk attack sequence. */
-        done = 1; /* always fall through after a berserk */
-        if(!morale(npc)) {
-           if(!setflee(npc) || !setmove(npc,0) ) 
-              pass(npc);
-           return(1);
-           }
-        if(!target(npc) && !settarg(npc)) {
-           pass(npc);
-           return(1);
-           }
-        switch(setatt(npc)) {
-           case 0:                          /* target is in range */
-               matt(npc);
-               break;
-           case 1:                          /* target at wrong x,y */
-               if(!setmove(npc,1))          /* option 1 checks target motion */ 
-                  pass(npc);                /* and inveigles the rear when */
-               break;                       /* possible */
-           }
+  if (!c[0]) {
+    return 0;
+  }
+
+  if (npc < 4 || (npc > 3 && c[38] == 1)) {
+    type = 4;
+  }
+
+  step = type;
+  c[40] = 0;
+
+  while (!done) {
+    switch (step) {
+      case 1: /* sets up the standard berserk attack sequence. */
+          done = 1; /* always fall through after a berserk */
+          if(!morale(npc)) {
+            if(!setflee(npc) || !setmove(npc,0) ) 
+                pass(npc);
+            return(1);
+            }
+          if(!target(npc) && !settarg(npc)) {
+            pass(npc);
+            return(1);
+            }
+          switch(setatt(npc)) {
+            case 0:                          /* target is in range */
+                matt(npc);
+                break;
+            case 1:                          /* target at wrong x,y */
+                if(!setmove(npc,1))          /* option 1 checks target motion */ 
+                    pass(npc);                /* and inveigles the rear when */
+                break;                       /* possible */
+            }
+          break;
+      case 2:                           /* this sets up  the patrol actions */
+          if(target(npc) || settarg(npc)) {
+            step = 1;
+            if(type != 3)
+              alert(npc);                 /* this changes patrol crew to berserk */
+            break;
+            }
+          if(type != 3) {               /* don't want pickets to leave the room */
+            if(!setmove(npc,2))
+              pass(npc);               /* else exit room */
+            }
+          else
+            pass(npc);
+          done = 1;
+          break;
+      case 3:                  /* this is a picket, i.e., stationary creatures */
+        step = 2;
         break;
-    case 2:                           /* this sets up  the patrol actions */
-        if(target(npc) || settarg(npc)) {
-          step = 1;
-          if(type != 3)
-            alert(npc);                 /* this changes patrol crew to berserk */
+      case 4:           /* this is the accompanying friendly NPC's */
+        done = 1;
+        if(npc < 4 && c[38] == 1) { /* under control of player */
           break;
           }
-        if(type != 3) {               /* don't want pickets to leave the room */
-          if(!setmove(npc,2))
-             pass(npc);               /* else exit room */
-          }
-        else
-          pass(npc);
+        friend(npc);
+        break;
+      case 5:  /* intell for merchants */
+        done = 1;
+        sell(npc);
+        break;
+      case 6:  /* bystanders headed for nearest or some exit */
+        wander(npc);
         done = 1;
         break;
-    case 3:                  /* this is a picket, i.e., stationary creatures */
-       step = 2;
-       break;
-    case 4:           /* this is the accompanying friendly NPC's */
-       done = 1;
-       if(npc < 4 && c[38] == 1) { /* under control of player */
-         break;
-         }
-       friend(npc);
-       break;
-     case 5:  /* intell for merchants */
-       done = 1;
-       sell(npc);
-       break;
-     case 6:  /* bystanders headed for nearest or some exit */
-       wander(npc);
-       done = 1;
-       break;
-     default:
-       flag = 0;
-       for(j=0;j<12;j++) {
-         if(j == npc)
-            continue;
-         t = curmon[j];
-         if(*t == 0 || t[30] != crum)
-            continue;
-         if((t[39] == npc && t[15] == 1) || c[47] > 0 || c[1] > 0 ) { 
-           flag = 1;
-           break;
-           }
-         }
-      if(flag) {
-         for(j=4;j<12;j++) {
-            c = curmon[j];
-            if(c[31] > 6 && c[30] == crum && *c == 1)
-               c[31] = 1;
+      default:
+        flag = 0;
+        for(j=0;j<12;j++) {
+          if(j == npc)
+              continue;
+          t = curmon[j];
+          if(*t == 0 || t[30] != crum)
+              continue;
+          if((t[39] == npc && t[15] == 1) || c[47] > 0 || c[1] > 0 ) { 
+            flag = 1;
+            break;
             }
-         c = curmon[npc];
-         if(crum == 31) {
-           prnt("-> The forlorn creature sobs `All is lost. I die now.'", NULL, NULL, NULL, NULL, NULL, NULL);
-           damage(npc,c[2] + c[12]);
-           *c = 0;
-           untrap(3);
-           done = 1;
-           break;
-           }
-         step = 1;
-         c[31] = 1;
-         prnt("-> A general clamor can be heard `Get the guards! There's a lunatic about!'", NULL, NULL, NULL, NULL, NULL, NULL);
-         police = 1;
-         dorep();
-         break;
-         }
-       pass(npc);
-       done = 1;
-     }
+          }
+        if(flag) {
+          for(j=4;j<12;j++) {
+              c = curmon[j];
+              if(c[31] > 6 && c[30] == crum && *c == 1)
+                c[31] = 1;
+              }
+          c = curmon[npc];
+          if(crum == 31) {
+            prnt("-> The forlorn creature sobs `All is lost. I die now.'", NULL, NULL, NULL, NULL, NULL, NULL);
+            damage(npc,c[2] + c[12]);
+            *c = 0;
+            untrap(3);
+            done = 1;
+            break;
+            }
+          step = 1;
+          c[31] = 1;
+          prnt("-> A general clamor can be heard `Get the guards! There's a lunatic about!'", NULL, NULL, NULL, NULL, NULL, NULL);
+          police = 1;
+          dorep();
+          break;
+          }
+        pass(npc);
+        done = 1;
+    }
   }
-return(1);
+
+  return 1;
 }
 
 /*****************************************************************************/
@@ -679,24 +685,28 @@ int friend(int npc)
   return(1);
 }
 
-int sillymsg(int npc)
+void sillymsg(int npc)
 {
   uint8_t *c = curmon[npc];
   char *w = name[c[3]];
 
-  if(c[47] > 0) {
+  if (c[47] > 0) {
     prnt("-> %s says `The room spins.  I am poisoned.'",w, NULL, NULL, NULL, NULL, NULL);
-    return(1);
-    }
-  if(c[1] > (c[2])/2) {
+    return;
+  }
+
+  if (c[1] > (c[2])/2) {
     prnt("-> %s says `By Zandru, my body aches.  Perhaps a clerical spell...'",w, NULL, NULL, NULL, NULL, NULL);
-    return(1);
-    }
-  if(rumdata[crum][26] > 0) {
+    return;
+  }
+  
+    // if(rumdata[crum][26] > 0) {
+  if (new_rumdata[crum].room_monsters_chance > 0) {
     prnt("-> %s says `I believe dangerous creatures lurk here!'",w, NULL, NULL, NULL, NULL, NULL);
-    return(1);
-    }
-  switch(rnd(8)) {
+    return;
+  }
+
+  switch (rnd(8)) {
     case 0:
       prnt("-> %s growls, `Hurry up, %s!  Let us move on.'",w,pname, NULL, NULL, NULL, NULL);
       break;
@@ -723,7 +733,6 @@ int sillymsg(int npc)
       break;
     default:
       break;
-    }
-  return(1);
+  }
 }
 

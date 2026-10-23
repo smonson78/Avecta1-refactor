@@ -150,12 +150,12 @@ int damage(int pc, int level)
          // and with the > 13 limitation that then becomes (148..152) which is room_unknown_3
          if (j > 13) {
             // Old
-            rumdata[crum][134 + j] = 41 - pc;
+            //rumdata[crum][134 + j] = 41 - pc;
             // New
             new_rumdata[crum].room_unknown_3[j - 14] = 41 - pc;
 
             storobj(41 - pc,x,y);
-            check_rumdata("damage");
+            //check_rumdata("damage");
          }
 
          *z = z[4] = 41-pc;

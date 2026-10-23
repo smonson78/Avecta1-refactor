@@ -28,10 +28,10 @@ int sell(int npc)
   char str[6], temp[3];
 
   // Old
-  rumdata[crum][26] = 0;
+  //rumdata[crum][26] = 0;
   // New
-  new_rumdata[crum].room_unknown_2 = 0;
-  check_rumdata("sell");
+  new_rumdata[crum].room_monsters_chance = 0;
+  // check_rumdata("sell");
 
   c[39] = 0;
   c[32] = 6;

@@ -116,7 +116,7 @@ void rumdraw(char *pan)
   // c must be uint8_t or else we'll crash
   uint8_t *c;
 
-  uint8_t *r = rumdata[crum];
+  // uint8_t *r = rumdata[crum];
   room_data_t *new_r = &new_rumdata[crum];
 
   // Set up room data by copying from rundata[crum][] to crumobj[]
@@ -212,19 +212,25 @@ void rumdraw(char *pan)
 
   // Get some coords
   // xold in lower 4 bits
-  int xold = rumdata[crum][0] % 16;
+  //int xold = rumdata[crum][0] % 16;
+  int xold = new_rumdata[crum].room_oldxy % 16;
   // yold in upper 4 bits
-  int yold = rumdata[crum][0] / 16;
+  //int yold = rumdata[crum][0] / 16;
+  int yold = new_rumdata[crum].room_oldxy / 16;
 
   int x1 = xold;
   int y1 = yold;
-  i = 1;
+
+  //i = 1;
+  i = 0;
 
   int x2, y2;
   do {
     // Get another set of coords from byte 1 onwards up to a maximum of 16
-    x2 = rumdata[crum][i] % 16;
-    y2 = rumdata[crum][i] / 16;
+    // x2 = rumdata[crum][i] % 16;
+    // y2 = rumdata[crum][i] / 16;
+    x2 = new_rumdata[crum].room_unknown_xy[i] % 16;
+    y2 = new_rumdata[crum].room_unknown_xy[i] / 16;    
 
     // Get distance from last coord to this one
     int stepx = x2 - x1;
@@ -250,7 +256,8 @@ void rumdraw(char *pan)
     i++;
 
     // Stop if we return to the original position in r[0].
-  } while ((x2 != xold || y2 != yold) && i <= 16);
+  //} while ((x2 != xold || y2 != yold) && i <= 16);
+  } while ((x2 != xold || y2 != yold) && i <= 15);
 
   top = -1;
   // Iterate over the 8x16 grid
@@ -403,7 +410,7 @@ void rumdraw(char *pan)
     // Didn't find the thing we wanted - so kill whatever this thing was.
     //if (j >= 157) {
     if (j >= 52) {
-      r[148 + i] = 0;
+      //r[148 + i] = 0;
       new_r->room_unknown_3[i] = 0;
       continue;
     }
@@ -524,5 +531,5 @@ void rumdraw(char *pan)
 
   debug_printf("< rumdraw()\n");  
   
-  check_rumdata("rumdraw");
+  // check_rumdata("rumdraw");
 }

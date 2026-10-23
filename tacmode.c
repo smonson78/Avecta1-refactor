@@ -28,24 +28,43 @@
 
 int xmon(int room, int bit, int x, int y)
 {
-  char *r = monbuf;
+  // char *r = monbuf;
   int j, i = 1;
   
   if (bit < 119 && bit > 115) {
     bit = 110;
   }
 
-  while (( r[i] != bit || r[i + 1] != room || r[i + 3] % 16 != x || 
-        (*(r+i+3))/16 != y ) && i < 320) {
+  // i starts at 1 and continues 4 at a time until reaching 317.
+  // monbuf is 320 bytes or 0..319.
+  // The i + 3 accesses will cause a read of monbuf[320] which is out of range.
+
+  // Therefore we must limit monbuf to 4 less which is 316. (one initial byte, plus 
+  // 79 four-byte structures which is 317 bytes). i will now start at 1 and end at
+  // 313. 313 + 3 gives us 316, and there are 3 wasted bytes at the end.
+
+  // while (( r[i] != bit || r[i + 1] != room || r[i + 3] % 16 != x || 
+  //   (*(r+i+3))/16 != y ) && i < 320) {
+  //   i += 4;
+  // }
+  while (
+    (
+      monbuf[i] != bit 
+      || monbuf[i + 1] != room 
+      || monbuf[i + 3] % 16 != x 
+      || monbuf[i + 3] / 16 != y
+    //) && i < 320) {
+    ) && i < 316) {
     i += 4;
   }
 
-  if (i >= 320) {
-    return(0);
+  if (i >= 316) {
+    return 0;
   }
 
-  for (j = i; j < i+4 ; j++) {
-    r[j] = 0;
+  // Zero out the four bytes from monbuf[i] to monbuf[i + 3]
+  for (j = i; j < i + 4 ; j++) {
+    monbuf[j] = 0;
   }
   
   return 1;
@@ -159,10 +178,10 @@ int tacmode() {
         }
       }
 
-      o = rumdata[crum];
+      // o = rumdata[crum];
       room_data_t *new_o = &new_rumdata[crum];
 
-      if (mode == 0 && rnd(100) < new_o->room_unknown_2) {
+      if (mode == 0 && rnd(100) < new_o->room_monsters_chance) {
         //actmon(o[22], o[23], o[24], o[25]);
         actmon(new_o->room_monster_type, new_o->room_monster_nm, new_o->room_monster_x, new_o->room_monster_y);
         
@@ -180,10 +199,10 @@ int tacmode() {
         }
         
         // Old
-        o[26] = o[27];
+        // o[26] = o[27];
         // New
-        new_o->room_unknown_2 = new_o->room_shopkeeper_id;
-        check_rumdata("tacmode");
+        new_o->room_monsters_chance = new_o->room_shopkeeper_id;
+        //check_rumdata("tacmode");
       }
     }
 

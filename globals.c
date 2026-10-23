@@ -388,6 +388,7 @@ examination reveals a fair amount of strength beneath an amiable surface.",
 "-> The rogue, noticing %s's interest, issues a gesture of contempt."};
 
 // The number of the current room and the index into rumdata[]
+// But after refactoring: the index into new_rumdata[] plus one
 int crum;
 
 // Sprite data for 200 sprites, each 16x16 (128 bytes) with 2 wasted bytes

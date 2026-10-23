@@ -24,8 +24,7 @@ int switchrum() {
 
   debug_printf("> switchrum()\n");
 
-  // It must be room data. There are 80 of these and crum might be "current room"
-  uint8_t *r = rumdata[crum];
+  // uint8_t *r = rumdata[crum];
   room_data_t *new_r = &new_rumdata[crum];
 
   uint8_t *c;
@@ -42,11 +41,10 @@ int switchrum() {
       for (j = 0; j < 9; j++) {
         // Copy the objects data from the current room array data back into storage in rumdata[]
         // Maybe because we're leaving the room which suggests p[30] is a room number
-        r[31 + (9 * i) + j] = c[j];
+        // r[31 + (9 * i) + j] = c[j];
         new_r->object[i].unknown[j] = c[j];
       }
     }
-    check_rumdata("switchrum 1");
 
     // Init pursuit[3] to all zeroes
     // for(i=0;i<3;pursuit[i++] = 0)
@@ -74,8 +72,6 @@ int switchrum() {
       } 
     }
   }
-
-  debug_printf("-- switchrum point 1\n");
 
   if (p[30] == 127) {
     stormon();
@@ -132,8 +128,6 @@ int switchrum() {
   if (crum == 70) 
     return(1);
 
-  debug_printf("-- switchrum point 2\n");
-
   // ROOM DRAW hopefully
   rumdraw(pan);
 
@@ -167,8 +161,6 @@ int switchrum() {
     }
   }
 
-  debug_printf("-- switchrum point 3\n");
-
   /* got into the room through a trap */
   if (oldrum == crum || i == 14) {
     x = p[24];
@@ -180,6 +172,7 @@ int switchrum() {
       pursuit[2] = 0;
     }
   }
+
   drawman(0, x, y);
 
   if (oldrum == crum) {

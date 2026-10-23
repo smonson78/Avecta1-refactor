@@ -703,7 +703,7 @@ int remove(int rumobj, int thing)
 int storobj(int thing, int x, int y)
 {
    // Room Zero
-   uint8_t *r = rumdata[0];
+   //uint8_t *r = &room_zero;
 
    // int i = 1;
    // while (r[i] != 0 && i < 157) {
@@ -724,36 +724,49 @@ int storobj(int thing, int x, int y)
    }
 
    // Old rumdata[0]
-   r[i * 3 + 1] = thing;
-   r[i * 3 + 2] = 16*y + x;
-   r[i * 3 + 3] = crum;
+   // r[i * 3 + 1] = thing;
+   // r[i * 3 + 2] = 16*y + x;
+   // r[i * 3 + 3] = crum;
 
    // New room_zero
    room_zero.unknown2[i].thing_id = thing;
    room_zero.unknown2[i].thing_xy = (16 * y) + x;
    room_zero.unknown2[i].room_id = crum;   
 
-   check_rumdata("storobj");
+   // check_rumdata("storobj");
 
    return 1;
 }
 
 int xobj(int thing, int room)
 {
-   int i = 1;
+   //int i = 1;
+   int i = 0;
    // Room zero
-   uint8_t *r = rumdata[0];
+   //uint8_t *r = rumdata[0];
 
-   while( ( *(r+i) != thing || *(r+i+2) != room) && i < 157) {
-      i += 3;
+   // while( ( *(r+i) != thing || *(r+i+2) != room) && i < 157) {
+   //    i += 3;
+   // }
+   // Search for a room zero entry which has the thing and room we're looking for
+   while (
+      (room_zero.unknown2[i].thing_id != thing || room_zero.unknown2[i].room_id != room) 
+      && i < 52) {
+      i++;
    }
 
-   if (i >= 157)
-      return(0);
+   if (i >= 52) {
+      // Didn't find it
+      return 0;
+   }
 
-   *(r+i) = *(r+i+1) = *(r+i+2) = 0;
+   // Now blank it out to zeroes
+   //*(r+i) = *(r+i+1) = *(r+i+2) = 0;
+   room_zero.unknown2[i].thing_id = 0;
+   room_zero.unknown2[i].thing_xy = 0;
+   room_zero.unknown2[i].room_id = 0;
    
-   return(1);
+   return 1;
 }
 
 /****************************************************************************/
