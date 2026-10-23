@@ -88,7 +88,6 @@ int fileio(int flow) {
     }
 
     // Writes 14546 bytes to save the game.
-    //if (Fwrite(filehandle, (long)12560, rumdata) < 12560 || 
     if (
       // Room zero, then the other rooms
       Fwrite(filehandle, (long)157, &room_zero) < 157 || 
@@ -139,27 +138,31 @@ int fileio(int flow) {
       police = specbuf[34];
       outside = specbuf[26];
       crum = curmon[0][30];
-      for (i=0;i<20;i++) {
-        invtrig[i] = specbuf[i+1];
+      for (i = 0; i < 20; i++) {
+        invtrig[i] = specbuf[i + 1];
       }
       Fclose(filehandle);
 
       if (outside || fromout) {
         specbuf[32] = 1;
-        filehandle = Fopen("FILL.DAT",0);
+        filehandle = Fopen("FILL.DAT", 0);
         if (filehandle < 0) {
           return 0;
         }
-        Fseek((long)5330,filehandle,0);
-        Fread(filehandle,(long)3900,bitmap[21]);
+        Fseek((long)5330, filehandle, 0);
+        // Read just 30 sprites this time in bitmap[21 to 50]
+        Fread(filehandle, (long)3900, bitmap[21]);
         Fclose(filehandle);
+        endianness_fix(&bitmap[21], 1950, 16);
       } else {
-        filehandle = Fopen("GRAFX.DAT",0);
+        filehandle = Fopen("GRAFX.DAT", 0);
         if (filehandle < 0) {
           return 0;
         }
-        Fread(filehandle,(long)9230,bitmap[0]);
+        // We are only reading the first 71 out of the 200 images here for some reason
+        Fread(filehandle, (long)9230, bitmap[0]);
         Fclose(filehandle);
+        endianness_fix(bitmap, 4615, 16);
       }            
     }
 

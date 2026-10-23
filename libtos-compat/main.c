@@ -22,7 +22,6 @@ extern void compat_main();
 
 // Handler for when save dialogue is done
 static void SDLCALL OnSaveFileSelected(void* userdata, const char * const * filelist, int filter) {
-	GLOBAL_LOCK();
 	if (filelist && *filelist) {
 		const char* chosen_path = *filelist;
 		printf("Selected: %s\n", chosen_path);
@@ -31,9 +30,10 @@ static void SDLCALL OnSaveFileSelected(void* userdata, const char * const * file
 		globals.fs_result.selected[0] = '\0';
 	}
 
-	// Unblock the game thread
+	// Unblock the game thread by clearing the flag
+	// We don't lock the global structure here because we don't know when this function will
+	// be called (there may already be a lock held)
 	globals.game_waits_for_file_selector = 0;
-	GLOBAL_UNLOCK();
 }
 
 void *run_atari_game(void *arguments) {

@@ -378,30 +378,66 @@ int loadnew() {
 
   // Now load the first part of FILL.DAT
   // It's actually 26000 bytes long
+  // Breakdown of FILL.DAT:
+  // 0 -      = empty
+  // 1 - 23   = floor/wall textures
+  // 24       = garbage
+  // 25 - 27  = rivers
+  // 28 - 33  = empty
+  // 34       = lake water
+  // 35 - 40  = empty
+  // ---------- this is the amount read initially as "fillpic"
+  // 41 - 47  = rivers
+  // 48       = lake water
+  // 49 - 51  = empty
+  // 52 - 59  = ocean water
+  // 53       = empty
+  // 54       = terrain graphic
+  // 55 - 56  = castles
+  // 57 - 58  = rivers
+  // 59       = terrain graphics
+  // 60       = cave entrance dot
+  // ---------- up to here is the second set of 40 sprites ready into bitmap[21+]
+  // 61 - 64  = terrain graphics
+  // 65       = empty
+  // 66       = terrain graphics
+  // 67       = empty
+  // 68       = terrain graphics
+  // 69       = empty
+  // 70       = terrain graphics
+  // 71 - 198 = empty
+  // 199      = a plus sign on a black background
   fhandle = Fopen("FILL.DAT", 0);
   if (fhandle < 0) {
     return 0;
   }
-
+  
   // Just read 41 sprites into "FILLPIC"
   Fread(fhandle, (long)5330, fillpic);
 
   if (dungeon == 0) {
     c[4] = 125;
-    if(c[47] > 0 && c[14] > 0)
+    if (c[47] > 0 && c[14] > 0) {
       c[47] = 0;
+    }
     c[41] = 0;
+
+    // This seek is redundant, since it's already at that position
     Fseek((long)5330, fhandle, 0);
+
+    // Read another 40 sprites into bitmap[21 to 60] - replacing some of the existing sprites from GRAFX.DAT
     Fread(fhandle, (long)5200, bitmap[21]);
+
   } else {
     c[4] = 81;
   }
   Fclose(fhandle);
 
-  if(dungeon != 0)
-    fhandle = Fopen(savname[dungeon + 3*specbuf[30 + dungeon]],0);
-  else
-    fhandle = Fopen(savname[0],0);
+  if (dungeon != 0) {
+    fhandle = Fopen(savname[dungeon + 3 * specbuf[30 + dungeon]], 0);
+  } else {
+    fhandle = Fopen(savname[0], 0);
+  }
 
   if (fhandle < 0) {
     return(0);
@@ -418,20 +454,27 @@ int loadnew() {
   memcpy(&room_zero, new_rumdata, 157);
   // check_rumdata(); 
 
-  Fread(fhandle,(long)320,putbuf);
-  Fread(fhandle,(long)480,trigval);
-  Fread(fhandle,(long)40,specbuf);
-  if(dungeon != 0 && specbuf[30 + dungeon])
-    Fread(fhandle,(long)320,monbuf);
-  else {
-    if(new || dungeon == 0)
-      for(i=0;i<320;monbuf[i++] = 0);
+  Fread(fhandle, (long)320, putbuf);
+  Fread(fhandle, (long)480, trigval);
+  Fread(fhandle, (long)40, specbuf);
+  
+  if (dungeon != 0 && specbuf[30 + dungeon]) {
+    Fread(fhandle, (long)320, monbuf);
+  } else {
+    if (new || dungeon == 0) {
+      for (i = 0; i < 320; i++) {
+        monbuf[i] = 0;
+      }
     }
-  if(flag) { /* got killed outside of kilkaney */
+  }
+
+  if (flag) {
+    /* got killed outside of Kilkaney */
     monbuf[1] = 112;
     monbuf[2] = 30;
     monbuf[4] = 38;
-    }
+  }
+
   Fclose(fhandle);
   dismax = specbuf[21];
   c[24] = specbuf[22];

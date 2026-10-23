@@ -522,14 +522,11 @@ int16_t fsel_input(char *fs_iinpath, char *fs_iinsel, int16_t *fs_iexbutton) {
 
   SDL_PushEvent(&event);
   
-  // Now wait for the file selector to be done
+  // Now wait for the file selector to be done. No need for locking
   do {
-    SDL_Delay(1);
-    GLOBAL_LOCK();
-    int result = globals.game_waits_for_file_selector;
-    GLOBAL_UNLOCK();
-    if (result == 0) {
-    break;
+    SDL_Delay(10);
+    if (globals.game_waits_for_file_selector== 0) {
+      break;
     }
   } while (1);
 

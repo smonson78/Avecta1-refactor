@@ -68,7 +68,7 @@ int32_t Fopen(const char *fname, int16_t mode)
     strcpy(posix_mode, "w+");
   }
 
-  FILE *handle = fopen(fname, "rb");
+  FILE *handle = fopen(fname, posix_mode);
   if (handle) {
     globals.file_handles[index] = handle;
   } else {
