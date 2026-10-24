@@ -101,33 +101,6 @@ char *name[] = {
   "orc","crusher","flamer","rat","bartender","rogue"
 };
 
-
-// If it's curmon[0]:
-//   44 - number of arrows owned but also "bane"?
-//   49 - gold amount
-
-// If it's curmon[5..11]:
-//   31 - intell routine
-//   41 - base chance 1 attack
-//   42 - base chance 2 attack
-//   43 - base chance 3 attack
-//   44 - bane
-//   45 - poison mode
-//   50 - physical strength
-
-// It's almost impossible to move curmon[] from an array of chars to a structure.
-// The author has done lots of very strange things such as have pointers that might
-// be to different arrays at different times, and the offsets still have to work.
-// Goodbye strongly typed language.
-// I will leave this one until last.
-
-uint8_t curmon[12][60] = {
-  // curmon 0 - the player. Only 15 default bytes populated out of 60.
-  {1, 4, 50, 0, 81, 5, 60, 8, 0, 0, 0, 4, 3, 90, 10},
-};
-
-// new_curmon is now in curmon.c
-
 uint8_t invnpc[4][20];
 
 // Monster types
@@ -251,14 +224,16 @@ char spelinfo[24][3] = {
   {0, 0, 10}   /* teleport */
 };
 
-char *com[] = {"the ",
-               "  place",
-               "  object",
-               "  target",
-               "   spot",
-               "   exit",
-               "   item",
-               "   item"};
+char *com[] = {
+  "the ",
+  "  place",
+  "  object",
+  "  target",
+  "   spot",
+  "   exit",
+  "   item",
+  "   item"
+};
 char fname[] = "grafx.dat";
 
 // Player name.
@@ -406,6 +381,8 @@ int crum;
 
 // Sprite data for 200 sprites, each 16x16 (128 bytes) with 2 wasted bytes
 int16_t bitmap[200][65];
+// Room objects, doors, items, monster sprites (including the player)
+
 
 // The number of objects in the current room - never used.
 //int objnum;

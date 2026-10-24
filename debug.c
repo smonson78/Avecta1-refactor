@@ -37,13 +37,12 @@ void check_curmon(char *location) {
      for (int b = 0; b < sizeof(curmon_t); b++) {
       int old = curmon[c][b];
       int new = ((uint8_t *)new_monster)[b];
-
       
       if (new != old) {
         // Clear screen
-        debug_printf("!!!!!!! Inconsistency in curmon!\n");
+        debug_printf("!!!!!!! Inconsistency in curmon vs new_curmon!\n");
         debug_printf("Location: %s\n", location);
-        debug_printf("curmon number %d, byte %d\n", c, b);
+        debug_printf("Monster number %d, byte %d\n", c, b);
         debug_printf("curmon: 0x%02x vs new_curmon: 0x%02x\n", old, new);
         debug_printf("Press any key to continue\n");
         // Don't actually halt the game yet

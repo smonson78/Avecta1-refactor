@@ -81,8 +81,6 @@ int tacmode() {
   
   do {
     // This happens multiple times per move. 4 times per 1-square move actually.
-
-    debug_printf("... in the main loop of tacmode()\n");
     for (i = 0; i < 13; i++) {
       grflist[i] = 0;
       actlist[i] = 0;

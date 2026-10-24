@@ -987,16 +987,18 @@ World's Spells sails across the room to him in a ball of flame!",
 recites `Yog ... vradhe ... acka pranath ... ' A flame leaps from the page\
  and envelops the creature!", NULL, NULL, NULL, NULL, NULL, NULL);
       blowup(*(c + 24), *(c + 25));
-      permon[19].unknown4 = 121;
+      permon[19].sprite_id = 121; // Red pants guy
       actmon(19, 1, 5, 4);
       prnt("-> Standing before %s is the real Leveth! `Well, well,' he chuckles\
 , `Now, to the business of finding this horrid creature Gondrath and expunging \
 it from the face of Avecta.  But first I must aid you.'",
            s2, NULL, NULL, NULL, NULL, NULL);
-      if (curmon[0][4] != 81)
-        prnt("-> Leveth adds, `And do get rid of that silly mask! It\
- isn't Halloween, you know. You are likely to upset the locals, especially \
-that bartender at the Red Lion. Orcs are most unpopular in these parts.'", NULL, NULL, NULL, NULL, NULL, NULL);
+      if (curmon[0][4] != 81) {
+        prnt("-> Leveth adds, `And do get rid of that silly mask! "
+          "It isn't Halloween, you know. You are likely to upset the locals, "
+          "especially that bartender at the Red Lion. Orcs are most unpopular "
+          "in these parts.'", NULL, NULL, NULL, NULL, NULL, NULL);
+      }
       prnt("-> `Now take this key!  It will open the way to the \
 dreaded lair of Melkthrop, which is in the ruins of the ancient abbey southeast\
  of Kilkaney.' He drops an odd colored key on the floor.", NULL, NULL, NULL, NULL, NULL, NULL);
@@ -1011,7 +1013,8 @@ get you out! What Melkthrop has done to the Abbey since inhabiting it I know \
 not.'", NULL, NULL, NULL, NULL, NULL, NULL);
       prnt("-> `Beware, Melkthrop is a tricky demon!  He has great \
 plans and, so Gondrath said, a strange device called an ectoplasmic converter. \
-I have an idea that Melkthrop is storing energy of horrible form in it.'", NULL, NULL, NULL, NULL, NULL, NULL);
+I have an idea that Melkthrop is storing energy of horrible form in it.'", 
+NULL, NULL, NULL, NULL, NULL, NULL);
       prnt("-> Leveth chuckles, `Demons! They're so full of plots and \
 schemes that they very often confuse themselves into disaster. You do remem\
 ber my little escapade with that conceited demon Markrotog at the cavern called\
@@ -1042,8 +1045,7 @@ Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
     if (!flag)
     {
       //if (rumdata[50][0] == 0)
-      if (new_rumdata[50].room_oldxy == 0)
-      {
+      if (new_rumdata[50].room_oldxy == 0) {
         prnt("-> The terrifying vision of life in death stirs slowly. Inex\
 plicably, %s decides not to strike out at the horror immediately!",
              s2, NULL, NULL, NULL, NULL, NULL);
@@ -1095,10 +1097,15 @@ strength.' The vile creature pauses, drawing painful breaths through ravaged \
 lips.", NULL, NULL, NULL, NULL, NULL, NULL);
     prnt("-> `My only hope ... you would find me ... bring Wethwicker's \
 ... book has spell ... to restore my body.'", NULL, NULL, NULL, NULL, NULL, NULL);
-    if (flag2)
+    
+    if (flag2) {
       goto take;
-    if (flag3)
+    }
+
+    if (flag3) {
       goto moan;
+    }
+    
     break;
   }
 }

@@ -86,7 +86,6 @@ com:
   }
 
 top:
-  debug_printf("...input doing graphical stuff\n");
   Vsync();
   vbl_animation_off();
   header(w);

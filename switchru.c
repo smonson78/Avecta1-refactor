@@ -259,10 +259,10 @@ int getmon(int room)
   char *r = monbuf;
   int i,j,k,type,count=0,x,y;
 
-  for (i=1;i<320;i += 4) {
-    if (*(r+i+1) == room) {
-      for (j=1;j<26;j++) {
-        if (permon[j].unknown4 == r[i]) {
+  for (i = 1; i < 320; i += 4) {
+    if (r[i + 1] == room) {
+      for (j = 1; j < 26; j++) {
+        if (permon[j].sprite_id == r[i]) {
           break;
         }
       }
@@ -297,7 +297,7 @@ int getmon(int room)
           c[1] = p->unknown1;
           c[2] = p->unknown2;
           c[3] = p->monster_name_id;
-          c[4] = p->unknown4;
+          c[4] = p->sprite_id;
           c[5] = p->unknown5;
           c[6] = p->unknown6;
           c[7] = p->unknown7;

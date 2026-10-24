@@ -10,8 +10,10 @@ typedef struct {
   uint8_t unknown1[2];
   // 3
   uint8_t monster_name_id;
-  // 4-13
-  uint8_t unknown4[10];
+  // 4
+  uint8_t sprite_id;
+  // 5-13
+  uint8_t unknown5[9];
   // 14
   uint8_t spell_units;
   // 15 - 23
@@ -32,8 +34,12 @@ typedef struct {
   uint8_t intelligence_routine;
   // 32
   uint8_t poison_mode_1; // this one is assigned another value from a poison mode
-  // 33-36
-  uint8_t unknown33[4];
+  // 33-34
+  uint8_t unknown33[2];
+  // 35
+  uint8_t stink_lines;
+  // 36
+  uint8_t unknown36;
   // 37
   uint8_t unknown37;
   // 38-40
@@ -50,8 +56,12 @@ typedef struct {
   uint8_t poison_mode_2; // this one is specifically described as poison mode in comments
   // 46
   uint8_t magic_mode_1;
-  // 47-49
-  uint8_t unknown47[3];
+  // 47
+  uint8_t poisoned;
+  // 48
+  uint8_t unknown48;
+  // 49
+  uint8_t gold_amount;
   // 50
   uint8_t physical_strength;
   // 51

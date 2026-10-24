@@ -13,6 +13,10 @@ void attack(int pc, int xdes, int ydes) {
   ynow = curmon[pc][25];
   bit = curmon[pc][4];
 
+  // xnow = new_curmon[pc].x;
+  // ynow = new_curmon[pc].y;
+  // bit = new_curmon[pc].sprite_id;
+
   xadd = xdes - xnow;  /* these better be either -1,0, or 1 */
   yadd = ydes - ynow;
 
@@ -37,18 +41,18 @@ void attack(int pc, int xdes, int ydes) {
   for (i = 0; i < 8; i += 2) {
     Vsync();
     Vsync();
-    storsc(storbuf[pc],xnow + xadd*i,ynow + yadd*i,1,addr);
-    storsc(storbuf[pc],xnow + xadd*(2+i),ynow + yadd*(2+i),0,addr);
-    blt(bitmap[bit],xnow + xadd*(2+i),ynow + yadd*(2+i));
+    storsc(storbuf[pc], xnow + xadd*i,ynow + yadd*i,1,addr);
+    storsc(storbuf[pc], xnow + xadd*(2+i),ynow + yadd*(2+i),0,addr);
+    blt(bitmap[bit], xnow + xadd*(2+i),ynow + yadd*(2+i));
   }
 
   for (i = 8; i > 0; i -= 2) {
     Vsync();
     Vsync();
-    storsc(storbuf[pc],xnow + xadd*i,ynow + yadd*i,1,addr);
-    storsc(storbuf[pc],xnow + xadd*(i-2),ynow + yadd*(i-2),0,addr);
+    storsc(storbuf[pc], xnow + xadd*i,ynow + yadd*i,1,addr);
+    storsc(storbuf[pc], xnow + xadd*(i-2),ynow + yadd*(i-2),0,addr);
     if (i != 2 || flag) {
-      blt(bitmap[bit],xnow + xadd*(i-2),ynow + yadd*(i-2));
+      blt(bitmap[bit], xnow + xadd*(i-2),ynow + yadd*(i-2));
     }
   }
 

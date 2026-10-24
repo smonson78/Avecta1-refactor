@@ -51,7 +51,7 @@ int actmon(int type, int nm, int x, int y)
     c[1] = p->unknown1;
     c[2] = p->unknown2;
     c[3] = p->monster_name_id;
-    c[4] = p->unknown4;
+    c[4] = p->sprite_id;
     c[5] = p->unknown5;
     c[6] = p->unknown6;
     c[7] = p->unknown7;
@@ -84,20 +84,20 @@ int actmon(int type, int nm, int x, int y)
     new_c->unknown1[0] = p->unknown1;
     new_c->unknown1[1] = p->unknown2;
     new_c->monster_name_id = p->monster_name_id;
-    new_c->unknown4[0] = p->unknown4;
-    new_c->unknown4[1] = p->unknown5;
-    new_c->unknown4[2] = p->unknown6;
-    new_c->unknown4[3] = p->unknown7;
-    new_c->unknown4[4] = p->unknown8;
-    new_c->unknown4[5] = p->unknown9;
-    new_c->unknown4[6] = p->unknown10;
-    new_c->unknown4[7] = p->unknown11;
-    new_c->unknown4[8] = p->unknown12;
-    new_c->unknown4[9] = p->unknown13;
-    new_c->unknown4[10] = p->unknown14;
+    new_c->sprite_id = p->sprite_id;
+    new_c->unknown5[0] = p->unknown5;
+    new_c->unknown5[1] = p->unknown6;
+    new_c->unknown5[2] = p->unknown7;
+    new_c->unknown5[3] = p->unknown8;
+    new_c->unknown5[4] = p->unknown9;
+    new_c->unknown5[5] = p->unknown10;
+    new_c->unknown5[6] = p->unknown11;
+    new_c->unknown5[7] = p->unknown12;
+    new_c->unknown5[8] = p->unknown13;
+    new_c->unknown5[9] = p->unknown14;
 
-    new_c->unknown4[11] = 8;
-    new_c->unknown4[12] = 1;
+    new_c->unknown15[0] = 8;
+    new_c->unknown15[1] = 1;
 
     new_c->x = x;
     new_c->y = y;
@@ -208,7 +208,7 @@ int actmon(int type, int nm, int x, int y)
     c[1] = p->unknown1;
     c[2] = p->unknown2;
     c[3] = p->monster_name_id;
-    c[4] = p->unknown4;
+    c[4] = p->sprite_id;
     c[5] = p->unknown5;
     c[6] = p->unknown6;
     c[7] = p->unknown7;
@@ -250,17 +250,17 @@ int actmon(int type, int nm, int x, int y)
     new_c->unknown1[0] = p->unknown1;
     new_c->unknown1[1] = p->unknown2;
     new_c->monster_name_id = p->monster_name_id;
-    new_c->unknown4[0] = p->unknown4;
-    new_c->unknown4[1] = p->unknown5;
-    new_c->unknown4[2] = p->unknown6;
-    new_c->unknown4[3] = p->unknown7;
-    new_c->unknown4[4] = p->unknown8;
-    new_c->unknown4[5] = p->unknown9;
-    new_c->unknown4[6] = p->unknown10;
-    new_c->unknown4[7] = p->unknown11;
-    new_c->unknown4[8] = p->unknown12;
-    new_c->unknown4[9] = p->unknown13;
-    new_c->unknown4[10] = p->unknown14;    
+    new_c->sprite_id = p->sprite_id;
+    new_c->unknown5[0] = p->unknown5;
+    new_c->unknown5[1] = p->unknown6;
+    new_c->unknown5[2] = p->unknown7;
+    new_c->unknown5[3] = p->unknown8;
+    new_c->unknown5[4] = p->unknown9;
+    new_c->unknown5[5] = p->unknown10;
+    new_c->unknown5[6] = p->unknown11;
+    new_c->unknown5[7] = p->unknown12;
+    new_c->unknown5[8] = p->unknown13;
+    new_c->unknown5[9] = p->unknown14;    
 
     new_c->intelligence_routine = p->intell_routine;   /* intell routine */
 
@@ -281,14 +281,14 @@ int actmon(int type, int nm, int x, int y)
       new_c->unknown1[54] = 1;     /* then he is immune to magic as in p.magic_mode */
     }
 
-    new_c->unknown1[15] = 8;       /* installed with a wait */
-    new_c->unknown1[16] = 1;
-    new_c->unknown1[30] = crum;
-    new_c->unknown1[39] = i;
+    new_c->unknown15[0] = 8;       /* installed with a wait */
+    new_c->unknown15[1] = 1;
+    new_c->current_room = crum;
+    new_c->unknown38[1] = i;
 
     // Pedestrian?
     if (type == 18) {
-      new_c->unknown4[0] = 116 + rnd(3);
+      new_c->sprite_id = 116 + rnd(3);
     }    
 
     drawman(i, c[24], c[25]);

@@ -33,10 +33,12 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
   int light, keybd = 0, keystk = 0, mflag=0,rflag=0, tflag = 0,inrflag,intflag = 0;
   uint8_t *z;
   uint8_t *c = NULL;
+  //curmon_t *new_c = NULL;
   char *string, letter = 0;
 
   if (winker != 0) {
-    c = curmon[winker-1];
+    c = curmon[winker - 1];
+    //new_c = &new_curmon[winker - 1];
   }
 
   light = new_rumdata[crum].room_has_bg;
@@ -51,10 +53,13 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
     vq_mouse(handle, &status, x, y);
   } while (status != 0);
 
-  if (top1 == 3 && bot == 15)
+  if (top1 == 3 && bot == 15) {
     keybd = 13;
-  if (top1 ==  8 && bot == 11)
+  }
+
+  if (top1 ==  8 && bot == 11) {
     keybd = 4;
+  }
 
   Vsync();
   mouse_on();
@@ -62,8 +67,8 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
   do {
     // Read a command from the keyboard
     if (check_char_waiting() == -1) {
-        keystk = 1;
-        letter = read_char_no_echo();
+      keystk = 1;
+      letter = read_char_no_echo();
     }
 
     if (keybd != 0 && keystk) {
@@ -166,7 +171,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
         Vsync();
         mouse_off();
         tflag = 0;
-        toggle(32,oldline,7);
+        toggle(32, oldline, 7);
         mouse_on();
       }
 
@@ -202,12 +207,12 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
     }
 
     if (type == 2 && (newx < 16 || newline < top1 || newline > bot ) ) {
-    if(tflag) {
-      tflag = 0;
-      Vsync();
-      mouse_off();
-      toggle(32,oldline,7);
-      mouse_on();
+      if (tflag) {
+        tflag = 0;
+        Vsync();
+        mouse_off();
+        toggle(32, oldline, 7);
+        mouse_on();
       } 
       oldline = newline;
       oldx = newx;
@@ -240,19 +245,21 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
               }
             }
             zline[oldx][oldy][4] = 0;
-            if(mflag > 0 && mode) {
-              toggle(32,mflag,7);
+            if (mflag > 0 && mode) {
+              toggle(32, mflag, 7);
               mflag = 0;
-              }
+            }
             rflag = 0;
           }
 
           if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
             (winker > 0 && c[24] == newx && c[25] == newy) ) {
+          // if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
+          //   (winker > 0 && new_c->x == newx && new_c->y == newy) ) {              
             Vsync();
             for (j = 0; j < 2; j++) {
               for (k = 0; k < 2; k++) {
-                  toggle(2*newx+j,2*newy+k,0);
+                  toggle(2 * newx + j, 2 * newy + k, 0);
               }
             }
             z[4] = 1;
@@ -262,9 +269,12 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
           oldy = newy;
           if (mflag == 0 && mode && z[2] > 3 && (z[5] > 0 || light) 
             && curmon[z[2]][31] < 4 ) {
+          // if (mflag == 0 && mode && z[2] > 3 && (z[5] > 0 || light) 
+          //   && new_curmon[z[2]].intelligence_routine < 4 ) {
             mflag = curmon[z[2]][33];
+            // mflag = new_curmon[z[2]].unknown33[0];
             Vsync();
-            toggle(32,mflag,7);             
+            toggle(32, mflag, 7);             
           }
           mouse_on();
         }
@@ -280,7 +290,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 
           zline[oldx][oldy][4] = 0;
           if (mflag > 0 && mode) {
-            toggle(32,mflag,7);
+            toggle(32, mflag, 7);
             mflag = 0;
           }
           mouse_on();
@@ -368,29 +378,39 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 
 int lom(int pc, int x, int y)
 {
-   int x2,y2,i,j,q;
-   long int k,l,m,n;
-   char z1;
-   uint8_t *z;
-   uint8_t *c0 = curmon[pc];
-   x2 = *(c0+24); /* fetch the x-coordinate of the PC */
-   y2 = *(c0+25); /* fetch the y-coordinate of the PC */
-   i = (x2-x);            /* find difference between target and PC */
-   j = (y2-y);            
-   k = abs(i);   /* take absolute value of i and j */
-   l = abs(j);
-   if(k < 2 && l < 2)  /* always adjacent will make it through */
-   return(1);
-   if(!zline[x][y][5] && !new_rumdata[crum].room_has_bg && pc < 4) /* the square is dark */
-   return(0);
-   if (i != 0)
+  int x2,y2,i,j,q;
+  long int k,l,m,n;
+  char z1;
+  uint8_t *z;
+  uint8_t *c0 = curmon[pc];
+  //curmon_t *new_c0 = &new_curmon[pc];
+
+  x2 = *(c0+24); /* fetch the x-coordinate of the PC */
+  y2 = *(c0+25); /* fetch the y-coordinate of the PC */
+  //  x2 = new_c0->x; /* fetch the x-coordinate of the PC */
+  //  y2 = new_c0->y; /* fetch the y-coordinate of the PC */
+
+  i = (x2-x);            /* find difference between target and PC */
+  j = (y2-y);            
+  k = abs(i);   /* take absolute value of i and j */
+  l = abs(j);
+  
+  if (k < 2 && l < 2) { /* always adjacent will make it through */
+    return 1;
+  }
+
+  if (!zline[x][y][5] && !new_rumdata[crum].room_has_bg && pc < 4) { /* the square is dark */
+    return 0;
+  }
+
+  if (i != 0)
       i = ( i/k ); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
-   if (j != 0)
+  if (j != 0)
       j = ( j/l );  /* j is +1 if y2>y and j is -1 if y2<y, else = 0  */
-   m = k;      /* m is the temporary value of x separation,called roll variable */
-   n = l;      /* n is the temporary value of y separation, called roll variable */
-   q = 0;
-   while ( (x != x2) || (y != y2) ) {
+  m = k;      /* m is the temporary value of x separation,called roll variable */
+  n = l;      /* n is the temporary value of y separation, called roll variable */
+  q = 0;
+  while ( (x != x2) || (y != y2) ) {
       if (q == 1) {
          z = zline[x][y];
          z1 = crumobj[z[1]][0];
@@ -424,40 +444,50 @@ int los(int pc, int x, int y)
    int x2,y2,i,j,q;
    long int k,l,m,n;
    uint8_t *c0 = curmon[pc];
+   //curmon_t *new_c0 = &new_curmon[pc];
    uint8_t *z;
    char z1;
 
    x2 = *(c0+24); /* fetch the x-coordinate of the PC */
    y2 = *(c0+25); /* fetch the y-coordinate of the PC */
+  //  x2 = *(new_c0->x); /* fetch the x-coordinate of the PC */
+  //  y2 = *(new_c0->y); /* fetch the y-coordinate of the PC */   
+
    i = (x2-x);            /* find difference between target and PC */
-   j = (y2-y);            
+   j = (y2-y);
+
    k = abs(i);   /* take absolute value of i and j */
    l = abs(j);
 
    if (k < 2 && l < 2) {
       /* always adjacent will make it through */
-      return(1);
+      return 1;
    }
 
    if (!zline[x][y][5] && !new_rumdata[crum].room_has_bg && pc < 4) {
       /* the square is dark */
-      return(0);
+      return 0;
    }
 
-   if (i != 0)
+   if (i != 0) {
       i = ( i/k ); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
-   if (j != 0)
+   }
+
+   if (j != 0) {
       j = ( j/l );  /* j is +1 if y2>y and j is -1 if y2<y, else = 0  */
-   m = k;      /* m is the temporary value of x separation,called roll variable */
+   }
+
+   m = k;      /* m is the temporary value of x separation, called roll variable */
    n = l;      /* n is the temporary value of y separation, called roll variable */
    q = 0;
+
    while ( (x != x2) || (y != y2) ) {
       if (q == 1) {
          z = zline[x][y];
          z1 = crumobj[z[1]][0];
          if(*z != 1 || ( z[1] != 0 && z1 == 1) )
             return(0);    
-         q = 0;  /* all this is stored in zline array  for each room     */
+         q = 0;  /* all this is stored in zline array for each room     */
       }
       --m;         /* decrement each roll variable */
       --n;
@@ -472,7 +502,8 @@ int los(int pc, int x, int y)
          n = l;
       }
    }
-   return(1);  /* if it makes it all the way through then los is open */         
+
+   return 1;  /* if it makes it all the way through then los is open */         
 }
 
 /*****************************************************************************/
@@ -568,15 +599,17 @@ int rnd(int max)
 
 int adjac(int pc, int x, int y)
 {
-   int xnow,ynow;
-   xnow = curmon[pc][24];
-   ynow = curmon[pc][25];
-   x = abs(xnow-x);
-   y = abs(ynow-y);
-   if(x <= 1 && y <= 1) {
-      return(1);
+   int xnow = curmon[pc][24];
+   int ynow = curmon[pc][25];
+  //  int xnow = new_curmon[pc].x;
+  //  int ynow = new_curmon[pc].y;
+   x = abs(xnow - x);
+   y = abs(ynow - y);
+
+   if (x <= 1 && y <= 1) {
+      return 1;
    } else {
-      return(0);
+      return 0;
    }
 }	
 
@@ -587,96 +620,123 @@ int adjac(int pc, int x, int y)
 
 int move(int obj, int flag, int x, int y)
 {
-   uint8_t *c = crumobj[obj];
-   uint8_t *z;
-   int done, i, j;
-   int light = new_rumdata[crum].room_has_bg;
+  uint8_t *c = crumobj[obj];
+  uint8_t *z;
+  int done, i, j;
+  int light = new_rumdata[crum].room_has_bg;
 
-   if (flag) {
-      done = 0;
-      for(i = -1;i <= 1;i++) {
-         for(j = -1;j <= 1;j++) {
-            if(i == 0 && j == 0)
-                  continue;
-            z = zline[x+i][y+j];
-            if (*z == 1 && z[1] == 0 && z[2] == 0 &&
-                  (curmon[0][24] != x+i || curmon[0][25] != y+j)) {
-               if(obj > 13)
-                  xobj(*c,crum);
-               zline[x][y][1] = 0;
-               if(light || zline[x][y][5] > 0)
-                  drawsq(x,y);
-               z[1] = obj;
-               c[6] = x+i;
-               c[7] = y+j;
-               if(obj > 13) {
-                  storobj(*c,x+i,y+j);
-               }
-               if(light || z[5] > 0) {
-                  drawsq(x+i,y+j);
-               }
-               done = 1;
-               break;
-            }
-         }
-         if (done) {
-            break;
-         }
+  if (flag) {
+    done = 0;
+    for (i = -1; i <= 1; i++) {
+      for (j = -1;j <= 1;j++) {
+        if (i == 0 && j == 0) {
+          continue;
+        }
+
+        z = zline[x+i][y+j];
+        if (*z == 1 && z[1] == 0 && z[2] == 0 &&
+          (curmon[0][24] != x+i || curmon[0][25] != y+j)) {
+        // if (*z == 1 && z[1] == 0 && z[2] == 0 &&
+        //   (new_curmon[0].x != x+i || new_curmon[0].y != y+j)) {
+          if (obj > 13) {
+            xobj(*c, crum);
+          }
+
+          zline[x][y][1] = 0;
+
+          if (light || zline[x][y][5] > 0) {
+            drawsq(x, y);
+          }
+
+          z[1] = obj;
+          c[6] = x+i;
+          c[7] = y+j;
+
+          if (obj > 13) {
+            storobj(*c, x + i, y + j);
+          }
+
+          if (light || z[5] > 0) {
+            drawsq(x + i, y + j);
+          }
+
+          done = 1;
+          break;
+        }
       }
-   }
 
-   if(!flag) {
-      zline[c[6]][c[7]][1] = 0;
-      if(light || zline[c[6]][c[7]][5] > 0)
-         drawsq(c[6],c[7]);
-      c[6] = x;
-      c[7] = y;
-      zline[x][y][1] = obj;
-      if(light || zline[x][y][5] > 0)
-         drawsq(x,y);
-      if(obj > 13) {
-         xobj(*c,crum);
-         storobj(*c,x,y);
-         }
-      done = 1;
-   }
-   return done;
+      if (done) {
+        break;
+      }
+    }
+  }
+
+  if (!flag) {
+    zline[c[6]][c[7]][1] = 0;
+    
+    if (light || zline[c[6]][c[7]][5] > 0) {
+      drawsq(c[6],c[7]);
+    }
+
+    c[6] = x;
+    c[7] = y;
+    zline[x][y][1] = obj;
+
+    if (light || zline[x][y][5] > 0) {
+      drawsq(x,y);
+    }
+
+    if (obj > 13) {
+      xobj(*c,crum);
+      storobj(*c,x,y);
+    }
+    done = 1;
+  }
+  return done;
 }
 
 int putinto(int rumobj, int thing)
 {
    int i = 0;
-   while(putbuf[i] != 0 && i < 320) {
+   while (putbuf[i] != 0 && i < 320) {
       i += 4;
    }
-   if(i >= 320)
-      return(0);
+
+   if (i >= 320) {
+      return 0;
+   }
+
    putbuf[i] = 1;
    putbuf[i+1] = thing;
    putbuf[i+2] = rumobj;
    putbuf[i+3] = crum;
 
-   return(1);
+   return 1;
 }
 
 int putaway(int pc, int thing)
 {
-   uint8_t *i = invnpc[pc];
-   int j = 1;
-   if(thing == 0)
-      return(1);
-   if(*i > 9 || thing == 81)
-      return(0);
-   while(*(i+j) != 0 && j < 11) {
-      j++;
-   }
-   if(j == 11)
-      return(0);
-   if(thing < 46 && thing > 40)
-      curmon[pc][32] = 0;
-   *(i+j) = thing;
-   *i += 1;
-   return(1);
+  uint8_t *i = invnpc[pc];
+  int j = 1;
+  if (thing == 0) {
+    return(1);
+  }
+  if (*i > 9 || thing == 81) {
+    return 0;
+  }
+  while (*(i+j) != 0 && j < 11) {
+    j++;
+  }
+  if (j == 11) {
+    return 0;
+  }
+  if (thing < 46 && thing > 40) {
+    curmon[pc][32] = 0;
+    new_curmon[pc].poison_mode_1 = 0;
+  }
+  *(i + j) = thing;
+  *i += 1;
+  return 1;
 }
 
 int takeout(int pc, int thing)
@@ -788,104 +848,133 @@ int status(int pc)
   int16_t i, j;
   int ret,flag = 0;
   uint8_t *c = curmon[pc];
-  char scratch[3],*w = (pc == 0 ? pname : name[c[3]]);
+  curmon_t *new_c = &new_curmon[pc];
+  char scratch[3];
+  char *w = (pc == 0 ? pname : name[c[3]]);
+  //char *w = (pc == 0 ? pname : name[new_c->monster_name_id]);
 
-   if (pc > 3) {
-      return(1);
-   }
+  // It's normally 0 for the hero, but it seems like 1-3 are also possible here.
+  // Maybe parties were planned
+  if (pc > 3) {
+    return 1;
+  }
 
-   Vsync();
-   vbl_animation_off();
-   top(1);
-   clrinp();
-   header(w);
-   for (i = 0; i < 2; i++) {
-      textsix(1, 260, 9 + 8 * i, strlen(statword[i]), statword[i]);
-   }
-   v_rvon(handle);
-   for (i = 2; i < 5; i++) {
-      vs_curaddress(handle,2*i,33);
-      printf("        ");
-      textsix(1, 260, 16 * i - 7, strlen(statword[i]), statword[i]);
-   }
-   textsix(1, 260, 33, strlen(obj[c[45]]), obj[c[45]]);
-   textsix(1, 260, 49, strlen(obj[c[46]]), obj[c[46]]);
-   sprintf(scratch, "%d", c[2] - c[1]);
-   textsix(1, 300, 9, 2, scratch);
+  Vsync();
+  vbl_animation_off();
+  top(1);
+  clrinp();
+  header(w);
 
-   if (c[47] > 0) {
-      sprintf(scratch, "%c", 'P');
-   } else {
-      sprintf(scratch, "%c", 'G');
-   }
-   textsix(1, 314, 9, 1, scratch);
+  for (i = 0; i < 2; i++) {
+    textsix(1, 260, 9 + 8 * i, strlen(statword[i]), statword[i]);
+  }
 
-   sprintf(scratch, "%d", c[14]);
-   textsix(1, 300, 17, strlen(scratch), scratch);
+  v_rvon(handle);
+  for (i = 2; i < 5; i++) {
+    vs_curaddress(handle, 2 * i, 33);
+    printf("        ");
+    textsix(1, 260, 16 * i - 7, strlen(statword[i]), statword[i]);
+  }
+  textsix(1, 260, 33, strlen(obj[c[45]]), obj[c[45]]);
+  textsix(1, 260, 49, strlen(obj[c[46]]), obj[c[46]]);
+  // textsix(1, 260, 33, strlen(obj[new_c->poison_mode_2]), obj[new_c->poison_mode_2]);
+  // textsix(1, 260, 49, strlen(obj[new_c->magic_mode_1]), obj[new_c->magic_mode_1]);
 
-   v_rvoff(handle);
+  sprintf(scratch, "%d", c[2] - c[1]);
+  //sprintf(scratch, "%d", new_c->unknown1[1] - new_c->unknown1[0]);
+  textsix(1, 300, 9, 2, scratch);
 
-   for (i = 5; i < 9; i++) {
-      textsix(1, 260, 25 + 8 * i, strlen(statword[i]), statword[i]);
-   }
+  if (c[47] > 0) {
+  // if (new_c->poisoned > 0) {
+    sprintf(scratch, "%c", 'P');
+  } else {
+    // Good health
+    sprintf(scratch, "%c", 'G');
+  }
+  textsix(1, 314, 9, 1, scratch);
 
-   Vsync();
-   vbl_animation_on();
-   sgetxy(&i, &j, 2, 8, 11, &ret);
-   top(1);
-   clrinp();
-   
-   ret -= 7;
-   switch(ret) {
-      case 1:
-      case 2:
-         if (ret == 2) {
-            if (c[41] > 0) {
-               c[46] = 0;
-               litetrol(c[24],c[25],0);
-            } 
-            if (c[41] > 64) {
-               c[42] += 1;
-            }
-            if (c[41] > 0) {
-               c[41] = 0;
-            }
-         }
-         j = invent(pc);
-         if (j == 0) {
-            if (!putaway(pc,c[44+ret])) {
-               error(7);
-               break;
-            }
-            c[44+ret] = 0;
-            break;
-         } 
-         if (c[44+ret] != 0 ) { 
-            if (!putaway(pc, c[44 + ret])) {
-               error(7);
-               break;
-            }
-         }
-         takeout(pc, j);
-         *(c + 44 + ret) = j;
-         if (c[45] < 46 && c[45] > 40) {
-            c[32] = c[45];
-         }
-         break;
-      case 3:
-         invent(pc);
-         flag = 1;
-         break;
-      default:
-         flag = 1;
-         break;
-   }
+  sprintf(scratch, "%d", c[14]);
+  // sprintf(scratch, "%d", new_c->spell_units);
+  textsix(1, 300, 17, strlen(scratch), scratch);
 
-   top(1);
-   clrinp();
-   dotop(pc);
-   
-   return(flag);
+  v_rvoff(handle);
+
+  for (i = 5; i < 9; i++) {
+    textsix(1, 260, 25 + 8 * i, strlen(statword[i]), statword[i]);
+  }
+
+  Vsync();
+  vbl_animation_on();
+  sgetxy(&i, &j, 2, 8, 11, &ret);
+  top(1);
+  clrinp();
+  
+  ret -= 7;
+  switch(ret) {
+    case 1:
+    case 2:
+      if (ret == 2) {
+        if (c[41] > 0) {
+          //if (new_c->base_chance_1_attack > 0) {
+          c[46] = 0;
+          new_c->magic_mode_1 = 0;
+
+          litetrol(c[24], c[25],0);
+          //litetrol(new_c->x, new_c->y, 0);
+        }
+
+        if (c[41] > 64) {
+        //if (new_c->base_chance_1_attack > 64) {
+          c[42] += 1;
+          new_c->base_chance_2_attack++;
+        }
+
+        if (c[41] > 0) {
+        //if (new_c->base_chance_1_attack > 0) {
+          c[41] = 0;
+          new_c->base_chance_1_attack = 0;
+        }
+        // Even better, just set it to 0 without checking.
+
+      }
+
+      j = invent(pc);
+      if (j == 0) {
+        if (!putaway(pc, c[44 + ret])) {
+          error(7);
+          break;
+        }
+        c[44 + ret] = 0;
+        break;
+      }
+
+      if (c[44 + ret] != 0 ) { 
+        if (!putaway(pc, c[44 + ret])) {
+          error(7);
+          break;
+        }
+      }
+      takeout(pc, j);
+      *(c + 44 + ret) = j;
+      if (c[45] < 46 && c[45] > 40) {
+        c[32] = c[45];
+      }
+      break;
+
+    case 3:
+      invent(pc);
+      flag = 1;
+      break;
+    default:
+      flag = 1;
+      break;
+  }
+
+  top(1);
+  clrinp();
+  dotop(pc);
+  
+  return(flag);
 }
 
 int invent(int pc)
@@ -893,10 +982,13 @@ int invent(int pc)
   int16_t i, j;
   int top = 3,ret,bot;
   char scratch[16];
+
   bot = 2+listinv(pc,scratch);
   sgetxy(&i,&j,2,top,bot+1,&ret);
-  if(ret == bot+1)
-    return(0);
+
+  if (ret == bot + 1) {
+    return 0;
+  }
   return(scratch[ret]);
 }
 
@@ -904,7 +996,9 @@ int listinv(int pc, char *scratch)
 {
    int j, bot = 0;
    uint8_t *c = curmon[pc], *o = invnpc[pc];
+   //curmon_t *new_c = &new_curmon[pc];
    char word[3];
+
    Vsync();
    vbl_animation_off();
    vs_curaddress(handle,1,33);
@@ -913,8 +1007,12 @@ int listinv(int pc, char *scratch)
    v_rvoff(handle);
    textsix(1,260,1,9,"INVENTORY");
    prhand(pc);
+  
    *(scratch+1) = c[45];
    *(scratch+2) = c[46];
+  //  *(scratch+1) = new_c->poison_mode_2;
+  //  *(scratch+2) = new_c->magic_mode_1;   
+
    for (j = 1; j < 14; j++) {
       if (o[j] != 0) {
          bot++;
@@ -924,10 +1022,12 @@ int listinv(int pc, char *scratch)
    }
    textsix(1,260,25+bot*8,9,"No Choice");
    textsix(1,260,33+8*bot,7,"Torches");
-   sprintf(word,"%d",c[42]);
+   sprintf(word, "%d", c[42]);
+   //sprintf(word, "%d", new_c->base_chance_2_attack);
    textsix(1,308,33+8*bot,strlen(word),word);
    textsix(1,260,41 + 8*bot,4,"Gold");
-   sprintf(word,"%d",c[49]);
+   sprintf(word, "%d", c[49]);
+   //sprintf(word, "%d", new_c->gold_amount);
    textsix(1,308,41 + 8*bot,strlen(word),word);
    Vsync();
    vbl_animation_on();

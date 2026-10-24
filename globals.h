@@ -45,7 +45,7 @@ typedef struct {
   uint8_t unknown1;
   uint8_t unknown2;
   uint8_t monster_name_id;
-  uint8_t unknown4;
+  uint8_t sprite_id;
   uint8_t unknown5;
   uint8_t unknown6;
   uint8_t unknown7;
