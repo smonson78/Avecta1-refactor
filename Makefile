@@ -29,7 +29,7 @@ OBJS=start.o globals.o gemdefs.o \
 	torches.o trapaux.o trapres.o trigtrol.o vbl.o words.o \
 	f0.o f1.o f2.o f3.o f4.o f5.o f6.o f7.o f8.o \
 	f9.o f10.o f11.o f12.o f13.o f14.o f15.o f16.o \
-	debug.o
+	debug.o curmon.o
 LIBGCC:=$(shell $(CXX) $(CFLAGS) --print-libgcc-file-name)
 
 all: $(TARGET).$(EXT)

@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "room.h"
+#include "curmon.h"
 
 // This is my Atari LIBC, not a fancy one
 #include <libc.h>

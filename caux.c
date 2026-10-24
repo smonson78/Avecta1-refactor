@@ -799,73 +799,78 @@ int status(int pc)
    top(1);
    clrinp();
    header(w);
-   for(i=0;i<2;i++)
-   textsix(1,260,9+8*i,strlen(statword[i]),statword[i]);
+   for (i = 0; i < 2; i++) {
+      textsix(1, 260, 9 + 8 * i, strlen(statword[i]), statword[i]);
+   }
    v_rvon(handle);
    for (i = 2; i < 5; i++) {
       vs_curaddress(handle,2*i,33);
       printf("        ");
-      textsix(1,260,16*i-7,strlen(statword[i]),statword[i]);
+      textsix(1, 260, 16 * i - 7, strlen(statword[i]), statword[i]);
    }
-   textsix(1,260,33,strlen(obj[c[45]]),obj[c[45]]);
-   textsix(1,260,49,strlen(obj[c[46]]),obj[c[46]]);
-   sprintf(scratch,"%d",c[2] - c[1]);
-   textsix(1,300,9,2,scratch);
+   textsix(1, 260, 33, strlen(obj[c[45]]), obj[c[45]]);
+   textsix(1, 260, 49, strlen(obj[c[46]]), obj[c[46]]);
+   sprintf(scratch, "%d", c[2] - c[1]);
+   textsix(1, 300, 9, 2, scratch);
 
    if (c[47] > 0) {
       sprintf(scratch, "%c", 'P');
    } else {
       sprintf(scratch, "%c", 'G');
    }
-   textsix(1,314,9,1,scratch);
+   textsix(1, 314, 9, 1, scratch);
 
-   sprintf(scratch,"%d",c[14]);
-   textsix(1,300,17,strlen(scratch),scratch);
+   sprintf(scratch, "%d", c[14]);
+   textsix(1, 300, 17, strlen(scratch), scratch);
 
    v_rvoff(handle);
 
-   for(i = 5; i < 9; i++) {
-      textsix(1,260,25+8*i,strlen(statword[i]),statword[i]);
+   for (i = 5; i < 9; i++) {
+      textsix(1, 260, 25 + 8 * i, strlen(statword[i]), statword[i]);
    }
 
    Vsync();
    vbl_animation_on();
-   sgetxy(&i,&j,2,8,11,&ret);
+   sgetxy(&i, &j, 2, 8, 11, &ret);
    top(1);
    clrinp();
+   
    ret -= 7;
    switch(ret) {
       case 1:
       case 2:
-         if(ret == 2) {
-            if(c[41] > 0) {
+         if (ret == 2) {
+            if (c[41] > 0) {
                c[46] = 0;
                litetrol(c[24],c[25],0);
-               } 
-            if(c[41] > 64) 
+            } 
+            if (c[41] > 64) {
                c[42] += 1;
-            if(c[41] > 0)
+            }
+            if (c[41] > 0) {
                c[41] = 0;
             }
+         }
          j = invent(pc);
-         if(j == 0) {
+         if (j == 0) {
             if (!putaway(pc,c[44+ret])) {
                error(7);
                break;
             }
             c[44+ret] = 0;
             break;
-            } 
-         if(c[44+ret] != 0 ) { 
-            if(!putaway(pc,c[44+ret])) {
+         } 
+         if (c[44+ret] != 0 ) { 
+            if (!putaway(pc, c[44 + ret])) {
                error(7);
                break;
-               }
             }
-         takeout(pc,j);
-         *(c+44+ret) = j;
-         if(c[45] < 46 && c[45] > 40)
+         }
+         takeout(pc, j);
+         *(c + 44 + ret) = j;
+         if (c[45] < 46 && c[45] > 40) {
             c[32] = c[45];
+         }
          break;
       case 3:
          invent(pc);
@@ -874,10 +879,12 @@ int status(int pc)
       default:
          flag = 1;
          break;
-      }
+   }
+
    top(1);
    clrinp();
    dotop(pc);
+   
    return(flag);
 }
 

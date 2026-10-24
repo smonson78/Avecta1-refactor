@@ -39,8 +39,6 @@ typedef struct {
   // - 21  = background tile 2 colour
   room_background_t room_bg[2];
 
-  //actmon(o[22], o[23], o[24], o[25]);
-
   // - 22  = type of monsters in this room (that can be heard through a door)
   //         (or the type that spawns when you're in there)
   uint8_t room_monster_type;

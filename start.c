@@ -16,6 +16,8 @@
 #include "text.h"
 #include "mouse_on.h"
 #include "mouse_off.h"
+#include "curmon.h"
+#include "debug.h"
 
 #include "tos_compat.h"
 
@@ -26,6 +28,10 @@ int main()
    int old, i, j;
    uint8_t *c = curmon[0];
    debug_printf("Main started\n");
+
+   // Set up initial monster data (the player being monster 0)
+   init_curmon();
+   check_curmon("start");
 
    // Clear screen
    printf("\eE");

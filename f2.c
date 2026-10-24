@@ -197,7 +197,7 @@ int o2(int pc)
   w = (pc == 0 ? pname :  name[c[3]]);
   
   if(pc > 3) {
-    if(c[58] != 16) {
+    if (c[58] != 16) {
       sprintf(junk,"%s","The ");
       sprintf(&junk[4],"%s",w);
       w = junk;

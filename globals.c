@@ -54,10 +54,12 @@ int (*outverb[])(int pc) = {o0,o1,o2,o3,o4,o5,o6,o7,o8,o9,o10,o11,o12,o13,o14};
 int winker = 0, winktime = 0, combat = 0;
 char *posture[] = {"All Out","Standard","Defensive","Fall Back"};
 char *wordmod[] = {"None","Low","Medium","Severe","Dead","Panicked"};
-                      /* chance,damage,weight */
+                      
 
 uint8_t putbuf[320], specbuf[40];
 char monbuf[320],junk[20];
+
+/* chance,damage,weight */
 char weapon[][3] = { {0,0,0},                                 /* no weapon */
                      {60,12,10},                              /* broad sword */
                      {60,8,5},                              /* scimitar  */
@@ -124,18 +126,25 @@ uint8_t curmon[12][60] = {
   {1, 4, 50, 0, 81, 5, 60, 8, 0, 0, 0, 4, 3, 90, 10},
 };
 
+// new_curmon is now in curmon.c
+
 uint8_t invnpc[4][20];
 
 // Monster types
 // see struct permon_t in header
+// 25 in array
 permon_t permon[] = {
                   {0},
   /* spider */    {1,0,20,2,83,6,100,0,0,0,0,4,2,95,0,13,1,30,0,0,1,0,0},
   /* skelly */    {1,0,10,1,85,6,100,0,0,0,0,5,0,101,0,8,0,50,0,0,1,0,0},
   /* snyke  */    {1,0,50,7,87,6,60,4,100,0,0,5,2,101,0,13,2,40,10,0,1,0,0},
+  
+  // 4
   /* dogs   */    {1,0,8,3,89,6, 100,0,0,0,0,3,0,90,0,8,0,30,0,0,1,0,0},
   /* goblins */   {1,0,14,0,91,10,20,6,80,4,100,4,2,90,0,10,0,30,50,60,1,0,0},
   /* bats   */    {1,0,10,12,93,8,20,4,100,0,0,2,0,97,0,5,0,30,60,0,1,0,0},
+
+  // 7
   /* thrang */    {1,0,70,5,95,9,12,0,0,0,0,6,0,101,42,8,0,0,0,0,1,0,0},
   /* Babaran */   {1,0,50,13,97,0,0,0,0,0,0,3,3,101,0,20,0,0,2,0},
   /* Alph? */     {0},
@@ -169,13 +178,16 @@ int8_t selllist[][4] = {
   {45, 20, 30, 0}
 };
 
-char weight[41] = {0,-1,4,7,10,17,-1,18,8,-1,-1,20,-1,-1,16,8,8,-1,7,8,
-                   -1,-1,16,20,-1,-1,-1,8,-1,14,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-                   -1,12};
+char weight[41] = {
+  0,-1,4,7,10,17,-1,18,8,-1,-1,20,-1,-1,16,8,8,-1,7,8,
+  -1,-1,16,20,-1,-1,-1,8,-1,14,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+  -1,12
+};
 char *mod[] = {"0","L","M","H","X","P","C"};
 int16_t crudbuf[65];
 char *stuff[] = {"","                    "};
-char *errmsg[] = {"",
+char *errmsg[] = {
+                   "",
                    "[1][That path is blocked!|     Try again!][OK]",
                    "[1][That's the same square!|      Try again!][OK]",
                    "[1][ That square can't be | seen. Try again!][OK]",
@@ -206,9 +218,10 @@ char *errmsg[] = {"",
 /* 28 */           "[1][ Insufficient   | magic ability!][OK]",
                    "[1][  Hands are full! ][OK]",
                    "[1][ No bow or arrows ][OK]",
-"[2][  Which hand's object? ][Good |Other]",
-"[1][ Insufficient Disk Space! |    Fatal Error! | Program Shutdown!][OK]",
-"[1][ The attempted restore does |  NOT match current dungeon! ][OK]"};
+                   "[2][  Which hand's object? ][Good |Other]",
+                   "[1][ Insufficient Disk Space! |    Fatal Error! | Program Shutdown!][OK]",
+                   "[1][ The attempted restore does |  NOT match current dungeon! ][OK]"
+};
 
 /* target - domsg index - speltime */
 char spelinfo[24][3] = {
