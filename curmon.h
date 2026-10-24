@@ -41,9 +41,9 @@ typedef struct {
   // 36
   uint8_t unknown36;
   // 37
-  uint8_t unknown37;
+  uint8_t perception; // Chance out of 100 to find a hidden object
   // 38-40
-  uint8_t unknown38[3];
+  uint8_t unknown38[3]; // 39 may be "target"
   // 41
   uint8_t base_chance_1_attack; // These 3 kinda conflict with 46, 37, and 46.
   // 42

@@ -403,39 +403,47 @@ int lom(int pc, int x, int y)
     return 0;
   }
 
-  if (i != 0)
-      i = ( i/k ); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
-  if (j != 0)
-      j = ( j/l );  /* j is +1 if y2>y and j is -1 if y2<y, else = 0  */
+  if (i != 0) {
+    i = (i / k); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
+  }
+  
+  if (j != 0) {
+    j = (j / l);  /* j is +1 if y2>y and j is -1 if y2<y, else = 0  */
+  }
+
   m = k;      /* m is the temporary value of x separation,called roll variable */
   n = l;      /* n is the temporary value of y separation, called roll variable */
   q = 0;
+
   while ( (x != x2) || (y != y2) ) {
-      if (q == 1) {
-         z = zline[x][y];
-         z1 = crumobj[z[1]][0];
-         if(z[1] != 0 ) {
-            if(z1 < 41 && z1 > 1)
-            return(0);
-            }
-         if (z[2] != 0 || *z == 0 || ( *z == 2 && z1 == 0))
-            return(0);    
-         q = 0;  /* all this is stored in zline array  for each room     */
-         }
-      --m;         /* decrement each roll variable */
-      --n;
-      if (m<0) {   /* if x separation variable is 0 then roll y */
-         y += j;
-         q = 1;    /* alert system to check if los is blocked   */
-         m = k;
-         }
-      if (n<0) {   /* same for y separation variable            */
-         x += i;
-         q = 1;
-         n = l;
-         }
+    if (q == 1) {
+      z = zline[x][y];
+      z1 = crumobj[z[1]][0];
+      if (z[1] != 0) {
+        if(z1 < 41 && z1 > 1)
+        return 0;
       }
-   return(1);  /* if it makes it all the way through then los is open */         
+      if (z[2] != 0 || *z == 0 || ( *z == 2 && z1 == 0))
+        return(0);    
+      q = 0;  /* all this is stored in zline array  for each room     */
+    }
+    --m;         /* decrement each roll variable */
+    --n;
+
+    if (m < 0) {   /* if x separation variable is 0 then roll y */
+      y += j;
+      q = 1;    /* alert system to check if los is blocked   */
+      m = k;
+    }
+
+    if (n < 0) {   /* same for y separation variable            */
+      x += i;
+      q = 1;
+      n = l;
+    }
+  }
+
+  return 1;  /* if it makes it all the way through then los is open */         
 }
 
 // Line-Of-Sight, I guess

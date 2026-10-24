@@ -5,6 +5,8 @@
 #include "gemdefs.h"
 #include "text.h"
 
+#include "debug.h"
+
 void undorep()
 {
   Vsync();
@@ -21,28 +23,29 @@ void dorep()
 {
   int i, j, k, x = 256, y = 127, w = 62, h = 72;
   uint8_t *c;
+  curmon_t *new_c;
   char scratch[13];
 
   // Polyline coords
   int16_t pxy[10];
-  pxy[0]=256;
-  pxy[1]=127;
+  pxy[0] = 256;
+  pxy[1] = 127;
 
   // Across to the right horizontally
-  pxy[2]=319;
-  pxy[3]=127;
+  pxy[2] = 319;
+  pxy[3] = 127;
 
   // Then down to the bottom of the screen
-  pxy[4]=319;
-  pxy[5]=199;
+  pxy[4] = 319;
+  pxy[5] = 199;
 
   // Back to the left to line up with the starting point
-  pxy[6]=256;
-  pxy[7]=199;
+  pxy[6] = 256;
+  pxy[7] = 199;
 
   // Then return to start to form a rectangle
-  pxy[8]=256;
-  pxy[9]=127;
+  pxy[8] = 256;
+  pxy[9] = 127;
   k = 0;
 
   undorep();
@@ -74,11 +77,15 @@ void dorep()
   j = 17;
   for (k = 4; k < 12; k++) {
     c = curmon[k];
+    new_c = &new_curmon[k];
+
     if (c[0] != 0 && c[30] == crum && c[31] < 4) {
       sprintf(scratch, "%s", name[c[3]]);
       textsix(1, 259, 1 + (8 * j), strlen(scratch), scratch);
 
       c[33] = j;
+      new_c->unknown33[0] = j;
+
       i = (c[1] * 4) / (c[2]);
       if (c[36] == 1) {
         i = 5;
@@ -93,4 +100,6 @@ void dorep()
   
   Vsync();
   vbl_animation_on();
+
+  check_curmon("dorep");
 }

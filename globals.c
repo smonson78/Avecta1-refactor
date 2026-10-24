@@ -101,6 +101,8 @@ char *name[] = {
   "orc","crusher","flamer","rat","bartender","rogue"
 };
 
+// Inventory of up to 4 player characters
+// 80 - seekshard
 uint8_t invnpc[4][20];
 
 // Monster types
@@ -159,6 +161,7 @@ char weight[41] = {
 char *mod[] = {"0","L","M","H","X","P","C"};
 int16_t crudbuf[65];
 char *stuff[] = {"","                    "};
+
 char *errmsg[] = {
                    "",
                    "[1][That path is blocked!|     Try again!][OK]",
@@ -197,6 +200,11 @@ char *errmsg[] = {
 };
 
 /* target - domsg index - speltime */
+// Target:
+// 0 - No target
+// 1 - Monster
+// 2 - Object
+// 3 - Player
 char spelinfo[24][3] = {
   {3, 3, 6 },  /* cure light wounds */
   {0, 0, 6 },  /* search */

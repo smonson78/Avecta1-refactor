@@ -144,7 +144,13 @@ extern char *statword[];
 extern char *wepname[];
 extern char *spell[];
 extern char *name[];
+
+#define ERROR_PATH_BLOCKED 1
+#define ERROR_SAME_SQUARE 2
+#define ERROR_NO_LINE_OF_SIGHT 3
+
 extern char *errmsg[];
+
 extern char *com[];
 extern char *verblist[];
 extern char *att[][4];

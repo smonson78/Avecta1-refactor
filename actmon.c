@@ -109,7 +109,7 @@ int actmon(int type, int nm, int x, int y)
     
     // These 3 seem like bugs. I'm not even sure you can resurrect monsters in this game
     new_c->magic_mode_1 = p->base_chance_1_attack;
-    new_c->unknown37 = p->base_chance_2_attack;
+    new_c->perception = p->base_chance_2_attack;
     new_c->magic_level = p->base_chance_3_attack;
 
     new_c->physical_strength = p->physical_strength;
