@@ -101,6 +101,7 @@ void rumdraw(char *pan)
   int i, j, k;
 
   debug_printf("> rumdraw()\n");  
+  check_curmon("rumdraw start");
 
   // c must be uint8_t or else we'll crash
   uint8_t *c;
@@ -424,6 +425,7 @@ void rumdraw(char *pan)
       continue;
     }
 
+    // c is a crumobj
     c[0] = new_r->room_unknown_3[i];
     //zline[x][y][1] = i - 134; // 14..18
     zline[x][y][1] = 14 + i; // 14..18
@@ -461,8 +463,10 @@ void rumdraw(char *pan)
     }
   }
 
+  // Check all NPCs and monsters
   for (i = 1; i < 12; i++) {
     c = curmon[i];
+    curmon_t *new_c = &new_curmon[i];
 
     if (c[0] == 1 && c[30] == crum) {
       x1 = c[24];
@@ -470,12 +474,15 @@ void rumdraw(char *pan)
       j = xmon(c[30], c[4], x1, y1);
       
       if (c[4] == 110) {
-        c[4] = 116 + rnd(3);
+        int mod = rnd(3);
+        c[4] = 116 + mod;
+        new_c->sprite_id = 116 + mod;
       }
       
       if (c[36] == 0) {
         if (zline[x1][y1][2] != 0) {
           c[0] = 0;
+          new_c->in_use = 0;
           continue;
         }
       }
@@ -495,18 +502,28 @@ void rumdraw(char *pan)
 
         if (k == 100) {
           c[0] = 0;
+          new_c->in_use = 0;
           continue;
         }
 
         c[24] = x1;
         c[25] = y1;
         c[36] = 0;
+
+        new_c->x = x1;
+        new_c->y = y1;
+        new_c->flee = 0;
       }
 
       c[15] = 8;
       c[16] = 1;
       c[18] = 0;
       c[39] = i;
+
+      new_c->unknown15[0] = 8;
+      new_c->unknown15[1] = 1;
+      new_c->unknown15[3] = 0;
+      new_c->unknown38[1] = i; // i is just the monster array index
 
       zline[x1][y1][2] = i;
 
@@ -517,8 +534,8 @@ void rumdraw(char *pan)
       }
     }
   }
+  check_curmon("rumdraw end");
 
   debug_printf("< rumdraw()\n");  
   
-  // check_rumdata("rumdraw");
 }

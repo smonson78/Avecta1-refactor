@@ -55,7 +55,7 @@ typedef struct {
   uint8_t unknown11;
   uint8_t unknown12;
   uint8_t unknown13;
-  uint8_t unknown14;
+  uint8_t spell_units;
   // 15
   uint8_t physical_strength;
   // 16
@@ -148,6 +148,10 @@ extern char *name[];
 #define ERROR_PATH_BLOCKED 1
 #define ERROR_SAME_SQUARE 2
 #define ERROR_NO_LINE_OF_SIGHT 3
+#define ERROR_NOTHING_TO_EXAMINE 4
+#define ERROR_LOCATION_NOT_ADJACENT 11
+#define ERROR_OBJECT_IS_CLOSED 12
+#define ERROR_WHICH_HANDS_OBJECT 31
 
 extern char *errmsg[];
 

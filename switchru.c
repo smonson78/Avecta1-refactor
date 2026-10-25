@@ -20,9 +20,12 @@ int getmon(int room);
 // Switch room, and the associated housekeeping
 int switchrum() {
   int d, i, j, x = 0, y = 0, xn, yn, oldrum;
+
   uint8_t *p = curmon[0];
+  curmon_t *new_p = &new_curmon[0];
 
   debug_printf("> switchrum()\n");
+  check_curmon("switchrum start");
 
   // uint8_t *r = rumdata[crum];
   room_data_t *new_r = &new_rumdata[crum];
@@ -58,7 +61,7 @@ int switchrum() {
       c = curmon[i];
       c[35] = 0;
 
-      if (*c == 1 && c[30] == crum && (i < 4 || c[38] == 0) && 
+      if (c[0] == 1 && c[30] == crum && (i < 4 || c[38] == 0) && 
         (i < 4 || c[39] < 4) && c[58] != 16 &&
         c[31] < 4 && (dungeon != 2 || c[58] == 17) &&
         (i < 4 || (c[36] == 0 && c[13] > rnd(100)) ) ) {
@@ -66,7 +69,7 @@ int switchrum() {
         pursuit[2] = crum;
         xn = c[24];
         yn = c[25];
-        d = dist(x,y,0,xn,yn,0);
+        d = dist(x, y, 0, xn, yn, 0);
         pursuit[0] = (pursuit[0] > d ? d : pursuit[0]);
         pursuit[1]++;
       } 
@@ -76,11 +79,14 @@ int switchrum() {
   if (p[30] == 127) {
     stormon();
     pursuit[0] = pursuit[1] = pursuit[2] = 0;
-    return(2);
+    return 2;
   }
 
   if (fromout == 1 && p[30] != crum) {
+    // The big bird-looking thing
     p[4] = 125;
+    new_p->sprite_id = 125;
+
     outside = 1;
     fromout = 0;
   }
@@ -91,9 +97,15 @@ int switchrum() {
 
   p[15] = 8;
   p[16] = 1;
+  new_p->unknown15[0] = 8;
+  new_p->unknown15[1] = 1;
+
   x = p[24];
   y = p[25];
+
   p[35] = 0;
+  new_p->stink_lines = 0;
+
   mode = 0;
 
   // Init pan[12] to all zeroes
@@ -144,8 +156,11 @@ int switchrum() {
         
         x = c[6];
         y = c[7];
+
         p[24] = x;
         p[25] = y;
+        new_p->x = x;
+        new_p->y = y;
 
         /* must reveal hidden door */
         if (c[8] == 0) { 
@@ -179,6 +194,7 @@ int switchrum() {
     for (i = 1; i < 12; i++) { 
       if (pan[i - 1] == 1) {
         curmon[i][36] = 1;
+        new_curmon[i].flee = 1;
       }
     }
   }
@@ -189,9 +205,8 @@ int switchrum() {
     dorep();
   }
 
-  // At the beginning of the game, we are not outside
   if (!outside) {
-    if(fromout != 0) {  
+    if (fromout != 0) {  
       prnt(msg[crum], NULL, NULL, NULL, NULL, NULL, NULL);
     } else {
       prnt(rummsg[crum + 80 * (dungeon - 1)], NULL, NULL, NULL, NULL, NULL, NULL);
@@ -203,18 +218,24 @@ int switchrum() {
   // If the new room the player has moved into is lit
   if (new_rumdata[crum].room_has_bg) {
     
-    // Search for a torch in curmon 0 to 3
+    // Search for a torch in curmon 0 to 3 (player characters)
     i = 0;
     for (j = 0; j < 4; j++) {
       c = curmon[j];
+      curmon_t *new_c = &new_curmon[j];
       
       // Some odd calculations in here
       if (c[41] > 0) { 
         // This means it was a lit torch
         i = 1;
+
         c[42] += 1; // Maybe this is the number of unlit torches
         c[41] = 0; // Now it's not a lit torch
         c[46] = 0;
+
+        new_c->base_chance_2_attack++;
+        new_c->base_chance_1_attack = 0;
+        new_c->magic_mode_1 = 0;
       }
     }
 
@@ -234,17 +255,27 @@ void stormon()
   uint8_t *c;
   char *r = monbuf;
   int i, j = 1;
+  
+  // Do all non-player monsters
   for (i = 4; i < 12; i++) {
     c = curmon[i];
-    if(*c == 0 || c[30] != crum)
+
+    if (c[0] == 0 || c[30] != crum) {
       continue;
-    while( *(r+j) != 0 && j < 320) {
-        j += 4;
-        }
-    if(j >= 320)
-        break;
-    if(c[4] > 115 && c[4] < 119)
-        c[4] = 110;
+    }
+
+    while (*(r+j) != 0 && j < 320) {
+      j += 4;
+    }
+
+    if (j >= 320) {
+      break;
+    }
+
+    if (c[4] > 115 && c[4] < 119) {
+      c[4] = 110;
+    }
+
     *(r+j) = c[4];
     *(r+j+1) = crum;
     *(r+j+2) = c[1];
@@ -258,6 +289,7 @@ int getmon(int room)
   permon_t *p;
   char *r = monbuf;
   int i,j,k,type,count=0,x,y;
+  check_curmon("getmon start");
 
   for (i = 1; i < 320; i += 4) {
     if (r[i + 1] == room) {
@@ -280,14 +312,19 @@ int getmon(int room)
         continue;
       }
 
+      // Do all non-player monsters
       for (j = 4; j < 12; j++) {
         c = curmon[j];
+        curmon_t *new_c = &new_curmon[j];
+
         if (c[0] == 0 || c[30] != room) {
 
-          // Clear curmon data
+          // Clear all curmon data
           for (k = 0; k < 60; k++) {
             c[k] = 0;
           }
+          // New way:
+          memset(new_c, 0, sizeof(curmon_t));
           
           // Copy curmon (monster instance) data from permon (monster type)
           // for (k = 0; k < 15; k++) {
@@ -307,7 +344,23 @@ int getmon(int room)
           c[11] = p->unknown11;
           c[12] = p->unknown12;
           c[13] = p->unknown13;
-          c[14] = p->unknown14;          
+          c[14] = p->spell_units;
+          
+          new_c->in_use = p->in_use;
+          new_c->unknown1[0] = p->unknown1;
+          new_c->unknown1[1] = p->unknown2;
+          new_c->monster_name_id = p->monster_name_id;
+          new_c->sprite_id = p->sprite_id;
+          new_c->unknown5[0] = p->unknown5;
+          new_c->unknown5[1] = p->unknown6;
+          new_c->unknown5[2] = p->unknown7;
+          new_c->unknown5[3] = p->unknown8;
+          new_c->unknown5[4] = p->unknown9;
+          new_c->unknown5[5] = p->unknown10;
+          new_c->unknown5[6] = p->unknown11;
+          new_c->unknown5[7] = p->unknown12;
+          new_c->unknown5[8] = p->unknown13;
+          new_c->spell_units = p->spell_units;
 
           c[50] = p->physical_strength;
           c[45] = p->poison_mode;
@@ -320,9 +373,24 @@ int getmon(int room)
           c[37] = p->magic_mode;
           c[58] = type;
           c[51] = (c[14]) / 3;
+
+          new_c->physical_strength = p->physical_strength;
+          new_c->poison_mode_2 = p->poison_mode;
+          new_c->base_chance_1_attack = p->base_chance_1_attack;
+          new_c->base_chance_2_attack = p->base_chance_2_attack;
+          new_c->base_chance_3_attack = p->base_chance_3_attack;
+          new_c->intelligence_routine = p->intell_routine;
+          new_c->bane = p->bane;
+          new_c->magic_mode_1 = p->magic_mode;
+          new_c->perception = p->magic_mode;
+          new_c->monster_type = type;
+          new_c->magic_level = new_c->spell_units / 3;
+
           if (c[51] > 20) {
             c[54] = 1;
+            new_c->magic_mode_2 = 1;
           }
+
           c[24] = x;
           c[25] = y;
           c[30] = room;
@@ -330,20 +398,38 @@ int getmon(int room)
           c[1] = r[i + 2];
           c[15] = 8;
           c[16] = 1;
+
+          new_c->x = x;
+          new_c->y = y;
+          new_c->current_room = room;
+          new_c->unknown38[1] = j; // monster index in array? what's the good of that
+          new_c->unknown1[0] = r[i + 2];
+          new_c->unknown15[0] = 8;
+          new_c->unknown15[1] = 1;
+
           zline[x][y][2] = j;
           count++;
+
           if (r[i] == 110) {
-            c[4] = 116 + rnd(3);
+            // Vampire, dog, or zombie?
+            int mod = rnd(3);
+            c[4] = 116 + mod; 
+            new_c->sprite_id = 116 + mod;
           }
+
           if (c[31] < 4) {
             mode = 1;
           }
+
           drawman(j, x, y);
+
+          // Clear out the monbuf[] entry
           *(r+i) = *(r+i+1) = *(r+i+2) = *(r+i+3) = 0;
           break;
         }
       }
     } 
   }
+  
   return count;
 }

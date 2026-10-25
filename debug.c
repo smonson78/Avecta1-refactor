@@ -44,10 +44,15 @@ void check_curmon(char *location) {
         debug_printf("Location: %s\n", location);
         debug_printf("Monster number %d, byte %d\n", c, b);
         debug_printf("curmon: 0x%02x vs new_curmon: 0x%02x\n", old, new);
-        debug_printf("Press any key to continue\n");
         // Don't actually halt the game yet
+        //debug_printf("Press any key to continue\n");
         // Cconin();
+
+        // One difference is enough
+        return;
       }
     }
   }
+
+  debug_printf("curmon checked OK at %s.\n", location);
 }

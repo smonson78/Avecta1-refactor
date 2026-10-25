@@ -1,6 +1,7 @@
 #include "globals.h"
 #include "trapres.h"
 #include "caux.h"
+#include "debug.h"
 
 /* pc = character in room which triggered trap */
 void trigtrol(int pc)
@@ -10,7 +11,9 @@ void trigtrol(int pc)
   uint8_t *c = curmon[pc];
   uint8_t *t, *inv;
 
-  if(triglist[0] == 0) { /* triglist[0] gives the number of traps in room */
+  check_curmon("trigtrol start");
+
+  if (triglist[0] == 0) { /* triglist[0] gives the number of traps in room */
     return;
   }
 
@@ -78,4 +81,6 @@ void trigtrol(int pc)
       trapres(pc,t[5],x,y);
     }
   }
+
+  check_curmon("trigtrol end");
 }

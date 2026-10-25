@@ -74,6 +74,7 @@ int o1(int pc)
   if (pc < 4 && t[46] && !a[43]) {
     a[34] = -1;
     new_a->unknown33[1] = -1;
+    
     return 1;
   }
 

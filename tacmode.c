@@ -76,10 +76,13 @@ int tacmode() {
   int actlist[13];
   uint8_t *c;
   uint8_t *o;
+  curmon_t *new_c;
 
   debug_printf("> tacmode()\n");
   
   do {
+    check_curmon("tacmode loop");
+
     // This happens multiple times per move. 4 times per 1-square move actually.
     for (i = 0; i < 13; i++) {
       grflist[i] = 0;
@@ -97,6 +100,7 @@ int tacmode() {
     }
 
     if (timer % 5 == 0) {
+      debug_printf("timer mod 5 check\n");
       timetrol();
 
       if (pursuit[0] != 0) {
@@ -104,13 +108,16 @@ int tacmode() {
         flag = 0;
 
         if (pursuit[0] == 0 && (mode == 0 || pursuit[1] != 0) ) {
+          // All except the player
           for (i = 1; i < 12; i++) {
             c = curmon[i];
+            new_c = &new_curmon[i];
 
             if (c[0] == 0 || c[30] != pursuit[2] || flag > 0 || c[31] > 3) {
               continue;
             }
 
+            // For each object in the room
             for (j = 0; j < 14; j++) {
               
               o = crumobj[j];
@@ -122,7 +129,7 @@ int tacmode() {
                 x = o[6];
                 y = o[7];
 
-                if(zline[x][y][2] != 0 || (curmon[0][24] == x && curmon[0][25] == y)) {
+                if (zline[x][y][2] != 0 || (curmon[0][24] == x && curmon[0][25] == y)) {
                   pursuit[0] += 2;
                   flag = 2;
                   break;
@@ -137,6 +144,14 @@ int tacmode() {
                 c[26] = curmon[0][24];
                 c[27] = curmon[0][25];
                 c[30] = crum;
+
+                new_c->x = x;
+                new_c->y = y;
+                new_c->unknown15[1] = 1;
+                new_c->unknown15[0] = 8;
+                new_c->old_x = new_curmon[0].x;
+                new_c->old_y = new_curmon[0].y;
+                new_c->current_room = crum;                
 
                 drawman(i, x, y);
                 dorep();
@@ -186,9 +201,14 @@ int tacmode() {
       // o = rumdata[crum];
       room_data_t *new_o = &new_rumdata[crum];
 
+      // Bring in some new monsters
       if (mode == 0 && rnd(100) < new_o->room_monsters_chance) {
+        check_curmon("before creating monsters");
+
         //actmon(o[22], o[23], o[24], o[25]);
         actmon(new_o->room_monster_type, new_o->room_monster_nm, new_o->room_monster_x, new_o->room_monster_y);
+
+        check_curmon("after creating monsters");
         
         //if (o[29] != 0) {
         if (new_o->room_unknown_5 != 0) {
@@ -213,8 +233,11 @@ int tacmode() {
 
     monster = 0;
 
+    // All players and monsters
     for (i = 0; i < 12; i++) {
       c = curmon[i];
+      new_c = &new_curmon[i];
+
       if (c[0] == 1 && c[30] == crum) {
         if (i > 3 && c[31] < 4) {
           monster++;
@@ -224,7 +247,10 @@ int tacmode() {
         }
         grflist[0]++;
         grflist[grflist[0]] = i;
+
         c[16] -= 1;
+        new_c->unknown15[1]--;
+        
         if (c[16] == 0) {
           actlist[0] += 1;
           actlist[actlist[0]] = i;
@@ -232,14 +258,20 @@ int tacmode() {
       }
     }
 
+    check_curmon("tacmode loop position 1");
+
     if (mode == 1 && monster < 2 && curmon[0][0] == 1 && curmon[0][30] == crum) { 
       mode = 0;
       undorep();
     }
 
+    check_curmon("tacmode loop position 2");
+
     if (monster > 1 && curmon[0][0] == 1 && curmon[0][30] == crum) {
       mode = 1;
     }
+
+    check_curmon("tacmode loop position 2.1");
 
     timer++;
 
@@ -247,25 +279,42 @@ int tacmode() {
       continue;
     }
 
+    check_curmon("tacmode loop position 2.2");
+
     for (i = 1; i <= actlist[0]; i++) {
+      check_curmon("tacmode loop position 2.3");
+
       n = actlist[i];
       c = curmon[n];
+      new_c = &new_curmon[n];
+
+      check_curmon("tacmode loop position 2.4");
+
+      // If character is in use and in the current room:
       if (c[0] && c[30] == crum) {
+        debug_printf("...calling outverb %d\n", c[15]);
         j = (*outverb[c[15]])(n);
       }
+
+      check_curmon("tacmode loop position 2.5");
 
       // Get a keyboard command from the keyboard and check if it's a space character
       if ((n == 0 || (n == 1 && c[38])) && j == 0 && (p = Bconstat(2)) != 0) {
         p = Bconin(2) & 0xff;
         if (p == ' ') {
           c[16] = 0;
+          new_c->unknown15[1] = 0;
           j = 1;
         }
       }
 
+      check_curmon("tacmode loop position 2.6");
+
       if (c[15] != 8 || !outside) {
         trigtrol(n);
       }
+
+      check_curmon("tacmode loop position 3");
 
       if (curmon[0][0] == 0) {
         return -1;
@@ -281,6 +330,7 @@ int tacmode() {
 
       if (n > 3 || (n < 4 && n > 0 && c[38] == 0)) {
         intell(n);
+        check_curmon("tacmode loop after intell()");
       } else {
         if (c[16] == 0) {
           do {
@@ -322,6 +372,7 @@ int tacmode() {
               }
 
               if (l == 1) {
+                debug_printf("...calling inverb %d\n", k);
                 l = (*inverb[k])(n);
               }
 
@@ -331,6 +382,8 @@ int tacmode() {
             }
           } while (l == 0);        
         }
+
+        check_curmon("tacmode loop position 4");
       }
     }
   } while (1);   

@@ -9,6 +9,8 @@
 
 #include "f5.h"
 
+#include "tos_compat.h"
+
 /******************************************************************************/
 /* I3(NPC) initializes an EXAMINE action.  It simply determines if the charac */
 /* can see the object.                                                        */
@@ -16,17 +18,17 @@
 
 int i3(int pc)
 {
+  debug_printf("> i3() (examine)\n");
   int16_t x, y;
   int i, bot = 0, top1 = 0, type, ret;
   uint8_t *c = curmon[pc];
+  curmon_t *new_c = &new_curmon[pc];
   char z1, z2, scratch[15];
   char *w = (pc == 0 ? pname : name[*(c + 3)]);
 
-  if (invnpc[pc][0] == 0 && *(c + 45) == 0 && (*(c + 46) == 0 || *(c + 46) == 81))
-  {
+  if (invnpc[pc][0] == 0 && c[45] == 0 && (c[46] == 0 || c[46] == 81)) {
     type = 0;
-  } else
-  {
+  } else {
     top(1);
     clrinp();
     bot = 2 + listinv(pc, scratch);
@@ -41,67 +43,89 @@ int i3(int pc)
   } else {
     header("Examine");
   }
+
   winker = pc + 1;
   sgetxy(&x, &y, type, top1, bot, &ret);
-  if (!type)
+  if (!type) {
     undomsg();
+  }
+
   winker = 0;
   top(2);
   clrinp();
-  if (ret == 0)
-  {
+
+  if (ret == 0) {
     z1 = zline[x][y][1];
     z2 = zline[x][y][2];
-    if (!los(pc, x, y))
-    {
-      error(3);
-      return (0);
+
+    if (!los(pc, x, y)) {
+      error(ERROR_NO_LINE_OF_SIGHT);
+      return 0;
     }
-    if (z2 == 0 && z1 != 0 && !adjac(pc, x, y))
-    {
-      error(11);
-      return (0);
+    
+    if (z2 == 0 && z1 != 0 && !adjac(pc, x, y)) {
+      error(ERROR_LOCATION_NOT_ADJACENT);
+      return 0;
     }
-    if (z1 != 0 && z2 != 0)
-    {
-      error(12);
-      return (0);
+
+    if (z1 != 0 && z2 != 0) {
+      error(ERROR_OBJECT_IS_CLOSED);
+      return 0;
     }
-    if (!z1 && !z2 && (*(c + 24) != x || *(c + 25) != y))
-    {
-      error(4);
-      return (0);
+
+    if (!z1 && !z2 && (c[24] != x || c[25] != y)) {
+      error(ERROR_NOTHING_TO_EXAMINE);
+      return 0;
     }
-    if (*(c + 24) == x && *(c + 25) == y && !*(c + 45) && (!*(c + 46) || *(c + 46) == 81))
-    {
-      error(4);
-      return (0);
+
+    if (c[24] == x && c[25] == y && !c[45] && (!c[46] || c[46] == 81)) {
+      error(ERROR_NOTHING_TO_EXAMINE);
+      return 0;
     }
+
     *(c + 7) = *(c + 8) = *(c + 9) = 0;
     *(c + 10) = (!z1 ? 2 : 1);
     *(c + 7) = z2;
     *(c + 9) = z1;
-    if (*(c + 24) == x && *(c + 25) == y)
-    {
-      *(c + 10) = 3;
-      *(c + 8) = (*(c + 45) == 0 ? *(c + 46) : *(c + 45));
-      if (*(c + 45) != 0 && *(c + 46) != 0 && *(c + 46) != 81)
-      {
-        i = error(31);
-        *(c + 8) = *(c + 44 + i);
+    //new_c->unknown5[2] = 0;
+    new_c->unknown5[3] = 0;
+    //new_c->unknown5[4] = 0;
+    new_c->unknown5[5] = (!z1 ? 2 : 1);
+    new_c->unknown5[2] = z2;
+    new_c->unknown5[4] = z1;
+
+    if (c[24] == x && c[25] == y) {
+      c[10] = 3;
+      c[8] = (c[45] == 0 ? c[46] : c[45]);
+      new_c->unknown5[5] = 3;
+      new_c->unknown5[3] = (new_c->poison_mode_2 == 0 ? new_c->magic_mode_1 : new_c->poison_mode_2);
+      
+      if (c[45] != 0 && c[46] != 0 && c[46] != 81) {
+        // Get the number of the button clicked by the user on modal 31, which is
+        // "Which hand's object? 1=Good, 2=Other"
+        i = error(ERROR_WHICH_HANDS_OBJECT);
+        c[8] = c[44 + i];
+        new_c->unknown5[3] = i == 1 ? new_c->poison_mode_2 : new_c->magic_mode_1;
       }
-      *(c + 7) = *(c + 9) = 0;
+
+      c[7] = c[9] = 0;
+      new_c->unknown5[2] = 0;
+      new_c->unknown5[4] = 0;
     }
+  } else {
+    c[10] = 3;
+    c[8] = scratch[ret];
+    new_c->unknown5[5] = 3;
+    new_c->unknown5[3] = scratch[ret];
   }
-  else
-  {
-    *(c + 10) = 3;
-    *(c + 8) = scratch[ret];
-  }
-  *(c + 15) = 3;
-  *(c + 16) = 6;
-  *(c + 34) = 0;
-  return (1);
+
+  c[15] = 3;
+  c[16] = 6;
+  c[34] = 0;
+  new_c->unknown15[0] = 3;
+  new_c->unknown15[1] = 6;
+
+  return 1;
 }
 
 /*****************************************************************************/
@@ -111,117 +135,156 @@ int i3(int pc)
 int o3(int pc)
 {
   uint8_t *c = curmon[pc];
+  curmon_t *new_c = &new_curmon[pc];
   char *w, *w1, scratch[10];
   uint8_t *t;
-  int flag, type, x = *(c + 24), y = *(c + 25), object = 0, mess = 0;
-  type = *(c + 10);
-  w1 = (pc == 0 ? &pname[0] : name[*(c + 3)]);
-  if ((type == 3 && (object = *(c + 8)) > 40) ||
-      (!outside && type == 1 && (object = *(c + 9)) > 40))
-  {
-    if (type == 3 && *(c + 8) != *(c + 45) && *(c + 8) != *(c + 46))
-    {
-      if (!handman(pc, *(c + 8), 0, 1))
-        return (1);
-      if (*(c + 46) == 0)
-        *(c + 46) = *(c + 8);
-      else
-        *(c + 45) = *(c + 8);
-      takeout(pc, *(c + 8));
-      object = *(c + 8);
+  curmon_t *new_t;
+  int flag, type, x = c[24], y = c[25], object = 0, mess = 0;
+  
+  // This will be 1 for a crumobj, or anything else for a curmon
+  type = c[10];
+
+  // Player name or monster name
+  w1 = (pc == 0 ? &pname[0] : name[c[3]]);
+
+  if ((type == 3 && (object = c[8]) > 40) ||
+      (!outside && type == 1 && (object = c[9]) > 40)) {
+    if (type == 3 && c[8] != c[45] && c[8] != c[46]) {
+      if (!handman(pc, c[8], 0, 1)) {
+        return 1;
+      }
+
+      if (c[46] == 0) {
+        c[46] = c[8];
+        new_c->magic_mode_1 = new_c->unknown5[3];
+      } else {
+        c[45] = c[8];
+        new_c->poison_mode_2 = new_c->unknown5[3];
+      }
+
+      takeout(pc, c[8]);
+      object = c[8];
       prnt("-> %s takes out the %s to examine.", w1, obj[object], NULL, NULL, NULL, NULL);
     }
+
     prnt("-> %s examines the %s.", w1, obj[object], NULL, NULL, NULL, NULL);
+
     if (!new_rumdata[crum].room_has_bg && !zline[x][y][5]) {
       prnt("-> It is too dark for %s to see anything!", w1, NULL, NULL, NULL, NULL, NULL);
-      return (1);
+      return 1;
     }
+
     prnt(msg[object], NULL, NULL, NULL, NULL, NULL, NULL);
     return (1);
   }
-  if (type == 2)
-    object = *(c + 7);
-  if (type == 2 && !los(object, *(c + 24), *(c + 25)))
-  {
+
+  if (type == 2) {
+    object = c[7];
+  }
+
+  if (type == 2 && !los(object, c[24], c[25])) {
     prnt("-> The object which %s was examining has moved out of sight.",
          w1, NULL, NULL, NULL, NULL, NULL);
-    return (1);
+    return 1;
   }
-  if (type == 1)
-    object = *(c + 9);
+
+  if (type == 1) {
+    object = c[9];
+  }
+
+  // This isn't great for structures...
   t = (type == 1 ? crumobj[object] : curmon[object]);
-  if (type == 2)
-  {
-    w = name[*(t + 3)];
+  if (type != 1) {
+    new_t = &new_curmon[object];
   }
-  else
-  {
-    w = obj[*t];
-    if (*(t + 4) > 0 && *t < 41)
-    {
-      mess = *(t + 4) + (1 - outside) * 80 * dungeon;
-      if (fromout > 0)
+
+  if (type == 2) {
+    // Get character name
+    w = name[t[3]];
+  } else {
+    // Get object name
+    w = obj[t[0]];
+
+    if (t[4] > 0 && t[0] < 41) {
+      mess = t[4] + (1 - outside) * 80 * dungeon;
+      if (fromout > 0) {
         mess -= 80;
+      }
     }
-    if (*(t + 4) > 0 && *t > 40)
-      mess = *(t + 4);
-    if (*(t + 4) == 0)
+
+    if (t[4] > 0 && t[0] > 40) {
+      mess = t[4];
+    }
+
+    if (t[4] == 0) {
       mess = 0;
+    }
   }
-  if (!outside && !fromout && (type != 2 || *(c + 7)))
+
+  if (!outside && !fromout && (type != 2 || c[7])) {
     prnt("-> %s examines the %s.", w1, w, NULL, NULL, NULL, NULL);
-  if (type == 2)
-  {
-    if (*(t + 39) != pc)
-    {
-      if (*(t + 39) == 0)
+  }
+
+  if (type == 2) {
+    if (t[39] != pc) {
+      if (t[39] == 0) {
         w1 = pname;
-      if (*(t + 39) > 0 && *(t + 39) < 4)
-        w1 = name[curmon[*(t + 39)][3]];
-      if ((*(t + 39) > 3 || *(t + 38) == 1) && *(t + 31) < 3)
-      {
-        if (mode)
+      }
+
+      if (t[39] > 0 && t[39] < 4) {
+        w1 = name[curmon[t[39]][3]];
+      }
+
+      if ((t[39] > 3 || t[38] == 1) && t[31] < 3) {
+        if (mode) {
           sprintf(scratch, "%s", "its enemy");
-        else
-        {
-          if (*(t + 38))
+        } else {
+          if (t[38]) {
             sprintf(scratch, "%s", "a friend");
+          }
         }
+
         w1 = scratch;
       }
     }
-    prnt(monmsg[*(t + 3)], w1, NULL, NULL, NULL, NULL, NULL);
-    return (1);
+
+    prnt(monmsg[t[3]], w1, NULL, NULL, NULL, NULL, NULL);
+
+    return 1;
   }
+
   flag = 0;
-  if (type == 1 && mess == 0 && *(t + 5) == -1 && *(t + 3) == 0 && (*(t + 2) == 0 || rnd(100) > *(c + 37)))
-  {
+
+  if (type == 1 && mess == 0 && t[5] == -1 && t[3] == 0 && (t[2] == 0 || rnd(100) > c[37])) {
     prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
-    return (1);
+    return 1;
   }
-  if (!outside && type == 1 && *(t + 2) != 0 && *(c + 37) > rnd(100))
-  {
+
+  if (!outside && type == 1 && t[2] != 0 && c[37] > rnd(100)) {
     flag = 1;
     prnt("-> %s senses something strange about the %s.", w1, w, NULL, NULL, NULL, NULL);
   }
-  if (mess != 0)
-  {
+
+  if (mess != 0) {
     prnt(msg[mess], NULL, NULL, NULL, NULL, NULL, NULL);
-    return (1);
+    return 1;
   }
-  if (!outside && type == 1 && mess == 0 && *(t + 3) != 0)
-  {
+
+  if (!outside && type == 1 && mess == 0 && t[3] != 0) {
     flag = 1;
-    prnt("-> %s notices an exit through the %s.",
-         w1, w, NULL, NULL, NULL, NULL);
+    prnt("-> %s notices an exit through the %s.", w1, w, NULL, NULL, NULL, NULL);
   }
-  if (type == 1 && *(t + 5) == -2)
-  {
+
+  if (type == 1 && t[5] == -2) {
     flag = 1;
     prnt("-> %s notices the %s is locked.", w1, w, NULL, NULL, NULL, NULL);
   }
-  if ((type == 1 || mess == 0) && !flag)
+
+  if ((type == 1 || mess == 0) && !flag) {
     prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
-  *(c + 18) = 3;
+  }
+  c[18] = 3;
+  new_c->unknown15[3] = 3;
+  
   return 1;
 }

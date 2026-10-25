@@ -11,7 +11,7 @@
 #include "text.h"
 #include "cinput.h"
 #include "texwin.h"
-
+#include "curmon.h"
 #include "debug.h"
 
 #include "tos_compat.h"
@@ -80,9 +80,11 @@ int init(int flag) {
   v_eeos(handle);
   debug_printf("init() cleared screen\n");
 
+  check_curmon("init after clearing screen");
   row = 17;
   if (flag == 1) {
     texwin();
+    debug_printf("< leaving init() early because flag was 1\n");
     return 1;
   }
 
@@ -99,7 +101,10 @@ int init(int flag) {
     //   *(c+j) = 0;
     // }
     memset(curmon[i], 60, 0);
+    memset(&new_curmon[i], 60, 0);
   }
+
+  check_curmon("init after clearing curmon[]");
 
   // Initialise to zero all of pursuit[3]
   // for (i = 0; i < 3; pursuit[i++] = 0)
@@ -109,19 +114,46 @@ int init(int flag) {
   pursuit[2] = 0;
 
   c = curmon[0];
+  curmon_t *new_c = &new_curmon[0];
+
   crum = -1;
 
-  // equivalent to curmon[0][0] = 1
   c[0] = 1;
+  new_c->in_use = 1;
 
   // Maybe starting stats on the player.
   c[46] = c[45] = c[31] = c[32] = c[33] = c[34] = c[35] = c[1] = 0;
+  new_c->magic_mode_1 = 0;
+  new_c->poison_mode_2 = 0;
+  new_c->intelligence_routine = 0;
+  // new_c->poison_mode_1 - 0; // We're setting it again in a sec
+  //new_c->unknown33[0] = 0; // We're setting it again in a sec
+  new_c->unknown33[1] = 0;
+  new_c->stink_lines = 0;
+  new_c->unknown1[0] = 0;
+
   c[59] = 2;
   c[42] = 20;
   c[41] = 0;
   c[32] = 2;
   c[33] = 4;
+  new_c->unknown59 = 2;
+  
+  // These are the correct player_t versions:
+  // new_c->unlit_torches = 20;
+  // new_c->lit_torches = 0;
+  // These are the curmon_t versions:
+  new_c->base_chance_2_attack = 20;
+  new_c->base_chance_3_attack = 0;
+
+  new_c->poison_mode_1 = 2;  
+  new_c->unknown33[0] = 4;
+
+  // Big version of player character
   c[4] = 81;
+  new_c->sprite_id = 81;
+
+  check_curmon("init after setting some things in curmon");
 
   // Clear all of invnpc[4][20]
   // for (j = 0; j < 4; j++) {
@@ -135,13 +167,17 @@ int init(int flag) {
   invnpc[0][2] = 42;
 
   c[44] = 50;
+  new_c->bane = 50;
   c[47] = 0;
+  new_c->poisoned = 0;
 
   // Starting gold
   c[49] = 50;
+  new_c->gold_amount = 50;
 
   if (flag == 2) {
     c[14] = 6 * c[51];
+    new_c->spell_units = 6 * new_c->magic_level;
     texwin();
     return 1;
   }
@@ -156,6 +192,14 @@ int init(int flag) {
   c[51] = val[0];
   c[2] = 50;
   c[11] = 4;
+  new_c->perception = 5 + (20 * val[2]);
+  new_c->physical_strength = 3 + (2 * val[1]);
+  new_c->spell_units = 6 * val[0];
+  new_c->magic_level = val[0];
+  new_c->unknown1[1] = 50;
+  new_c->unknown5[6] = 4;
+
+  check_curmon("init near end");
 
   debug_printf("init() drawing texwin\n");
   texwin();
@@ -169,12 +213,15 @@ int init(int flag) {
 
 int ruminit()
 {
+  // Everything except the player
   uint8_t *c = curmon[1];
+  curmon_t *new_c = &new_curmon[1];
 
-  // Zero out 660 bytes
+  // Zero out 660 bytes which is everything in curmon from [1] to the end.
   //for (i = 0; i < 660; *(c + (i++)) = 0) {
   //}
-  memset(c, 660, 0);
+  memset(c, 0, 660);
+  memset(new_c, 0, sizeof(curmon_t) * 11);
 
   if (!loadnew()) {
     mouse_on();
@@ -299,7 +346,10 @@ void congratulate() {
 
 
 int loadnew() {
+  // The player
   uint8_t *c = curmon[0];
+  curmon_t *new_c = &new_curmon[0];
+
   int fhandle, i, j, old, d1 = 0, d2 = 0, d3 = 0, flag = 0;
 
   old = dungeon;
@@ -313,6 +363,12 @@ int loadnew() {
     c[56] = 3;
     c[57] = 3;
     c[59] = 2;
+
+    new_c->unknown55[0] = 53;
+    new_c->unknown55[1] = 3;
+    new_c->unknown55[2] = 3;
+    new_c->unknown59 = 2;
+
     for (i = 0; i < 4; i++) {
       selllist[i][3] = 0;
     }
@@ -418,11 +474,16 @@ int loadnew() {
   Fread(fhandle, (long)5330, fillpic);
 
   if (dungeon == 0) {
+    // Small guy with red pants and grey shirt
     c[4] = 125;
+    new_c->sprite_id = 125;
+
     if (c[47] > 0 && c[14] > 0) {
       c[47] = 0;
+      new_c->poisoned = 0;
     }
     c[41] = 0;
+    new_c->base_chance_1_attack = 0; // lit torches if it was player_t
 
     // This seek is redundant, since it's already at that position
     Fseek((long)5330, fhandle, 0);
@@ -431,8 +492,11 @@ int loadnew() {
     Fread(fhandle, (long)5200, bitmap[21]);
 
   } else {
+    // Big size player sprite
     c[4] = 81;
+    new_c->sprite_id = 81;
   }
+
   Fclose(fhandle);
 
   if (dungeon != 0) {
@@ -485,30 +549,55 @@ int loadnew() {
   dismax = specbuf[21];
   c[24] = specbuf[22];
   c[25] = specbuf[23];
+  new_c->x = specbuf[22];
+  new_c->y = specbuf[23];
+
   winroom = specbuf[24];
   c[30] = specbuf[25];
+  new_c->current_room = specbuf[25];
+
   police = specbuf[34];
   specbuf[31] = d1;
   specbuf[32] = d2;
   specbuf[33] = d3;
-  if(old != 0 && new == 1)
-    specbuf[30+old] = 1;  /* inform this dungeon the old one is dirty */
-  if(new == 0 && lev != 0 ) {
+
+  if (old != 0 && new == 1) {
+    specbuf[30 + old] = 1;  /* inform this dungeon the old one is dirty */
+  }
+
+  if (new == 0 && lev != 0 ) {
     c[24] = 6;
     c[25] = 3;
+    new_c->x = 6;
+    new_c->y = 3;
+
     lev = specbuf[28] = 1;
-    }
-  for(i=1;i<4;i++) {
-    if(curmon[i][0] == 1) 
+  }
+
+  // Just the player characters
+  for (i = 1;i < 4; i++) {
+    // If character is "in use"
+    if (curmon[i][0] == 1) {
       curmon[i][30] = -2;
+      new_curmon[i].current_room = -2;
     }
-  for(i=4;i<12;i++) {
+  }
+
+  // Now blank out all the data for just the monsters
+  for (i = 4; i < 12; i++) {
     c = curmon[i];
-    for(j=0;j<60;j++)
+    for (j = 0; j < 60; j++) {
       c[j] = 0;
     }
-  for(i=0;i<20;i++)
-    invtrig[i] = specbuf[i+1];
+
+    memset(&new_curmon[i], 0, sizeof(curmon_t));
+  }
+
+  for (i = 0; i < 20; i++) {
+    invtrig[i] = specbuf[i + 1];
+  }
+
   crum = -1;
+
   return 1;
 }  

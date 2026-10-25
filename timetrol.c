@@ -4,6 +4,7 @@
 #include "damage.h"
 #include "rumdraw.h"
 #include "caux.h"
+#include "tos_compat.h"
 
 /***************************************************************************/
 /* TIMETROL() checks the pc's for the expiration of temporary events.      */
@@ -11,52 +12,80 @@
 
 int timetrol()
 {
-   uint8_t *c, *z;
-   char *w;
-   int i,j,x,y;
+	uint8_t *c, *z;
+	char *w;
+	int i,j,x,y;
+	curmon_t *new_c;
+
+	debug_printf("> timetrol\n");
    
-   for(i=0;i<12;i++) {
+	// Both players and monsters
+	for (i = 0; i < 12; i++) {
     c = curmon[i];
-    if (c[0] == 0)
+  	new_c = &new_curmon[i];
+
+		// Only if character is in use
+    if (c[0] == 0) {
        continue;
-    if(i < 4 && c[41] > 0 && c[30] == crum) { 
-       c[41] -= 1; /* checks for burn out of torches */
-       if(c[41] < 3) {
-          if(i == 0)
-             w = &pname[0];
-          else
-             w = name[c[3]];
-          prnt("-> %s's torch flickers...", w, NULL, NULL, NULL, NULL, NULL);
-          litetrol(c[24],c[25],0);
-          litetrol(c[24],c[25],1);
-          if(c[41] == 0) {
-            prnt("-> ... and goes out!", NULL, NULL, NULL, NULL, NULL, NULL);
-            if(new_rumdata[crum].room_has_bg == 0)
-              litetrol(c[24],c[25],0);
-            }
-          }
-       }
-    if(c[47] > 0 && c[30] == crum) { /* poisoning depends on constitution */
-       c[47] += 1;
-       if( (c[47])%10 == 0) {
-          if(i == 0)
-             w = &pname[0];
-          else
-             w = name[c[3]];
-          j = (4*(c[47]))/(c[2]);
-          if(j > 0) {
-            if(i < 4 || c[58] == 16)
-              prnt("-> %s's level of poisoning is %s!",w,wordmod[j], NULL, NULL, NULL, NULL);
-            else
-              prnt("-> The %s's level of poisoning is %s!",w,wordmod[j], NULL, NULL, NULL, NULL);
-            if(c[47] >= c[2]) {
-               c[1] = c[2];
-               damage(i,1 + c[12]);
-               return(-1);
-               }
-            }
-          }
-       }          
+		}
+
+		// Only for players in the current room
+    if (i < 4 && c[41] > 0 && c[30] == crum) { 
+			c[41] -= 1; /* checks for burn out of torches */
+			new_c->base_chance_1_attack--;
+
+			if (c[41] < 3) {
+				if (i == 0) {
+					// The player
+					w = &pname[0];
+				} else {
+					// An NPC
+					w = name[c[3]];
+				}
+
+				prnt("-> %s's torch flickers...", w, NULL, NULL, NULL, NULL, NULL);
+				litetrol(c[24],c[25],0);
+				litetrol(c[24],c[25],1);
+				if (c[41] == 0) {
+					prnt("-> ... and goes out!", NULL, NULL, NULL, NULL, NULL, NULL);
+					if (new_rumdata[crum].room_has_bg == 0)
+						litetrol(c[24],c[25],0);
+				}
+			}
+		}
+
+    if (c[47] > 0 && c[30] == crum) { /* poisoning depends on constitution */
+			c[47] += 1;
+			new_c->poisoned++;
+
+			if ((c[47]) % 10 == 0) {
+				if (i == 0) {
+					// the player
+					w = &pname[0];
+				} else {
+					// An NPC
+					w = name[c[3]];
+				}
+
+				j = (4*(c[47]))/(c[2]);
+				if (j > 0) {
+					if (i < 4 || c[58] == 16) {
+						prnt("-> %s's level of poisoning is %s!",w,wordmod[j], NULL, NULL, NULL, NULL);
+					} else {
+						prnt("-> The %s's level of poisoning is %s!",w,wordmod[j], NULL, NULL, NULL, NULL);
+					}
+					
+					if (c[47] >= c[2]) {
+						c[1] = c[2];
+						new_c->unknown1[0] = new_c->unknown1[1];
+
+						damage(i, 1 + c[12]);
+						return -1;
+					}
+				}
+			}
+		}          
+
     if( c[21] > 0) { /* checks for expiration of spells */
        c[21] -= 1;
        if( c[21] == 0) {
@@ -100,6 +129,8 @@ int timetrol()
          }
       }
    }
+
+   debug_printf("< timetrol\n");
    return(1);
 }
 

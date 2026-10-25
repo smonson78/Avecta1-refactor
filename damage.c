@@ -80,7 +80,7 @@ int damage(int pc, int level)
     if (c[31] > 3 && c[52] == 0) {
       
       c[52] = 1;
-      new_c->unknown52[0] = 1;
+      new_c->seekshard_imprinted_room = 1;
 
       prnt("-> The %s shrieks in pain and fear!", w, NULL, NULL, NULL, NULL, NULL);
     }

@@ -142,15 +142,19 @@ int fileio(int flow) {
       Fclose(filehandle);
       return -1;
     } else {
+      memcpy(new_curmon, curmon, sizeof(curmon));
+
       lev = specbuf[28] = 1;
       dungeon = specbuf[27];
       fromout = specbuf[37];
       police = specbuf[34];
       outside = specbuf[26];
       crum = curmon[0][30];
+      
       for (i = 0; i < 20; i++) {
         invtrig[i] = specbuf[i + 1];
       }
+
       Fclose(filehandle);
 
       if (outside || fromout) {
@@ -175,6 +179,8 @@ int fileio(int flow) {
         endianness_fix(bitmap, 4615, 16);
       }            
     }
+
+    check_curmon("fileio after loading data");
 
     // Set up room zero and legacy data after loading files
     //memcpy(rumdata, &room_zero, 157);

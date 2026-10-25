@@ -173,7 +173,7 @@ char *errmsg[] = {
                    "[1][ The inventory is too | full.  Drop something.][OK]",
                    "[1][ There is no character|  there. Try again!][OK]", 
                    "[1][  The target must be  | adjacent. Try again!][OK]",
-                   "[1][ The inventory is empty.|  Try something else!][OK]",
+                   "[1][ The inventory is empty.|  Try something else!][OK]", // 10
                    "[1][ The location must be | adjacent. Try again!][OK]",
                    "[1][ The object | is closed!][OK]",
                    "[1][  Insufficent spell  |  units!  Try again!][OK]",

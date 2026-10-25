@@ -48,6 +48,7 @@ int main()
 
    i = title();
    debug_printf("Title returned code %d\n", i);
+   check_curmon("after title screen");
 
    if (i == 1) {
       // 'n' for New Games was pressed
@@ -71,6 +72,7 @@ int main()
 
       case 2:
          // Restore Game. 2 = load
+         check_curmon("before loading save file");
          j = fileio(2);
          if (j == -1) {
             mouse_on();
@@ -78,6 +80,7 @@ int main()
             mouse_off();
          }
          i = 0;
+         check_curmon("after loading save file");
          break;
 
       default:

@@ -28,6 +28,8 @@ int actmon(int type, int nm, int x, int y)
   permon_t *p;
   int adder, i, j = 0, k, l;
 
+  check_curmon("actmon start");
+
   // Negative numbers seen in the code: -1, -2, -3
   if (type < 0) {
     type = abs(type);
@@ -61,7 +63,7 @@ int actmon(int type, int nm, int x, int y)
     c[11] = p->unknown11;
     c[12] = p->unknown12;
     c[13] = p->unknown13;
-    c[14] = p->unknown14;
+    c[14] = p->spell_units;
 
     c[50] = p->physical_strength;
     c[42] = 10;
@@ -94,7 +96,7 @@ int actmon(int type, int nm, int x, int y)
     new_c->unknown5[6] = p->unknown11;
     new_c->unknown5[7] = p->unknown12;
     new_c->unknown5[8] = p->unknown13;
-    new_c->unknown5[9] = p->unknown14;
+    new_c->spell_units = p->spell_units;
 
     new_c->unknown15[0] = 8;
     new_c->unknown15[1] = 1;
@@ -218,7 +220,7 @@ int actmon(int type, int nm, int x, int y)
     c[11] = p->unknown11;
     c[12] = p->unknown12;
     c[13] = p->unknown13;
-    c[14] = p->unknown14;    
+    c[14] = p->spell_units;    
     c[50] = p->physical_strength;   /* physical strength */
     c[45] = p->poison_mode;   /* poison mode */
     c[41] = p->base_chance_1_attack;   /* base chance #1 attack */
@@ -260,7 +262,7 @@ int actmon(int type, int nm, int x, int y)
     new_c->unknown5[6] = p->unknown11;
     new_c->unknown5[7] = p->unknown12;
     new_c->unknown5[8] = p->unknown13;
-    new_c->unknown5[9] = p->unknown14;    
+    new_c->spell_units = p->spell_units;    
 
     new_c->intelligence_routine = p->intell_routine;   /* intell routine */
 

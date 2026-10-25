@@ -99,34 +99,57 @@ void drawsq(int x, int y)
 {
   uint8_t *z = zline[x][y];
   uint8_t *c;
-  int i,pc;
-  if(*z == 1)
+  int i, pc;
+
+  if (*z == 1) {
     i = 1;
-  if(*z == 2)
+  }
+
+  if (*z == 2) {
     i = 0;
-  if(*z == 0)
+  }
+
+  if (*z == 0) {
     i = 2;
+  }
+
   setfill(i);
   fillsq(x,y);
-  if(i == 2)
+
+  if (i == 2) {
     return;
+  }
+
   pc = z[2];
-  if(!pc)
+
+  if (!pc) {
     pc = (curmon[0][24] == x && curmon[0][25] == y ? 0 : -1);
+  }
+
   x *= 16;
   y *= 16;
+  
   if (z[1] != 0 && crumobj[z[1]][8] == 1) {
-    blt(bitmap[crumobj[z[1]][0]],x,y);
+    blt(bitmap[crumobj[z[1]][0]], x, y);
   }
-  if(pc >= 0) { 
+  
+  if (pc >= 0) { 
     c = curmon[pc];
+    curmon_t *new_c = &new_curmon[pc];
+
     *c = 0;
+    new_c->in_use = 0;
+
     Vsync();
+
     *c = 1;
-    storsc(storbuf[pc],x,y,0,addr);
-    blt(bitmap[c[4]],x,y);
-    }
-  if(z[6] != 0) {
+    new_c->in_use = 1;
+
+    storsc(storbuf[pc], x, y, 0, addr);
+    blt(bitmap[c[4]], x, y);
+  }
+  
+  if (z[6] != 0) {
     blt(bitmap[130 + 2*(z[6])],x,y);
   }
 }
@@ -134,10 +157,12 @@ void drawsq(int x, int y)
 void drawman(int pc, int x, int y)
 {
     uint8_t *c = curmon[pc];
+
     if (pc < 4 && c[41] > 0) {
-      litetrol(x,y,1);
+      litetrol(x, y, 1);
     }
+
     if (zline[x][y][5] > 0 || new_rumdata[crum].room_has_bg || pc < 4) {
-      drawsq(x,y);
+      drawsq(x, y);
     }
 }

@@ -25,6 +25,7 @@
 #include "dorep.h"
 #include "text.h"
 #include "cinput.h"
+#include "curmon.h"
 
 #include "f5.h"
 #include "f6.h"
@@ -35,11 +36,13 @@ int savthrow(int npc, int mag);
 int i2(int pc)
 {
   int16_t status, x, y;
-  int i,j,k,numb,ret;
+  int i, j, k, numb, ret;
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
   uint8_t *z;
   char scratch[3],*w = (pc == 0 ? pname : name[c[3]]);
+
+  debug_printf("> i2\n");
 
   if (outside) {
     return 0;
@@ -196,6 +199,8 @@ int i2(int pc)
   new_c->unknown15[0] = 2;
   new_c->unknown15[1] = spelinfo[numb - 1][2];
   new_c->spell_units -= 1 + (numb - 1) / 5;
+  
+  debug_printf("< i2\n");
   return 1;
 }  
 
@@ -250,7 +255,10 @@ int o2(int pc)
   curmon_t *new_t;
   int k, m, flag = 0, dam, j, trap, num, target, i, x, y;
   w = (pc == 0 ? pname :  name[c[3]]);
+
+  debug_printf("> o2\n");
   
+  // Monsters only
   if (pc > 3) {
     if (c[58] != 16) {
       sprintf(junk, "%s", "The ");
@@ -270,8 +278,10 @@ int o2(int pc)
     wt = (target == 0 ? pname : name[t[3]]);
   }
 
+  // Players only
   if (pc < 4) {
     flag = 0;
+    // This is the spell number that was cast (index into array plus one)
     num = c[10];
     if (spelinfo[num - 1][0] != 2) {
       target = c[7]; // ...While this version is for player characters
@@ -284,7 +294,7 @@ int o2(int pc)
       target = c[9]; // ...And this version is for objects!
       t = crumobj[target];
       wt = obj[*t];
-      if (*t == 0) {
+      if (t[0] == 0) {
         flag = 1;
       }
     }
@@ -307,10 +317,15 @@ int o2(int pc)
   switch (num) {
     case 1:  /* cure light wounds but not poison */
       // t is a curmon object
-      t[1] -= 5 + curmon[pc][51] + rnd(20);
+      int randomness = rnd(20);
+      t[1] -= 5 + curmon[pc][51] + randomness;
+      new_t->unknown1[0] -= 5 + new_curmon[pc].magic_level + randomness;
+
       if (t[1] < 0) {
-        t[1] = 0;    
-      } 
+        t[1] = 0;
+        new_t->unknown1[0] = 0;
+      }
+
       break;
 
     case 2: /* heavy duty search */
@@ -333,6 +348,7 @@ int o2(int pc)
       if (savthrow(target, c[51])) {
         break;
       }
+
       if (t[16] == 0) {
         prnt("-> The spell fails!", NULL, NULL, NULL, NULL, NULL, NULL);
         break;
@@ -352,48 +368,77 @@ int o2(int pc)
       break;
 
     case 4:  /* the unvenom spell */
+      // t is a curmon
       t[47] = 0;
+      new_t->poisoned = 0;
       break;
 
     case 5:  /* vorpal blade */
+      // t is a curmon (player)
       if (target > 3) {
         break;
       }
+
       losespel(target);
+
       t[20] = t[43];
       t[43] = 1;
       t[19] = 43;
       t[21] = 20 + 2*(c[51]);
+      new_t->unknown15[5] = new_t->base_chance_3_attack;
+      new_t->base_chance_3_attack = 1;
+      new_t->unknown15[4] = 43;
+      new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
+
       break;
 
     case 6:  /* speed spell */
+      // t is a curmon
       losespel(target);
+
       t[20] = t[11];
       t[11] = 1;
       t[19] = 11;
       t[21] = 20 + 2*(c[51]);
+      new_t->unknown15[5] = new_t->unknown5[6];
+      new_t->unknown5[6] = 1;
+      new_t->unknown15[4] = 11;
+      new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
+
       break;
 
     case 7:  /* armor spell */
+      // t is a curmon
       losespel(target);
+
       t[20] = t[12];
       t[12] += c[51];
       t[19] = 12;
       t[21] = 20 + 2*(c[51]);
+      new_t->unknown15[5] = new_t->unknown5[7];
+      new_t->unknown5[7] += new_c->magic_level;
+      new_t->unknown15[4] = 12;
+      new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
+
       break;
 
     case 8: /* disarm trap */
+      // t is a crumobj    
       trap = t[2];
       if (trap > dismax || trap == 0) {
-        return(1);
+        return 1;
       }
+
       t[2] = 0;
+
       untrap(target);
       break;
 
     case 9: /*  bolt */
     case 12: /* fireball */
     case 16: /* prism */
+      // t is a curmon
+
       // Bolt
       if (num == 9) {
         dam = 10;
@@ -426,76 +471,112 @@ int o2(int pc)
       break;
 
     case 10: /* thief spell */
+      // t is a crumobj    
       num = c[37];
       c[37] = 120;
       new_c->perception = 120;
+
       // Rook/snoop probably
       o10(pc);
+      
       c[37] = num;
       new_c->perception = num;
+
       break;
 
     case 11:  /* fear spell */
-      if (savthrow(target,c[51]))
+      // t is a curmon    
+      if (savthrow(target, c[51])) {
         break;
+      }
       losespel(target);
+
       t[20] = t[36];
       t[36] = 1;
       t[19] = 36;
       t[21] = 40 + 2*(c[51]);
-      damage(target,0);
+      new_t->unknown15[5] = new_t->flee;
+      new_t->flee = 1;
+      new_t->unknown15[4] = 36;
+      new_t->unknown15[6] = 40 + (2 * new_c->magic_level);
+
+      damage(target, 0);
       break;
 
     case 13:  /* blink spell */
+      // t is a curmon    
       if (zline[c[26]][c[27]][2] != 0) {
         prnt("-> %s's blink spell fails!", w, NULL, NULL, NULL, NULL, NULL);
         break;
       }
+
       x = t[24];
       y = t[25];
+
       t[35] = 0;
+      new_t->stink_lines = 0;
 
       prnt("-> %s blinks out of reality for an instant!", wt, NULL, NULL, NULL, NULL, NULL);
-      explode(x,y,0);
+      explode(x, y, 0);
       Vsync();
-      storsc(storbuf[target],16*x,16*y,1,addr);
+      storsc(storbuf[target], 16 * x, 16 * y, 1, addr);
       zline[x][y][2] = 0;
+
       t[24] = c[26];
       t[25] = c[27];
+      new_t->x = new_c->old_x;
+      new_t->y = new_c->old_y;
+
       zline[t[24]][t[25]][2] = target;
-      if(target < 4 && t[41] > 0)
-         setlite(target,t[24] - x,t[25] - y); 
+      
+      if (target < 4 && t[41] > 0) {
+        setlite(target, t[24] - x, t[25] - y); 
+      }
+
       x = c[26];
       y = c[27];
+
       if (zline[t[24]][t[25]][5] > 0 || new_rumdata[crum].room_has_bg) {
         explode(x,y,0);
         drawsq(x,y);
       }
+
       t[15] = 8;
+      new_t->unknown15[0] = 8;
+
       break;
 
-   case 14: /* reveal */
+    case 14: /* reveal */
+      // no t for reveal   
       for (i = 1; i < 19; i++) {
         c = crumobj[i];
         if (c[8] == 0) {
           c[8] = 1;
+          // c is a crumobj! no need to do new_c
+
           zline[c[6]][c[7]][1] = i;
+
           if (new_rumdata[crum].room_has_bg || zline[c[6]][c[7]][5] > 0) {
-            blt(bitmap[*c],16*(c[6]),16*(c[7]));
+            blt(bitmap[c[0]],16*(c[6]),16*(c[7]));
           }
         }       
       }
       break;
 
     case 15: /* heal, you sumbitch */
+      // t is a curmon    
       t[1] = 0;
       t[47] = 0;
+      new_t->unknown1[0] = 0;
+      new_t->poisoned = 0;
+
       break;
 
     case 17: /* block head */
+      // t is a crumobj    
       // I think this actually blocks doorways and thus turns off your police pursuit flags.
       flag = 0;
-      // Multi-player stuff that never got used?
+      // Player and NPCs only
       for (i = 0; i < 4; i++) {
         if (curmon[i][0] && curmon[i][30] == pursuit[2]) {
            prnt("-> %s holds the %s spell to wait for friends!", w, spell[num - 1], NULL, NULL, NULL, NULL);
@@ -515,6 +596,7 @@ int o2(int pc)
       break;
 
     case 18: /* charm old scratch */
+      // t is a curmon    
       if (savthrow(target,c[51])) {
         break;
       }
@@ -523,6 +605,11 @@ int o2(int pc)
       t[20] = 0;
       t[19] = 38;
       t[21] = 20 + 2*(c[51]);
+      new_t->unknown38[0] = 1;
+      new_t->unknown15[5] = 0;
+      new_t->unknown15[4] = 38;
+      new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
+
       dorep();
       break;
 
@@ -547,7 +634,8 @@ int o2(int pc)
       break;
 
     case 20:  /* destroy an object */
-      if (t[2] > dismax || t[3] > 0 || *t == 1) {
+      // t is a crumobj
+      if (t[2] > dismax || t[3] > 0 || t[0] == 1) {
         prnt("-> The spell inexplicably fails!", NULL, NULL, NULL, NULL, NULL, NULL);
         break;
       }
@@ -557,6 +645,7 @@ int o2(int pc)
       break;
 
     case 21: /* summon some kinda monsters */
+      // no target for summon
       j = 1 + rnd(7); // Monster type to summon.
       i = 1 + rnd(6); // Number to summon
       
@@ -572,6 +661,7 @@ int o2(int pc)
 
       // Activate monsters
       actmon(j, i, x, y);
+      
       // Loop over the non-player monsters
       for (i = 4; i < 12; i++) {
         // If the monster type we're summoning matches the type in curmon[i]...
@@ -581,14 +671,16 @@ int o2(int pc)
           new_curmon[i].unknown38[0] = 1;
         }
       }
+
       dorep();
       break;
 
     case 22: /* death */
       // t will be a curmon here
-      if (savthrow(target,c[51])) {
+      if (savthrow(target, c[51])) {
         break;  
       }
+
       t[0] = 0;
       new_t->in_use = 0;
 
@@ -596,20 +688,22 @@ int o2(int pc)
       break;
 
     case 23: /* bringin back the dead */
-      // t is a crumobj here
+      // t is a crumobj here (a corpse)
       if (t[0] < 38 || t[0] > 40) {
         prnt("-> The life spell does not work on %ss!", wt, NULL, NULL, NULL, NULL, NULL);
         break;
       }
+
       k = 41 - t[0];
       
-      for (i=0;i<14;invnpc[k][i++] = 0) {
-
+      for (i = 0; i < 14; i++) {
+        invnpc[k][i] = 0;
       }
 
       if (target > 13) {
         xobj(t[0], crum);
       }
+
       p = putbuf;
       m = 0;
       while (m < 320) {
@@ -624,31 +718,44 @@ int o2(int pc)
       x = t[6];
       y = t[7];
 
-      destroy(1,target);
-      explode(x,y,0);
-      actmon(-k,1,x,y);         
-      prnt("-> Eirik shakes his head and mutters `Crom, my eyes spin! But \
-I still live! I do not wish to know the ensorcelment used to do this.'", NULL, NULL, NULL, NULL, NULL, NULL);
+      destroy(1, target);
+      explode(x, y, 0);
+      actmon(-k, 1, x, y);         
+      prnt("-> Eirik shakes his head and mutters `Crom, my eyes spin! But I still live! "
+        "I do not wish to know the ensorcelment used to do this.'",
+        NULL, NULL, NULL, NULL, NULL, NULL);
       break;
 
-   case 24:  /* time to teleport */
+    case 24:  /* time to teleport */
+      // no target t for teleport
+
       if ((k = c[52]) == 0) {
         prnt("-> The teleport invocator cannot find the inline mana thread!", NULL, NULL, NULL, NULL, NULL, NULL);
         break;
       }
+
       crum = -1;
       x = (c[53])%16;
       y = (c[53])/16;
-      for (j= 0;j<4;j++) {
+
+      // Players only
+      for (j = 0; j < 4; j++) {
         c = curmon[j];
-        if (*c == 1) {
+        new_c = &new_curmon[j];
+
+        if (c[0] == 1) {
           c[24] = x + j/2 - (j%2);
           c[25] = y - (j+1)/2 + ((j+1)%2);
           c[30] = k;
+
+          new_c->x = x + (j / 2) - (j % 2);
+          new_c->y = y - ((j + 1) / 2) + ((j + 1) % 2);
+          new_c->current_room = k;
         }
       }
   }
 
+  debug_printf("< o2\n");
   return 1;
 }
 
@@ -657,12 +764,16 @@ int savthrow(int npc, int mag)
 {
   uint8_t *c = curmon[npc];
   char *w = (npc == 0 ? pname : name[c[3]]);
-  if(rnd(100) < (c[51] - mag)*8 || c[54] > 0) {
-    if(npc < 4 || curmon[npc][3] == 10)
+
+  if (rnd(100) < (c[51] - mag)*8 || c[54] > 0) {
+    if (npc < 4 || curmon[npc][3] == 10) {
       prnt("-> %s resists the spell!", w, NULL, NULL, NULL, NULL, NULL);
-    else
+    } else {
       prnt("-> The %s resists the spell!", w, NULL, NULL, NULL, NULL, NULL);
-    return(1);
     }
-  return(0);
+
+    return 1;
+  }
+
+  return 0;
 }
