@@ -147,10 +147,10 @@ int8_t selllist[][4] = {
   // 1 = minimum price they will accept
   // 2 = 
   // 3 = 0 if friendly, 2 if they like you, -1 if you stole from them
-  {81, 3, 5, 0},
-  {42, 10, 20, 0},
-  {69, 25, 35, 0},
-  {45, 20, 30, 0}
+  {OBJECT_TORCH, 3, 5, 0},
+  {OBJECT_SCIMITAR, 10, 20, 0},
+  {OBJECT_POWER_VIAL, 25, 35, 0},
+  {OBJECT_BOW, 20, 30, 0}
 };
 
 char weight[41] = {
@@ -158,7 +158,10 @@ char weight[41] = {
   -1,-1,16,20,-1,-1,-1,8,-1,14,-1,-1,-1,-1,-1,-1,-1,-1,-1,
   -1,12
 };
+
+// Low damage, medium damage, heavy damage, dead, poisoned, charmed
 char *mod[] = {"0","L","M","H","X","P","C"};
+
 int16_t crudbuf[65];
 char *stuff[] = {"","                    "};
 
@@ -401,25 +404,84 @@ int firebuff[130];
 int16_t contrl[12], intin[128], intout[128], ptsin[128], ptsout[128];
 int16_t work_in[11], work_out[57];
 char *obj[] = {
-  "","door","chair","bed","desk","stove","altar","bookshelf",
-  "table","fireplace","statue","garbage heap","trapdoor",
-  "tapestry","throne","urn","chest","hole",
-  "barrel","skeleton",
-  "stairs which go down","stairs which go up",
-  "laboratory table","bathtub",
-  "lamp post","ectoplasmic converter","fountain","bench",
-  "iron gate","table with food","bush",
+  "",
+  "door",
+  "chair",
+  "bed",
+  "desk",
+  "stove", // 5
+  "altar",
+  "bookshelf",
+  "table",
+  "fireplace",
+  "statue", // 10
+  "garbage heap",
+  "trapdoor",
+  "tapestry",
+  "throne",
+  "urn", // 15
+  "chest",
+  "hole",
+  "barrel",
+  "skeleton",
+  "stairs which go down", // 20
+  "stairs which go up",
+  "laboratory table",
+  "bathtub",
+  "lamp post",
+  "ectoplasmic converter", // 25
+  "fountain",
+  "bench",
+  "iron gate",
+  "table with food",
+  "bush", // 30
   /*31*/
-  "orc machine","X-shaped rune","sign","announcement",
-  "Red Lion","fire","wrecked wagon","","","dead Eirik",
-  "broadsword","scimitar","mace","dagger","bow",
-  "bone key","button","old key","rune","black key",
-  "tongs","rod","bottle","poster","potion",
-  "garlic bud","device","bag","note","note",
-  "old bone","large book","vile key","magic tome","mask",
-  "black ball","note","note","power vial","bag",
-  "","","","","",
-  "","","","","seekshard","torch","","","",""
+  "orc machine",
+  "X-shaped rune",
+  "sign",
+  "announcement",
+  "Red Lion", // 35
+  "fire",
+  "wrecked wagon",
+  "",
+  "",
+  "dead Eirik", // 40
+  "broadsword",
+  "scimitar",
+  "mace",
+  "dagger",
+  "bow", // 45
+  "bone key",
+  "button",
+  "old key",
+  "rune",
+  "black key", // 50
+  "tongs",
+  "rod",
+  "bottle",
+  "poster",
+  "potion", // 55
+  "garlic bud",
+  "device",
+  "bag",
+  "note",
+  "note", // 60
+  "old bone",
+  "large book",
+  "vile key",
+  "magic tome",
+  "mask", // 65
+  "black ball",
+  "note",
+  "note",
+  "power vial",
+  "bag", // 70
+  "","","","",
+  "", // 75
+  "","","","",
+  "seekshard", // 80
+  "torch",
+  "","","",""
 };
 
 int outside, dungeon;

@@ -151,6 +151,7 @@ extern char *name[];
 #define ERROR_NOTHING_TO_EXAMINE 4
 #define ERROR_LOCATION_NOT_ADJACENT 11
 #define ERROR_OBJECT_IS_CLOSED 12
+#define ERROR_NO_EXIT 15
 #define ERROR_WHICH_HANDS_OBJECT 31
 
 extern char *errmsg[];
@@ -159,6 +160,13 @@ extern char *com[];
 extern char *verblist[];
 extern char *att[][4];
 extern char *monmsg[];
+
+#define OBJECT_SCIMITAR 42
+#define OBJECT_BOW 45
+#define OBJECT_POWER_VIAL 69
+#define OBJECT_SEEKSHARD 80
+#define OBJECT_TORCH 81
+
 extern char *obj[];
 
 extern char *mod[];

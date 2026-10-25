@@ -142,7 +142,6 @@ int actmon(int type, int nm, int x, int y)
 
         c[24] = x;
         c[25] = y;
-
         new_c->x = x;
         new_c->y = y;
         
@@ -243,8 +242,9 @@ int actmon(int type, int nm, int x, int y)
     c[16] = 1;
     c[30] = crum;
     c[39] = i;
+    int randomness = rnd(3);
     if (type == 18) {
-      c[4] = 116 + rnd(3);
+      c[4] = 116 + randomness;
     }
 
     // ...same again, but for new_curmon
@@ -290,7 +290,7 @@ int actmon(int type, int nm, int x, int y)
 
     // Pedestrian?
     if (type == 18) {
-      new_c->sprite_id = 116 + rnd(3);
+      new_c->sprite_id = 116 + randomness;
     }    
 
     drawman(i, c[24], c[25]);

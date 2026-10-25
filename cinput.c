@@ -68,7 +68,6 @@ int dotop(int pc)
   return 1;
 }
 
-// PC - Player Character?
 int input(int pc)
 {
   int16_t x, y;
@@ -77,6 +76,9 @@ int input(int pc)
   curmon_t *new_c = &new_curmon[pc];
   uint8_t *z = NULL;
   char *w = (pc == 0 ? pname : name[c[3]]);
+
+  debug_printf("> input()\n");
+  check_curmon("input()");
   
   if (pc > 3) {
     return 0;
@@ -104,7 +106,7 @@ top:
   v_rvon(handle);
   printf("        ");
   v_rvoff(handle);
-  textsix(1, 272, 17, 6,"Action");
+  textsix(1, 272, 17, 6, "Action");
   for (i = 2; i < 15; i++) {
     textsix(1, 258, 9 + 8 * i, strlen(verblist[i - 2]), verblist[i - 2]);
   }
@@ -148,7 +150,7 @@ top:
       j = crumobj[z[1]][0];
 
       if ((j > 0 && j < 41) || (z[2] < 4 && pc > 0 && z[2] > 0) 
-          || (*z == 2 && z[2] == 0)) {
+          || (z[0] == 2 && z[2] == 0)) {
         i = 1;
       }
     }
@@ -172,6 +174,8 @@ top:
         if (pc == 0 || (pc < 4 && c[38])) {
           c[15] = 1;
           c[39] = c[7];
+          new_c->unknown15[0] = 1;
+          new_c->unknown38[1] = new_c->unknown5[2];
           goto com;
         } else {
           return 1;
@@ -191,12 +195,14 @@ top:
     } else {
       c[26] = x;
       c[27] = y;
-      new_c->x = x;
-      new_c->y = y;
+      new_c->old_x = x;
+      new_c->old_y = y;
 
       return 4;
     }
   }
+
+  debug_printf("< input()\n");
 
   if (ret == 13) {
     return -1;
@@ -224,7 +230,7 @@ int comwind(int pc)
   int16_t x, y;
   int i, j, ret;
 
-  if (!c[39] || *c1 == 0 || *(c1+30) != crum || !adjac(pc,*(c1+24),*(c1+25))) {
+  if (!c[39] || c1[0] == 0 || c1[30] != crum || !adjac(pc, c1[24], c1[25])) {
     c[34] = c[39] = c[7] = 0;
 
     new_c->unknown33[1] = 0;

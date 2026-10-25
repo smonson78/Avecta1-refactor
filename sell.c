@@ -258,56 +258,94 @@ int sell(int npc)
   return 1;
 }
 
+// NPCs wandering around. Probably shouldn't be in this file.
 int wander(int npc)
 {
   uint8_t *c = curmon[npc];
+  curmon_t *new_c = &new_curmon[npc];
   uint8_t *o;
-  int i,j,k,l,x = crumobj[c[48]][6],y = crumobj[c[48]][7];
+  int i,j,k,l;
+  int x = crumobj[c[48]][6];
+  int y = crumobj[c[48]][7];
   int ex = crumobj[c[48]][3];
 
-if(c[48] != 0 && adjac(npc,x,y) && ex != 0 && ex != 8) {
-  c[15] = 9;
-  c[16] = 4;
-  c[10] = ex;
-  c[9] = c[48];
-  return(1);
+  if (c[48] != 0 && adjac(npc,x,y) && ex != 0 && ex != 8) {
+    c[15] = 9;
+    c[16] = 4;
+    c[10] = ex;
+    c[9] = c[48];
+
+    new_c->unknown15[0] = 9;
+    new_c->unknown15[1] = 4;
+    new_c->unknown5[5] = ex;
+    new_c->unknown5[4] = new_c->unknown48;
+
+    return 1;
   }
-if(c[48] == 0 || !los(npc,x,y) || ex == 8) {
-     l = 0;
-     do {
-        l++;
-        if(l == 100) 
-          break;
-        k = 1 + rnd(13);
-        o = crumobj[k];
-        j = o[3];
-        if(*o == 0 || j == 0 || j == 15 || j == 16 || j == 13 || j == 8 
-           || j == 20 || j == 21 || j == 19 || j == 23 || j == 25 || j == 4
-           || j == 5 || o[5] == -2 || adjac(npc,o[6],o[7]) )
-          continue;
-        x = o[6];
-        y = o[7];
-        c[48] = k;
+
+  if (c[48] == 0 || !los(npc,x,y) || ex == 8) {
+    l = 0;
+    do {
+      l++;
+      if (l == 100) {
         break;
-        } while (1);
-     if(l == 100 || !lom(npc,x,y)) { /* no exits that are not original exit */
-       c[48] = 0;
-       i = 1 - rnd(3);
-       j = 1 - rnd(3);
-       c[26] = c[24] + i;
-       c[27] = c[25] + j;
-       if(!i4(npc)) {
-         c[48] = 0;
-         pass(npc);
-         }
-       return(1);
-       }
-     }
-c[26] = x;
-c[27] = y;
-if(!i4(npc)) {
-  c[48] = 0;
-  pass(npc);
+      }
+
+      k = 1 + rnd(13); // 1 to 13
+      o = crumobj[k];
+      j = o[3];
+
+      if (o[0] == 0 || j == 0 || j == 15 || j == 16 || j == 13 || j == 8 
+          || j == 20 || j == 21 || j == 19 || j == 23 || j == 25 || j == 4
+          || j == 5 || o[5] == -2 || adjac(npc, o[6], o[7])) {
+        continue;
+      }
+
+      x = o[6];
+      y = o[7];
+      c[48] = k;
+      new_c->unknown48 = k;
+      break;
+
+    } while (1);
+
+    if (l == 100 || !lom(npc, x, y)) { /* no exits that are not original exit */
+      c[48] = 0;
+      new_c->unknown48 = 0;
+
+      i = 1 - rnd(3);
+      j = 1 - rnd(3);
+
+      // Set destination to a random new adjacent square
+      c[26] = c[24] + i;
+      c[27] = c[25] + j;
+      new_c->old_x = new_c->x + i;
+      new_c->old_y = new_c->y + j;
+
+      // Now move there (if possible)
+      if (!i4(npc)) {
+        c[48] = 0;
+        new_c->unknown48 = 0;
+
+        pass(npc);
+      }
+
+      return 1;
+    }
   }
-return(1);
+
+  // Set new destination
+  c[26] = x;
+  c[27] = y;
+  new_c->old_x = x;
+  new_c->old_y = y;
+
+  // Try to move there
+  if (!i4(npc)) {
+    c[48] = 0;
+    new_c->unknown48 = 0;
+    pass(npc);
+  }
+
+  return 1;
 }

@@ -317,10 +317,12 @@ int tacmode() {
       check_curmon("tacmode loop position 3");
 
       if (curmon[0][0] == 0) {
+        debug_printf("...player is dead, leaving tacmode()\n");
         return -1;
       }
 
       if (curmon[0][30] != crum) {
+        debug_printf("...player has left current room, leaving tacmode()\n");
         return 0;
       }
 
@@ -334,9 +336,12 @@ int tacmode() {
       } else {
         if (c[16] == 0) {
           do {
+            check_curmon("tacmode c[16] do-loop");
             l = 1;
             if (j == 1) {
               k = input(n); 
+
+              check_curmon("tacmode c[16] do-loop after input()");
               
               if (k == 1 && !combat) {
                 l = 0;

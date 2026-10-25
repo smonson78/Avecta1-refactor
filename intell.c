@@ -50,6 +50,8 @@ int intell(int npc)
   new_c->unknown38[2] = 0;
 
   while (!done) {
+    debug_printf("intell step %d\n", step);
+
     switch (step) {
       case 1: /* sets up the standard berserk attack sequence. */
         done = 1; /* always fall through after a berserk */

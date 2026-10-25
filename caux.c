@@ -57,9 +57,11 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
     keybd = 13;
   }
 
-  if (top1 ==  8 && bot == 11) {
+  if (top1 == 8 && bot == 11) {
     keybd = 4;
   }
+
+  // keybd could be 0, 4, or 13 now
 
   Vsync();
   mouse_on();
@@ -73,14 +75,27 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 
     if (keybd != 0 && keystk) {
       keystk = 0;
+
+      // This loop is going to run 0 times, 4 times, or 13 times
       for (i = 0; i < keybd; i++) {
+        // Get a character from some string
         if (keybd == 13) {
+          // These are the commands one can do in the game
+          // ...there are 13 of these.
           string = verblist[i];
         } else {
+          // There are 4 of these.
           string = posture[i];
         }
 
-        if (letter == ' ' || *string == letter || *string == (letter-32) ) {
+        // Check whether the user pressed spacebar, the first letter in the string corresponding to i,
+        // or for some reason a control character that corresponds to the letter in the string
+        // (last one seems like a bug?)
+        // if (letter == ' ' || string[0] == letter || string[0] == (letter - 32)) {
+        if (letter == ' ' || string[0] == letter) {
+          
+          // We selected a command on the keyboard.
+
           mouse_off();
           top(1);
           clrinp();
@@ -101,19 +116,27 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             }
           }
 
+          // Main options
           if (keybd == 13) {
             if (letter == ' ') {
+              // Spacebar = change item in hand
               *ret = 16;
             } else {
-              *ret = i+3;
+              // Command number from 0 to 12 --> 3 to 15
+              *ret = i + 3;
             }
           } else {
             if (letter == ' ') {
+              // Spacebar = not sure
               *ret = 12;
             } else {
+              // 0 to 3 --> 8 to 11
               *ret = 8 + i;
             }
           }
+
+          // Final ret values here are 3 to 16.
+          debug_printf("sgetxy() returned ret=%d\n", *ret);
 
           return 1;  
         }
@@ -370,7 +393,10 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
         *ret = oldline;
       else
         *ret = 0;
-      return(1);
+
+      // ret could be 0 or some other value that isn't clear
+      debug_printf("sgetxy() returned ret=%d\n", *ret);
+      return 1;
     }
   } while (1);
 }
@@ -726,18 +752,23 @@ int putaway(int pc, int thing)
 {
   uint8_t *i = invnpc[pc];
   int j = 1;
+
   if (thing == 0) {
-    return(1);
+    return 1;
   }
-  if (*i > 9 || thing == 81) {
+
+  if (i[0] > 9 || thing == OBJECT_TORCH) {
     return 0;
   }
+
   while (*(i+j) != 0 && j < 11) {
     j++;
   }
+
   if (j == 11) {
     return 0;
   }
+
   if (thing < 46 && thing > 40) {
     curmon[pc][32] = 0;
     new_curmon[pc].poison_mode_1 = 0;
@@ -918,7 +949,7 @@ int status(int pc)
   clrinp();
   
   ret -= 7;
-  switch(ret) {
+  switch (ret) {
     case 1:
     case 2:
       if (ret == 2) {
@@ -952,7 +983,14 @@ int status(int pc)
           error(7);
           break;
         }
+
         c[44 + ret] = 0;
+        if (ret == 1) {
+          new_c->poison_mode_2 = 0; // good hand object
+        } else {
+          new_c->magic_mode_1 = 0; // other hand object
+        }
+        
         break;
       }
 
@@ -962,11 +1000,22 @@ int status(int pc)
           break;
         }
       }
+
       takeout(pc, j);
-      *(c + 44 + ret) = j;
+      c[44 + ret] = j;
+      if (ret == 1) {
+        new_c->poison_mode_2 = j; // good hand object
+      } else {
+        new_c->magic_mode_1 = j; // other hand object
+      }      
+
       if (c[45] < 46 && c[45] > 40) {
+        // objects 41, 42, 43, 44, 45 which are
+        // broadsword, scimitar, mace, dagger, bow - i.e. weapons
         c[32] = c[45];
+        new_c->poison_mode_1 = new_c->poison_mode_2;
       }
+
       break;
 
     case 3:
@@ -988,15 +1037,16 @@ int status(int pc)
 int invent(int pc)
 {
   int16_t i, j;
-  int top = 3,ret,bot;
+  int top = 3, ret, bot;
   char scratch[16];
 
-  bot = 2+listinv(pc,scratch);
-  sgetxy(&i,&j,2,top,bot+1,&ret);
+  bot = 2 + listinv(pc, scratch);
+  sgetxy(&i, &j, 2, top, bot + 1, &ret);
 
   if (ret == bot + 1) {
     return 0;
   }
+
   return(scratch[ret]);
 }
 
@@ -1016,8 +1066,8 @@ int listinv(int pc, char *scratch)
    textsix(1,260,1,9,"INVENTORY");
    prhand(pc);
   
-   *(scratch+1) = c[45];
-   *(scratch+2) = c[46];
+   scratch[1] = c[45];
+   scratch[2] = c[46];
   //  *(scratch+1) = new_c->poison_mode_2;
   //  *(scratch+2) = new_c->magic_mode_1;   
 
