@@ -360,7 +360,9 @@ int o2(int pc)
       t[20] = 1;
       t[21] = (t[16])/5;
 
-      new_t->unknown15[1] = 50 + 5 * new_c->magic_level;
+      // Crash here:
+      printf("--> t is %p, new_t is %p\n", t, new_t);
+      new_t->unknown15[1] = 50 + (5 * new_c->magic_level);
       new_t->unknown15[4] = 0;
       new_t->unknown15[5] = 1;
       new_t->unknown15[6] = new_t->unknown15[1] / 5; // Note we just set this value earlier
@@ -557,7 +559,7 @@ int o2(int pc)
           zline[c[6]][c[7]][1] = i;
 
           if (new_rumdata[crum].room_has_bg || zline[c[6]][c[7]][5] > 0) {
-            blt(bitmap[c[0]],16*(c[6]),16*(c[7]));
+            blt(&bitmap[c[0]],16*(c[6]),16*(c[7]));
           }
         }       
       }

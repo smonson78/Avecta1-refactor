@@ -22,14 +22,17 @@ int16_t animate()
       return 1;
    }
 
-   if (specbuf[35] > 0 && time%3 == 0) {
+   if (specbuf[35] > 0 && time % 3 == 0) {
       x = specbuf[36]%16;
       y = specbuf[36]/16;
       x += rnd(3) - 1;
       y += rnd(3) - 1;
       z = zline[x][y];
-      if ((m = z[6]) != 0) {
-         blt(bitmap[130 + 2*m + rnd(2)],16*x,16*y);
+
+      m = z[6];
+      if (m != 0) {
+         // More stupid pointer maths
+         blt(&bitmap[130 + 2*m + rnd(2)],16*x,16*y);
       }
    }
 
@@ -61,7 +64,7 @@ int16_t animate()
 
       mouse_off();
       storsc(storbuf[j], 16 * x, 16 * y, 1, addr);
-      blt(bitmap[c[4] + 66*(c[17])], x * 16, y * 16);
+      blt(&bitmap[c[4] + 66*(c[17])], x * 16, y * 16);
       // This is interesting because of the 66* part.
       // The first 80 sprites (0..79) are more like objects and furniture.
       // Player is sprite 81
@@ -71,7 +74,7 @@ int16_t animate()
       if (c[35] > 0) {
       //if (new_c->stink_lines > 0) {
          // Sprint 128 is "stink lines" (spell target indicator)
-         blt(bitmap[128], 16 * x, 16 * y);
+         blt(&bitmap[128], 16 * x, 16 * y);
 
          // Clearly the number of stink lines left
          c[35] -= 1;
@@ -80,7 +83,7 @@ int16_t animate()
       } 
 
       if ((m = z[6]) != 0) {
-         blt(bitmap[130 + 2 * m], 16 * x, 16 * y);
+         blt(&bitmap[130 + 2 * m], 16 * x, 16 * y);
       }
 
       if (z[4] == 1) {

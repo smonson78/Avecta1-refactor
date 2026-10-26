@@ -89,10 +89,9 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
         }
 
         // Check whether the user pressed spacebar, the first letter in the string corresponding to i,
-        // or for some reason a control character that corresponds to the letter in the string
-        // (last one seems like a bug?)
-        // if (letter == ' ' || string[0] == letter || string[0] == (letter - 32)) {
-        if (letter == ' ' || string[0] == letter) {
+        // or a control character that corresponds to the letter in the string.
+        // Not sure why the -32 is there but it allows keyboard selection of the action.
+        if (letter == ' ' || string[0] == letter || string[0] == (letter - 32)) {
           
           // We selected a command on the keyboard.
 

@@ -130,7 +130,7 @@ void drawsq(int x, int y)
   y *= 16;
   
   if (z[1] != 0 && crumobj[z[1]][8] == 1) {
-    blt(bitmap[crumobj[z[1]][0]], x, y);
+    blt(&bitmap[crumobj[z[1]][0]], x, y);
   }
   
   if (pc >= 0) { 
@@ -146,11 +146,11 @@ void drawsq(int x, int y)
     new_c->in_use = 1;
 
     storsc(storbuf[pc], x, y, 0, addr);
-    blt(bitmap[c[4]], x, y);
+    blt(&bitmap[c[4]], x, y);
   }
   
   if (z[6] != 0) {
-    blt(bitmap[130 + 2*(z[6])],x,y);
+    blt(&bitmap[130 + 2*(z[6])],x,y);
   }
 }
 

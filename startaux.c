@@ -13,6 +13,7 @@
 #include "texwin.h"
 #include "curmon.h"
 #include "debug.h"
+#include "fileio.h"
 
 #include "tos_compat.h"
 
@@ -132,7 +133,9 @@ int init(int flag) {
   new_c->stink_lines = 0;
   new_c->unknown1[0] = 0;
 
+  // "dungeon" number
   c[59] = 2;
+
   c[42] = 20;
   c[41] = 0;
   c[32] = 2;
@@ -258,28 +261,34 @@ int32_t savpal() {
   return 0;
 }
 
+// Player died and is coming back to life
 int console() {
   int i;
   uint8_t *c = curmon[0];
+  curmon_t *new_c = &new_curmon[0];
+
   for (i = 1; i < 17; i++) {
-    vs_curaddress(handle, i ,1);
+    vs_curaddress(handle, i, 1);
     v_eeol(handle);
   }
+
   for (i = 17; i < 26; i++) {
     vs_curaddress(handle, i, 31);
     v_eeol(handle);
   }
-  for(i = 17; i < 26; i++) {
+
+  for (i = 17; i < 26; i++) {
     vs_curaddress(handle, i, 1);
     printf(" ");
   }
+
   vsf_interior(handle, 1);
   vsf_color(handle, 2);
   v_contourfill(handle, 300, 10, -1);
   mouse_on();
 
   if (dungeon == 2 && police) {
-    form_alert(1,"[1][The blond man murmurs |`Unworthy soul!    |No resurrection!   "
+    form_alert(1, "[1][The blond man murmurs |`Unworthy soul!    |No resurrection!   "
       "|You violate the law!'][Death!]");
     return 0;
   }
@@ -288,6 +297,7 @@ int console() {
   loadnew();
   new = 1;
   c[30] = 29;
+  new_c->current_room = ROOM_ID_LEVETHS_HOUSE;
 
   form_alert(1,"[1][The blond man murmurs  |`Resurrection again... |My strength fails me..."
     "|Such a great distance...|So little time.' ][ Once more ]");
@@ -396,11 +406,19 @@ int loadnew() {
   }
 
   if (dungeon != 0 && new != 0) {
-    specbuf[30 + dungeon] = 1;  /* gotta set the dirty flag on that dungeon */
+    /* gotta set the dirty flag on that dungeon */
+    specbuf[30 + dungeon] = 1;
 
-    fhandle = Fopen(savname[dungeon + (3 * specbuf[30 + dungeon])], 1);
+    // It wants us to save a bunch of data to a file here.
+    // Because of the line above, and the fact that dungeon is only ever 0 or 2, this will always 
+    // be savname[5] which is DTROND.DAT
+    char *filename = savname[dungeon + (3 * specbuf[30 + dungeon])];  
+
+    // fhandle = Fopen(savname[dungeon + (3 * specbuf[30 + dungeon])], 1);
+    fhandle = Fopen(filename, 1);
     if (fhandle < 0) {
-      fhandle = Fcreate(savname[dungeon + (3 * specbuf[30 + dungeon])], 0);
+      // fhandle = Fcreate(savname[dungeon + (3 * specbuf[30 + dungeon])], 0);
+      fhandle = Fcreate(filename, 0);
     }
 
     if (fhandle < 0) {
@@ -425,53 +443,13 @@ int loadnew() {
 
   // Load entirety of GRAFX.DAT into bitmap[]
   // This has 200 sprite and object images in it.
-  fhandle = Fopen("GRAFX.DAT", 0);
-  if (fhandle < 0) {
+  if (load_inside_sprites(200)) {
     return 0;
   }
-  Fread(fhandle, (long)26000, bitmap[0]);
-  endianness_fix(bitmap, 13000, 16);
 
-  Fclose(fhandle);
-
-  // Now load the first part of FILL.DAT
-  // It's actually 26000 bytes long
-  // Breakdown of FILL.DAT:
-  // 0 -      = empty
-  // 1 - 23   = floor/wall textures
-  // 24       = garbage
-  // 25 - 27  = rivers
-  // 28 - 33  = empty
-  // 34       = lake water
-  // 35 - 40  = empty
-  // ---------- this is the amount read initially as "fillpic"
-  // 41 - 47  = rivers
-  // 48       = lake water
-  // 49 - 51  = empty
-  // 52 - 59  = ocean water
-  // 53       = empty
-  // 54       = terrain graphic
-  // 55 - 56  = castles
-  // 57 - 58  = rivers
-  // 59       = terrain graphics
-  // 60       = cave entrance dot
-  // ---------- up to here is the second set of 40 sprites ready into bitmap[21+]
-  // 61 - 64  = terrain graphics
-  // 65       = empty
-  // 66       = terrain graphics
-  // 67       = empty
-  // 68       = terrain graphics
-  // 69       = empty
-  // 70       = terrain graphics
-  // 71 - 198 = empty
-  // 199      = a plus sign on a black background
-  fhandle = Fopen("FILL.DAT", 0);
-  if (fhandle < 0) {
+  if (load_inside_fill_tiles()) {
     return 0;
   }
-  
-  // Just read 41 sprites into "FILLPIC"
-  Fread(fhandle, (long)5330, fillpic);
 
   if (dungeon == 0) {
     // Small guy with red pants and grey shirt
@@ -485,12 +463,9 @@ int loadnew() {
     c[41] = 0;
     new_c->base_chance_1_attack = 0; // lit torches if it was player_t
 
-    // This seek is redundant, since it's already at that position
-    Fseek((long)5330, fhandle, 0);
-
-    // Read another 40 sprites into bitmap[21 to 60] - replacing some of the existing sprites from GRAFX.DAT
-    Fread(fhandle, (long)5200, bitmap[21]);
-
+    if (load_outside_fill_tiles(40)) {
+      return 0;
+    }
   } else {
     // Big size player sprite
     c[4] = 81;
@@ -500,13 +475,19 @@ int loadnew() {
   Fclose(fhandle);
 
   if (dungeon != 0) {
-    fhandle = Fopen(savname[dungeon + 3 * specbuf[30 + dungeon]], 0);
+    debug_printf("dungeon == %d\n", dungeon);
+    debug_printf("specbuf[%d] == %d\n", 30 + dungeon, specbuf[30 + dungeon]);
+
+    // Now open TROND or DTROND.DAT (depending on specbuf[32]) for reading:
+    char *filename = savname[dungeon + (3 * specbuf[30 + dungeon])];
+    fhandle = Fopen(filename, 0);
   } else {
+    // OUTSIDE.DAT
     fhandle = Fopen(savname[0], 0);
   }
 
   if (fhandle < 0) {
-    return(0);
+    return 0;
   }
 
   d1 = specbuf[31];
@@ -517,6 +498,25 @@ int loadnew() {
   //Fread(fhandle,(long)12560, new_rumdata);
   Fread(fhandle,(long)157, &room_zero);
   Fread(fhandle,(long)12403, &new_rumdata[1]);
+
+
+  // Check room unknown_xy usage
+  int max = 0;
+  int max_room = crum;
+  for (int ro = 1; ro < 80; ro++) {
+    
+    uint8_t count = 0;
+    while (new_rumdata[ro].room_unknown_xy[count] != new_rumdata[ro].room_oldxy && count < 16) {
+      count++;
+    }
+    
+    if (count > max) {
+      max_room = ro;
+      max = count;
+    }
+  }
+  debug_printf("--> maximum room_unknown_xy for room %d was %d\n", max_room, max);
+
 
   // Copy to legacy rumdata[]
   //memcpy(rumdata, new_rumdata, 12560);

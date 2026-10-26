@@ -76,7 +76,7 @@ typedef struct {
   // 53
   uint8_t seekshard_imprinted_xy;
   // 54
-  uint8_t magic_mode_2;
+  uint8_t magic_mode_2; // "immunity to magic"
   // 55-57
   uint8_t unknown55[3];
   // 58

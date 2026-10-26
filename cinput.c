@@ -223,7 +223,7 @@ int comwind(int pc)
   uint8_t *c = curmon[pc];
   uint8_t *c1 = curmon[c[39]];
   curmon_t *new_c = &new_curmon[pc];
-  curmon_t *new_c1 = &new_curmon[new_c->unknown38[1]];
+  // curmon_t *new_c1 = &new_curmon[new_c->unknown38[1]];
 
   char scratch[3];
   char *w = (pc == 0 ? pname : name[c[3]]);

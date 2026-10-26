@@ -10,6 +10,87 @@
 
 #include "debug.h"
 
+// We're either loading 30 sprites into bitmap[21] to bitmap[50] or 40 sprites into bitmap[21] to bitmap[60]
+int load_outside_fill_tiles(int total) {
+  int h = Fopen("FILL.DAT", 0);
+  if (h < 0) {
+    return 1;
+  }
+
+  // Skip 41 sprites
+  Fseek(41 * sizeof(sprite_t), h, 0);
+  
+  // Load 30 sprites in bitmap[21 to 50]
+  // This overwrites indoor sprite data from the first staircase sprite until the second zany 
+  // square sprite.
+  Fread(h, total * sizeof(sprite_t), &bitmap[21]);
+  Fclose(h);
+  endianness_fix(&bitmap[21], total * sizeof(sprite_t) / 2, 16);
+
+  return 0;
+}
+
+
+// FILL.DAT
+// It's actually 26000 bytes long
+// Breakdown of FILL.DAT:
+// 0 -      = empty
+// 1 - 23   = floor/wall textures
+// 24       = garbage
+// 25 - 27  = rivers
+// 28 - 33  = empty
+// 34       = lake water
+// 35 - 40  = empty
+// ---------- this is the amount read initially as "fillpic"
+// 41 - 47  = rivers
+// 48       = lake water
+// 49 - 51  = empty
+// 52 - 59  = ocean water
+// 53       = empty
+// 54       = terrain graphic
+// 55 - 56  = castles
+// 57 - 58  = rivers
+// 59       = terrain graphics
+// 60       = cave entrance dot
+// ---------- up to here is the second set of 40 sprites ready into bitmap[21+]
+// 61 - 64  = terrain graphics
+// 65       = empty
+// 66       = terrain graphics
+// 67       = empty
+// 68       = terrain graphics
+// 69       = empty
+// 70       = terrain graphics
+// 71 - 198 = empty
+// 199      = a plus sign on a black background
+int load_inside_fill_tiles(int ) {
+  int h = Fopen("FILL.DAT", 0);
+  if (h < 0) {
+    return 1;
+  }
+  
+  // Read 41 sprites into "FILLPIC"
+  Fread(h, sizeof(fillpic), fillpic);
+  Fclose(h);
+  endianness_fix(fillpic, sizeof(fillpic) / 2, 16);
+
+  return 0;
+}
+
+int load_inside_sprites(int total) {
+  int h = Fopen("GRAFX.DAT", 0);
+  if (h < 0) {
+    return 1;
+  }
+
+  // We are not always reading all of the 200 images here for some reason
+  Fread(h, total * sizeof(sprite_t), bitmap);
+  Fclose(h);
+  endianness_fix(bitmap, total * sizeof(sprite_t) / 2, 16);
+
+  return 0;
+}
+
+
 // Load a save game
 // When flow == 1, save the game
 // When flow == 2, restore a saved game
@@ -159,24 +240,14 @@ int fileio(int flow) {
 
       if (outside || fromout) {
         specbuf[32] = 1;
-        filehandle = Fopen("FILL.DAT", 0);
-        if (filehandle < 0) {
+        if (load_outside_fill_tiles(30)) {
           return 0;
         }
-        Fseek((long)5330, filehandle, 0);
-        // Read just 30 sprites this time in bitmap[21 to 50]
-        Fread(filehandle, (long)3900, bitmap[21]);
-        Fclose(filehandle);
-        endianness_fix(&bitmap[21], 1950, 16);
       } else {
-        filehandle = Fopen("GRAFX.DAT", 0);
-        if (filehandle < 0) {
+        // Just the first 71
+        if (load_inside_sprites(71)) {
           return 0;
         }
-        // We are only reading the first 71 out of the 200 images here for some reason
-        Fread(filehandle, (long)9230, bitmap[0]);
-        Fclose(filehandle);
-        endianness_fix(bitmap, 4615, 16);
       }            
     }
 
@@ -191,4 +262,3 @@ int fileio(int flow) {
 
   return 1;
 }
-  

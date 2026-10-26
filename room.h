@@ -28,7 +28,8 @@ typedef struct {
   // - 0   = oldx and oldy (4 bits each) - x in lower, y in upper
   uint8_t room_oldxy;
 
-  // - 1   = another set of xy coords ...apparently byte 1 of a 3-byte structure
+  // - 1   = another set of xy coords
+  // - 2 .. 15 - unknown
   uint8_t room_unknown_xy[15];
 
   // - 16  = background tile 1 pattern

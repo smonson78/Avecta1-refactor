@@ -152,13 +152,21 @@ int main()
 
 			// Can't handle in switch due to the custom ID
 			if (event.type == custom_event_save_file) {
+
+				// Get location
+				char buf[256];
+				getcwd(buf, 256);
+
+				// Get filters
+				SDL_DialogFileFilter filters[] = {{ "Save Games", "sav" }};
+
         SDL_ShowSaveFileDialog(
             OnSaveFileSelected, 
             event.user.data1,   // Pass the thread's data to the callback
             NULL,               // Modal parent window (can be NULL)
-            NULL,               // Array of filters
-            0,                  // Number of filters
-            NULL                // Default starting location
+            filters,            // Array of filters
+            1,                  // Number of filters
+            buf                 // Default starting location
         );
 				printf("File selector created!\n");
 			}

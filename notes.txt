@@ -1,0 +1,6 @@
+TROND.DAT (initial) and DTROND.DAT (game in progress) corresponds to Kilkaney.
+OUTSIDE.DAT corresponds to the world map.
+
+The maximum number of room_unknown_xy uses is
+  Kilkaney: 9
+  World map: 3

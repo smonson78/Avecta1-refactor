@@ -167,7 +167,7 @@ int switchrum() {
           c[8] = 1;
           Vsync(); 
 
-          blt(bitmap[c[0]], 16 * x, 16 * y);
+          blt(&bitmap[c[0]], 16 * x, 16 * y);
 
           zline[x][y][1] = i;
         }
@@ -253,12 +253,14 @@ int switchrum() {
 void stormon()
 {
   uint8_t *c;
+  curmon_t *new_c;
   char *r = monbuf;
   int i, j = 1;
   
   // Do all non-player monsters
   for (i = 4; i < 12; i++) {
     c = curmon[i];
+    new_c = &new_curmon[i];
 
     if (c[0] == 0 || c[30] != crum) {
       continue;
@@ -274,6 +276,7 @@ void stormon()
 
     if (c[4] > 115 && c[4] < 119) {
       c[4] = 110;
+      new_c->sprite_id = 110;
     }
 
     *(r+j) = c[4];

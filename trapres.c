@@ -19,40 +19,50 @@
 
 #include "debug.h"
 
+// 
 void trapres(int pc, int type, int x, int y)
 {
   uint8_t *c = curmon[pc];
+  curmon_t *new_c = &new_curmon[pc];
+
   uint8_t *z = zline[x][y];
 
   char *s1, *s2, str[20];
   int flag, flag2, flag3, i, j;
 
-  if (pc > 3)
-  {
+  if (pc > 3) {
+    // Monsters:
     s1 = msg[0];
-    s2 = name[*(c + 3)];
-  }
-  else
-  {
+    s2 = name[c[3]];
+  } else {
+    // Playable characters:
     s1 = rummsg[0];
-    s2 = (pc == 0 ? pname : name[*(c + 3)]);
+    s2 = (pc == 0 ? pname : name[c[3]]);
   }
-  switch (type)
-  {
-  case 0:
-    break;
-  case 1: /* generic lock door behind player subroutine */
-    flag = 0;
-    for (i = 0; i < 4; i++)
-    {
-      c = curmon[i];
-      if (i == pc)
-        continue;
-      if (*c == 1 && *(c + 30) != crum)
-        flag = 1;
-    }
-    if (flag)
+
+  switch (type) {
+    case 0:
       break;
+
+    case 1: /* generic lock door behind player subroutine */
+      flag = 0;
+
+      // For each playable character:
+      for (i = 0; i < 4; i++) {
+        c = curmon[i];
+        new_c = &new_curmon[i];
+
+        if (i == pc) {
+          continue;
+        }
+        if (*c == 1 && *(c + 30) != crum)
+          flag = 1;
+      }
+
+      if (flag) {
+        break;
+      }
+
     untrap(zline[x][y][1]);
     destroy(1, zline[x][y][1]);
     flash();
@@ -523,9 +533,11 @@ Master...' He slowly fades out.", NULL, NULL, NULL, NULL, NULL, NULL);
       specbuf[25] = 1;
       specbuf[22] = 8;
       specbuf[23] = 7;
-      *(c + 30) = 29;
+      c[30] = 29;
+      new_c->current_room = ROOM_ID_LEVETHS_HOUSE;
       break;
     }
+
     if (lev == 1)
     {
       prnt("-> The old man in the bed looks at %s, and his tongue plays \

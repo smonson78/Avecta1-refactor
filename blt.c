@@ -12,9 +12,10 @@
 *******************************************************************************/
 
 // Sprites are always 16x16 pixels.
-void blt(uint16_t *sprite, int xpix, int ypix) {
+void blt(sprite_t *sprite, int xpix, int ypix) {
 
   // debug_printf("> blt() to %d,%d\n", xpix, ypix);
+  int16_t *src = sprite->data;
 
   uint16_t *dest = addr + (ypix * 80) + ((xpix / 16) * 4);
   uint16_t shift = 16 - (xpix % 16);
@@ -28,10 +29,10 @@ void blt(uint16_t *sprite, int xpix, int ypix) {
     // Work register for pixels
     uint32_t d6 = 0;
 
-    uint32_t bitplane0 = sprite[0] << shift;
-    uint32_t bitplane1 = sprite[1] << shift;
-    uint32_t bitplane2 = sprite[2] << shift;
-    uint32_t bitplane3 = sprite[3] << shift;
+    uint32_t bitplane0 = src[0] << shift;
+    uint32_t bitplane1 = src[1] << shift;
+    uint32_t bitplane2 = src[2] << shift;
+    uint32_t bitplane3 = src[3] << shift;
 
     // OR them all together in the 32-bit word
     d6 = bitplane0 | bitplane1 | bitplane2 | bitplane3;
@@ -73,7 +74,7 @@ void blt(uint16_t *sprite, int xpix, int ypix) {
     dest[3] |= bitplane3;
 
     // Move to the next line
-    sprite += 4;
+    src += 4;
 
     // And the next screen line
     dest += 80;

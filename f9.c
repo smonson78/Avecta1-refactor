@@ -194,7 +194,7 @@ int o9(int pc)
     }
 
     c[18] = 8;
-    new_c->unknown15[4] = 8;
+    new_c->unknown15[3] = 8;
   }
 
   return -1;

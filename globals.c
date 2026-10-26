@@ -76,8 +76,6 @@ char *statword[] = {"Points","Spell","Good Hand",
                     "Other Hand","Inventory","  Quit"};
 long int saddr;
 
-int16_t fillpic[41][65];
-
 int mode = 0, dismax;
 int pursuit[3] = {0, 0, 0};
 uint8_t trigval[80][6];
@@ -258,36 +256,8 @@ char *verblist[] = {"Cast ","Examine","Drag/Eat","Search","Take/Drop","Wait",
 uint8_t zline[16][8][7];                    
 
 room_data_t new_rumdata[80];
-// uint8_t (*new_rumdata_as_array)[80][sizeof(room_data_t)] = (uint8_t (*)[80][sizeof(room_data_t)])&new_rumdata;
-// uint8_t rumdata[80][157];
 
 room_zero_data_t room_zero;
-
-// Per room (157 bytes):
-// - 0   = oldx and oldy (4 bits each) - x in lower, y in upper
-// - 1   = another set of xy coords
-
-// - 16  = background tile 1 pattern
-// - 17  = background tile 1 style
-// - 18  = background tile 1 colour
-// - 19  = background tile 2 pattern
-// - 20  = background tile 2 style
-// - 21  = background tile 2 colour
-
-// - 30  = room has background graphics if non-zero
-// - 31  = Object data for object 1 in room (9 bytes)
-// - 40  = Object data for object 2 in room (9 bytes)
-// - 49  = Object data for object 3 in room (9 bytes)
-// - 58  = Object data for object 4 in room (9 bytes)
-// - 67  = Object data for object 5 in room (9 bytes)
-// - 76  = Object data for object 6 in room (9 bytes)
-// - 85  = Object data for object 7 in room (9 bytes)
-// - 94  = Object data for object 8 in room (9 bytes)
-// - 103 = Object data for object 9 in room (9 bytes)
-// - 112 = Object data for object 10 in room (9 bytes)
-// - 121 = Object data for object 11 in room (9 bytes)
-// - 130 = Object data for object 12 in room (9 bytes)
-// - 139  = Object data for object 13 in room (9 bytes)
 
 uint8_t triglist[25];
 
@@ -391,9 +361,9 @@ examination reveals a fair amount of strength beneath an amiable surface.",
 int crum;
 
 // Sprite data for 200 sprites, each 16x16 (128 bytes) with 2 wasted bytes
-int16_t bitmap[200][65];
 // Room objects, doors, items, monster sprites (including the player)
-
+sprite_t bitmap[200];
+sprite_t fillpic[41];
 
 // The number of objects in the current room - never used.
 //int objnum;

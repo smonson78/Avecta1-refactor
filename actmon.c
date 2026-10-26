@@ -106,7 +106,7 @@ int actmon(int type, int nm, int x, int y)
     new_c->current_room = crum;
     new_c->poison_mode_1 = p->poison_mode;
     new_c->unknown38[1] = i;
-    new_c->unknown38[4] = 10;
+    new_c->base_chance_2_attack = 10;
     new_c->poison_mode_2 = p->poison_mode;
     
     // These 3 seem like bugs. I'm not even sure you can resurrect monsters in this game
@@ -279,8 +279,8 @@ int actmon(int type, int nm, int x, int y)
     new_c->monster_type = type;    /* record type of monster */
     new_c->magic_level = new_c->spell_units / 3;  /* magic level is one-third of spelunits */
     
-    if (new_c->unknown1[51] > 20) {
-      new_c->unknown1[54] = 1;     /* then he is immune to magic as in p.magic_mode */
+    if (new_c->magic_level > 20) {
+      new_c->magic_mode_2 = 1;     /* then he is immune to magic as in p.magic_mode */
     }
 
     new_c->unknown15[0] = 8;       /* installed with a wait */

@@ -100,11 +100,16 @@ extern int pursuit[3];
 extern int mode, dismax;
 
 // Current room number (index into rumdata[])
+#define ROOM_ID_LEVETHS_HOUSE 29
 extern int crum;
 
 // Each bitmap is 130 bytes. That's 128 bytes for the sprite plus one extra word, probably unused
-extern int16_t bitmap[200][65];
-//extern int objnum;
+typedef struct { int16_t data[65]; } sprite_t;
+
+// Objects and characters
+extern sprite_t bitmap[200];
+// Backgrounds
+extern sprite_t fillpic[41];
 
 extern int fromout, new, lev;
 extern int monster, hold;
@@ -130,9 +135,6 @@ extern int firebuff[130];
 extern char weight[41];
 extern char eats[];
 extern uint8_t trigval[80][6];
-
-// Graphics
-extern int16_t fillpic[41][65];
 
 // Magic
 extern char spelunit[];

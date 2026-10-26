@@ -146,7 +146,7 @@ int o4(int pc)
 
     storsc(storbuf[pc], x, y, 0, addr);
 
-    blt(bitmap[c[4]], x, y);
+    blt(&bitmap[c[4]], x, y);
   }
 
   c[34] = 0;
@@ -172,7 +172,7 @@ int o4(int pc)
   }
 
   if (z[6]) {
-    blt(bitmap[132], 16 * xnow, 16 * ynow);
+    blt(&bitmap[132], 16 * xnow, 16 * ynow);
   }
 
   Vsync();

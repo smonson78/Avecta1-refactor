@@ -13,7 +13,7 @@
 // Transfer data from bit to stor
 // bit[] is in bitplanes (4 bitplane words for a group of 16 pixels)
 // stor is all the words for first bitplane, then second bitplane, etc
-void trans(int16_t *bit, int16_t *stor)
+void trans(sprite_t *bit, int16_t *stor)
 {
   int i, j;
   // 0..3
@@ -22,7 +22,7 @@ void trans(int16_t *bit, int16_t *stor)
     for (j = 0; j < 16; j++) {
       // original: *(stor+j+16*i) = *(bit+4*j+i);
       // *(stor + j + (16 * i)) = *(bit + (4 * j) + i);
-      stor[j + (16 * i)] = bit[(4 * j) + i];
+      stor[j + (16 * i)] = bit->data[(4 * j) + i];
       // stor[] gets filled with 64 continuous words (one sprite)
       // but bit[] gets read in bitplane format
     }
@@ -56,7 +56,7 @@ void setfill(int k)
     vsf_interior(handle, pattern);
     vsf_style(handle, style);
   } else {
-    trans(fillpic[style], crudbuf);
+    trans(&fillpic[style], crudbuf);
     
     // Install 4 bitplanes from crudbuf to the AES pattern buffer
     vsf_udpat(handle, crudbuf, 4);
@@ -246,7 +246,11 @@ void rumdraw(char *pan)
     i++;
 
     // Stop if we return to the original position in r[0].
-  //} while ((x2 != xold || y2 != yold) && i <= 16);
+  
+  //} while ((x2 != xold || y2 != yold) && i <= 16); 
+  // Changed 16 to 15 due to overflow. The maximum is actually 15 as per the setfill(n) function
+  // in rumdraw.c which gives the background pattern offset for n as room data offset
+  // 16 + (3 * n) i.e. start offset 16.
   } while ((x2 != xold || y2 != yold) && i <= 15);
 
   top = -1;
@@ -360,7 +364,7 @@ void rumdraw(char *pan)
         // if (r[30]) {
         if (new_r->room_has_bg) {
           // Draw the sprite for room object
-          blt(bitmap[c[0]], obj_x * 16, obj_y *16);
+          blt(&bitmap[c[0]], obj_x * 16, obj_y *16);
         }
 
         zline[obj_x][obj_y][1] = i; // put the object ID into position 1

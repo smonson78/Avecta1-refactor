@@ -7,15 +7,28 @@
 
 #include "f5.h"
 
+// Drop, I think?
+
 int i6(int pc)
 {
   uint8_t *c = curmon[pc];
-  if(outside)
-    return(0);
+  curmon_t *new_c = &new_curmon[pc];
+
+  if (outside) {
+    return 0;
+  }
+
   c[16] = 6;
   c[15] = 6;
   c[7] = c[8] = c[9] = 0;      
-  return(1);
+
+  new_c->unknown15[0] = 6;
+  new_c->unknown15[1] = 6;
+  new_c->unknown5[2] = 0;
+  new_c->unknown5[3] = 0;
+  new_c->unknown5[4] = 0;
+
+  return 1;
 }
 
 int o6(int pc)
@@ -26,10 +39,11 @@ int o6(int pc)
   int x = c[24], y = c[25];
   int i,j,k,l,m = 0,num = 0,flag;
   c[7] = c[8] = c[9] = 0;
-  if(pc == 0 && c[18] != 6) {
+  if (pc == 0 && c[18] != 6) {
     prnt("-> %s searches nearby...", w, NULL, NULL, NULL, NULL, NULL);
-    }
-  for(i = -1;i < 2; i++) {
+  }
+
+  for (i = -1;i < 2; i++) {
     for(j = -1; j < 2; j++) {
       z = zline[x+i][y+j];
       if( x+i < 0 || x+i > 15 || y+j < 0 || y+j > 7 || *z == 0 || (x+i == c[24]
@@ -78,7 +92,7 @@ int o6(int pc)
             prnt("-> %s discovers a hidden %s!", w, obj[*o], NULL, NULL, NULL, NULL);
             c[18] = 0;
             if (new_rumdata[crum].room_has_bg || zline[x+i][y+j][5] > 0) {
-              blt(bitmap[*o],16*(x+i),16*(y+j));
+              blt(&bitmap[*o],16*(x+i),16*(y+j));
             }
             z[1] = k;
             if(o[3] != 0)

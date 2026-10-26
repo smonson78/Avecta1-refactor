@@ -1,6 +1,8 @@
 #ifndef __BLT_H
 #define __BLT_H
 
-void blt(void *sprite, int xpix, int ypix);
+#include "globals.h"
+
+void blt(sprite_t *sprite, int xpix, int ypix);
 
 #endif

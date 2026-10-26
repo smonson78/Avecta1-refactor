@@ -1,3 +1,5 @@
+#include <libc.h>
+
 #include "globals.h"
 #include "gemdefs.h"
 #include "switchru.h"
@@ -11,6 +13,7 @@
 #include "blt.h"
 #include "toggle.h"
 
+#include "tos_compat.h"
 #include "debug.h"
 
 // pc = monster/character index
@@ -102,14 +105,14 @@ int damage(int pc, int level)
   }
 
   c[35] = 2;
-  new_c->unknown33[2] = 2;
+  new_c->stink_lines = 2;
 
   Vsync();
   vbl_animation_off();
 
   if (pc < 4 || light || zline[x][y][5] > 0) {
     // Magic "splat" mark
-    blt(bitmap[128], 16 * x, 16 * y);
+    blt(&bitmap[128], 16 * x, 16 * y);
   }
 
   if (pc > 3 && mode) {
@@ -125,7 +128,7 @@ int damage(int pc, int level)
   if (c[1] >= c[2] || level > c[2]) {
     c[1] = c[2];
     new_c->unknown1[0] = new_c->unknown1[1];
-    *c = 0;
+    c[0] = 0;
     new_c->in_use = 0;
 
     zline[x][y][2] = 0;
@@ -144,6 +147,7 @@ int damage(int pc, int level)
         prnt("->  MELKTHROP IS SLAIN!!!", NULL, NULL, NULL, NULL, NULL, NULL);
       }
 
+      // Players:
       if (pc < 4) {
         j = rumslot();
         z = crumobj[j];
@@ -151,7 +155,7 @@ int damage(int pc, int level)
         prnt("-> %s IS DEAD!", w, NULL, NULL, NULL, NULL, NULL);
 
         if (c[41] > 0) {
-          litetrol(x,y,0);
+          litetrol(x, y, 0);
         }
 
         i = zline[x][y][1];
@@ -164,7 +168,7 @@ int damage(int pc, int level)
             x = c[24] + i;
             y = c[25] + k;
             z1 = zline[x][y];
-            l = *(z1+1);
+            l = z1[1];
           } while ( x < 0 || x > 15 || y < 0 || y > 7 ||  
             (crumobj[l][0] < 41 && crumobj[l][3] != 0) || *z1 != 1);
 
@@ -225,9 +229,11 @@ int damage(int pc, int level)
         drawsq(x,y);
       }
 
-      for (i=0; i < 60; i++) {
+      // Clear out curmon[i]
+      for (i = 0; i < 60; i++) {
         c[i] = 0;
       }
+      memset(&new_curmon[i], 0, sizeof(curmon_t));
          
       check_curmon("damage 1");
       return 1;

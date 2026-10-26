@@ -13,16 +13,16 @@ void texwin()
   // Maybe the sides of the scroll.
   for (i = 16; i < 25; i += 2) {
     // row 15, i.e. pixel 240
-    blt(bitmap[131], 16 * 15, 8 * i); // Right edge paper scroll
-    blt(bitmap[199], 0, 8 * i); // Left edge paper scroll
+    blt(&bitmap[131], 16 * 15, 8 * i); // Right edge paper scroll
+    blt(&bitmap[199], 0, 8 * i); // Left edge paper scroll
   }
 
   // Now the 4 corners. bitmap 129 on the left, 130 on the right.
-  blt(bitmap[129], 0, 128);
-  blt(bitmap[129], 0, 186);
+  blt(&bitmap[129], 0, 128);
+  blt(&bitmap[129], 0, 186);
 
-  blt(bitmap[130], (16 * 15) - 2, 128);
-  blt(bitmap[130], (16 * 15) - 2, 186);
+  blt(&bitmap[130], (16 * 15) - 2, 128);
+  blt(&bitmap[130], (16 * 15) - 2, 186);
 
   // Reverse video
   v_rvon(handle);
