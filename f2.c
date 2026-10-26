@@ -286,7 +286,8 @@ int o2(int pc)
     if (spelinfo[num - 1][0] != 2) {
       target = c[7]; // ...While this version is for player characters
       t = curmon[target];
-      if (!*t || t[30] != crum || !los(pc,t[24],t[25]))  {
+      new_t = &new_curmon[target];
+      if (!t[0] || t[30] != crum || !los(pc,t[24],t[25]))  {
         flag = 1;
       }
       wt = (target == 0 ? pname : name[t[3]]);
@@ -387,7 +388,7 @@ int o2(int pc)
       t[43] = 1;
       t[19] = 43;
       t[21] = 20 + 2*(c[51]);
-      new_t->unknown15[5] = new_t->base_chance_3_attack;
+      new_t->unknown15[5] = new_t->base_chance_3_attack; // this was a crash
       new_t->base_chance_3_attack = 1;
       new_t->unknown15[4] = 43;
       new_t->unknown15[6] = 20 + (2 * new_c->magic_level);

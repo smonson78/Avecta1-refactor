@@ -269,7 +269,9 @@ int o7(int pc)
   }
 
   if (j > 0) {
-    for (k = 0; k < 40; k++) {
+    // This clearly overflows invtrig[20]! Let's reduce it.
+    // for (k = 0; k < 40; k++) {
+    for (k = 0; k < 20; k++) {
       if (c[8] == 0) {
         break;
       }
