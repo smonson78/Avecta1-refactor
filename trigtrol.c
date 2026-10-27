@@ -35,7 +35,7 @@ void trigtrol(int pc)
     t = trigval[trapvec];
 
     // Bit field
-    type = *t;
+    type = t[0];
 
     x1 = (t[1]) % 16;
     y1 = (t[1]) / 16;

@@ -266,7 +266,7 @@ void stormon()
       continue;
     }
 
-    while (*(r+j) != 0 && j < 320) {
+    while (r[j] != 0 && j < 320) {
       j += 4;
     }
 
@@ -279,7 +279,7 @@ void stormon()
       new_c->sprite_id = 110;
     }
 
-    *(r+j) = c[4];
+    r[j] = c[4];
     *(r+j+1) = crum;
     *(r+j+2) = c[1];
     *(r+j+3) = 16*( c[25] ) + c[24];
@@ -427,7 +427,7 @@ int getmon(int room)
           drawman(j, x, y);
 
           // Clear out the monbuf[] entry
-          *(r+i) = *(r+i+1) = *(r+i+2) = *(r+i+3) = 0;
+          r[i] = *(r+i+1) = *(r+i+2) = *(r+i+3) = 0;
           break;
         }
       }

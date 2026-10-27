@@ -24,16 +24,16 @@ int instring(int x, int y, char *string, int max, int flag)
 
       k = (k < 96 && k > 64 && flag ? k+32 : k);
 
-      *(string+i) = k;
+      string[i] = k;
 
       if (k == 8 ) { /* then struck the backspace key */
          --i;  /* back up along string */
-         if(i < 0) { /* can't back up further than original y */
+         if (i < 0) { /* can't back up further than original y */
             i = 0;
             continue;
-            }
+         }
          textsix(1,6*(y+i),8*(x-1),1,string+i);  /* XOR will snuff out image */
-         *(string+i) = ' ';  /* wipe out char at position i */
+         string[i] = ' ';  /* wipe out char at position i */
          continue;          /* fall through to while */
       }
 
@@ -42,7 +42,7 @@ int instring(int x, int y, char *string, int max, int flag)
       i++;
    } while (k != 13 && i-1 < max); /* 13 is the ascii code for return */
 
-   *(string+i) = '\0'; /* terminate the string with a null marker */
+   string[i] = '\0'; /* terminate the string with a null marker */
 
    return i - 1; /* kick back the char length */
 }

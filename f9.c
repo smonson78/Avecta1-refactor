@@ -16,7 +16,7 @@ int i9(int pc)
   curmon_t *new_c = &new_curmon[pc];
   uint8_t *z;
   char *w = (pc == 0 ? pname : name[c[3]]);
-  int i,j,ret,quit = 0;
+  int i, j, ret, quit = 0;
   int16_t x, y;
 
   if (pc > 0 && pc < 4 && curmon[0][15] != 9) {

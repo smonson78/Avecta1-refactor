@@ -95,6 +95,8 @@ int load_inside_sprites(int total) {
 // When flow == 1, save the game
 // When flow == 2, restore a saved game
 int fileio(int flow) {
+  debug_printf("> fileio(%d)\n", flow);
+
   int16_t button;
   int i, j, filehandle;
   
@@ -200,6 +202,7 @@ int fileio(int flow) {
 
   // LOAD GAME
   if (flow == 2) {
+    debug_printf("...loading game from %s\n", filename);
     Fseek((long)13387, filehandle, 0);
     Fread(filehandle, (long)1, &check);
     if (curmon[0][59] != check && dungeon != 2) {
@@ -252,12 +255,6 @@ int fileio(int flow) {
     }
 
     check_curmon("fileio after loading data");
-
-    // Set up room zero and legacy data after loading files
-    //memcpy(rumdata, &room_zero, 157);
-    // Special room zero data
-    //memcpy(rumdata + 1, &new_rumdata[1], 12403);
-    //check_rumdata("fileio");
   }
 
   return 1;

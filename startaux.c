@@ -216,6 +216,7 @@ int init(int flag) {
 
 int ruminit()
 {
+  debug_printf("> ruminit()\n");
   // Everything except the player
   uint8_t *c = curmon[1];
   curmon_t *new_c = &new_curmon[1];
@@ -235,6 +236,7 @@ int ruminit()
     return(1);
   }
 
+  debug_printf("< ruminit()\n");
   return 0;
 }
 
@@ -255,7 +257,7 @@ int32_t savpal() {
 
   j = SHIFTER_PALETTE;
   for (i = 0; i < 16; i++) {
-    oldpal[i] = *(j+i);
+    oldpal[i] = j[i];
   }
 
   return 0;
@@ -263,6 +265,7 @@ int32_t savpal() {
 
 // Player died and is coming back to life
 int console() {
+  debug_printf("> console()\n");
   int i;
   uint8_t *c = curmon[0];
   curmon_t *new_c = &new_curmon[0];
@@ -307,6 +310,8 @@ int console() {
   Setpalette(newpal);
   Vsync();
   init(2);
+
+  debug_printf("< console()\n");
 
   return 3;
 }
@@ -359,6 +364,8 @@ int loadnew() {
   // The player
   uint8_t *c = curmon[0];
   curmon_t *new_c = &new_curmon[0];
+
+  check_curmon("at start of loadnew");
 
   int fhandle, i, j, old, d1 = 0, d2 = 0, d3 = 0, flag = 0;
 
@@ -552,6 +559,8 @@ int loadnew() {
   new_c->x = specbuf[22];
   new_c->y = specbuf[23];
 
+  check_curmon("after loading file");
+
   winroom = specbuf[24];
   c[30] = specbuf[25];
   new_c->current_room = specbuf[25];
@@ -598,6 +607,7 @@ int loadnew() {
   }
 
   crum = -1;
+  check_curmon("at the end of loading");
 
   return 1;
 }  

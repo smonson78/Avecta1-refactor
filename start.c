@@ -27,6 +27,8 @@ int main()
 {
    int old, i, j;
    uint8_t *c = curmon[0];
+   curmon_t *new_c = &new_curmon[0];
+
    debug_printf("Main started\n");
 
    // Set up initial monster data (the player being monster 0)
@@ -148,19 +150,30 @@ int main()
             break;
 
          case 2: /* dungeon switch */
+            debug_printf("... dungeon switch\n");
             old = dungeon;
             if (dungeon != 0) {
                c[54] = c[4];
                c[59] = 0;
+               new_c->magic_mode_2 = new_c->sprite_id;
+               new_c->unknown59 = 0;
             } else {
                police = 0;
+
                if (c[46] == 81) {
                   c[46] = 0;
+                  new_c->magic_mode_1 = 0;
                }
+
                c[52] = c[53] = 0;
                c[56] = c[24];
                c[57] = c[25];
                c[55] = crum;
+               new_c->seekshard_imprinted_room = 0;
+               new_c->seekshard_imprinted_xy = 0;
+               new_c->unknown55[1] = new_c->x;
+               new_c->unknown55[2] = new_c->y;
+               new_c->unknown55[0] = crum;
             }
 
             if (loadnew() == 0) {
@@ -176,11 +189,19 @@ int main()
                c[4] = 125;
                c[24] = c[56];
                c[25] = c[57];
+               new_c->current_room = new_c->unknown55[0];
+               new_c->sprite_id = 125; // Small player sprite
+               new_c->x = new_c->unknown55[1];
+               new_c->y = new_c->unknown55[2];
+
                outside = 1;
             } else {
                c[4] = c[54];
-               outside = 0;
                c[54] = 0;
+               new_c->sprite_id = new_c->magic_mode_2; // Small player sprite
+               new_c->magic_mode_2 = 0;
+
+               outside = 0;
             }
             
             i = 3;

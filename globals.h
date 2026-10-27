@@ -155,6 +155,8 @@ extern char *name[];
 #define ERROR_OBJECT_IS_CLOSED 12
 #define ERROR_NO_EXIT 15
 #define ERROR_TAKE_OBJECT 16
+#define ERROR_NOTHING_TO_ROOK_SNOOP 25
+#define ERROR_HANDS_FULL 29
 #define ERROR_WHICH_HANDS_OBJECT 31
 
 extern char *errmsg[];

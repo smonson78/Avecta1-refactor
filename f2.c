@@ -715,7 +715,7 @@ int o2(int pc)
           continue;
         }
         putaway(k, *(p+m+1));
-        *(p+m) = *(p+m+1) = *(p+m+2) = *(p+m+3) = 0;
+        p[m] = *(p+m+1) = *(p+m+2) = *(p+m+3) = 0;
       }
 
       x = t[6];

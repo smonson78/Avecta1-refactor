@@ -632,18 +632,18 @@ int rnd(int max)
 
 int adjac(int pc, int x, int y)
 {
-   int xnow = curmon[pc][24];
-   int ynow = curmon[pc][25];
+  int xnow = curmon[pc][24];
+  int ynow = curmon[pc][25];
   //  int xnow = new_curmon[pc].x;
   //  int ynow = new_curmon[pc].y;
-   x = abs(xnow - x);
-   y = abs(ynow - y);
+  x = abs(xnow - x);
+  y = abs(ynow - y);
 
-   if (x <= 1 && y <= 1) {
-      return 1;
-   } else {
-      return 0;
-   }
+  if (x <= 1 && y <= 1) {
+    return 1;
+  } else {
+    return 0;
+  }
 }	
 
 /*****************************************************************************/
@@ -760,7 +760,7 @@ int putaway(int pc, int thing)
     return 0;
   }
 
-  while (*(i+j) != 0 && j < 11) {
+  while (i[j] != 0 && j < 11) {
     j++;
   }
 
@@ -772,7 +772,7 @@ int putaway(int pc, int thing)
     curmon[pc][32] = 0;
     new_curmon[pc].poison_mode_1 = 0;
   }
-  *(i + j) = thing;
+  i[j] = thing;
   *i += 1;
   return 1;
 }
@@ -783,13 +783,13 @@ int takeout(int pc, int thing)
    int j = 1;
    if(thing == 0)
       return(0);
-   while(*(i+j) != thing && j < 11) {
+   while(i[j] != thing && j < 11) {
       j++;
    }
    if(j == 11)
       return(0);
    *i -= 1;
-   *(i+j) = 0;
+   i[j] = 0;
    return(1);
 }
 
@@ -852,7 +852,7 @@ int xobj(int thing, int room)
    // Room zero
    //uint8_t *r = rumdata[0];
 
-   // while( ( *(r+i) != thing || *(r+i+2) != room) && i < 157) {
+   // while( ( r[i] != thing || *(r+i+2) != room) && i < 157) {
    //    i += 3;
    // }
    // Search for a room zero entry which has the thing and room we're looking for
@@ -868,7 +868,7 @@ int xobj(int thing, int room)
    }
 
    // Now blank it out to zeroes
-   //*(r+i) = *(r+i+1) = *(r+i+2) = 0;
+   //r[i] = *(r+i+1) = *(r+i+2) = 0;
    room_zero.unknown2[i].thing_id = 0;
    room_zero.unknown2[i].thing_xy = 0;
    room_zero.unknown2[i].room_id = 0;
@@ -1073,7 +1073,7 @@ int listinv(int pc, char *scratch)
    for (j = 1; j < 14; j++) {
       if (o[j] != 0) {
          bot++;
-         textsix(1,260,17+bot*8,strlen(obj[*(o+j)]),obj[o[j]]);
+         textsix(1,260,17+bot*8,strlen(obj[o[j]]),obj[o[j]]);
          scratch[bot + 2] = o[j];
       }
    }
