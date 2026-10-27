@@ -800,8 +800,9 @@ int remove(int rumobj, int thing)
          i < 320) {
       i += 4;
    }
-   if(i >= 320)
-      return(0);
+   if (i >= 320) {
+      return 0;
+   }
    putbuf[i] = putbuf[i+1] = putbuf[i+2] = putbuf[i+3] = 0;
    return(1);
 } 

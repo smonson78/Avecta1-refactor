@@ -260,7 +260,7 @@ void copy_rect(int x, int y, int w, int h, int dx, int dy) {
   }
 }
 
-void pattern_rect(int x, int y, int w, int h, uint16_t *bitmap) {
+void pattern_rect(int x, int y, int w, int h, uint16_t *bitmap, int colour) {
 
   uint16_t *dest = globals.video.st_logbase + (y * 80) + ((x / 16) * 4);
   uint16_t shift = 16 - (x % 16);
@@ -270,10 +270,22 @@ void pattern_rect(int x, int y, int w, int h, uint16_t *bitmap) {
     uint32_t d6 = 0;
 
     // Swap bytes in word
-    uint16_t gfx0 = (bitmap[0] << 8) | (bitmap[0] >> 8);
-    uint16_t gfx1 = (bitmap[16] << 8) | (bitmap[16] >> 8);
-    uint16_t gfx2 = (bitmap[32] << 8) | (bitmap[32] >> 8);
-    uint16_t gfx3 = (bitmap[48] << 8) | (bitmap[48] >> 8);
+    uint16_t gfx0;
+    uint16_t gfx1;
+    uint16_t gfx2;
+    uint16_t gfx3;
+    if (colour) {
+      gfx0 = (bitmap[0] << 8) | (bitmap[0] >> 8);
+      gfx1 = (bitmap[16] << 8) | (bitmap[16] >> 8);
+      gfx2 = (bitmap[32] << 8) | (bitmap[32] >> 8);
+      gfx3 = (bitmap[48] << 8) | (bitmap[48] >> 8);
+    } else {
+      // Monochrome
+      gfx0 = bitmap[0];
+      gfx1 = bitmap[0];
+      gfx2 = bitmap[0];
+      gfx3 = bitmap[0];
+    }
 
     uint32_t bitplane0 = gfx0 << shift;
     uint32_t bitplane1 = gfx1 << shift;

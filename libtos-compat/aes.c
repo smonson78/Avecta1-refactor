@@ -293,7 +293,10 @@ void vr_recfl(int16_t handle, int16_t *pxyarray)
       break;
     case 2: 
       // Pattern
-      printf("(vr_recfl unhandled style 2)\n");
+      printf("(vr_recfl unhandled style 2 with pattern %d)\n", globals.video.interior_fill_pattern);
+      pattern_rect(pxyarray[0], pxyarray[1], 
+        pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, 
+        (uint16_t *)predefined_fill_patterns[globals.video.interior_fill_pattern - 1], 0);
       break;
     case 3: 
       // Hatch
@@ -303,7 +306,7 @@ void vr_recfl(int16_t handle, int16_t *pxyarray)
       // User-defined style
       pattern_rect(pxyarray[0], pxyarray[1], 
         pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, 
-        (uint16_t *)globals.video.udpat);
+        (uint16_t *)globals.video.udpat, 1);
       break;
   }
 

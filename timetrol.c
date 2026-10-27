@@ -44,12 +44,12 @@ int timetrol()
 				}
 
 				prnt("-> %s's torch flickers...", w, NULL, NULL, NULL, NULL, NULL);
-				litetrol(c[24],c[25],0);
-				litetrol(c[24],c[25],1);
+				litetrol(c[24], c[25],0);
+				litetrol(c[24], c[25],1);
 				if (c[41] == 0) {
 					prnt("-> ... and goes out!", NULL, NULL, NULL, NULL, NULL, NULL);
 					if (new_rumdata[crum].room_has_bg == 0)
-						litetrol(c[24],c[25],0);
+						litetrol(c[24], c[25],0);
 				}
 			}
 		}
@@ -86,51 +86,70 @@ int timetrol()
 			}
 		}          
 
-    if( c[21] > 0) { /* checks for expiration of spells */
-       c[21] -= 1;
-       if( c[21] == 0) {
-          *(c + c[19] ) = c[20];
-          if(i == 0)
-             w = &pname[0];
-          else
-             w = name[c[3]];
-          if(i < 4)
-             prnt("-> %s's spell has expired!",w, NULL, NULL, NULL, NULL, NULL);
-          else
-             prnt("-> The spell on the %s has worn off!",w, NULL, NULL, NULL, NULL, NULL);
-          }
-        }
-     if(zline[c[24]][c[25]][6] > 0 && c[30] == crum && c[46] == 0)
-       damage(i,20 + rnd(10));
-     }
-   if (specbuf[35] != 0) {
-      specbuf[35]--;
-      if(specbuf[35] == 0) {
-         prnt("-> The Wallfire spell has expired!", NULL, NULL, NULL, NULL, NULL, NULL);
-         x = specbuf[36]%16;
-         y = specbuf[36]/16;
-         for (i=x-1;i<=x+1;i++) {
-            for (j=y-1;j<=y+1;j++) {
-               z = zline[i][j];
-               if (*z != 1) {
-                  continue;
-               }
-               z[6] = 0;
-               if (z[5] > 0) {
-                  z[5] -= 1;
-               }
-               if (z[5] > 0 || new_rumdata[crum].room_has_bg) {
-                  drawsq(i,j);
-               } else {
-                  setfill(2);
-                  fillsq(i,j);
-               }
-            }
-         }
-      }
-   }
+    if (c[21] > 0) { /* checks for expiration of spells */
+			c[21] -= 1;
+			new_c->unknown15[6]--;
 
-   debug_printf("< timetrol\n");
-   return(1);
+			if (c[21] == 0) {
+				// FIXME how can I implement that?!?
+				c[c[19]] = c[20];
+				debug_printf("!!!!!!! weird logic in timetrol()\n");
+				// could be 11, 12, 43, 54 (cinput.c)
+				// 11 - unknown
+				// 12 - unknown
+				// 43 - base_chance_3_attack
+				// 54 - magic_mode_2
+				// 50 (trapres.c) (that's physical strength)
+
+				if (i == 0) {
+					w = &pname[0];
+				} else {
+					w = name[c[3]];
+				}
+
+				if (i < 4) {
+					prnt("-> %s's spell has expired!",w, NULL, NULL, NULL, NULL, NULL);
+				} else {
+					prnt("-> The spell on the %s has worn off!",w, NULL, NULL, NULL, NULL, NULL);
+				}
+			}
+		}
+
+		if (zline[c[24]][c[25]][6] > 0 && c[30] == crum && c[46] == 0) {
+			damage(i,20 + rnd(10));
+		}
+	}
+
+	if (specbuf[35] != 0) {
+		specbuf[35]--;
+		if (specbuf[35] == 0) {
+			prnt("-> The Wallfire spell has expired!", NULL, NULL, NULL, NULL, NULL, NULL);
+			x = specbuf[36]%16;
+			y = specbuf[36]/16;
+			for (i=x-1;i<=x+1;i++) {
+				for (j=y-1;j<=y+1;j++) {
+					z = zline[i][j];
+					if (z[0] != 1) {
+						continue;
+					}
+
+					z[6] = 0;
+					if (z[5] > 0) {
+						z[5] -= 1;
+					}
+
+					if (z[5] > 0 || new_rumdata[crum].room_has_bg) {
+						drawsq(i,j);
+					} else {
+						setfill(2);
+						fillsq(i,j);
+					}
+				}
+			}
+		}
+	}
+
+	debug_printf("< timetrol\n");
+	return(1);
 }
 

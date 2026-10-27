@@ -25,6 +25,8 @@ int damage(int pc, int level)
 
   uint8_t *z1, *z;
 
+  check_curmon("damage 0");
+
   char *w = (pc == 0 ? pname : name[c[3]]);
   int newpolice = 1, old, i, j, k, l;
   int x = c[24], y = c[25];
@@ -64,12 +66,15 @@ int damage(int pc, int level)
 
       i = 4;
     }
+
     if (c[36] == 1 && c[1] < c[2]) {
       i = 5;
     }
+
     if (c[38] && c[0] == 1) {
       i = 6;
     }
+
     Vsync();
     textsix(0,313,1+8*(c[33]),1," ");
     textsix(1,313,1+8*(c[33]),1,mod[i]);
@@ -132,6 +137,8 @@ int damage(int pc, int level)
     new_c->in_use = 0;
 
     zline[x][y][2] = 0;
+
+    check_curmon("damage 0.1");
 
     if (pc > 0) {
       if (pc > 3 && c[58] != 16) {
@@ -206,10 +213,11 @@ int damage(int pc, int level)
           //check_rumdata("damage");
         }
 
-        *z = z[4] = 41 - pc;
+        z[0] = z[4] = 41 - pc;
         z[1] = z[8] = 1;
         z[7] = c[25];
         z[6] = c[24];
+
         if (invnpc[pc][0] > 0) {
           for (i=1;i<=13;i++) {
             if (invnpc[pc][i] != 0) {
@@ -217,6 +225,7 @@ int damage(int pc, int level)
               invnpc[pc][i] = 0;
             }
           }
+
           invnpc[pc][0] = 0;
           z[5] = 1;
         } else {
@@ -228,12 +237,13 @@ int damage(int pc, int level)
       if (light || zline[x][y][5] > 0) {
         drawsq(x,y);
       }
+      check_curmon("damage 0.9");
 
       // Clear out curmon[i]
       for (i = 0; i < 60; i++) {
         c[i] = 0;
       }
-      memset(&new_curmon[i], 0, sizeof(curmon_t));
+      memset(new_c, 0, sizeof(curmon_t));
          
       check_curmon("damage 1");
       return 1;
@@ -242,7 +252,7 @@ int damage(int pc, int level)
       prnt("   -- ! %s IS PASSING OUT ! --", w, NULL, NULL, NULL, NULL, NULL);
       stormon();
       combat = 0;
-      check_curmon("damage -1");
+      check_curmon("damage 1.1");
       return -1;
     }
   }

@@ -9,6 +9,8 @@
 
 #include "xbios.h"
 
+extern uint16_t predefined_fill_patterns[7][16];
+
 // Data passed TO a file selector, e.g. for save games
 typedef struct {
 } file_selector_t;

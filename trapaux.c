@@ -87,20 +87,27 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
 int invtrap(char obj)
 {
   int i,j,t=0;
-  for(i=0;i<20;i++) {
-    if(invtrig[i] == obj || obj == 69 || obj == 65 || obj == 63)
+
+  for (i = 0; i < 20; i++) {
+    if (invtrig[i] == obj || obj == 69 || obj == 65 || obj == 63) {
       t=1;
     }
-  if(t == 0)
-    return(0);
-  for(j=14;j<25;j++) {
-    if(triglist[j] == obj)
-      return(1);
+  }
+
+  if (t == 0) {
+    return 0;
+  }
+
+  for (j = 14; j < 25; j++) {
+    if (triglist[j] == obj) {
+      return 1;
     }
+  }
+
   j = 14;
   while(triglist[j] != 0 && j < 25){
     j++;
-    }
+  }
   if(j == 25)
     return(0);
   triglist[0]++;

@@ -65,13 +65,13 @@ int o6(int pc)
         flag = 0;
 
         while (m < 320) {
-          if (*(r+m+3) != crum || *(r+m+2) != z[1]) {
+          if (r[m + 3] != crum || r[m + 2] != z[1]) {
             m += 4;
             continue;
           }
 
           flag++;          
-          k = *(r+m+1);
+          k = r[m + 1];
           
           if (pc != 3 || c[38] == 1) {
             prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[*o], NULL, NULL, NULL);

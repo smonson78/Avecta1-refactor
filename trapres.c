@@ -978,6 +978,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
   // Sleeping at the Red Lion
   case 37:
     if (specbuf[20] == 1 || police || mode || monster > 0 || pc != 0) {
+      debug_printf("Can't sleep because specbuf[20]=%d, mode=%d, monster=%d\n", specbuf[20], mode, monster);
       break;
     }
 
