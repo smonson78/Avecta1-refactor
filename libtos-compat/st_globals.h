@@ -9,7 +9,7 @@
 
 #include "xbios.h"
 
-extern uint16_t predefined_fill_patterns[7][16];
+extern uint16_t predefined_fill_patterns[24][16];
 
 // Data passed TO a file selector, e.g. for save games
 typedef struct {
@@ -44,6 +44,7 @@ typedef struct {
 	// User-defined fill pattern
 	int16_t udpat[64];
 	int udpat_planes;
+	int interior_fill_type;
 	int interior_fill_pattern;
 	int current_2d_colour;
 } sdl_video_impl_t;

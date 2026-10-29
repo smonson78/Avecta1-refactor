@@ -31,35 +31,6 @@ int16_t colour_screen;
 int16_t x_max;
 int16_t y_max;
 
-// VDI does a stupid palette translation
-int get_vdi_colour(int index) {
-  switch (index) {
-    case 1:
-      return 15;
-    case 4:
-    case 12:
-      return index;
-    case 2:
-    case 3:
-    case 8:
-    case 9:
-    case 10:
-    case 11:
-      return index - 1;
-    case 5:
-    case 13:
-      return index + 1;
-    case 6:
-      return index - 3;
-    case 7:
-    case 15:
-      return index - 2;
-    case 14:
-      return 4;
-  }
-  return 0;
-}
-
 void set_screen_attr()
 {
 }
@@ -280,7 +251,7 @@ void vr_recfl(int16_t handle, int16_t *pxyarray)
 {
   // printf("vr_recfl(style %d)\n", globals.video.interior_fill_pattern);
   GLOBAL_LOCK();
-  switch (globals.video.interior_fill_pattern) {
+  switch (globals.video.interior_fill_type) {
     case 0: 
       // Hollow
       printf("(vr_recfl unhandled style 0)\n");
@@ -292,8 +263,12 @@ void vr_recfl(int16_t handle, int16_t *pxyarray)
         get_vdi_colour(globals.video.current_2d_colour));
       break;
     case 2: 
-      // Pattern
-      printf("(vr_recfl unhandled style 2 with pattern %d)\n", globals.video.interior_fill_pattern);
+      // Pattern.
+      // Clear square first:
+      filled_rect(pxyarray[0], pxyarray[1], 
+        pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, 
+        get_vdi_colour(0));
+      printf("(vr_recfl style 2 with pattern %d, style %d)\n", globals.video.interior_fill_type, globals.video.interior_fill_pattern);
       pattern_rect(pxyarray[0], pxyarray[1], 
         pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, 
         (uint16_t *)predefined_fill_patterns[globals.video.interior_fill_pattern - 1], 0);
@@ -423,13 +398,15 @@ int16_t vst_color(int16_t handle, int16_t color_index)
 int16_t vsf_interior(int16_t handle, int16_t style)
 {
   GLOBAL_LOCK();
-  globals.video.interior_fill_pattern = style;
+  printf("vsf_interior setting fill style %d\n", style);
+  globals.video.interior_fill_type = style;
   GLOBAL_UNLOCK();
   return 0;
 }
 
 void vsf_udpat(int16_t handle, int16_t *pfill_pat, int16_t planes)
 {
+  printf("vsf_udpat setting custom fill pattern\n");
   GLOBAL_LOCK();
   for (int i = 0; i < planes * 16; i++) {
     globals.video.udpat[i] = pfill_pat[i];
@@ -465,7 +442,8 @@ void vqf_attributes(int16_t handle, int16_t *attrib)
 
 int16_t vsf_style(int16_t handle, int16_t style_index)
 {
-  // printf("vsf_style(%d)\n", style_index);   
+  printf("vsf_style(%d)\n", style_index);
+  globals.video.interior_fill_pattern = style_index;
   return 0;
 }
 

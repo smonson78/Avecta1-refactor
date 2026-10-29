@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+int get_vdi_colour(int index);
+
 void plotline(int x0, int y0, int x1, int y1, uint32_t colour);
 
 void filled_rect(int x, int y, int w, int h, int colour);

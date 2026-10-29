@@ -4,6 +4,34 @@
 
 #include "linea.h"
 
+// VDI does a stupid palette translation
+int get_vdi_colour(int index) {
+  switch (index) {
+    case 1:
+      return 15;
+    case 4:
+    case 12:
+      return index;
+    case 2:
+    case 3:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+      return index - 1;
+    case 5:
+    case 13:
+      return index + 1;
+    case 6:
+      return index - 3;
+    case 7:
+    case 15:
+      return index - 2;
+    case 14:
+      return 4;
+  }
+  return 0;
+}
 
 void filled_rect(int x, int y, int w, int h, int colour) {
 
@@ -264,6 +292,7 @@ void pattern_rect(int x, int y, int w, int h, uint16_t *bitmap, int colour) {
 
   uint16_t *dest = globals.video.st_logbase + (y * 80) + ((x / 16) * 4);
   uint16_t shift = 16 - (x % 16);
+  int colour_index = get_vdi_colour(globals.video.current_2d_colour);
 
   for (int i = 0; i < 16; i++) {
     // Work register for pixels
@@ -280,11 +309,11 @@ void pattern_rect(int x, int y, int w, int h, uint16_t *bitmap, int colour) {
       gfx2 = (bitmap[32] << 8) | (bitmap[32] >> 8);
       gfx3 = (bitmap[48] << 8) | (bitmap[48] >> 8);
     } else {
-      // Monochrome
-      gfx0 = bitmap[0];
-      gfx1 = bitmap[0];
-      gfx2 = bitmap[0];
-      gfx3 = bitmap[0];
+      // Monochrome - i.e. the pattern is drawn in monochrome in the current filled object colour
+      gfx0 = colour_index & 1 ? bitmap[0] : 0;
+      gfx1 = colour_index & 2 ? bitmap[0] : 0;
+      gfx2 = colour_index & 4 ? bitmap[0] : 0;
+      gfx3 = colour_index & 8 ? bitmap[0] : 0;
     }
 
     uint32_t bitplane0 = gfx0 << shift;

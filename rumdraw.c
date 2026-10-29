@@ -272,24 +272,29 @@ void rumdraw(char *pan)
         
         k = 0;
         while (j - k > 0) {
-          if (j == 0)
+          if (j == 0) {
             break;
-          if (k > 0 && zline[i][j-k][0] != 2)
+          }
+          
+          if (k > 0 && zline[i][j-k][0] != 2) {
             break;
-          else
+          } else {
             k++;
+          }
         }
 
         if (k == 1) { 
-          if (zline[i][j-1][0] != 2)
+          if (zline[i][j-1][0] != 2) {
             open = zline[i][j-1][0];
-          else
+          } else {
             open = 1;
+          }
         } else {
-          if (j == k && zline[i][j-k][0] == 2)
+          if (j == k && zline[i][j-k][0] == 2) {
             open = 1;
-          else
+          } else {
             open = !zline[i][j-k][0];
+          }
         }
       }
 
