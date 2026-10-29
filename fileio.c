@@ -25,7 +25,7 @@ int load_outside_fill_tiles(int total) {
   // square sprite.
   Fread(h, total * sizeof(sprite_t), &bitmap[21]);
   Fclose(h);
-  // endianness_fix(&bitmap[21], total * sizeof(sprite_t) / 2, 16);
+  endianness_fix(&bitmap[21], total * sizeof(sprite_t) / 2, 16);
 
   return 0;
 }

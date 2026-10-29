@@ -15,7 +15,7 @@
 void blt(sprite_t *sprite, int xpix, int ypix) {
 
   // debug_printf("> blt() to %d,%d\n", xpix, ypix);
-  int16_t *src = sprite->data;
+  uint16_t *src = sprite->data;
 
   uint16_t *dest = addr + (ypix * 80) + ((xpix / 16) * 4);
   uint16_t shift = 16 - (xpix % 16);

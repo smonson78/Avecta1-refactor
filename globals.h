@@ -104,7 +104,7 @@ extern int mode, dismax;
 extern int crum;
 
 // Each bitmap is 130 bytes. That's 128 bytes for the sprite plus one extra word, probably unused
-typedef struct { int16_t data[65]; } sprite_t;
+typedef struct { uint16_t data[65]; } sprite_t;
 
 // Objects and characters
 extern sprite_t bitmap[200];
