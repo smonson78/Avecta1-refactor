@@ -131,7 +131,7 @@ int init(int flag) {
   //new_c->unknown33[0] = 0; // We're setting it again in a sec
   new_c->unknown33[1] = 0;
   new_c->stink_lines = 0;
-  new_c->unknown1[0] = 0;
+  new_c->damage = 0;
 
   // "dungeon" number
   c[59] = 2;
@@ -199,7 +199,7 @@ int init(int flag) {
   new_c->physical_strength = 3 + (2 * val[1]);
   new_c->spell_units = 6 * val[0];
   new_c->magic_level = val[0];
-  new_c->unknown1[1] = 50;
+  new_c->max_health = 50;
   new_c->unknown5[6] = 4;
 
   check_curmon("init near end");

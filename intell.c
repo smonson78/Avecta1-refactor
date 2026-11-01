@@ -858,7 +858,7 @@ int friend(int npc)
 {
   uint8_t *c = curmon[npc];
   curmon_t *new_c = &new_curmon[npc];
-  int i, j, x = player->x, y = curmon[0][25];
+  int i, j, x = curmon[0][24], y = curmon[0][25];
 
   if (npc < 4 && new_rumdata[crum].room_has_bg == 0 && c[41] < 3 && c[42] > 0) {
     c[10] = 1;

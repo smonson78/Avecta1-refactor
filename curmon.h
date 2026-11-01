@@ -6,8 +6,10 @@
 typedef struct {
   // 0
   uint8_t in_use;
-  // 1-2
-  uint8_t unknown1[2];
+  // 1
+  uint8_t damage;
+  // 2
+  uint8_t max_health;
   // 3
   uint8_t monster_name_id;
   // 4
@@ -89,8 +91,10 @@ typedef struct {
 typedef struct {
   // 0
   uint8_t in_use;
-  // 1-2
-  uint8_t unknown1[2];
+  // 1
+  uint8_t damage;
+  // 2
+  uint8_t max_health;
   // 3
   uint8_t monster_name_id;
   // 4

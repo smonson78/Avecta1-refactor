@@ -250,7 +250,7 @@ int o2(int pc)
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
   uint8_t *p, *z;
-  char *w,*wt;
+  char *w, *wt;
   uint8_t *t;
   curmon_t *new_t = NULL;
   int k, m, flag = 0, dam, j, trap, num, target, i, x, y;
@@ -320,11 +320,11 @@ int o2(int pc)
       // t is a curmon object
       int randomness = rnd(20);
       t[1] -= 5 + curmon[pc][51] + randomness;
-      new_t->unknown1[0] -= 5 + new_curmon[pc].magic_level + randomness;
+      new_t->damage -= 5 + new_curmon[pc].magic_level + randomness;
 
-      if (t[1] < 0) {
+      if ((int8_t)t[1] < 0) {
         t[1] = 0;
-        new_t->unknown1[0] = 0;
+        new_t->damage = 0;
       }
 
       break;
@@ -570,7 +570,7 @@ int o2(int pc)
       // t is a curmon    
       t[1] = 0;
       t[47] = 0;
-      new_t->unknown1[0] = 0;
+      new_t->damage = 0;
       new_t->poisoned = 0;
 
       break;

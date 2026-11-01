@@ -12,23 +12,30 @@ int litetrol(int x, int y, int s);
 
 int setlite(int pc, int dx, int dy)
 {
-  uint8_t *c = curmon[pc];
-  int x,y;
-  if (new_rumdata[crum].room_has_bg)
-    return(1);
-  x = c[24];
-  y = c[25];
+  player_t *p = &players[pc];
+
+  if (new_rumdata[crum].room_has_bg) {
+    return 1;
+  }
+
+  int x = p->x;
+  int y = p->y;
+
   Vsync();
   vbl_animation_off();
-  drawsq(x,y);
-  if(c[41] == 0) {
-    drawsq(x-dx,y-dy);
-    return(0);
-    }
-  litetrol(x,y,1);
-  litetrol(x-dx,y-dy,0);
+  drawsq(x, y);
+
+  if (p->lit_torches == 0) {
+    drawsq(x - dx, y - dy);
+    return 0;
+  }
+
+  litetrol(x, y, 1);
+  litetrol(x - dx, y - dy, 0);
+  
   Vsync();
   vbl_animation_on();
+
   return 0;
 }
 
@@ -36,12 +43,14 @@ int setlite(int pc, int dx, int dy)
 int litetrol(int x, int y, int s)
 {
   int i,j,k,a,flag,l;
-  uint8_t *c;
 
-  if (new_rumdata[crum].room_has_bg) /* if room is naturally lit */
-    return(1);          /* don't sweat torches  */
+  if (new_rumdata[crum].room_has_bg) { 
+    /* if room is naturally lit */
+    /* don't sweat torches  */
+    return 1;
+  }
 
-  for (i = -2;i <= 2;i++) { /* do that funny shaped pattern around square */
+  for (i = -2; i <= 2; i++) { /* do that funny shaped pattern around square */
     switch (abs(i)) {
       case 2:
         j = 0;
@@ -53,47 +62,59 @@ int litetrol(int x, int y, int s)
         j = 2;
     }
 
-    for(k = -j; k <= j; k++) {
-      if(x+i>15 || x+i<0 || y+k>7 || y+k<0 || zline[x+i][y+k][0] == 0) {
+    for (k = -j; k <= j; k++) {
+      if (x + i > 15 || x + i < 0 || y + k > 7 || y + k < 0 || zline[x + i][y + k][0] == 0) {
         continue; /* if off display surface or square is void */
       }
 
-      a = zline[x+i][y+k][5]; /* fetch torch overlay number */
+      a = zline[x + i][y + k][5]; /* fetch torch overlay number */
+
       switch(s) { /* s=0 ->  turn lights out, s=1 -> turn 'em on */
         case 0: /* turn out the lights, the party's over */
-          if(a > 1) /* decrement torch overlays */
+          if (a > 1) { /* decrement torch overlays */
             a--;
-          else  /* there is zero torch overlays */
+          } else { /* there is zero torch overlays */
             a = 0;
-          zline[x+i][y+k][5] = a; /*set zline*/
-          if(a > 0) /* another torch is carrying the lighting in the square */
+          }
+
+          zline[x + i][y + k][5] = a; /*set zline*/
+
+          if (a > 0) { /* another torch is carrying the lighting in the square */
             continue;
+          }
+
           flag = 0; /* shut down flag */
-          for(l=0;l<=3;l++) { /* don't shut down square if 1-4 charac there */
-              c = curmon[l];
-              if(*c != 0 && c[30] == crum 
-                && c[24] == x+i && c[25] == y+k) {
-                flag = 1;
-                break;
-                }
-              } 
-          if(!flag) { /* shut down square */
-            setfill(2); /* blank it */
-            fillsq(x+i,y+k); /* paint it black */
+
+          for (l = 0; l <= 3; l++) { /* don't shut down square if 1-4 charac there */
+            player_t *p = &players[l];
+
+            if (p->in_use && p->current_room == crum && p->x == x + i && p->y == y + k) {
+              flag = 1;
+              break;
             }
+          }
+
+          if (!flag) { /* shut down square */
+            setfill(2); /* blank it */
+            fillsq(x + i, y + k); /* paint it black */
+          }
           break;
+
         case 1: /* turn on the lights, the party's started */
           flag = 0; /* is the square a blit? */
-          if (a == 0) /* then the square was black to begin with */
+          if (a == 0) { /* then the square was black to begin with */
             flag = 1; /* so set up blit flag */
+          }
           a++; /* increment the torch overlay number */
-          zline[x+i][y+k][5] = a;/*set zline*/
-          if( flag)   /* blit flag is set so blit it, buster! */
-            drawsq(x+i,y+k);
+          zline[x + i][y + k][5] = a;/*set zline*/
+          if (flag) {  /* blit flag is set so blit it, buster! */
+            drawsq(x + i, y + k);
+          }
           break;                  
       }
     }
   }
+
   return 0;
 }
 
@@ -136,9 +157,8 @@ void drawsq(int x, int y)
     blt(&bitmap[crumobj[z[1]][0]], x, y);
   }
   
+  // This could be a character or a monster
   if (pc >= 0) { 
-    c = curmon[pc];
-    curmon_t *new_c = &new_curmon[pc];
 
     // Seems useless
     // c[0] = 0;
@@ -146,15 +166,27 @@ void drawsq(int x, int y)
 
     Vsync();
 
-    c[0] = 1;
-    new_c->in_use = 1;
+    curmon[pc][0] = 1;
 
     storsc(storbuf[pc], x, y, 0, addr);
-    blt(&bitmap[c[4]], x, y);
+
+    if (pc < 4) {
+      player_t *p = &players[pc];
+      p->in_use = 1;
+      blt(&bitmap[p->sprite_id], x, y);
+      
+    } else {
+      curmon_t *p = &monsters[pc - 4];
+      p->in_use = 1;
+      blt(&bitmap[p->sprite_id], x, y);
+    }
+
+    // storsc(storbuf[pc], x, y, 0, addr);
+    // blt(&bitmap[c[4]], x, y);
   }
   
   if (z[6] != 0) {
-    blt(&bitmap[130 + 2*(z[6])],x,y);
+    blt(&bitmap[130 + 2 * (z[6])], x, y);
   }
 }
 

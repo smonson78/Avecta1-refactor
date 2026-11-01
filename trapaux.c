@@ -144,7 +144,7 @@ int blowup(int x, int y)
   for(i=0;i<5;i++) {
     explode(x,y,0);
   }
-  if(z[2] > 0 || (player->x == x && curmon[0][25] ==y) ) {
+  if(z[2] > 0 || (curmon[0][24] == x && curmon[0][25] ==y) ) {
     destroy(2,z[2]);
   }
   if(z[1] > 0 && crumobj[z[1]][0] != 49) {

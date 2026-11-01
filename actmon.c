@@ -87,8 +87,8 @@ int actmon(int type, int nm, int x, int y)
     c[39] = i; // seems like this will always be 60
 
     pc->in_use = p->in_use;
-    pc->unknown1[0] = p->unknown1;
-    pc->unknown1[1] = p->unknown2;
+    pc->damage = p->unknown1;
+    pc->max_health = p->unknown2;
     pc->monster_name_id = p->monster_name_id;
     pc->sprite_id = p->sprite_id;
     pc->unknown5[0] = p->unknown5;
@@ -254,8 +254,8 @@ int actmon(int type, int nm, int x, int y)
 
     // ...same again, but for new_curmon
     new_c->in_use = p->in_use;
-    new_c->unknown1[0] = p->unknown1;
-    new_c->unknown1[1] = p->unknown2;
+    new_c->damage = p->unknown1;
+    new_c->max_health = p->unknown2;
     new_c->monster_name_id = p->monster_name_id;
     new_c->sprite_id = p->sprite_id;
     new_c->unknown5[0] = p->unknown5;

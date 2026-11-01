@@ -81,7 +81,7 @@ int o4(int pc)
     return 1;
   }
 
-  if (pc > 0 && z[2] == 0 && x == player->x && y == curmon[0][25]) {
+  if (pc > 0 && z[2] == 0 && x == curmon[0][24] && y == curmon[0][25]) {
     return 1;
   }
 

@@ -311,7 +311,7 @@ int getmon(int room)
       x = r[i+3] % 16;
       y = r[i+3] / 16;
 
-      if (zline[x][y][2] != 0 || (x == player->x && y == curmon[0][25])) {
+      if (zline[x][y][2] != 0 || (x == curmon[0][24] && y == curmon[0][25])) {
         continue;
       }
 
@@ -350,8 +350,8 @@ int getmon(int room)
           c[14] = p->spell_units;
           
           new_c->in_use = p->in_use;
-          new_c->unknown1[0] = p->unknown1;
-          new_c->unknown1[1] = p->unknown2;
+          new_c->damage = p->unknown1;
+          new_c->max_health = p->unknown2;
           new_c->monster_name_id = p->monster_name_id;
           new_c->sprite_id = p->sprite_id;
           new_c->unknown5[0] = p->unknown5;
@@ -406,7 +406,7 @@ int getmon(int room)
           new_c->y = y;
           new_c->current_room = room;
           new_c->unknown38[1] = j; // monster index in array? what's the good of that
-          new_c->unknown1[0] = r[i + 2];
+          new_c->damage = r[i + 2];
           new_c->unknown15[0] = 8;
           new_c->unknown15[1] = 1;
 

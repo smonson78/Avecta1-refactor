@@ -668,7 +668,7 @@ int move(int obj, int flag, int x, int y)
 
         z = zline[x+i][y+j];
         if (*z == 1 && z[1] == 0 && z[2] == 0 &&
-          (player->x != x+i || curmon[0][25] != y+j)) {
+          (curmon[0][24] != x+i || curmon[0][25] != y+j)) {
         // if (*z == 1 && z[1] == 0 && z[2] == 0 &&
         //   (new_curmon[0].x != x+i || new_curmon[0].y != y+j)) {
           if (obj > 13) {
@@ -796,15 +796,21 @@ int takeout(int pc, int thing)
 int remove(int rumobj, int thing)
 {
    int i = 0;
-   while((putbuf[i+3] != crum || putbuf[i+2] != rumobj || putbuf[i+1] != thing) &&
+   
+   while ((putbuf[i+3] != crum || putbuf[i+2] != rumobj || putbuf[i + 1] != thing) &&
          i < 320) {
       i += 4;
    }
+
    if (i >= 320) {
       return 0;
    }
-   putbuf[i] = putbuf[i+1] = putbuf[i+2] = putbuf[i+3] = 0;
-   return(1);
+
+   putbuf[i] = 0;
+   putbuf[i + 1] = 0;
+   putbuf[i + 2] = 0;
+   putbuf[i + 3] = 0;
+   return 1;
 } 
 
 // Put an object into the room_zero array
@@ -887,16 +893,16 @@ int status(int pc)
   int16_t i, j;
   int ret,flag = 0;
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  // curmon_t *new_c = &new_curmon[pc];
   char scratch[3];
   char *w = (pc == 0 ? pname : name[c[3]]);
   //char *w = (pc == 0 ? pname : name[new_c->monster_name_id]);
 
-  // It's normally 0 for the hero, but it seems like 1-3 are also possible here.
-  // Maybe parties were planned
+  // Player characters only
   if (pc > 3) {
     return 1;
   }
+  player_t *p = &players[pc];
 
   Vsync();
   vbl_animation_off();
@@ -914,17 +920,17 @@ int status(int pc)
     printf("        ");
     textsix(1, 260, 16 * i - 7, strlen(statword[i]), statword[i]);
   }
-  textsix(1, 260, 33, strlen(obj[c[45]]), obj[c[45]]);
-  textsix(1, 260, 49, strlen(obj[c[46]]), obj[c[46]]);
-  // textsix(1, 260, 33, strlen(obj[new_c->poison_mode_2]), obj[new_c->poison_mode_2]);
-  // textsix(1, 260, 49, strlen(obj[new_c->magic_mode_1]), obj[new_c->magic_mode_1]);
+  // textsix(1, 260, 33, strlen(obj[c[45]]), obj[c[45]]);
+  // textsix(1, 260, 49, strlen(obj[c[46]]), obj[c[46]]);
+  textsix(1, 260, 33, strlen(obj[p->poison_mode_2]), obj[p->poison_mode_2]);
+  textsix(1, 260, 49, strlen(obj[p->magic_mode_1]), obj[p->magic_mode_1]);
 
-  sprintf(scratch, "%d", c[2] - c[1]);
-  //sprintf(scratch, "%d", new_c->unknown1[1] - new_c->unknown1[0]);
+  // sprintf(scratch, "%d", c[2] - c[1]);
+  sprintf(scratch, "%d", p->max_health - p->damage);
   textsix(1, 300, 9, 2, scratch);
 
-  if (c[47] > 0) {
-  // if (new_c->poisoned > 0) {
+  // if (c[47] > 0) {
+  if (p->poisoned > 0) {
     sprintf(scratch, "%c", 'P');
   } else {
     // Good health
@@ -932,8 +938,8 @@ int status(int pc)
   }
   textsix(1, 314, 9, 1, scratch);
 
-  sprintf(scratch, "%d", c[14]);
-  // sprintf(scratch, "%d", new_c->spell_units);
+  // sprintf(scratch, "%d", c[14]);
+  sprintf(scratch, "%d", p->spell_units);
   textsix(1, 300, 17, strlen(scratch), scratch);
 
   v_rvoff(handle);
@@ -953,28 +959,26 @@ int status(int pc)
     case 1:
     case 2:
       if (ret == 2) {
-        if (c[41] > 0) {
-          //if (new_c->base_chance_1_attack > 0) {
+        // if (c[41] > 0) {
+        if (p->lit_torches > 0) {
           c[46] = 0;
-          new_c->magic_mode_1 = 0;
+          p->magic_mode_1 = 0;
 
-          litetrol(c[24], c[25],0);
-          //litetrol(new_c->x, new_c->y, 0);
+          // litetrol(c[24], c[25], 0);
+          litetrol(p->x, p->y, 0);
         }
 
-        if (c[41] > 64) {
-        //if (new_c->base_chance_1_attack > 64) {
+        // if (c[41] > 64) {
+        if (p->lit_torches > 64) {
           c[42] += 1;
-          new_c->base_chance_2_attack++;
+          p->unlit_torches++;
         }
 
-        if (c[41] > 0) {
-        //if (new_c->base_chance_1_attack > 0) {
+        // if (c[41] > 0) {
+        if (p->lit_torches > 0) {
           c[41] = 0;
-          new_c->base_chance_1_attack = 0;
+          p->unlit_torches = 0;
         }
-        // Even better, just set it to 0 without checking.
-
       }
 
       j = invent(pc);
@@ -986,16 +990,21 @@ int status(int pc)
 
         c[44 + ret] = 0;
         if (ret == 1) {
-          new_c->poison_mode_2 = 0; // good hand object
+          p->poison_mode_2 = 0; // good hand object
         } else {
-          new_c->magic_mode_1 = 0; // other hand object
+          p->magic_mode_1 = 0; // other hand object
         }
         
         break;
       }
 
-      if (c[44 + ret] != 0 ) { 
-        if (!putaway(pc, c[44 + ret])) {
+      // ret == 1 represents an object in the good hand
+      // ret == 2 represents an object in the other hand
+      
+      int object_in_hand = ret == 1 ? p->poison_mode_2 : p->magic_mode_1;
+      // if (c[44 + ret] != 0 ) { 
+      if (object_in_hand != 0 ) { 
+        if (!putaway(pc, object_in_hand)) {
           error(7);
           break;
         }
@@ -1004,16 +1013,17 @@ int status(int pc)
       takeout(pc, j);
       c[44 + ret] = j;
       if (ret == 1) {
-        new_c->poison_mode_2 = j; // good hand object
+        p->poison_mode_2 = j; // good hand object
       } else {
-        new_c->magic_mode_1 = j; // other hand object
+        p->magic_mode_1 = j; // other hand object
       }      
 
-      if (c[45] < 46 && c[45] > 40) {
+      // if (c[45] < 46 && c[45] > 40) {
+      if (p->poison_mode_2 < 46 && p->poison_mode_2 > 40) {
         // objects 41, 42, 43, 44, 45 which are
         // broadsword, scimitar, mace, dagger, bow - i.e. weapons
         c[32] = c[45];
-        new_c->poison_mode_1 = new_c->poison_mode_2;
+        p->poison_mode_1 = p->poison_mode_2;
       }
 
       break;
@@ -1022,6 +1032,7 @@ int status(int pc)
       invent(pc);
       flag = 1;
       break;
+
     default:
       flag = 1;
       break;
@@ -1031,7 +1042,7 @@ int status(int pc)
   clrinp();
   dotop(pc);
   
-  return(flag);
+  return flag;
 }
 
 int invent(int pc)
@@ -1047,7 +1058,7 @@ int invent(int pc)
     return 0;
   }
 
-  return(scratch[ret]);
+  return scratch[ret];
 }
 
 int listinv(int pc, char *scratch)

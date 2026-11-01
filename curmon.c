@@ -39,8 +39,8 @@ void init_curmon() {
 
   // Initialise the player's data
   player->in_use = 1;
-  player->unknown1[0] = 4;
-  player->unknown1[1] = 50;
+  player->damage = 4;
+  player->max_health = 50;
   //player->unknown1[2] = 0;
   player->sprite_id = 81;
   player->unknown5[0] = 5;

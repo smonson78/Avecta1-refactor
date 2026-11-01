@@ -175,7 +175,7 @@ int o5(int pc)
       y2 = y + y1 - c[25];
       z = zline[x2][y2];
       if(*z != 1 || z[1] != 0 || (z[2] > 0 && z[2] != pc) ||
-        (player->x == x2 && curmon[0][25] == y2 && pc != 0) ) {
+        (curmon[0][24] == x2 && curmon[0][25] == y2 && pc != 0) ) {
         flag = 1;
         prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j][0]], w1, NULL, NULL, NULL, NULL);
         }

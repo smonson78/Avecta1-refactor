@@ -70,14 +70,14 @@ int timetrol()
 				j = (4*(c[47]))/(c[2]);
 				if (j > 0) {
 					if (i < 4 || c[58] == 16) {
-						prnt("-> %s's level of poisoning is %s!",w,wordmod[j], NULL, NULL, NULL, NULL);
+						prnt("-> %s's level of poisoning is %s!", w, wordmod[j], NULL, NULL, NULL, NULL);
 					} else {
-						prnt("-> The %s's level of poisoning is %s!",w,wordmod[j], NULL, NULL, NULL, NULL);
+						prnt("-> The %s's level of poisoning is %s!", w, wordmod[j], NULL, NULL, NULL, NULL);
 					}
 					
 					if (c[47] >= c[2]) {
 						c[1] = c[2];
-						new_c->unknown1[0] = new_c->unknown1[1];
+						new_c->damage = new_c->max_health;
 
 						damage(i, 1 + c[12]);
 						return -1;

@@ -397,7 +397,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
         x = rnd(16);
         y = rnd(8);
         z = zline[x][y];
-      } while (z[0] != 1 || z[1] != 0 || (player->x == x && curmon[0][25] == y) || z[2] != 0 ||
+      } while (z[0] != 1 || z[1] != 0 || (curmon[0][24] == x && curmon[0][25] == y) || z[2] != 0 ||
         dist(x, y, 0, c[24], c[25], 0) < 7);
 
       c[26] = x;
@@ -999,7 +999,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
          s2, s2, NULL, NULL, NULL, NULL);
     flash();
     c[1] = c[41] = 0;
-    new_c->unknown1[0] = 0;
+    new_c->damage = 0;
     new_c->base_chance_1_attack = 0;
     c[14] = 6 * c[51];
     new_c->spell_units = 6 * new_c->magic_level;

@@ -48,15 +48,15 @@ int damage(int pc, int level)
   level = level < 1 ? 0 : level;
 
   old = c[1];
-  //old = new_c->unknown1[0];
+  //old = new_c->damage;
   
   c[1] += level;
-  new_c->unknown1[0] += level;
+  new_c->damage += level;
   
   // Keep the smaller of the two values
-  c[1] = ( c[1] > c[2] ? c[2] : c[1] );
-  new_c->unknown1[0] = new_c->unknown1[0] > new_c->unknown1[1] ?
-    new_c->unknown1[1] : new_c->unknown1[0];
+  c[1] = (c[1] > c[2] ? c[2] : c[1]);
+  new_c->damage = new_c->damage > new_c->max_health ?
+    new_c->max_health : new_c->damage;
 
   if (pc > 3 && c[31] < 4 && mode) {
     i = (c[1] * 4) / (c[2]);
@@ -76,8 +76,8 @@ int damage(int pc, int level)
     }
 
     Vsync();
-    textsix(0,313,1+8*(c[33]),1," ");
-    textsix(1,313,1+8*(c[33]),1,mod[i]);
+    textsix(0, 313, 1 + 8 * (c[33]), 1, " ");
+    textsix(1, 313, 1 + 8 * (c[33]), 1, mod[i]);
   }
 
   if (level == 0) {
@@ -130,9 +130,10 @@ int damage(int pc, int level)
   Vsync();
   vbl_animation_on();
 
-  if (c[1] >= c[2] || level > c[2]) {
+  // if (c[1] >= c[2] || level > c[2]) {
+  if (new_c->damage >= new_c->max_health || level > new_c->max_health) {
     c[1] = c[2];
-    new_c->unknown1[0] = new_c->unknown1[1];
+    new_c->damage = new_c->max_health;
     c[0] = 0;
     new_c->in_use = 0;
 
