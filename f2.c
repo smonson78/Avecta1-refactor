@@ -252,7 +252,7 @@ int o2(int pc)
   uint8_t *p, *z;
   char *w,*wt;
   uint8_t *t;
-  curmon_t *new_t;
+  curmon_t *new_t = NULL;
   int k, m, flag = 0, dam, j, trap, num, target, i, x, y;
   w = (pc == 0 ? pname :  name[c[3]]);
 

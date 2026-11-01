@@ -135,11 +135,12 @@ void linea_textblock_transfer() {
 
 void linea_showmouse() {
   // These are mostly used to avoid screen corruption so we probably don't need to even bother
-  //printf("linea_showmouse()\n");
+  // I don't print these messages here because they spam the console
+  // printf("linea_showmouse()\n");
 }
 
 void linea_hidemouse() {
-  //printf("linea_hidemouse()\n");
+  // printf("linea_hidemouse()\n");
 }
 
 void linea_debug() {

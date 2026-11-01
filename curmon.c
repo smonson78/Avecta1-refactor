@@ -39,15 +39,15 @@ void init_curmon() {
   new_curmon[0].unknown1[0] = 4;
   new_curmon[0].unknown1[1] = 50;
   //new_curmon[0].unknown1[2] = 0;
-  new_curmon[0].unknown1[3] = 81;
-  new_curmon[0].unknown1[4] = 5;
-  new_curmon[0].unknown1[5] = 60;
-  new_curmon[0].unknown1[6] = 8;
+  new_curmon[0].sprite_id = 81;
+  new_curmon[0].unknown5[0] = 5;
+  new_curmon[0].unknown5[1] = 60;
+  new_curmon[0].unknown5[2] = 8;
   //new_curmon[0].unknown1[7] = 0;
   //new_curmon[0].unknown1[8] = 0;
   //new_curmon[0].unknown1[9] = 0;
-  new_curmon[0].unknown1[10] = 4;
-  new_curmon[0].unknown1[11] = 3;
-  new_curmon[0].unknown1[12] = 90;
-  new_curmon[0].unknown1[13] = 10;
+  new_curmon[0].unknown5[6] = 4;
+  new_curmon[0].unknown5[7] = 3;
+  new_curmon[0].unknown5[8] = 90;
+  new_curmon[0].spell_units = 10;
 }

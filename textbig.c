@@ -12,7 +12,7 @@
 // --- 8:  s
 // --- 10: x
 // --- 12: y
-void textbig(const char s, int x, int y)
+void textbig(const char s, int x, int y, int16_t acc)
 {
   LINEA *parameter_block;
   FONT_HDR **sysfont_pointers;
@@ -43,21 +43,25 @@ void textbig(const char s, int x, int y)
   parameter_block->desty = y;
 
   // move.w #1,102(a0)
-  parameter_block->scale = 1;
+  parameter_block->scale = 1; // Turn on scaling
 
   // move.w #1,68(a0)      * set yet another scaling flag
-  parameter_block->t_sclsts = 1;
+  parameter_block->t_sclsts = 1; // Scale up rather than down (0)
 
   // move.w $8000,64(a0)   * must be set for a textblt ?
-  parameter_block->xacc_dda = 0x8000;
+  parameter_block->xacc_dda = 0x8000; // Looks like this actually does nothing on TOS 1.4
 
   // move.w #254,d3
   // mulu #256,d3
   // move.w d3,66(a0)
-  parameter_block->dda_inc = 0xfe00; // "scaling increment"
+  // Published documentation on this value is plain wrong. The real scale is 
+  // 0 = original size, 0xffff = double size. It's a smooth transition.
+  parameter_block->dda_inc = 0xffff; // Double size
 
   // move.w #1,90(a0)      * Thickened text
   parameter_block->style = 1;
+
+  parameter_block->weight = 2;
 
   // move.w #1,106(a0)     * Set text color to be red
   parameter_block->text_fg = 1;
@@ -74,5 +78,4 @@ void textbig(const char s, int x, int y)
   // : "d0", "d1", "d2", "a0", "a1", "a2" /* clobbered regs */
   // );
   linea_textblock_transfer();
-
 }

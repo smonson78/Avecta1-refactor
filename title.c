@@ -46,6 +46,7 @@ int title() {
   
   vst_color(handle, 2);
 
+  vs_curaddress(handle, 18, 1);
   printf("Copyright Mark Swanson\n");
   printf("Select option: (Q)uit,(N)ew,(R)estore\n");
   // These calls currently crash:
@@ -57,10 +58,6 @@ int title() {
       rgb[0] = Random();
       rgb[1] = Random();
       rgb[2] = Random();
-      // pointless modding
-      rgb[0] %= 1000;
-      rgb[1] %= 1000;
-      rgb[2] %= 1000;  
       vs_color(handle, 2, rgb);
       i = Bconstat(2);
     } while (i == 0);
