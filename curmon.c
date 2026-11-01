@@ -4,6 +4,9 @@
 
 // Monster instances
 curmon_t new_curmon[12];
+player_t *player = (player_t *)&new_curmon[0];
+player_t *players = (player_t *)&new_curmon[0];
+curmon_t *monsters = &new_curmon[4];
 
 // If it's curmon[0]:
 //   44 - number of arrows owned but also "bane"?
@@ -32,22 +35,22 @@ uint8_t curmon[12][60] = {
 // Set up default data for curmon array
 void init_curmon() {
   // Set all to zero
-  memset(&new_curmon, 0, sizeof(curmon_t));
+  memset(player, 0, sizeof(curmon_t));
 
   // Initialise the player's data
-  new_curmon[0].in_use = 1;
-  new_curmon[0].unknown1[0] = 4;
-  new_curmon[0].unknown1[1] = 50;
-  //new_curmon[0].unknown1[2] = 0;
-  new_curmon[0].sprite_id = 81;
-  new_curmon[0].unknown5[0] = 5;
-  new_curmon[0].unknown5[1] = 60;
-  new_curmon[0].unknown5[2] = 8;
-  //new_curmon[0].unknown1[7] = 0;
-  //new_curmon[0].unknown1[8] = 0;
-  //new_curmon[0].unknown1[9] = 0;
-  new_curmon[0].unknown5[6] = 4;
-  new_curmon[0].unknown5[7] = 3;
-  new_curmon[0].unknown5[8] = 90;
-  new_curmon[0].spell_units = 10;
+  player->in_use = 1;
+  player->unknown1[0] = 4;
+  player->unknown1[1] = 50;
+  //player->unknown1[2] = 0;
+  player->sprite_id = 81;
+  player->unknown5[0] = 5;
+  player->unknown5[1] = 60;
+  player->unknown5[2] = 8;
+  //player->unknown1[7] = 0;
+  //player->unknown1[8] = 0;
+  //player->unknown1[9] = 0;
+  player->unknown5[6] = 4;
+  player->unknown5[7] = 3;
+  player->unknown5[8] = 90;
+  player->spell_units = 10;
 }

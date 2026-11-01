@@ -145,9 +145,8 @@ void trapres(int pc, int type, int x, int y)
 
   case 5: /* took the  bone key */
     flash();
-    prnt("-> A group of scimitar brandishing skeletons bursts through \
-the door the instant %s takes the bone key!",
-         s2, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> A group of scimitar brandishing skeletons bursts through the door the instant "
+      "%s takes the bone key!", s2, NULL, NULL, NULL, NULL, NULL);
     actmon(2, 6, 8, 3);
     untrap(2);
     pass(0);

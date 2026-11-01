@@ -164,7 +164,14 @@ typedef struct {
 
 } curmon_t;
 
+// Don't use this:
 extern curmon_t new_curmon[12];
+
+// Use these:
+extern player_t *player;
+extern player_t *players;
+extern curmon_t *monsters;
+
 
 void init_curmon();
 

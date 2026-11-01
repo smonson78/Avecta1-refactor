@@ -31,6 +31,7 @@ int actmon(int type, int nm, int x, int y)
   check_curmon("actmon start");
 
   // Negative numbers seen in the code: -1, -2, -3
+  // ...if "type" is negative it will resurrect a player character.
   if (type < 0) {
     type = abs(type);
 
@@ -109,7 +110,6 @@ int actmon(int type, int nm, int x, int y)
     new_c->base_chance_2_attack = 10;
     new_c->poison_mode_2 = p->poison_mode;
     
-    // These 3 seem like bugs. I'm not even sure you can resurrect monsters in this game
     new_c->magic_mode_1 = p->base_chance_1_attack;
     new_c->perception = p->base_chance_2_attack;
     new_c->magic_level = p->base_chance_3_attack;
@@ -127,18 +127,18 @@ int actmon(int type, int nm, int x, int y)
   p = &permon[type];
 
   // Do this loop for 8 monsters with index 4 to 11
-  debug_printf("-- Spawning new monsters [4..11] in room of type %d\n", type);
-  for (i = 4; i < 12; i++) {
-    c = curmon[i];
-    new_c = &new_curmon[i];
+  debug_printf("-- Spawning new monsters [0..8] in room of type %d\n", type);
+  for (i = 0; i < 8; i++) {
+    c = curmon[i + 4];
+    new_c = &monsters[i];
 
     adder = 0;
 
-    if (*c == 0 || c[30] != crum) {
+    if (c[0] == 0 || c[30] != crum) {
       z = zline[x][y];
-      if (*z == 1 && (z[1] == 0 || crumobj[z[1]][0] > 40) && z[2] == 0 && 
+      if (z[0] == 1 && (z[1] == 0 || crumobj[z[1]][0] > 40) && z[2] == 0 && 
         (curmon[0][24] != x || curmon[0][25] != y) ) { 
-        zline[x][y][2] = i;   /* then square is available */
+        zline[x][y][2] = i + 4;   /* then square is available */
 
         c[24] = x;
         c[25] = y;
@@ -166,7 +166,7 @@ int actmon(int type, int nm, int x, int y)
             /* if it doesn't continue then square available */
             continue;  
           } else {
-            z[2] = i;
+            z[2] = i + 4;
             
             c[24] = x + k;
             c[25] = y + l;
@@ -241,7 +241,7 @@ int actmon(int type, int nm, int x, int y)
     c[15] = 8;       /* installed with a wait */
     c[16] = 1;
     c[30] = crum;
-    c[39] = i;
+    c[39] = i + 4;
     int randomness = rnd(3);
     if (type == 18) {
       c[4] = 116 + randomness;
@@ -286,14 +286,14 @@ int actmon(int type, int nm, int x, int y)
     new_c->unknown15[0] = 8;       /* installed with a wait */
     new_c->unknown15[1] = 1;
     new_c->current_room = crum;
-    new_c->unknown38[1] = i;
+    new_c->unknown38[1] = i + 4;
 
     // Pedestrian?
     if (type == 18) {
       new_c->sprite_id = 116 + randomness;
     }    
 
-    drawman(i, c[24], c[25]);
+    drawman(i + 4, c[24], c[25]);
     // drawman(i, new_c->x, new_c->y);
 
     // Old curmon
@@ -320,9 +320,12 @@ int actmon(int type, int nm, int x, int y)
   check_curmon("actmon 2");
 
   if (nm == 1) {
-    if (i > 0) {
-      return i;
+    if (i + 4 > 0) {
+      // I don't think it's possible for i to be less than 4 here (or i + 4 in the new version)
+      return i + 4;
+      debug_printf("< actmon() returning %d\n", i + 4);
     } else {
+      debug_printf("< actmon() returning -1\n");
       return -1;
     }
   }
