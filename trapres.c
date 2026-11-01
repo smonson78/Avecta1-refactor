@@ -397,7 +397,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
         x = rnd(16);
         y = rnd(8);
         z = zline[x][y];
-      } while (z[0] != 1 || z[1] != 0 || (curmon[0][24] == x && curmon[0][25] == y) || z[2] != 0 ||
+      } while (z[0] != 1 || z[1] != 0 || (player->x == x && curmon[0][25] == y) || z[2] != 0 ||
         dist(x, y, 0, c[24], c[25], 0) < 7);
 
       c[26] = x;

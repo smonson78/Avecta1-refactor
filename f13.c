@@ -15,12 +15,15 @@ int i13(int pc)
   int ret,tar;
   int16_t x, y;
 
-  if(outside)
-    return(0);
-  if(c[45] == 0) {
+  if (outside) {
+    return 0;
+  }
+
+  if (c[45] == 0) {
     error(27);
-    return(0);
-    }
+    return 0;
+  }
+
   domsg(3);
   header(w);
   winker = pc + 1;
@@ -28,18 +31,22 @@ int i13(int pc)
   undomsg();
   winker = 0;
   tar = zline[x][y][2];
-  if(!los(pc,x,y)) {
+
+  if (!los(pc,x,y)) {
     error(3);
-    return(0);
-    }
-  if( (tar == 0 && (curmon[0][24] != x || curmon[0][25] != y)) || tar > 3) {
+    return 0;
+  }
+
+  if ((tar == 0 && (curmon[0][24] != x || curmon[0][25] != y)) || tar > 3) {
     error(8);
-    return(0);
-    }
+    return 0;
+  }
+
   c[7] = tar;
   c[8] = c[9] = 0;
   c[15] = 13;
   c[16] = c[11];
+
   return(1);
 }
 
@@ -75,6 +82,7 @@ int o13(int pc)
         j = 2 - rnd(5);
       } while(k < 20 && (zline[x+i][y+j][1] != 0 || zline[x+i][y+j][0] != 1));
     }
+    
     if (k == 20) {
       prnt("-> %s cannot spot a place to which to throw the %s!", w, obj[c[45]], NULL, NULL, NULL, NULL);
       return(1);
@@ -93,7 +101,7 @@ int o13(int pc)
       new_rumdata[crum].room_unknown_3[k - 14] = c[45];
     }
 
-    *z = c[45];
+    z[0] = c[45];
     z[1] = 1;
     z[6] = x+i;
     z[7] = y+j;
@@ -106,22 +114,29 @@ int o13(int pc)
 
     // if (rumdata[crum][30] || zline[x+i][y+j][5] > 0)
     if (new_rumdata[crum].room_has_bg || zline[x+i][y+j][5] > 0) {
-      drawsq(x+i,y+j);
+      drawsq(x + i, y + j);
     }
     return 1;
   }
 
   prnt("-> %s gives the %s to %s.", w, obj[c[45]], wt, NULL, NULL, NULL);
-  if(t[45] != 0)
-    putaway(tar,t[45]);
+
+  if (t[45] != 0) {
+    putaway(tar, t[45]);
+  }
   c[8] = c[45];
   t[45] = c[45];
-  if(t[45] == 45) {
+  
+  if (t[45] == 45) {
     t[44] = c[44];
     c[44] = 0;
-    }
-  if(t[32] == 0 && t[45] < 46 && t[45] > 40 )
+  }
+
+  if (t[32] == 0 && t[45] < 46 && t[45] > 40) {
     t[32] = t[45];
+  }
+
   c[45] = 0;
-  return(1);
+
+  return 1;
 }

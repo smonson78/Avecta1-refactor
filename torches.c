@@ -4,6 +4,8 @@
 #include "rumdraw.h"
 #include "storsc.h"
 #include "blt.h"
+#include "curmon.h"
+#include "tos_compat.h"
 
 void drawsq(int x, int y);
 int litetrol(int x, int y, int s);
@@ -101,15 +103,15 @@ void drawsq(int x, int y)
   uint8_t *c;
   int i, pc;
 
-  if (*z == 1) {
+  if (z[0] == 1) {
     i = 1;
   }
 
-  if (*z == 2) {
+  if (z[0] == 2) {
     i = 0;
   }
 
-  if (*z == 0) {
+  if (z[0] == 0) {
     i = 2;
   }
 
@@ -123,7 +125,8 @@ void drawsq(int x, int y)
   pc = z[2];
 
   if (!pc) {
-    pc = (curmon[0][24] == x && curmon[0][25] == y ? 0 : -1);
+    //pc = (curmon[0][24] == x && curmon[0][25] == y ? 0 : -1);
+    pc = (player->x == x && player->y == y ? 0 : -1);
   }
 
   x *= 16;
@@ -137,12 +140,13 @@ void drawsq(int x, int y)
     c = curmon[pc];
     curmon_t *new_c = &new_curmon[pc];
 
-    *c = 0;
-    new_c->in_use = 0;
+    // Seems useless
+    // c[0] = 0;
+    // new_c->in_use = 0;
 
     Vsync();
 
-    *c = 1;
+    c[0] = 1;
     new_c->in_use = 1;
 
     storsc(storbuf[pc], x, y, 0, addr);
@@ -156,13 +160,14 @@ void drawsq(int x, int y)
 
 void drawman(int pc, int x, int y)
 {
-    uint8_t *c = curmon[pc];
-
-    if (pc < 4 && c[41] > 0) {
+  debug_printf("> drawman(%d, %d, %d)\n", pc, x, y);
+  if (pc < 4) {
+    if (players[pc].lit_torches > 0) {
       litetrol(x, y, 1);
     }
-
-    if (zline[x][y][5] > 0 || new_rumdata[crum].room_has_bg || pc < 4) {
-      drawsq(x, y);
-    }
+  }
+ 
+  if (pc < 4 || zline[x][y][5] > 0 || new_rumdata[crum].room_has_bg) {
+    drawsq(x, y);
+  }
 }

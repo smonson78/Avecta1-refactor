@@ -25,8 +25,11 @@ int actmon(int type, int nm, int x, int y)
 {
   uint8_t *c, *z;
   curmon_t *new_c;
+  player_t *pc;
   permon_t *p;
   int adder, i, j = 0, k, l;
+
+  debug_printf("> actmon(%d, %d, %d, %d)\n", type, nm, x, y);
 
   check_curmon("actmon start");
 
@@ -41,8 +44,8 @@ int actmon(int type, int nm, int x, int y)
       c[i] = 0;
     }
     // The new way:
-    new_c = &new_curmon[type];
-    memset(&new_curmon[type], 0, sizeof(curmon_t));
+    pc = &players[type];
+    memset(pc, 0, sizeof(curmon_t));
 
     // The range of type here is -3 to -1 therefore the result will be permon[4] to permon[6]
     // 4 - dog
@@ -83,38 +86,38 @@ int actmon(int type, int nm, int x, int y)
     c[30] = crum;
     c[39] = i; // seems like this will always be 60
 
-    new_c->in_use = p->in_use;
-    new_c->unknown1[0] = p->unknown1;
-    new_c->unknown1[1] = p->unknown2;
-    new_c->monster_name_id = p->monster_name_id;
-    new_c->sprite_id = p->sprite_id;
-    new_c->unknown5[0] = p->unknown5;
-    new_c->unknown5[1] = p->unknown6;
-    new_c->unknown5[2] = p->unknown7;
-    new_c->unknown5[3] = p->unknown8;
-    new_c->unknown5[4] = p->unknown9;
-    new_c->unknown5[5] = p->unknown10;
-    new_c->unknown5[6] = p->unknown11;
-    new_c->unknown5[7] = p->unknown12;
-    new_c->unknown5[8] = p->unknown13;
-    new_c->spell_units = p->spell_units;
+    pc->in_use = p->in_use;
+    pc->unknown1[0] = p->unknown1;
+    pc->unknown1[1] = p->unknown2;
+    pc->monster_name_id = p->monster_name_id;
+    pc->sprite_id = p->sprite_id;
+    pc->unknown5[0] = p->unknown5;
+    pc->unknown5[1] = p->unknown6;
+    pc->unknown5[2] = p->unknown7;
+    pc->unknown5[3] = p->unknown8;
+    pc->unknown5[4] = p->unknown9;
+    pc->unknown5[5] = p->unknown10;
+    pc->unknown5[6] = p->unknown11;
+    pc->unknown5[7] = p->unknown12;
+    pc->unknown5[8] = p->unknown13;
+    pc->spell_units = p->spell_units;
 
-    new_c->unknown15[0] = 8;
-    new_c->unknown15[1] = 1;
+    pc->unknown15[0] = 8;
+    pc->unknown15[1] = 1;
 
-    new_c->x = x;
-    new_c->y = y;
-    new_c->current_room = crum;
-    new_c->poison_mode_1 = p->poison_mode;
-    new_c->unknown38[1] = i;
-    new_c->base_chance_2_attack = 10;
-    new_c->poison_mode_2 = p->poison_mode;
+    pc->x = x;
+    pc->y = y;
+    pc->current_room = crum;
+    pc->poison_mode_1 = p->poison_mode;
+    pc->unknown38[1] = i;
+    pc->unlit_torches = 10;
+    pc->poison_mode_2 = p->poison_mode;
     
-    new_c->magic_mode_1 = p->base_chance_1_attack;
-    new_c->perception = p->base_chance_2_attack;
-    new_c->magic_level = p->base_chance_3_attack;
+    pc->magic_mode_1 = p->base_chance_1_attack;
+    pc->perception = p->base_chance_2_attack;
+    pc->magic_level = p->base_chance_3_attack;
 
-    new_c->physical_strength = p->physical_strength;
+    pc->physical_strength = p->physical_strength;
 
     check_curmon("actmon 1");
 
@@ -134,10 +137,12 @@ int actmon(int type, int nm, int x, int y)
 
     adder = 0;
 
-    if (c[0] == 0 || c[30] != crum) {
+    // if (c[0] == 0 || c[30] != crum) {
+    if (new_c->in_use == 0 || new_c->current_room != crum) {
       z = zline[x][y];
       if (z[0] == 1 && (z[1] == 0 || crumobj[z[1]][0] > 40) && z[2] == 0 && 
-        (curmon[0][24] != x || curmon[0][25] != y) ) { 
+        // (curmon[0][24] != x || curmon[0][25] != y) ) { 
+        (player->x != x || player->y != y) ) { 
         zline[x][y][2] = i + 4;   /* then square is available */
 
         c[24] = x;
@@ -160,8 +165,8 @@ int actmon(int type, int nm, int x, int y)
 
           z = zline[x+k][y+l];
 
-          if (k == -2 || *z != 1 || z[2] != 0 || (curmon[0][24] == (x + k) && 
-            curmon[0][25] == (y + l)) || 
+          if (k == -2 || *z != 1 || z[2] != 0 || (player->x == (x + k) && 
+            player->y == (y + l)) || 
             (z[1] > 0 && crumobj[z[1]][0] < 41) ) {
             /* if it doesn't continue then square available */
             continue;  
@@ -293,16 +298,16 @@ int actmon(int type, int nm, int x, int y)
       new_c->sprite_id = 116 + randomness;
     }    
 
-    drawman(i + 4, c[24], c[25]);
-    // drawman(i, new_c->x, new_c->y);
+    // drawman(i + 4, c[24], c[25]);
+    drawman(i + 4, new_c->x, new_c->y);
 
     // Old curmon
     c[26] = curmon[0][24];
     c[27] = curmon[0][25];
 
     // new_curmon
-    new_c->old_x = new_curmon[0].x;
-    new_c->old_y = new_curmon[0].y;
+    new_c->old_x = player->x;
+    new_c->old_y = player->y;
     
     if (j == nm) {
       break;
@@ -319,11 +324,12 @@ int actmon(int type, int nm, int x, int y)
 
   check_curmon("actmon 2");
 
+  // If only one monster/player spawned:
   if (nm == 1) {
     if (i + 4 > 0) {
       // I don't think it's possible for i to be less than 4 here (or i + 4 in the new version)
-      return i + 4;
       debug_printf("< actmon() returning %d\n", i + 4);
+      return i + 4;
     } else {
       debug_printf("< actmon() returning -1\n");
       return -1;

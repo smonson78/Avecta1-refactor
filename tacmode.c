@@ -129,7 +129,7 @@ int tacmode() {
                 x = o[6];
                 y = o[7];
 
-                if (zline[x][y][2] != 0 || (curmon[0][24] == x && curmon[0][25] == y)) {
+                if (zline[x][y][2] != 0 || (player->x == x && curmon[0][25] == y)) {
                   pursuit[0] += 2;
                   flag = 2;
                   break;
@@ -141,7 +141,7 @@ int tacmode() {
                 c[25] = y;
                 c[16] = 1;
                 c[15] = 8;
-                c[26] = curmon[0][24];
+                c[26] = player->x;
                 c[27] = curmon[0][25];
                 c[30] = crum;
 
