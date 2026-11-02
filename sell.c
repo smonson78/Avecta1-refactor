@@ -22,6 +22,7 @@ int sell(int npc)
 
   // The shopkeeper:
   uint8_t *c = curmon[npc];
+  curmon2_t *ch = &new_curmon2[npc];
 
   // The player:
   uint8_t *h = curmon[0];
@@ -35,16 +36,21 @@ int sell(int npc)
 
   c[39] = 0;
   c[32] = 6;
+  ch->player.unknown39 = 0;
+  ch->player.poison_mode_1 = 6;
+
+  // All monsters
   for (j = 4; j < 12; j++) {
-    if (curmon[j][0] && curmon[j][30] == crum && curmon[j][31] < 4) {
-        num++;
+    // if (curmon[j][0] && curmon[j][30] == crum && curmon[j][31] < 4) {
+    if (new_curmon2[j].monster.in_use && new_curmon2[j].monster.current_room == crum && new_curmon2[j].monster.intelligence_routine < 4) {
+      num++;
     }
   }
   
   // Asking price
-  sprintf(temp, "%d", selllist[i][2] + 5);
+  sprintf(temp, "%d", selllist[i].min_price + 5);
 
-  if (num == 1 && (selllist[i][3] == -1 || police) )  {
+  if (num == 1 && (selllist[i].attitude == -1 || police) )  {
     prnt("-> The merchant shrieks `Is there no end to this lunatic! Help! "
       "Guards!'", NULL, NULL, NULL, NULL, NULL, NULL);
     
@@ -53,22 +59,35 @@ int sell(int npc)
     c[16] = 80;
     c[6] = c[8] = 1;
     c[5] = 2;
-    return(1);
+
+    ch->player.unknown15[0] = 8;
+    ch->player.unknown15[1] = 80;
+    ch->player.unknown6 = 1;
+    ch->player.unknown8 = 1;
+    ch->player.unknown5 = 2;
+
+    return 1;
   }
 
-  if (selllist[i][3] == 1 && adjac(npc, h[24], h[25])) {
+  // if (selllist[i].attitude == 1 && adjac(npc, h[24], h[25])) {
+  if (selllist[i].attitude == 1 && adjac(npc, player->x, player->y)) {
     prnt("-> The merchant gestures impatiently and says `Come now, you've "
       "had plenty of time to make up your mind.  What do you say?  Yes or no?'",
       NULL, NULL, NULL, NULL, NULL, NULL);
     c[8] = 0;
     c[6] = 1;
+    ch->player.unknown8 = 0;
+    ch->player.unknown6 = 1;
   }
 
   if (num > 1) {
     prnt("-> The merchant shouts `Kill the ruffian!'", NULL, NULL, NULL, NULL, NULL, NULL);
     c[15] = 8;
     c[16] = 75;
-    return(1);
+    ch->player.unknown15[0] = 8;
+    ch->player.unknown15[1] = 75;
+
+    return 1;
   }
 
   if (c[7] || !adjac(npc, h[24], h[25])) {
@@ -82,104 +101,136 @@ int sell(int npc)
     prnt("-> The merchant laughs `How can you carry anything more? Your bag is\
   completely full! Why don't you drop something?'", NULL, NULL, NULL, NULL, NULL, NULL);
     pass(npc);
-    return(1);
-    }
-  if (!c[5] && !c[8] && h[49] < selllist[i][1]) {
+    return 1;
+  }
+
+  //if (!c[5] && !c[8] && h[49] < selllist[i].min_price) {
+  if (!c[5] && !c[8] && player->gold_amount < selllist[i].min_price) {
     prnt("-> The merchant looks down his long nose at %s and sniffs `I believe "
       "the merchandise I handle is currently outside of your financial purview.  I "
       "suggest you leave and go to a cheaper business.'", pname, NULL, NULL, NULL, NULL, NULL);
     c[6] = 1;
     c[8] = 1;
+    ch->player.unknown6 = 1;
+    ch->player.unknown8 = 1;
+
     pass(npc);
     return 1;
   }
 
-  if (selllist[i][3] == 2) {
+  if (selllist[i].attitude == 2) {
     prnt("-> The merchant smiles at %s warmly and coos `Ahhh! My good friend! "
       "Evidently you wish to purchase something more!'", pname, NULL, NULL, NULL, NULL, NULL);
   }
   
   if (c[6] == 0) {
-    curmon[0][15] = 8; 
+    player->unknown15[0] = 8; 
     prnt("-> The merchant says `Are you interested in buying one of my \
   exceptional %ss?  They are a mere %s goldpieces!  Yes or no?'",
-      obj[(uint8_t)selllist[i][0]], temp, NULL, NULL, NULL, NULL);
-    }
-  if(c[8] || !getword("yes")) {
+      obj[selllist[i].object], temp, NULL, NULL, NULL, NULL);
+  }
+
+  if (c[8] || !getword("yes")) {
     c[5] += 1;
-    if(c[5] > 2) {
+    ch->player.unknown5 += 1;
+
+    if (c[5] > 2) {
       prnt("-> The merchant howls `Guards! Guards! There's a thief in my store!'\
     A general clamor can be heard on the street as the cries for help are \
   passed on by the local residents.", NULL, NULL, NULL, NULL, NULL, NULL);
-      selllist[i][3] = -1;
+      selllist[i].attitude = -1;
       c[7] = 1;
+      ch->player.unknown7 = 1;
+
       police = 1;
-      return(1);
-      }
-    if(c[5] > 1) {
+      return 1;
+    }
+
+    if (c[5] > 1) {
       c[6] = 1; 
-      prnt("-> The merchant snarls `Get out of my store, you deadbeat, or\
-  I'll call the guards!'  He stands glowering at %s.", &pname[0], NULL, NULL, NULL, NULL, NULL);
-      }
-    else 
-      prnt("-> The merchant responds `Very well.  Browse for a while.  But \
-  I haven't got all day.'", NULL, NULL, NULL, NULL, NULL, NULL);
-    selllist[i][3] = 1;
+      ch->player.unknown6 = 1;
+
+      prnt("-> The merchant snarls `Get out of my store, you deadbeat, or I'll call the guards!'"
+        "  He stands glowering at %s.", &pname[0], NULL, NULL, NULL, NULL, NULL);
+    } else {
+      prnt("-> The merchant responds `Very well.  Browse for a while.  But I haven't got all day.'",
+        NULL, NULL, NULL, NULL, NULL, NULL);
+    }
+    selllist[i].attitude = 1;
     c[15] = 8;
     c[16] = 30;
-    }
-  else {
-    prnt("-> The merchant smiles and burbles `What excellent taste you have! \
-  How many gold pieces do you offer for my %s?'",obj[(uint8_t)selllist[i][0]], NULL, NULL, NULL, NULL, NULL);
-    while( !done ) {
+
+    ch->player.unknown15[0] = 8;
+    ch->player.unknown15[1] = 30;    
+
+  } else {
+    prnt("-> The merchant smiles and burbles `What excellent taste you have!  How many gold pieces "
+      "do you offer for my %s?'", obj[selllist[i].object], NULL, NULL, NULL, NULL, NULL);
+
+    while (!done) {
       prnt("-> [Input your offer]: ", NULL, NULL, NULL, NULL, NULL, NULL);
       instring(row, col, str, 4, 0);
       hold = usedline = 0;
       amount = atoi(str);
-      if (amount <= 0 || amount > h[49]) {
+
+      // if (amount <= 0 || amount > h[49]) {
+      if (amount <= 0 || amount > player->gold_amount) {
         if (amount <= 0) {
           prnt("-> The merchant snarls `You are deranged!'", NULL, NULL, NULL, NULL, NULL, NULL);
-        }
-        else {
+        } else {
           prnt("-> The merchant growls `From the look of your pouch I don't "
             "think you have that many goldpieces!'", NULL, NULL, NULL, NULL, NULL, NULL);
         }
 
         c[6] = c[8] = 1;
         c[5] = 1;
+        ch->player.unknown6 = 1;
+        ch->player.unknown8 = 1;
+        ch->player.unknown5 = 1;
+
         done = 1;
-        selllist[i][3] = 1;
+        selllist[i].attitude = 1;
         pass(npc);
         break;
-        }
+      }
+
       if (amount < c[9]) {
           prnt("-> The merchant shrugs `I can see you are not interested in "
             "bargaining in good faith!'", NULL, NULL, NULL, NULL, NULL, NULL);
           pass(npc);
           done = 1;
-          selllist[i][3] = 1;
+          selllist[i].attitude = 1;
+
           c[8] = 1;
           c[6] = 1;
+          ch->player.unknown8 = 1;
+          ch->player.unknown6 = 1;
+
           continue;
       }
 
-      if (amount < selllist[i][1]) {
-          sprintf(temp,"%d",selllist[i][2]);
+      if (amount < selllist[i].min_price) {
+          sprintf(temp, "%d", selllist[i].unknown);
           prnt("-> The merchant shrieks `Such an insult!  How am I to feed my "
             "family with a pitiful pittance such as that!  How about %s goldpieces?'",
             temp, NULL, NULL, NULL, NULL, NULL);
           c[9] = amount;
+          ch->player.unknown9 = amount;
+
           continue;
       }  
-      if (amount < selllist[i][2] - c[10] &&
-        amount < selllist[i][1] + selllist[i][2] - amount ) {
-        prnt("-> The merchant moans woefully", NULL, NULL, NULL, NULL, NULL, NULL);
+      if (amount < selllist[i].unknown - c[10] &&
+        amount < selllist[i].min_price + selllist[i].unknown - amount ) {
+        prnt("-> The merchant moans woefully ", NULL, NULL, NULL, NULL, NULL, NULL);
         j = rnd(8);
-        while( j == c[32]) {
-            j = rnd(8);
-            }  
+        while (j == c[32]) {
+          j = rnd(8);
+        }
+
         c[32] = j;
-        switch(j) {
+        ch->player.poison_mode_1 = j;
+
+        switch (j) {
           case 0:
             prnt("`Ahh! By the gods! Such a hard trader!'", NULL, NULL, NULL, NULL, NULL, NULL);
             break;
@@ -205,23 +256,30 @@ int sell(int npc)
             prnt("`Did Fat Oskar send you to ruin me?'", NULL, NULL, NULL, NULL, NULL, NULL);
             break;
         }
+
         c[9] = amount;
-        j = selllist[i][2] - amount + selllist[i][1];
-        sprintf(temp,"%d",j);
-        prnt("and keens ` %s goldpieces and no lower!'",temp, NULL, NULL, NULL, NULL, NULL);
-        c[10] = selllist[i][2] - j;
+        ch->player.unknown9 = amount;
+
+        j = selllist[i].unknown - amount + selllist[i].min_price;
+        sprintf(temp, "%d", j);
+        prnt("and keens `%s goldpieces and no lower!'", temp, NULL, NULL, NULL, NULL, NULL);
+        
+        c[10] = selllist[i].unknown - j;
+        ch->player.spell_cast = selllist[i].unknown - j;
+
         continue;
       }
 
       prnt("-> The merchant throws up his hands and wails `I must accept this "
         "offer!  It is done!'  He fetches the %s from the locked case and gives "
         "it to %s.",
-            obj[(uint8_t)selllist[i][0]], 
+            obj[selllist[i].object], 
             pname, NULL, NULL, NULL, NULL);
       
       // Player gold
       h[49] -= amount;
-      selllist[i][3] = 2;
+      player->gold_amount -= amount;
+      selllist[i].attitude = 2;
       done = 1;
 
       c[15] = 8;
@@ -231,25 +289,41 @@ int sell(int npc)
       c[8] = 0;
       c[9] = 0;
       c[10] = 0;
+      ch->player.unknown15[0] = 8;
+      ch->player.unknown15[1] = 100;
+      ch->player.unknown6 = 0;
+      ch->player.unknown7 = 0;
+      ch->player.unknown8 = 0;
+      ch->player.unknown9 = 0;
+      ch->player.spell_cast = 0;
 
       // If item is a bow, get 30 free arrows
-      if (selllist[i][0] == 45) {
+      if (selllist[i].object == OBJECT_BOW) {
         prnt("-> The merchant adds `Please accept these thirty fine arrows "
           "as well.' Of course, %s takes them gladly.",
           pname, NULL, NULL, NULL, NULL, NULL);
         curmon[0][44] += 30;
+        player->arrows += 30;
       }
 
-      if (selllist[i][0] == 69) {
+      if (selllist[i].object == OBJECT_POWER_VIAL) {
         invtrap(69);
       }
 
-      if (selllist[i][0] != 81) {
-        putaway(0,selllist[i][0]);
+      if (selllist[i].object != OBJECT_TORCH) {
+        putaway(0, selllist[i].object);
       } else {
         for (j = 0; j < 4; j++) {
           c = curmon[i];
           c[42] = (c[42] + 30 > 40 ? 40 : c[42] + 30);
+
+          // Just limit it to 40 torches basically
+          // new_curmon2[i].player.unlit_torches = new_curmon2[i].player.unlit_torches + 30 > 40 ? 
+          //   40 : new_curmon2[i].player.unlit_torches + 30;
+          new_curmon2[i].player.unlit_torches += 30;
+          if (new_curmon2[i].player.unlit_torches > 40) {
+            new_curmon2[i].player.unlit_torches = 40;
+          }
         }
       }
     }

@@ -72,7 +72,15 @@ typedef struct {
 } permon_t;
 
 extern permon_t permon[];
-extern int8_t selllist[][4];
+
+typedef struct {
+  uint8_t object;
+  uint8_t min_price;
+  uint8_t unknown;
+  int8_t attitude;
+} sellist_t;
+
+extern sellist_t selllist[];
 
 // These are all to do with TOS/GEM
 extern int16_t contrl[12], intin[128], intout[128], ptsin[128], ptsout[128];

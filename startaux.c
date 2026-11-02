@@ -386,8 +386,9 @@ int loadnew() {
     new_c->unknown55[2] = 3;
     new_c->unknown59 = 2;
 
+    // All shopkeepers start with indifference to the player
     for (i = 0; i < 4; i++) {
-      selllist[i][3] = 0;
+      selllist[i].attitude = 0;
     }
 
     for (i = 1; i < 320; i += 4) {

@@ -21,15 +21,16 @@
 // Screen VDI handle
 int16_t handle;
 
+// This is the 16-colour ST palette
 int16_t newpal[16] = {
-  // Using negative numbers for these hex values is a bit of a wank
-  //-1912, -120,  -1905, -600,  -536,  -1832, -55,   -820,  -8,    -1793, -311,  -1912,  -113,  -19,  -627,  0xfff
-  0x000,   0x700, 0x007, 0x520, 0x560, 0x050, 0x741, 0x444, 0x770, 0x077, 0x641, 0x000, 0x707, 0x765, 0x505, 0x777
+  0x000, 0x700, 0x007, 0x520, 0x560, 0x050, 0x741, 0x444,
+  0x770, 0x077, 0x641, 0x000, 0x707, 0x765, 0x505, 0x777
 };
 
 // For restoring TOS palette at exit
 int16_t oldpal[16];
 
+// Rectangles used for drawing UI elements
 int16_t pxy[8] = {12, 136, 319-75, 199, 12, 134, 319-75, 197};
 int16_t bxy[4] = {12, 197, 319-75, 199};
 int16_t lxy[4] = {0, 127, 319-75, 128};
@@ -141,11 +142,11 @@ permon_t permon[] = {
 };
 
 // Storekeepers
-int8_t selllist[][4] = {
+sellist_t selllist[] = {
   // 0 = item that they sell
   // 1 = minimum price they will accept
   // 2 = 
-  // 3 = 0 if friendly, 2 if they like you, -1 if you stole from them
+  // 3 = 0 if friendly, 1 if less friendly, 2 if they like you, -1 if they hate you
   {OBJECT_TORCH, 3, 5, 0},
   {OBJECT_SCIMITAR, 10, 20, 0},
   {OBJECT_POWER_VIAL, 25, 35, 0},

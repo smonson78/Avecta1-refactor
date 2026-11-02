@@ -29,6 +29,7 @@ curmon2_t *new_curmon2 = (curmon2_t *)&new_curmon[0];
 // be to different arrays at different times, and the offsets still have to work.
 // Goodbye strongly typed language.
 // I will leave this one until last.
+// or will I?
 
 uint8_t curmon[12][60] = {
   // curmon 0 - the player. Only 15 default bytes populated out of 60.
