@@ -267,9 +267,11 @@ int wander(int npc)
   int i,j,k,l;
   int x = crumobj[c[48]][6];
   int y = crumobj[c[48]][7];
+
+  // This is the room number that a door leads to.
   int ex = crumobj[c[48]][3];
 
-  if (c[48] != 0 && adjac(npc,x,y) && ex != 0 && ex != 8) {
+  if (c[48] != 0 && adjac(npc, x, y) && ex != 0 && ex != 8) {
     c[15] = 9;
     c[16] = 4;
     c[10] = ex;
@@ -277,8 +279,8 @@ int wander(int npc)
 
     new_c->unknown15[0] = 9;
     new_c->unknown15[1] = 4;
-    new_c->unknown5[5] = ex;
-    new_c->unknown5[4] = new_c->unknown48;
+    new_c->spell_cast = ex;
+    new_c->spells[4] = new_c->unknown48;
 
     return 1;
   }

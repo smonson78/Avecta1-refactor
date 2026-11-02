@@ -11,16 +11,17 @@
 int i12(int pc)
 {
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  curmon2_t *ch = &new_curmon2[pc];
 
   // No need for torch outside
   if (outside) {
     return 0;
   }
 
-  if (c[41] > 60) {
+  // if (c[41] > 60) {
+  if (ch->player.lit_torches > 60) {
     c[10] = 0;
-    new_c->unknown5[5] = 0;
+    ch->player.spell_cast = 0;
   }
 
   if (c[41] <= 60) {
@@ -29,18 +30,18 @@ int i12(int pc)
       return 0;
     }
     c[10] = 1;
-    new_c->unknown5[5] = 1;
+    ch->player.spell_cast = 1;
   }
 
   c[7] = c[8] = c[9] = 0;
-  new_c->unknown5[2] = 0;
-  new_c->unknown5[3] = 0;
-  new_c->unknown5[4] = 0;
+  ch->player.unknown7 = 0;
+  ch->player.unknown8 = 0;
+  ch->player.unknown9 = 0;
 
   c[15] = 12;
   c[16] = 6;
-  new_c->unknown15[0] = 12;
-  new_c->unknown15[1] = 6;
+  ch->player.unknown15[0] = 12;
+  ch->player.unknown15[1] = 6;
 
   return 1;
 }

@@ -42,8 +42,8 @@ extern uint8_t curmon[12][60];
 typedef struct {
   // always "1" for monsters that are defined in the table and "0" for entries that are blank.
   uint8_t in_use;
-  uint8_t unknown1;
-  uint8_t unknown2;
+  uint8_t damage;
+  uint8_t max_health;
   uint8_t monster_name_id;
   uint8_t sprite_id;
   uint8_t unknown5;
@@ -152,14 +152,65 @@ extern char *name[];
 #define ERROR_NO_LINE_OF_SIGHT 3
 #define ERROR_NOTHING_TO_EXAMINE 4
 #define ERROR_INVENTORY_TOO_FULL 7
+#define ERROR_NO_CHARACTER 8
+#define ERROR_TARGET_NOT_ADJACENT 9
 #define ERROR_LOCATION_NOT_ADJACENT 11
 #define ERROR_OBJECT_IS_CLOSED 12
+#define ERROR_INSUFFICIENT_SPELL_UNITS 13
 #define ERROR_NO_EXIT 15
 #define ERROR_TAKE_OBJECT 16
+#define ERROR_NO_WEAPON_IN_HAND 20
+#define ERROR_BOW_TWO_FREE_HANDS 22
+#define ERROR_NO_OBJECT 23
 #define ERROR_NOTHING_TO_ROOK_SNOOP 25
 #define ERROR_NOTHING_IN_HAND 27
+#define ERROR_INSUFFICIENT_MAGIC_ABILITY 28
 #define ERROR_HANDS_FULL 29
+#define ERROR_NO_BOW_OR_ARROWS 30
 #define ERROR_WHICH_HANDS_OBJECT 31
+
+#define SPELL_CURE_LIGHT_WOUNDS 1
+#define SPELL_SEARCH 2
+#define SPELL_FREEZE 3
+#define SPELL_UNVENOM 4
+#define SPELL_VORPAL 5
+#define SPELL_SPEED 6
+#define SPELL_ARMOR 7
+#define SPELL_DISARM 8
+#define SPELL_BOLT 9
+#define SPELL_UNLOCK 10
+#define SPELL_FEAR 11
+#define SPELL_FIREBALL 12
+#define SPELL_BLINK 13
+#define SPELL_REVEAL 14
+#define SPELL_HEAL 15
+#define SPELL_PRISM 16
+#define SPELL_BLOCK 17
+#define SPELL_CHARM 18
+#define SPELL_FIREWALL 19
+#define SPELL_DESTROY 20
+#define SPELL_SUMMON 21
+#define SPELL_DEATH 22
+#define SPELL_LIFE 23
+#define SPELL_TELEPORT 24
+
+#define COMMAND_THE 0
+#define COMMAND_PLACE 1
+#define COMMAND_OBJECT 2
+#define COMMAND_TARGET 3
+#define COMMAND_SPOT 4
+#define COMMAND_EXIT 5
+#define COMMAND_ITEM 6
+
+#define MONSTER_MELKTHROP 16
+
+#define INTELLIGENCE_FRIEND 4
+
+#define OBJECT_SCIMITAR 42
+#define OBJECT_BOW 45
+#define OBJECT_POWER_VIAL 69
+#define OBJECT_SEEKSHARD 80
+#define OBJECT_TORCH 81
 
 extern char *errmsg[];
 
@@ -168,11 +219,6 @@ extern char *verblist[];
 extern char *att[][4];
 extern char *monmsg[];
 
-#define OBJECT_SCIMITAR 42
-#define OBJECT_BOW 45
-#define OBJECT_POWER_VIAL 69
-#define OBJECT_SEEKSHARD 80
-#define OBJECT_TORCH 81
 
 extern char *obj[];
 

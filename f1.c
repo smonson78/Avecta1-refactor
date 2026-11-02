@@ -20,33 +20,35 @@ int i1(int pc)
 
   combat = 0;
   if (!adjac(pc,x,y)) {
-    error(9);
+    error(ERROR_TARGET_NOT_ADJACENT);
     return 0;
   }
 
+  // Characters (including the player) only:
   if (pc < 4 && (c[45] > 45 || c[45] < 41) ) {
-    error(20);
+    error(ERROR_NO_WEAPON_IN_HAND);
     return 0;
   }
 
+  // The player only:
   if (pc == 0 && c[45] == 45 && c[46] != 0) {
-    error(22);
+    error(ERROR_BOW_TWO_FREE_HANDS);
     return 0;
   }
 
   if (pc < 4 && pc > 0) {
     c[7] = c[39];
-    new_c->unknown5[2] = new_c->unknown38[1];
+    new_c->spells[2] = new_c->unknown39;
   }
 
   c[15] = 1;
   new_c->unknown15[0] = 1;
 
   c[16] = c[11];
-  new_c->unknown15[1] = new_c->unknown5[6];
+  new_c->unknown15[1] = new_c->unknown11;
 
   c[9] = 0;
-  new_c->unknown5[4] = 0;
+  new_c->spells[4] = 0;
 
   return 1;
 }
@@ -57,29 +59,33 @@ int o1(int pc)
   uint8_t *t = curmon[a[39]];
 
   curmon_t *new_a = &new_curmon[pc];
-  curmon_t *new_t = &new_curmon[new_a->unknown38[1]];
+  player_t *p = &players[pc];
+
+  curmon_t *new_t = &new_curmon[new_a->unknown39];
 
   char *w;
   int base, roll, dam, wepchanz;
 
-  if (*t == 0 || t[30] != crum) {
+  if (new_t->in_use == 0 || new_t->current_room != crum) {
     return 1;
   }
 
-  if (!adjac(pc, t[24], t[25])) {
+  if (!adjac(pc, new_t->x, new_t->y)) {
     return 1;
   }
 
-  attack(pc,t[24],t[25]);
-  if (pc < 4 && t[46] && !a[43]) {
+  attack(pc, new_t->x, new_t->y);
+
+  //if (pc < 4 && t[46] && !a[43]) {
+  if (pc < 4 && new_t->magic_mode_1 && !p->base_chance_3_attack) {
     a[34] = -1;
-    new_a->unknown33[1] = -1;
+    p->unknown33[1] = -1;
     
     return 1;
   }
 
   if (pc < 4) {
-    wepchanz = weapon[a[45] - 40][0] + 20*(a[43]);
+    wepchanz = weapon[a[45] - 40][0] + 20 * (a[43]);
   }
 
   if (pc < 4 && a[51] > 5) {
@@ -98,9 +104,10 @@ int o1(int pc)
   base = wepchanz + 3*( a[50] - 10 + a[11] - t[11] );
 
   if (pc < 4) {
-    dam = weapon[a[45] - 40][1];
+    // dam = weapon[a[45] - 40][1];
+    dam = weapon[p->good_hand - 40][1];
   } else {
-    dam = *(a + 3 + 2*(a[40]) );
+    dam = a[3 + 2 * (a[40])];
   }
 
   if (pc > 3) {
@@ -116,7 +123,7 @@ int o1(int pc)
 
   if (pc < 4) {
     a[8] = a[45];
-    new_a->unknown5[3] = new_a->poison_mode_2;
+    p->unknown8 = p->good_hand;
   }
 
   if (base > roll && dam > 0) {
@@ -147,4 +154,3 @@ int o1(int pc)
 
   return 1;
 }
-

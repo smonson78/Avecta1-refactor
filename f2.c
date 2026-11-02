@@ -33,23 +33,24 @@
 
 int savthrow(int npc, int mag);
 
-int i2(int pc)
+int cast_in(int pc)
 {
   int16_t status, x, y;
   int i, j, k, numb, ret;
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  player_t *new_c = &players[pc];
   uint8_t *z;
-  char scratch[3],*w = (pc == 0 ? pname : name[c[3]]);
+  char scratch[3], *w = (pc == 0 ? pname : name[c[3]]);
 
-  debug_printf("> i2\n");
+  debug_printf("> cast (in)\n");
 
   if (outside) {
     return 0;
   }
 
-  if (c[14] <= 0) {
-    error(13);
+  // if (c[14] <= 0) {
+  if (new_c->spell_units <= 0) {
+    error(ERROR_INSUFFICIENT_SPELL_UNITS);
     return 0;
   }
 
@@ -64,12 +65,14 @@ int i2(int pc)
   vbl_animation_off();
   undorep();
 
+  // Display spell names list
   for (i = 0; i < 25; i++) {
-    textsix(1,258,1 + 8*i,strlen(spell[i]),spell[i]);
-    sprintf(scratch,"%d",1 + (i/5));
+    textsix(1, 258, 1 + 8 * i, strlen(spell[i]), spell[i]);
     
+    // Spell units. Always 1/5th of the spell index plus one
     if (i != 24) {
-      textsix(1,314,1+8*i,1,scratch);
+      sprintf(scratch, "%d", 1 + (i / 5));
+      textsix(1, 314, 1 + 8 * i, 1, scratch);
     }
   }
 
@@ -86,74 +89,85 @@ int i2(int pc)
     dorep();
   }
 
+  // Cancel.
   if (numb == 24) {
     return 0;
   }
 
-  numb++;
-
-  if ((numb-1)/5 > (c[51] + 1)/2) {
-    error(28);
+  // if ((numb - 1) / 5 > (c[51] + 1)/2) {
+  if (numb / 5 > (new_c->magic_level + 1) / 2) {
+    error(ERROR_INSUFFICIENT_MAGIC_ABILITY);
     return 0;
   }
 
-  if (1 + (numb-1)/5 > c[14]) {
-    error(13);
+  // if (1 + (numb-1)/5 > c[14]) {
+  if (1 + (numb) / 5 > new_c->spell_units) {
+    error(ERROR_INSUFFICIENT_SPELL_UNITS);
     return 0;
   }
 
-  if ((i = spelinfo[numb-1][1]) > 0) {
+  i = spelinfo[numb][1];
+
+  if (i > 0) {
     domsg(i);
     header(w);
     winker = pc + 1;
-    sgetxy(&x,&y,0,0,0,&ret);
+    sgetxy(&x, &y, 0, 0, 0, &ret);
     undomsg();
     winker = 0;
-    if (!los(pc,x,y)) {
-      error(3);
-      return(0);
+    
+    if (!los(pc, x, y)) {
+      error(ERROR_NO_LINE_OF_SIGHT);
+      return 0;
     }
+
     z = zline[x][y];
-    j = spelinfo[numb-1][0];
+    j = spelinfo[numb][0];
 
     if (j == 1 && z[2] == 0 ) {
-      error(8);
+      error(ERROR_NO_CHARACTER);
       return 0;
     }
 
     if (j == 2 && z[1] == 0) {
-      error(23);
+      error(ERROR_NO_OBJECT);
       return 0;
     }
 
-    if (j == 3 && ( z[2] == 0 && (x != c[24] || y != c[25]) ) ) {
-      error(8);
+    // if (j == 3 && (z[2] == 0 && (x != c[24] || y != c[25]) ) ) {
+    if (j == 3 && (z[2] == 0 && (x != new_c->x || y != new_c->y) )) {
+      error(ERROR_NO_CHARACTER);
       return 0;
     }
 
-    c[9] =  z[1];
+    c[9] = z[1];
     c[8] = 0;
     c[7] = z[2];
     c[5] = x;
     c[6] = y;
 
-    new_c->unknown5[4] = z[1];
-    new_c->unknown5[3] = 0;
-    new_c->unknown5[2] = z[2];
-    new_c->unknown5[1] = y;
-    new_c->unknown5[0] = x;
+    new_c->unknown9 = z[1];
+    new_c->unknown8 = 0;
+    new_c->unknown7 = z[2];
+    new_c->unknown5 = x;
+    new_c->unknown6 = y;
   }
 
-  if (numb == 24) {
+  // 1-based index
+  numb++;
+
+  // Teleport
+  if (numb == SPELL_TELEPORT) {
     k = 0;
     // Could be "left hand", "right hand"?
-    if (c[45] == 80 || c[46] == 80) {
+    // if (c[45] == 80 || c[46] == 80) {
+    if (new_c->good_hand == 80 || new_c->other_hand == OBJECT_SEEKSHARD) {
       k = 1;
     }
 
     // Search inventory for an 80
     for (j = 1; j < invnpc[pc][0]; j++) {
-      if (invnpc[pc][j] == 80) {
+      if (invnpc[pc][j] == OBJECT_SEEKSHARD) {
         k = 1;
         break;
       }
@@ -166,15 +180,15 @@ int i2(int pc)
     }
   }
 
-  if (numb == 13) { /* asshole wants to blink */
-    domsg(1);
+  if (numb == SPELL_BLINK) { /* asshole wants to blink */
+    domsg(COMMAND_PLACE);
     header(w);
     winker = pc + 1;
-    sgetxy(&x,&y,0,0,0,&ret);
+    sgetxy(&x, &y, 0, 0, 0, &ret);
     winker = 0;
     undomsg();
     
-    if (!los(pc,x,y) || zline[x][y][0] != 1) {
+    if (!los(pc, x, y) || zline[x][y][0] != 1) {
       error(ERROR_NO_LINE_OF_SIGHT);
       return 0;
     }
@@ -192,10 +206,10 @@ int i2(int pc)
 
   c[10] = numb;
   c[15] = 2;
-  c[16] = spelinfo[numb-1][2];
-  c[14] -= 1 + (numb-1)/5;
+  c[16] = spelinfo[numb - 1][2];
+  c[14] -= 1 + (numb - 1) / 5;
 
-  new_c->unknown5[5] = numb;
+  new_c->spell_cast = numb;
   new_c->unknown15[0] = 2;
   new_c->unknown15[1] = spelinfo[numb - 1][2];
   new_c->spell_units -= 1 + (numb - 1) / 5;
@@ -207,18 +221,20 @@ int i2(int pc)
 void losespel(int pc)
 {
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  player_t *new_c = &players[pc];
   char *w = (pc == 0 ? pname : name[c[3]]);
   char *n = (pc < 4 ? rummsg[0] : msg[0]);
 
-  if (c[21] != 0) {
+  // if (c[21] != 0) {
+  if (new_c->unknown15[6] != 0) {
     prnt("-> The original spell on %s%s was lost!", n, w, NULL, NULL, NULL, NULL);  
     // WTF
     //*(c + c[19]) = c[20];
     // FIXME This can't be easily ported to new_curmon. First we need to work what it does.
     c[c[19]] = c[20];
-    // new_c->...something = new_c->unknown15[5];
-
+    // switch (new_c->unknown15[4]) {
+    //   case ...
+    // }
 
     c[21] = 0;
     new_c->unknown15[6] = 0;
@@ -245,10 +261,11 @@ void flash()
   vbl_animation_on();
 }
 
-int o2(int pc)
+int cast_out(int pc)
 {
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  curmon_t *new_c;
+  player_t *pt;
   uint8_t *p, *z;
   char *w, *wt;
   uint8_t *t;
@@ -256,33 +273,49 @@ int o2(int pc)
   int k, m, flag = 0, dam, j, trap, num, target, i, x, y;
   w = (pc == 0 ? pname :  name[c[3]]);
 
-  debug_printf("> o2\n");
+  debug_printf("> cast (out)\n");
   
-  // Monsters only
+  // Who is casting?
+  // Monsters only:
   if (pc > 3) {
-    if (c[58] != 16) {
+    new_c = &monsters[pc - 4];
+
+    //if (c[58] != 16) {
+    if (new_c->monster_type != MONSTER_MELKTHROP) {
+      // Melkthrop gets a name, everyone else gets "the X"
       sprintf(junk, "%s", "The ");
       sprintf(&junk[4], "%s", w);
       w = junk;
+
+      // FIXME we probably don't need to use a global buffer for this string
     }
-    num = c[10];
-    target = c[39]; // This version is for monsters
+
+    // num = c[10];
+    num = new_c->spell_cast;
+    //target = c[39];
+    target = new_c->unknown39;
     
     t = curmon[target];
     new_t = &new_curmon[target];
 
-    if (!los(pc,t[24],t[25])) {
+    if (!los(pc, t[24], t[25])) {
       flag = 1; 
     }
 
     wt = (target == 0 ? pname : name[t[3]]);
   }
 
-  // Players only
+  // Players only:
   if (pc < 4) {
+    pt = &players[pc];
+
     flag = 0;
+
     // This is the spell number that was cast (index into array plus one)
-    num = c[10];
+    //num = c[10];
+    num = pt->spell_cast;
+
+
     if (spelinfo[num - 1][0] != 2) {
       target = c[7]; // ...While this version is for player characters
       t = curmon[target];
@@ -294,7 +327,7 @@ int o2(int pc)
     } else {
       target = c[9]; // ...And this version is for objects!
       t = crumobj[target];
-      wt = obj[*t];
+      wt = obj[t[0]];
       if (t[0] == 0) {
         flag = 1;
       }
@@ -403,8 +436,8 @@ int o2(int pc)
       t[11] = 1;
       t[19] = 11;
       t[21] = 20 + 2*(c[51]);
-      new_t->unknown15[5] = new_t->unknown5[6];
-      new_t->unknown5[6] = 1;
+      new_t->unknown15[5] = new_t->unknown11;
+      new_t->unknown11 = 1;
       new_t->unknown15[4] = 11;
       new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
 
@@ -418,8 +451,8 @@ int o2(int pc)
       t[12] += c[51];
       t[19] = 12;
       t[21] = 20 + 2*(c[51]);
-      new_t->unknown15[5] = new_t->unknown5[7];
-      new_t->unknown5[7] += new_c->magic_level;
+      new_t->unknown15[5] = new_t->unknown12;
+      new_t->unknown12 += new_c->magic_level;
       new_t->unknown15[4] = 12;
       new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
 
@@ -608,7 +641,7 @@ int o2(int pc)
       t[20] = 0;
       t[19] = 38;
       t[21] = 20 + 2*(c[51]);
-      new_t->unknown38[0] = 1;
+      new_t->controlled = 1;
       new_t->unknown15[5] = 0;
       new_t->unknown15[4] = 38;
       new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
@@ -671,7 +704,7 @@ int o2(int pc)
         if (curmon[i][58] == j) { // 58 = monster type.
           // Then we set something unknown here
           curmon[i][38] = 1;
-          new_curmon[i].unknown38[0] = 1;
+          new_curmon[i].controlled = 1;
         }
       }
 

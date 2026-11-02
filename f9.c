@@ -10,10 +10,13 @@
 
 #include "f5.h"
 
+// Exit action
+
 int i9(int pc)
 {
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
+  curmon2_t *ch = &new_curmon2[pc];
   uint8_t *z;
   char *w = (pc == 0 ? pname : name[c[3]]);
   int i, j, ret, quit = 0;
@@ -139,12 +142,12 @@ int i9(int pc)
   c[15] = 9;
   c[16] = 6;
 
-  new_c->unknown5[2] = 0;
-  new_c->unknown5[3] = 0;
-  new_c->unknown5[4] = z[1];
-  new_c->unknown5[5] = crumobj[z[1]][3];
-  new_c->unknown15[0] = 9;
-  new_c->unknown15[1] = 6;
+  ch->player.unknown7 = 0;
+  ch->player.unknown8 = 0;
+  ch->player.unknown9 = z[1];
+  ch->player.spell_cast = crumobj[z[1]][3];
+  ch->player.unknown15[0] = 9;
+  ch->player.unknown15[1] = 6;
 
   return 1;
 }
@@ -152,31 +155,33 @@ int i9(int pc)
 int o9(int pc)
 {
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
-  int x = c[24], y = c[25];
+  curmon2_t *ch = &new_curmon2[pc];
+  // int x = c[24], y = c[25];
+  int x = ch->player.x, y = ch->player.y;
   uint8_t *z = zline[x][y];
   
   // Player
   if (pc == 0 && crumobj[c[9]][5] == -2) {
     prnt("-> %s finds the exit is locked!", pname, NULL, NULL, NULL, NULL, NULL);
     c[30] = crum;
-    new_c->current_room = crum;
+    ch->player.current_room = crum;
     return 1;
   }
 
   z[2] = 0;
-  if (z[5] > 0 || new_rumdata[c[30]].room_has_bg) {
+  // if (z[5] > 0 || new_rumdata[c[30]].room_has_bg) {
+  if (z[5] > 0 || new_rumdata[ch->player.current_room].room_has_bg) {
     Vsync();
-    storsc(storbuf[pc],16*x,16*y,1,addr);
+    storsc(storbuf[pc], 16 * x, 16 * y, 1, addr);
   }
 
   c[30] = c[10];
-  new_c->current_room = new_c->unknown5[5];
+  ch->player.current_room = ch->player.spell_cast;
 
   if (pc != 0) {
     z = zline[c[26]][c[27]];
     c[30] = crumobj[z[1]][3];
-    new_c->current_room = crumobj[z[1]][3];
+    ch->player.current_room = crumobj[z[1]][3];
     
     if (mode) {
       dorep();
@@ -187,16 +192,15 @@ int o9(int pc)
   // Player
   if (pc == 0) {
     c[34] = 0;
-    new_c->unknown33[1] = 0;
+    ch->player.unknown33[1] = 0;
 
     if (mode) {
       prnt("-> %s flees!", &pname[0], NULL, NULL, NULL, NULL, NULL);
     }
 
     c[18] = 8;
-    new_c->unknown15[3] = 8;
+    ch->player.unknown15[3] = 8;
   }
 
   return -1;
 }
-

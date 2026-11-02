@@ -83,19 +83,23 @@ int tacmode() {
   do {
     check_curmon("tacmode loop");
 
-    // This happens multiple times per move. 4 times per 1-square move actually.
-    for (i = 0; i < 13; i++) {
-      grflist[i] = 0;
-      actlist[i] = 0;
-    }
+    // Clear these arrays
+    // for (i = 0; i < 13; i++) {
+    //   grflist[i] = 0;
+    //   actlist[i] = 0;
+    // }
+    memset(grflist, 0, sizeof(grflist));
+    memset(actlist, 0, sizeof(grflist));
 
     // Player is dead or not here
-    if (curmon[0][0] == 0) {
+    // if (curmon[0][0] == 0) {
+    if (player->in_use == 0) {
       return -1;
     }
 
     // Everyone is dead
-    if (curmon[0][30] != crum) {
+    // if (curmon[0][30] != crum) {
+    if (player->current_room != crum) {
       return 0;
     }
 
@@ -238,20 +242,28 @@ int tacmode() {
       c = curmon[i];
       new_c = &new_curmon[i];
 
-      if (c[0] == 1 && c[30] == crum) {
-        if (i > 3 && c[31] < 4) {
+      // if (c[0] == 1 && c[30] == crum) {
+      if (new_c->in_use == 1 && new_c->current_room == crum) {
+        
+        // If a monster:
+        //if (i > 3 && c[31] < 4) {
+        if (i > 3 && new_c->intelligence_routine < 4) {
           monster++;
-          if (c[38] == 0) {
+          //if (c[38] == 0) {
+          if (new_c->controlled == 0) {
             monster++;
           }
         }
+
         grflist[0]++;
         grflist[grflist[0]] = i;
 
         c[16] -= 1;
         new_c->unknown15[1]--;
-        
-        if (c[16] == 0) {
+
+        // This player or monster will move, so add them to the activity list
+        // if (c[16] == 0) {
+        if (new_c->unknown15[1] == 0) {
           actlist[0] += 1;
           actlist[actlist[0]] = i;
         }
@@ -281,6 +293,7 @@ int tacmode() {
 
     check_curmon("tacmode loop position 2.2");
 
+    // Make everyone who is going to move this turn take their move
     for (i = 1; i <= actlist[0]; i++) {
       check_curmon("tacmode loop position 2.3");
 
@@ -291,7 +304,8 @@ int tacmode() {
       check_curmon("tacmode loop position 2.4");
 
       // If character is in use and in the current room:
-      if (c[0] && c[30] == crum) {
+      //if (c[0] && c[30] == crum) {
+      if (new_c->in_use && new_c->current_room == crum) {
         debug_printf("...calling outverb %d\n", c[15]);
         j = (*outverb[c[15]])(n);
       }

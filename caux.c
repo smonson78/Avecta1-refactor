@@ -33,12 +33,12 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
   int light, keybd = 0, keystk = 0, mflag=0,rflag=0, tflag = 0,inrflag,intflag = 0;
   uint8_t *z;
   uint8_t *c = NULL;
-  //curmon_t *new_c = NULL;
+  curmon_t *new_c = NULL;
   char *string, letter = 0;
 
   if (winker != 0) {
     c = curmon[winker - 1];
-    //new_c = &new_curmon[winker - 1];
+    new_c = &new_curmon[winker - 1];
   }
 
   light = new_rumdata[crum].room_has_bg;
@@ -275,7 +275,8 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
           }
 
           if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
-            (winker > 0 && c[24] == newx && c[25] == newy) ) {
+            //(winker > 0 && c[24] == newx && c[25] == newy) ) {
+            (winker > 0 && new_c->x == newx && new_c->y == newy) ) {
           // if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
           //   (winker > 0 && new_c->x == newx && new_c->y == newy) ) {              
             Vsync();
@@ -289,12 +290,12 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
           }
           oldx = newx;
           oldy = newy;
-          if (mflag == 0 && mode && z[2] > 3 && (z[5] > 0 || light) 
-            && curmon[z[2]][31] < 4 ) {
           // if (mflag == 0 && mode && z[2] > 3 && (z[5] > 0 || light) 
-          //   && new_curmon[z[2]].intelligence_routine < 4 ) {
-            mflag = curmon[z[2]][33];
-            // mflag = new_curmon[z[2]].unknown33[0];
+          //   && curmon[z[2]][31] < 4 ) {
+          if (mflag == 0 && mode && z[2] > 3 && (z[5] > 0 || light) 
+             && new_curmon[z[2]].intelligence_routine < 4 ) {
+            // mflag = curmon[z[2]][33];
+            mflag = new_curmon[z[2]].unknown33[0];
             Vsync();
             toggle(32, mflag, 7);             
           }
@@ -327,14 +328,16 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       if (rflag) {
         mouse_off();
         Vsync();
-        for (j=0;j<2;j++) {
-          for(k=0;k<2;k++) {
-            toggle(2*oldx+j,2*oldy+k,0);
+        
+        for (j = 0; j < 2; j++) {
+          for (k = 0; k < 2; k++) {
+            toggle(2 * oldx + j, 2 * oldy + k, 0);
           }
         }
+
         zline[oldx][oldy][4] = 0;
         if (mflag > 0 && mode) {
-          toggle(32,mflag,7);
+          toggle(32, mflag,7);
           mflag = 0;
         }
         mouse_on();
@@ -370,7 +373,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
     }
 
     if (status != 0 && (rflag || tflag || 
-        (inrflag && winker > 0 && lom(winker-1,oldx,oldy)) ) ) {
+        (inrflag && winker > 0 && lom(winker - 1, oldx, oldy)) ) ) {
       mouse_off();
       Vsync();
 
@@ -378,20 +381,27 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
         zline[oldx][oldy][4] = 0;
         for (j = 0; j < 2; j++) {
           for (k = 0; k < 2; k++) {
-            toggle(2*oldx+j,2*oldy+k,0);
+            toggle(2 * oldx + j, 2 * oldy + k, 0);
           }
         }
       }
-      if (tflag) 
-        toggle(32,oldline,7);
-      if (mflag > 0 && mode) 
-        toggle(32,mflag,7);
+
+      if (tflag) {
+        toggle(32, oldline, 7);
+      }
+
+      if (mflag > 0 && mode) {
+        toggle(32, mflag, 7);
+      }
+
       *x = oldx;
       *y = oldy;
-      if (tflag)
+
+      if (tflag) {
         *ret = oldline;
-      else
+      } else {
         *ret = 0;
+      }
 
       // ret could be 0 or some other value that isn't clear
       debug_printf("sgetxy() returned ret=%d\n", *ret);
@@ -400,23 +410,22 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
   } while (1);
 }
 
-
 int lom(int pc, int x, int y)
 {
   int x2,y2,i,j,q;
   long int k,l,m,n;
   char z1;
   uint8_t *z;
-  uint8_t *c0 = curmon[pc];
-  //curmon_t *new_c0 = &new_curmon[pc];
+  // uint8_t *c0 = curmon[pc];
+  curmon_t *new_c0 = &new_curmon[pc];
 
-  x2 = *(c0+24); /* fetch the x-coordinate of the PC */
-  y2 = *(c0+25); /* fetch the y-coordinate of the PC */
-  //  x2 = new_c0->x; /* fetch the x-coordinate of the PC */
-  //  y2 = new_c0->y; /* fetch the y-coordinate of the PC */
+  // x2 = *(c0+24); /* fetch the x-coordinate of the PC */
+  // y2 = *(c0+25); /* fetch the y-coordinate of the PC */
+  x2 = new_c0->x; /* fetch the x-coordinate of the PC */
+  y2 = new_c0->y; /* fetch the y-coordinate of the PC */
 
-  i = (x2-x);            /* find difference between target and PC */
-  j = (y2-y);            
+  i = (x2 - x);            /* find difference between target and PC */
+  j = (y2 - y);            
   k = abs(i);   /* take absolute value of i and j */
   l = abs(j);
   
@@ -444,14 +453,19 @@ int lom(int pc, int x, int y)
     if (q == 1) {
       z = zline[x][y];
       z1 = crumobj[z[1]][0];
+      
       if (z[1] != 0) {
-        if(z1 < 41 && z1 > 1)
-        return 0;
+        if (z1 < 41 && z1 > 1) {
+          return 0;
+        }
       }
-      if (z[2] != 0 || *z == 0 || ( *z == 2 && z1 == 0))
-        return(0);    
+
+      if (z[2] != 0 || *z == 0 || ( *z == 2 && z1 == 0)) {
+        return 0;    
+      }
       q = 0;  /* all this is stored in zline array  for each room     */
     }
+
     --m;         /* decrement each roll variable */
     --n;
 
@@ -471,7 +485,7 @@ int lom(int pc, int x, int y)
   return 1;  /* if it makes it all the way through then los is open */         
 }
 
-// Line-Of-Sight, I guess
+// Line-Of-Sight
 int los(int pc, int x, int y)
 {
    int x2,y2,i,j,q;
@@ -772,33 +786,41 @@ int putaway(int pc, int thing)
     curmon[pc][32] = 0;
     new_curmon[pc].poison_mode_1 = 0;
   }
+
   i[j] = thing;
-  *i += 1;
+  i[0] += 1;
+
   return 1;
 }
 
 int takeout(int pc, int thing)
 {
-   uint8_t *i = invnpc[pc];
-   int j = 1;
-   if(thing == 0)
-      return(0);
-   while(i[j] != thing && j < 11) {
-      j++;
-   }
-   if(j == 11)
-      return(0);
-   *i -= 1;
-   i[j] = 0;
-   return(1);
+  uint8_t *i = invnpc[pc];
+  int j = 1;
+
+  if (thing == 0) {
+    return 0;
+  }
+  
+  while (i[j] != thing && j < 11) {
+    j++;
+  }
+
+  if (j == 11) {
+    return 0;
+  }
+  
+  i[0] -= 1;
+  i[j] = 0;
+
+  return 1;
 }
 
-int remove(int rumobj, int thing)
+int remove_object(int rumobj, int thing)
 {
    int i = 0;
    
-   while ((putbuf[i+3] != crum || putbuf[i+2] != rumobj || putbuf[i + 1] != thing) &&
-         i < 320) {
+   while ((putbuf[i + 3] != crum || putbuf[i + 2] != rumobj || putbuf[i + 1] != thing) && i < 320) {
       i += 4;
    }
 
@@ -922,8 +944,8 @@ int status(int pc)
   }
   // textsix(1, 260, 33, strlen(obj[c[45]]), obj[c[45]]);
   // textsix(1, 260, 49, strlen(obj[c[46]]), obj[c[46]]);
-  textsix(1, 260, 33, strlen(obj[p->poison_mode_2]), obj[p->poison_mode_2]);
-  textsix(1, 260, 49, strlen(obj[p->magic_mode_1]), obj[p->magic_mode_1]);
+  textsix(1, 260, 33, strlen(obj[p->good_hand]), obj[p->good_hand]);
+  textsix(1, 260, 49, strlen(obj[p->other_hand]), obj[p->other_hand]);
 
   // sprintf(scratch, "%d", c[2] - c[1]);
   sprintf(scratch, "%d", p->max_health - p->damage);
@@ -962,7 +984,7 @@ int status(int pc)
         // if (c[41] > 0) {
         if (p->lit_torches > 0) {
           c[46] = 0;
-          p->magic_mode_1 = 0;
+          p->other_hand = 0;
 
           // litetrol(c[24], c[25], 0);
           litetrol(p->x, p->y, 0);
@@ -990,9 +1012,9 @@ int status(int pc)
 
         c[44 + ret] = 0;
         if (ret == 1) {
-          p->poison_mode_2 = 0; // good hand object
+          p->good_hand = 0; // good hand object
         } else {
-          p->magic_mode_1 = 0; // other hand object
+          p->other_hand = 0; // other hand object
         }
         
         break;
@@ -1001,7 +1023,7 @@ int status(int pc)
       // ret == 1 represents an object in the good hand
       // ret == 2 represents an object in the other hand
       
-      int object_in_hand = ret == 1 ? p->poison_mode_2 : p->magic_mode_1;
+      int object_in_hand = ret == 1 ? p->good_hand : p->other_hand;
       // if (c[44 + ret] != 0 ) { 
       if (object_in_hand != 0 ) { 
         if (!putaway(pc, object_in_hand)) {
@@ -1013,17 +1035,17 @@ int status(int pc)
       takeout(pc, j);
       c[44 + ret] = j;
       if (ret == 1) {
-        p->poison_mode_2 = j; // good hand object
+        p->good_hand = j;
       } else {
-        p->magic_mode_1 = j; // other hand object
+        p->other_hand = j;
       }      
 
       // if (c[45] < 46 && c[45] > 40) {
-      if (p->poison_mode_2 < 46 && p->poison_mode_2 > 40) {
+      if (p->good_hand < 46 && p->other_hand > 40) {
         // objects 41, 42, 43, 44, 45 which are
         // broadsword, scimitar, mace, dagger, bow - i.e. weapons
         c[32] = c[45];
-        p->poison_mode_1 = p->poison_mode_2;
+        p->poison_mode_1 = p->good_hand;
       }
 
       break;
@@ -1063,45 +1085,49 @@ int invent(int pc)
 
 int listinv(int pc, char *scratch)
 {
-   int j, bot = 0;
-   uint8_t *c = curmon[pc], *o = invnpc[pc];
-   //curmon_t *new_c = &new_curmon[pc];
-   char word[3];
+  int j, bot = 0;
+  // uint8_t *c = curmon[pc];
+  uint8_t *o = invnpc[pc];
+  player_t *p = &players[pc];
+  char word[3];
 
-   Vsync();
-   vbl_animation_off();
-   vs_curaddress(handle,1,33);
-   v_rvon(handle);
-   printf("        ");
-   v_rvoff(handle);
-   textsix(1,260,1,9,"INVENTORY");
-   prhand(pc);
+  Vsync();
+  vbl_animation_off();
+  vs_curaddress(handle, 1, 33);
+  v_rvon(handle);
+  printf("        ");
+  v_rvoff(handle);
+  textsix(1, 260, 1, 9, "INVENTORY");
+  prhand(pc);
   
-   scratch[1] = c[45];
-   scratch[2] = c[46];
-  //  *(scratch+1) = new_c->poison_mode_2;
-  //  *(scratch+2) = new_c->magic_mode_1;   
+  //  scratch[1] = c[45];
+  //  scratch[2] = c[46];
+  scratch[1] = p->good_hand;
+  scratch[2] = p->other_hand;
 
-   for (j = 1; j < 14; j++) {
-      if (o[j] != 0) {
-         bot++;
-         textsix(1,260,17+bot*8,strlen(obj[o[j]]),obj[o[j]]);
-         scratch[bot + 2] = o[j];
-      }
-   }
-   textsix(1,260,25+bot*8,9,"No Choice");
-   textsix(1,260,33+8*bot,7,"Torches");
-   sprintf(word, "%d", c[42]);
-   //sprintf(word, "%d", new_c->base_chance_2_attack);
-   textsix(1,308,33+8*bot,strlen(word),word);
-   textsix(1,260,41 + 8*bot,4,"Gold");
-   sprintf(word, "%d", c[49]);
-   //sprintf(word, "%d", new_c->gold_amount);
-   textsix(1,308,41 + 8*bot,strlen(word),word);
-   Vsync();
-   vbl_animation_on();
-   invnpc[pc][0] = bot;
-   return(bot);
+  for (j = 1; j < 14; j++) {
+    if (o[j] != 0) {
+      bot++;
+      textsix(1, 260, 17 + bot * 8, strlen(obj[o[j]]), obj[o[j]]);
+      scratch[bot + 2] = o[j];
+    }
+  }
+  textsix(1, 260, 25 + bot * 8, 9, "No Choice");
+  textsix(1, 260, 33 + 8 * bot, 7, "Torches");
+  //  sprintf(word, "%d", c[42]);
+  sprintf(word, "%d", p->unlit_torches);
+  textsix(1, 308, 33 + 8 * bot, strlen(word), word);
+  textsix(1, 260, 41 + 8 * bot, 4, "Gold");
+  // sprintf(word, "%d", c[49]);
+  sprintf(word, "%d", p->gold_amount);
+  textsix(1, 308, 41 + 8 * bot, strlen(word), word);
+  
+  Vsync();
+  vbl_animation_on();
+
+  invnpc[pc][0] = bot;
+
+  return bot;
 }
 
 // Clear this many text rows from column 33 to the end

@@ -177,7 +177,7 @@ void trapres(int pc, int type, int x, int y)
         putaway(pc, c[45]);
         c[45] = c[8];
       }
-      remove(4, c[8]);
+      remove_object(4, c[8]);
       prnt("-> The %s doesn't fit into the ectoplasmic converter's slot!",
            obj[c[8]], NULL, NULL, NULL, NULL, NULL);
       break;
@@ -201,7 +201,7 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
 
     if (c[8] != c[45]) {
       putaway(pc, c[45]);
-      remove(1, c[8]);
+      remove_object(1, c[8]);
       c[45] = c[8];
     }
 
@@ -225,7 +225,7 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
       c[45] = c[8];
     }
 
-    remove(1, c[8]);
+    remove_object(1, c[8]);
     
     if (c[8] != 46) {
       prnt("-> The %s doesn't fit in the door's keyhole!", obj[c[8]], NULL, NULL, NULL, NULL, NULL);
@@ -390,8 +390,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       new_c->unknown15[0] = 2;
       new_c->unknown15[1] = 1;
       new_c->unknown48 = 1;
-      new_c->unknown5[5] = 13;
-      new_c->unknown38[1] = j;
+      new_c->spell_cast = SPELL_BLINK;
+      new_c->unknown39 = j;
 
       do {
         x = rnd(16);
@@ -436,7 +436,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
 
     if (specbuf[31] != 0) {
       flash();
-      if (remove(1, specbuf[31])) {
+      if (remove_object(1, specbuf[31])) {
         prnt("-> The %s originally on the left rune disappears! A sandestin is heard to "
           "say `Oh boy! Just what I always wanted! A free %s! I don't think this idiot "
           "knows how to operate a duplicator rune. Melkthrop is going to be angry!'",
@@ -456,8 +456,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       prnt("-> A sandestin's voice is heard to say `Old Scratch Bourbon! Yummm! I wish I"
         " got more donations like that!', and the bottle disappears!", 
         NULL, NULL, NULL, NULL, NULL, NULL);
-      remove(2, c[8]);
-      if (!remove(1, specbuf[31])) {
+      remove_object(2, c[8]);
+      if (!remove_object(1, specbuf[31])) {
         specbuf[31] = 0;
       }
 
@@ -672,7 +672,8 @@ said the last time they met.",
     outside = 0;
     fromout = 2;
     c[4] = c[7];
-    new_c->sprite_id = new_c->unknown5[2];
+    // Seems wrong
+    new_c->sprite_id = new_c->spells[2];
     break;
 
   case 26: /* open up the doorway to leverneckel's room */
@@ -956,9 +957,10 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     
     if (c[8] != c[45]) {
       putaway(pc, c[45]);
-      remove(1, c[8]);
+      remove_object(1, c[8]);
       c[45] = c[8];
-      new_c->poison_mode_2 = new_c->unknown5[3];
+      // Seems wrong
+      new_c->poison_mode_2 = new_c->spells[3];
     }
 
     // 63 must be the specific key
@@ -1037,7 +1039,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
 
   case 40:
     if (police) {
-      // Already in trouble
+      // Already in trouble, no need to point it out again
       break;
     }
 
@@ -1058,7 +1060,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     c[16] = 1;
     new_c->old_x = 7;
     new_c->old_y = 2;
-    new_c->unknown5[5] = 13;
+    new_c->spell_cast = SPELL_BLINK;
     new_c->unknown15[0] = 2;
     new_c->unknown15[1] = 1;
     break;

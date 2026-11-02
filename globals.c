@@ -27,6 +27,7 @@ int16_t newpal[16] = {
   0x000,   0x700, 0x007, 0x520, 0x560, 0x050, 0x741, 0x444, 0x770, 0x077, 0x641, 0x000, 0x707, 0x765, 0x505, 0x777
 };
 
+// For restoring TOS palette at exit
 int16_t oldpal[16];
 
 int16_t pxy[8] = {12, 136, 319-75, 199, 12, 134, 319-75, 197};
@@ -48,8 +49,8 @@ int row, col = 2;
 int grflist[13];
 int winroom;
 
-int (*inverb[])(int pc)  = {i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14};
-int (*outverb[])(int pc) = {o0,o1,o2,o3,o4,o5,o6,o7,o8,o9,o10,o11,o12,o13,o14};
+int (*inverb[])(int pc)  = {i0, i1, cast_in, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14};
+int (*outverb[])(int pc) = {o0, o1, cast_out, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13, o14};
 
 int winker = 0, winktime = 0, combat = 0;
 char *posture[] = {"All Out","Standard","Defensive","Fall Back"};
@@ -127,7 +128,7 @@ permon_t permon[] = {
   /* vampire */   {1,0,60,8,107,20,60,20,80,10,100,3,0,90,0,20,0,40,60,20,1,56,1},
   /* gork */      {1,0,80,9,109,40,50,30,100,0,0,3,4,100,0,20,1,30,70,0,1,47,1},
   /* merchant */  {1,0,10,11,108,0,0,0,0,0,0,6,0,0,0,1,0,0,0,0,5,0,0},
-  /* Melkthrop */ {1,0,50,10,111,22,16,12,0,0,0,4,100,110,100,5,0,0,0,0,1,0,1},
+  /* Melkthrop */ {1,0,50,10,111,22,16,12,0,0,0,4,100,110,100,5,0,0,0,0,1,0,1}, // 16
   /* cop */       {1,0,20,14,106,10,40,6,80,4,100,4,1,85,0,8,0,30,50,30,1,0,0},
   /* pedest */    {1,0,10,15,110,0,0,0,0,0,0,5,0,10,0,2,0,0,0,0,6,0,0},
   /* Lev */       {1,0,100,16,112,12,16,22,0,0,0,6,100,110,126,2,0,0,0,0,7,0,1},
@@ -207,29 +208,29 @@ char *errmsg[] = {
 // 2 - Object
 // 3 - Player
 char spelinfo[24][3] = {
-  {3, 3, 6 },  /* cure light wounds */
+  {3, COMMAND_TARGET, 6 },  /* cure light wounds */
   {0, 0, 6 },  /* search */
-  {1, 3, 6 },  /* freeze */
-  {3, 3, 6 },  /* unvenom */
-  {3, 3, 6 },  /* vorpal */
-  {3, 3, 6 },  /* speed */
-  {3, 3, 6 },  /* armor */
-  {2, 2, 6 },  /* disarm */
-  {1, 3, 6 },  /* bolt */
-  {2, 2, 6 },  /* unlock */
-  {1, 3, 6 },  /* fear */
-  {1, 3, 8 },  /* fireball */
-  {3, 3, 8 },  /* blink */
+  {1, COMMAND_TARGET, 6 },  /* freeze */
+  {3, COMMAND_TARGET, 6 },  /* unvenom */
+  {3, COMMAND_TARGET, 6 },  /* vorpal */
+  {3, COMMAND_TARGET, 6 },  /* speed */
+  {3, COMMAND_TARGET, 6 },  /* armor */
+  {2, COMMAND_OBJECT, 6 },  /* disarm */
+  {1, COMMAND_TARGET, 6 },  /* bolt */
+  {2, COMMAND_OBJECT, 6 },  /* unlock */
+  {1, COMMAND_TARGET, 6 },  /* fear */
+  {1, COMMAND_TARGET, 8 },  /* fireball */
+  {3, COMMAND_TARGET, 8 },  /* blink */
   {0, 0, 10 }, /* reveal */
-  {3, 2, 15 }, /* heal */
-  {1, 3, 10 }, /* prism */
-  {2, 2, 6 },  /* block */
-  {1, 3, 10 }, /* charm */
-  {0, 3, 10 }, /* firewall */
-  {2, 2, 8 },  /* destroy */
-  {0, 1, 20 }, /* summon */
-  {1, 3, 8 },  /* death */
-  {2, 3, 30 }, /* life */
+  {3, COMMAND_OBJECT, 15 }, /* heal */
+  {1, COMMAND_TARGET, 10 }, /* prism */
+  {2, COMMAND_OBJECT, 6 },  /* block */
+  {1, COMMAND_TARGET, 10 }, /* charm */
+  {0, COMMAND_TARGET, 10 }, /* firewall */
+  {2, COMMAND_OBJECT, 8 },  /* destroy */
+  {0, COMMAND_PLACE, 20 }, /* summon */
+  {1, COMMAND_TARGET, 8 },  /* death */
+  {2, COMMAND_TARGET, 30 }, /* life */
   {0, 0, 10}   /* teleport */
 };
 
@@ -243,6 +244,7 @@ char *com[] = {
   "   item",
   "   item"
 };
+
 char fname[] = "grafx.dat";
 
 // Player name.

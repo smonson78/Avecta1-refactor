@@ -24,11 +24,14 @@ int i5(int pc)
   int16_t x, y;
   int object, top = 0, bot = 0, type;
   uint8_t *c = curmon[pc];
+  curmon2_t *ch = &new_curmon2[pc];
   char scratch[18];
   char *w = (pc == 0 ? pname : name[c[3]]);
 
-  if(outside)
-    return(0);
+  if (outside) {
+    return 0;
+  }
+  
   if(invnpc[pc][0] == 0 ) {
     type = 0;
     }
@@ -68,7 +71,7 @@ int i5(int pc)
       return(1);
       }  /* now continue with drag */
     if((object = zline[x][y][1]) == 0) {
-      error(23);
+      error(ERROR_NO_OBJECT);
       return(0);
       } 
     if(crumobj[object][1] < 0) {
@@ -86,7 +89,7 @@ int i5(int pc)
     c[7] = c[8] = c[10] = 0;
     c[9] = object;
     header(w);
-    domsg(1);
+    domsg(COMMAND_PLACE);
     winker = pc+1;
     sgetxy(&x,&y,0,0,0,&ret);
     undomsg();

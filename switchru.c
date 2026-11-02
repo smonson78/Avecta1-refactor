@@ -316,9 +316,10 @@ int getmon(int room)
       }
 
       // Do all non-player monsters
-      for (j = 4; j < 12; j++) {
-        c = curmon[j];
-        curmon_t *new_c = &new_curmon[j];
+      for (j = 0; j < 8; j++) {
+        c = curmon[j + 4];
+        // curmon_t *new_c = &new_curmon[j + 4];
+        curmon_t *mon = &monsters[j];
 
         if (c[0] == 0 || c[30] != room) {
 
@@ -327,15 +328,15 @@ int getmon(int room)
             c[k] = 0;
           }
           // New way:
-          memset(new_c, 0, sizeof(curmon_t));
+          memset(mon, 0, sizeof(curmon_t));
           
           // Copy curmon (monster instance) data from permon (monster type)
           // for (k = 0; k < 15; k++) {
           //   *(c+k) = *(p+k);
           // }
           c[0] = p->in_use;
-          c[1] = p->unknown1;
-          c[2] = p->unknown2;
+          c[1] = p->damage;
+          c[2] = p->max_health;
           c[3] = p->monster_name_id;
           c[4] = p->sprite_id;
           c[5] = p->unknown5;
@@ -349,21 +350,21 @@ int getmon(int room)
           c[13] = p->unknown13;
           c[14] = p->spell_units;
           
-          new_c->in_use = p->in_use;
-          new_c->damage = p->unknown1;
-          new_c->max_health = p->unknown2;
-          new_c->monster_name_id = p->monster_name_id;
-          new_c->sprite_id = p->sprite_id;
-          new_c->unknown5[0] = p->unknown5;
-          new_c->unknown5[1] = p->unknown6;
-          new_c->unknown5[2] = p->unknown7;
-          new_c->unknown5[3] = p->unknown8;
-          new_c->unknown5[4] = p->unknown9;
-          new_c->unknown5[5] = p->unknown10;
-          new_c->unknown5[6] = p->unknown11;
-          new_c->unknown5[7] = p->unknown12;
-          new_c->unknown5[8] = p->unknown13;
-          new_c->spell_units = p->spell_units;
+          mon->in_use = p->in_use;
+          mon->damage = p->damage;
+          mon->max_health = p->max_health;
+          mon->monster_name_id = p->monster_name_id;
+          mon->sprite_id = p->sprite_id;
+          mon->spells[0] = p->unknown5;
+          mon->spells[1] = p->unknown6;
+          mon->spells[2] = p->unknown7;
+          mon->spells[3] = p->unknown8;
+          mon->spells[4] = p->unknown9;
+          mon->spell_cast = p->unknown10;
+          mon->unknown11 = p->unknown11;
+          mon->unknown12 = p->unknown12;
+          mon->unknown13 = p->unknown13;
+          mon->spell_units = p->spell_units;
 
           c[50] = p->physical_strength;
           c[45] = p->poison_mode;
@@ -377,54 +378,54 @@ int getmon(int room)
           c[58] = type;
           c[51] = (c[14]) / 3;
 
-          new_c->physical_strength = p->physical_strength;
-          new_c->poison_mode_2 = p->poison_mode;
-          new_c->base_chance_1_attack = p->base_chance_1_attack;
-          new_c->base_chance_2_attack = p->base_chance_2_attack;
-          new_c->base_chance_3_attack = p->base_chance_3_attack;
-          new_c->intelligence_routine = p->intell_routine;
-          new_c->bane = p->bane;
-          new_c->magic_mode_1 = p->magic_mode;
-          new_c->perception = p->magic_mode;
-          new_c->monster_type = type;
-          new_c->magic_level = new_c->spell_units / 3;
+          mon->physical_strength = p->physical_strength;
+          mon->poison_mode_2 = p->poison_mode;
+          mon->base_chance_1_attack = p->base_chance_1_attack;
+          mon->base_chance_2_attack = p->base_chance_2_attack;
+          mon->base_chance_3_attack = p->base_chance_3_attack;
+          mon->intelligence_routine = p->intell_routine;
+          mon->bane = p->bane;
+          mon->magic_mode_1 = p->magic_mode;
+          mon->perception = p->magic_mode;
+          mon->monster_type = type;
+          mon->magic_level = mon->spell_units / 3;
 
           if (c[51] > 20) {
             c[54] = 1;
-            new_c->magic_mode_2 = 1;
+            mon->magic_mode_2 = 1;
           }
 
           c[24] = x;
           c[25] = y;
           c[30] = room;
-          c[39] = j;
+          c[39] = j + 4;
           c[1] = r[i + 2];
           c[15] = 8;
           c[16] = 1;
 
-          new_c->x = x;
-          new_c->y = y;
-          new_c->current_room = room;
-          new_c->unknown38[1] = j; // monster index in array? what's the good of that
-          new_c->damage = r[i + 2];
-          new_c->unknown15[0] = 8;
-          new_c->unknown15[1] = 1;
+          mon->x = x;
+          mon->y = y;
+          mon->current_room = room;
+          mon->unknown39 = j + 4; // monster index in array? what's the good of that
+          mon->damage = r[i + 2];
+          mon->unknown15[0] = 8;
+          mon->unknown15[1] = 1;
 
-          zline[x][y][2] = j;
+          zline[x][y][2] = j + 4;
           count++;
 
           if (r[i] == 110) {
             // Vampire, dog, or zombie?
             int mod = rnd(3);
             c[4] = 116 + mod; 
-            new_c->sprite_id = 116 + mod;
+            mon->sprite_id = 116 + mod;
           }
 
           if (c[31] < 4) {
             mode = 1;
           }
 
-          drawman(j, x, y);
+          drawman(j + 4, x, y);
 
           // Clear out the monbuf[] entry
           r[i] = *(r+i+1) = *(r+i+2) = *(r+i+3) = 0;

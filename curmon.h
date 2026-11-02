@@ -17,7 +17,16 @@ typedef struct {
   // 5-13
   //         8: will be 80 if you used a seekshard
   //        10: the spell number that was cast
-  uint8_t unknown5[9];
+  uint8_t unknown5;
+  uint8_t unknown6;
+  uint8_t unknown7;
+  uint8_t unknown8; // Thing that is being dropped
+  uint8_t unknown9;
+  // I think this is actually going to be more like a "target of the thing being done"
+  uint8_t spell_cast; // This is also sometimes an object number, sometimes a room number
+  uint8_t unknown11;
+  uint8_t unknown12;
+  uint8_t unknown13;
   // 14
   uint8_t spell_units;
   // 15 - 23
@@ -47,8 +56,12 @@ typedef struct {
   uint8_t unknown36;
   // 37
   uint8_t perception; // Chance out of 100 to find a hidden object
-  // 38-40
-  uint8_t unknown38[3]; // 39 may be "target"
+  // 38
+  uint8_t controlled;
+  // 39
+  uint8_t unknown39; // 39 may be "target"
+  // 40
+  uint8_t unknown40;
   // 41
   uint8_t lit_torches; // actually "turns left on current torch"
   // 42
@@ -56,13 +69,11 @@ typedef struct {
   // 43
   uint8_t base_chance_3_attack;
   // 44
-  uint8_t bane;
+  uint8_t arrows;
   // 45
-  //        -- could be "good hand object"
-  uint8_t poison_mode_2; // this one is specifically described as poison mode in comments
+  uint8_t good_hand;
   // 46
-  //        -- could be "other hand object"
-  uint8_t magic_mode_1;
+  uint8_t other_hand;
   // 47
   uint8_t poisoned;
   // 48
@@ -99,8 +110,16 @@ typedef struct {
   uint8_t monster_name_id;
   // 4
   uint8_t sprite_id;
-  // 5-13
-  uint8_t unknown5[9];
+  // 5-9
+  uint8_t spells[5];
+  // 10
+  uint8_t spell_cast;
+  // 11
+  uint8_t unknown11;
+  // 12
+  uint8_t unknown12;
+  // 13
+  uint8_t unknown13;
   // 14
   uint8_t spell_units;
   // 15 - 23
@@ -129,8 +148,12 @@ typedef struct {
   uint8_t flee;
   // 37
   uint8_t perception; // Chance out of 100 to find a hidden object
-  // 38-40
-  uint8_t unknown38[3]; // 39 may be "target"
+  // 38
+  uint8_t controlled;
+  // 39
+  uint8_t unknown39;
+  // 40
+  uint8_t unknown40;
   // 41
   uint8_t base_chance_1_attack; // These 3 kinda conflict with 46, 37, and 46.
   // 42
@@ -168,6 +191,11 @@ typedef struct {
 
 } curmon_t;
 
+typedef union {
+  player_t player;
+  curmon_t monster;
+} curmon2_t;
+
 // Don't use this:
 extern curmon_t new_curmon[12];
 
@@ -175,6 +203,7 @@ extern curmon_t new_curmon[12];
 extern player_t *player;
 extern player_t *players;
 extern curmon_t *monsters;
+extern curmon2_t *new_curmon2;
 
 
 void init_curmon();

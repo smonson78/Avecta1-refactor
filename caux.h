@@ -15,7 +15,7 @@ int invent(int pc);
 int status(int pc);
 int xobj(int thing, int room);
 int storobj(int thing, int x, int y);
-int remove(int rumobj, int thing);
+int remove_object(int rumobj, int thing);
 int takeout(int pc, int thing);
 int putaway(int pc, int thing);
 int putinto(int rumobj, int thing);

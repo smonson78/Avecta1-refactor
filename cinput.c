@@ -73,13 +73,14 @@ int input(int pc)
   int16_t x, y;
   int i,j,ret;
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  player_t *new_c = &players[pc];
   uint8_t *z = NULL;
   char *w = (pc == 0 ? pname : name[c[3]]);
 
   debug_printf("> input()\n");
   check_curmon("input()");
   
+  // Only characters can be here
   if (pc > 3) {
     return 0;
   }
@@ -167,7 +168,7 @@ top:
   if (ret == 0) {
     if (z[2] != 0) {
       c[7] = z[2];
-      new_c->unknown5[2] = z[2];
+      new_c->unknown7 = z[2];
 
       if (z[2] > 3)  {
         combat = 1;
@@ -175,7 +176,7 @@ top:
           c[15] = 1;
           c[39] = c[7];
           new_c->unknown15[0] = 1;
-          new_c->unknown38[1] = new_c->unknown5[2];
+          new_c->unknown39 = new_c->unknown7;
           goto com;
         } else {
           return 1;
@@ -185,7 +186,7 @@ top:
           i = status(c[7]);
           if (!i) {
             curmon[c[7]][15] = 8;
-            new_curmon[new_c->unknown5[2]].unknown15[0] = 8;
+            new_curmon[new_c->unknown7].unknown15[0] = 8;
           }
         } else {
           goto top;
@@ -218,11 +219,12 @@ top:
 }
 
 // Combat Window
+// pc is a character index, 0-3
 int comwind(int pc)
 {
   uint8_t *c = curmon[pc];
   uint8_t *c1 = curmon[c[39]];
-  curmon_t *new_c = &new_curmon[pc];
+  player_t *new_c = &players[pc];
   // curmon_t *new_c1 = &new_curmon[new_c->unknown38[1]];
 
   char scratch[3];
@@ -234,8 +236,8 @@ int comwind(int pc)
     c[34] = c[39] = c[7] = 0;
 
     new_c->unknown33[1] = 0;
-    new_c->unknown38[1] = 0;
-    new_c->unknown5[2] = 0;
+    new_c->unknown39 = 0;
+    new_c->unknown7 = 0;
 
     clrinp();
     return 0;
@@ -302,14 +304,14 @@ int comwind(int pc)
 
   winker = 1;
   vbl_animation_on();
-  sgetxy(&x,&y,1,8,11,&ret);
+  sgetxy(&x, &y, 1, 8, 11, &ret);
   clrinp();
 
-  if(ret == 11 || ret == 12) {
+  if (ret == 11 || ret == 12) {
     c[40] = c[39] = c[34] = 0;
 
-    new_c->unknown38[2] = 0;
-    new_c->unknown38[1] = 0;
+    new_c->unknown40 = 0;
+    new_c->unknown39 = 0;
     new_c->unknown33[1] = 0;
 
     return 0;
@@ -318,13 +320,13 @@ int comwind(int pc)
   if (ret == 0) {
     if (zline[x][y][2] == c[39]) { 
       c[40] = 2;
-      new_c->unknown38[2] = 2;
+      new_c->unknown40 = 2;
       return 1;
     } else {
       c[34] = c[39] = c[40] = 0;
       new_c->unknown33[1] = 0;
-      new_c->unknown38[1] = 0;
-      new_c->unknown38[2] = 0;
+      new_c->unknown39 = 0;
+      new_c->unknown40 = 0;
       return 0;
     }
   } else {
@@ -332,7 +334,7 @@ int comwind(int pc)
   }
 
   c[40] = ret;
-  new_c->unknown38[2] = ret;
+  new_c->unknown40 = ret;
 
   check_curmon("comwind");
 

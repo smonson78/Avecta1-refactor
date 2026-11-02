@@ -44,7 +44,7 @@ int damage(int pc, int level)
   int light = new_rumdata[crum].room_has_bg;
 
   level -= c[12];
-  //level -= new_c->unknown5[7];
+  //level -= new_c->unknown12;
   level = level < 1 ? 0 : level;
 
   old = c[1];
@@ -93,9 +93,10 @@ int damage(int pc, int level)
       prnt("-> The %s shrieks in pain and fear!", w, NULL, NULL, NULL, NULL, NULL);
     }
 
-    if (curmon[0][39] == pc || (curmon[0][15] == 2 && curmon[0][7] == pc) ) {
+    // if (curmon[0][39] == pc || (curmon[0][15] == 2 && curmon[0][7] == pc) ) {
+    if (curmon[0][39] == pc || (player->unknown15[0] == 2 && player->unknown7 == pc) ) {
       c[38] = 0;
-      new_c->unknown38[0] = 0;
+      new_c->controlled = 0;
 
       dorep();
     }

@@ -28,7 +28,7 @@ int i4(int pc)
   new_c->unknown15[7] = new_c->x;
   new_c->unknown15[8] = new_c->y;
   new_c->unknown15[0] = 4;
-  new_c->unknown15[1] = new_c->unknown5[6] > 0 ? new_c->unknown5[6] : 1;
+  new_c->unknown15[1] = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
 
   nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &x, &y);
 
@@ -43,9 +43,18 @@ int i4(int pc)
 
   new_c->unknown28[0] = x;
   new_c->unknown28[1] = y;
-  new_c->unknown5[2] = 0;
-  new_c->unknown5[3] = 0;
-  new_c->unknown5[4] = 0;
+  
+  if (pc < 4) {
+    player_t *p = &players[pc];
+    p->unknown7 = 0;
+    p->unknown8 = 0;
+    p->unknown9 = 0;
+  } else {
+    // Maybe this is limited to characters only
+    new_c->spells[2] = 0;
+    new_c->spells[3] = 0;
+    new_c->spells[4] = 0;
+  }
 
   check_curmon("i4");
   debug_printf("< i4()\n");
@@ -185,7 +194,7 @@ int o4(int pc)
   nextxy(c[22], c[23], c[26], c[27], c[24], c[25], &x, &y);
 
   c[16] = c[11] > 0 ? c[11] : 1;
-  new_c->unknown15[1] = new_c->unknown5[6] > 0 ? new_c->unknown5[6] : 1;
+  new_c->unknown15[1] = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
 
   if (x - c[24] != 0 && y - c[25] != 0) {
     c[16] += c[16] / 2;

@@ -29,6 +29,8 @@ int intell(int npc)
 {
   uint8_t *c = curmon[npc];
   curmon_t *new_c = &new_curmon[npc];
+  player_t *p = &players[npc];
+
   uint8_t *t;
   int done = 0; /* this will give the ith step in the intelligence routine */
   char type = c[31], step;
@@ -37,17 +39,18 @@ int intell(int npc)
   debug_printf("> intell()\n");
   check_curmon("intell start");
 
-  if (!c[0]) {
+  // if (!c[0]) {
+  if (!new_c->in_use) {
     return 0;
   }
 
-  if (npc < 4 || (npc > 3 && c[38] == 1)) {
-    type = 4;
+  if (npc < 4 || (npc > 3 && new_c->controlled == 1)) {
+    type = INTELLIGENCE_FRIEND;
   }
 
   step = type;
   c[40] = 0;
-  new_c->unknown38[2] = 0;
+  new_c->unknown40 = 0;
 
   while (!done) {
     debug_printf("intell step %d\n", step);
@@ -102,11 +105,14 @@ int intell(int npc)
         step = 2;
         break;
 
-      case 4:           /* this is the accompanying friendly NPC's */
+      case INTELLIGENCE_FRIEND:
+        /* this is the accompanying friendly NPC's */
         done = 1;
-        if (npc < 4 && c[38] == 1) { /* under control of player */
+        // if (npc < 4 && c[38] == 1) { /* under control of player */
+        if (npc < 4 && p->controlled == 1) { /* under control of player */          
           break;
         }
+
         friend(npc);
         break;
 
@@ -201,7 +207,7 @@ int morale(int npc)
   
   if (c[36] == 1 || c[0] == 0) {
     c[38] = 0;
-    new_c->unknown38[0] = 0;
+    new_c->controlled = 0;
     return 0;
   }
 
@@ -261,7 +267,7 @@ int morale(int npc)
     c[36] = 1;
     c[38] = 0;
     new_c->flee = 1;
-    new_c->unknown38[0] = 0;
+    new_c->controlled = 0;
     damage(npc, 0);
     return 0;
   }
@@ -326,7 +332,7 @@ int setflee(int npc)
       c[16] = (c[11] < 1 ? 1 : c[11]);
       new_c->unknown15[0] = 4;
       new_c->unknown15[3] = i;
-      new_c->unknown15[1] = (new_c->unknown5[6] < 1 ? 1 : new_c->unknown5[6]);
+      new_c->unknown15[1] = (new_c->unknown11 < 1 ? 1 : new_c->unknown11);
 
       return 1;
     }
@@ -345,8 +351,10 @@ int setmove(int npc, int flag)
   uint8_t *c = curmon[npc];
   curmon_t *new_c = &new_curmon[npc];
   curmon_t *new_t;
+
   uint8_t *z, *c1, *t;
-  int top,bot,i,j,l,m,n,k=0,xdes,ydes,x,y,buddy=0,tar = c[39];
+  int top,bot,i,j,l,m,n,k=0,xdes,ydes,x,y,buddy=0;
+  int tar = c[39];
 
   t = curmon[tar];
   new_t = &new_curmon[tar];
@@ -410,6 +418,7 @@ int setmove(int npc, int flag)
   }
 
   if (c[36] == 1 && adjac(npc, c[26], c[27])) {
+    // Characters
     if (npc < 4) {
       c[36] = 0;
       new_c->flee = 0;
@@ -418,13 +427,15 @@ int setmove(int npc, int flag)
       return 1;
     }
 
+    // Monsters
     c[15] = 9;
     c[16] = 6;
     c[9] = crumobj[c[18]][3];
 
     new_c->unknown15[0] = 9;
     new_c->unknown15[1] = 6;
-    new_c->unknown5[4] = crumobj[new_c->unknown15[3]][3];
+    // This is a bit of a concern because it doesn't seem to make sense
+    new_c->spells[4] = crumobj[new_c->unknown15[3]][3];
 
     return 1;
   }
@@ -476,7 +487,7 @@ int setmove(int npc, int flag)
             new_c->unknown28[0] = new_c->x + (i * l);
             new_c->unknown28[1] = new_c->y + (j * m);
             new_c->unknown15[0] = 4;
-            new_c->unknown15[1] = new_c->unknown5[6];
+            new_c->unknown15[1] = new_c->unknown11;
 
             if (i * l != 0 && j*m != 0) {
               c[16] += (c[16])/2;
@@ -636,7 +647,7 @@ int target(int npc)
 
     if (c[39] == npc && c[0] && c[30] == crum) {
       curmon[npc][39] = i;
-      new_curmon[npc].unknown38[1] = i;
+      new_curmon[npc].unknown39 = i;
       return 1;
     }
   }
@@ -666,9 +677,9 @@ int settarg(int npc)
   }
 
   // Players only
-  if (npc < 4 && curmon[0][39] == npc) {
+  if (npc < 4 && player->unknown39 == npc) {
     c[39] = 0;
-    new_c->unknown38[1] = 0;
+    new_c->unknown39 = 0;
     return 1;
   }
 
@@ -682,7 +693,7 @@ int settarg(int npc)
 
       if (t[4] != c[4] && *t == 1 && t[30] == crum && (c[38] == 1 || 
         ((c[58] != 20 || t[58] != 4) && t[58] != 24))
-        && los(npc,t[24],t[25]) ) {
+        && los(npc, t[24], t[25]) ) {
         list[0]++;
         list[list[0]] = j;
       }
@@ -715,9 +726,9 @@ int settarg(int npc)
   c[26] = curmon[c[39]][24];
   c[27] = curmon[c[39]][25];
 
-  new_c->unknown38[1] = list[1 + j]; 
-  new_c->old_x = new_curmon[new_c->unknown38[1]].x;
-  new_c->old_y = new_curmon[new_c->unknown38[1]].y;
+  new_c->unknown39 = list[1 + j]; 
+  new_c->old_x = new_curmon[new_c->unknown39].x;
+  new_c->old_y = new_curmon[new_c->unknown39].y;
 
   return 1;
 }
@@ -735,8 +746,8 @@ int matt(int npc)
 
   a[26] = curmon[a[39]][24];
   a[27] = curmon[a[39]][25];
-  new_a->old_x = new_curmon[new_a->unknown38[1]].x;
-  new_a->old_y = new_curmon[new_a->unknown38[1]].y;
+  new_a->old_x = new_curmon[new_a->unknown39].x;
+  new_a->old_y = new_curmon[new_a->unknown39].y;
 
   if (a[14] != 0) {               /* indicates a magic using monster */
     if (a[47] > 3 && a[14] > 0) {
@@ -757,7 +768,7 @@ int matt(int npc)
 
     j = 0;
 
-    // Search from curmon [5] to [10] looking for a zero
+    // Search from curmon [5] to [9] looking for a zero
     for (i = 5; i < 10; i++) {
       if (a[i] == 0) {
         break;
@@ -765,9 +776,11 @@ int matt(int npc)
       j++;
     }
 
-    // Then get a random number up to that point so 5 =< i =< 10
+    // j is now 0..5
+
+    // Then get a random number up to that point (0..4) so 5 =< i =< 9
     i = 5 + rnd(j);
-    // [5..10] must therefore be possible spells that it knows
+    // [5..9] must therefore be possible spells that it knows
     sp = a[i];
 
     a[14] -= spelunit[sp];
@@ -779,10 +792,10 @@ int matt(int npc)
 
     new_a->spell_units -= spelunit[sp];
     new_a->unknown15[1] = spelinfo[sp - 1][2];
-    new_a->unknown38[2] = 4;
+    new_a->unknown40 = 4;
     new_a->unknown15[0] = 2;
     new_a->spell_units = new_a->spell_units < 5 ? -1 : new_a->spell_units;
-    new_a->unknown5[5] = sp;
+    new_a->spell_cast = sp;
 
     return 1;
   }
@@ -796,7 +809,7 @@ int matt(int npc)
   }
 
   a[16] = a[11];
-  new_a->unknown15[1] = new_a->unknown5[6];
+  new_a->unknown15[1] = new_a->unknown11;
 
   if (a[15] == 11) {
     a[16] *= 2;
@@ -816,21 +829,19 @@ int matt(int npc)
   }
 
   a[40] = j+1;
-  new_a->unknown38[2] = j + 1;
+  new_a->unknown40 = j + 1;
 
   return 1;
 }
 
 void alert(int npc)
 {
-  int i;
-  uint8_t *c;
-
-  for (i = 1; i < 7; i++) {
-    c = curmon[i];
+  for (int i = 1; i < 7; i++) {
+    uint8_t *c = curmon[i];
     curmon_t *new_c = &new_curmon[i];
 
-    if (c[0] == 1 && c[31] == 2) {
+    //if (c[0] == 1 && c[31] == 2) {
+    if (new_c->in_use == 1 && new_c->intelligence_routine == 2) {
       c[31] = 1;
       new_c->intelligence_routine = 1;
     }
@@ -858,20 +869,27 @@ int friend(int npc)
 {
   uint8_t *c = curmon[npc];
   curmon_t *new_c = &new_curmon[npc];
-  int i, j, x = curmon[0][24], y = curmon[0][25];
+  player_t *p = &players[npc];
+  int i, j, x = player->x, y = player->y;
 
-  if (npc < 4 && new_rumdata[crum].room_has_bg == 0 && c[41] < 3 && c[42] > 0) {
+  // Characters only:
+  // if (npc < 4 && new_rumdata[crum].room_has_bg == 0 && c[41] < 3 && c[42] > 0) {
+  if (npc < 4 && new_rumdata[crum].room_has_bg == 0 && p->lit_torches < 3 && p->unlit_torches > 0) {
+    // If room is dark and character has less than three turns of torchlight left, 
+    // and still has unlit torches: cast cure light wounds?!?
+
     c[10] = 1;
     c[15] = 12;
     c[16] = 6;
 
-    new_c->unknown5[5] = 1;
+    new_c->spell_cast = SPELL_CURE_LIGHT_WOUNDS;
     new_c->unknown15[0] = 12;
     new_c->unknown15[1] = 6;
     return 1;
   }
 
   if (mode) {
+    // Characters only:
     if (npc < 4 && ( c[45] > 45 || c[45] < 41) ) {
       if (c[45] > 0) {
         putaway(npc, c[45]);
@@ -895,6 +913,7 @@ int friend(int npc)
       }
     }
 
+    // Characters only:
     if (npc < 4 && (c[45] > 45 || c[45] < 41)) {
       if (c[53] == 0) {
         prnt("-> %s yells, 'I don't have a weapon! Give me one quick!'",
@@ -929,7 +948,7 @@ int friend(int npc)
 
     if (!target(npc) && !settarg(npc)) {
       c[39] = 0;
-      new_c->unknown38[1] = 0;
+      new_c->unknown39 = 0;
 
       if (!setmove(npc, 1)) {
         pass(npc);
@@ -959,7 +978,7 @@ int friend(int npc)
     if (curmon[0][15] == 4 || npc > 3 || !los(npc,x,y) || 
       dist(c[24], c[25], 0, x, y, 0) > 3) {
       c[39] = 0;
-      new_c->unknown38[1] = 0;
+      new_c->unknown39 = 0;
 
       if (dist(c[24],c[25],0,x,y,0) < 4 - rnd(2) && los(npc,x,y) ) {
         pass(npc);

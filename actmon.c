@@ -54,8 +54,8 @@ int actmon(int type, int nm, int x, int y)
     p = &permon[type + 7];
 
     c[0] = p->in_use;
-    c[1] = p->unknown1;
-    c[2] = p->unknown2;
+    c[1] = p->damage;
+    c[2] = p->max_health;
     c[3] = p->monster_name_id;
     c[4] = p->sprite_id;
     c[5] = p->unknown5;
@@ -87,19 +87,19 @@ int actmon(int type, int nm, int x, int y)
     c[39] = i; // seems like this will always be 60
 
     pc->in_use = p->in_use;
-    pc->damage = p->unknown1;
-    pc->max_health = p->unknown2;
+    pc->damage = p->damage;
+    pc->max_health = p->max_health;
     pc->monster_name_id = p->monster_name_id;
     pc->sprite_id = p->sprite_id;
-    pc->unknown5[0] = p->unknown5;
-    pc->unknown5[1] = p->unknown6;
-    pc->unknown5[2] = p->unknown7;
-    pc->unknown5[3] = p->unknown8;
-    pc->unknown5[4] = p->unknown9;
-    pc->unknown5[5] = p->unknown10;
-    pc->unknown5[6] = p->unknown11;
-    pc->unknown5[7] = p->unknown12;
-    pc->unknown5[8] = p->unknown13;
+    pc->unknown5 = p->unknown5;
+    pc->unknown6 = p->unknown6;
+    pc->unknown7 = p->unknown7;
+    pc->unknown8 = p->unknown8;
+    pc->unknown9 = p->unknown9;
+    pc->spell_cast = p->unknown10;
+    pc->unknown11 = p->unknown11;
+    pc->unknown12 = p->unknown12;
+    pc->unknown13 = p->unknown13;
     pc->spell_units = p->spell_units;
 
     pc->unknown15[0] = 8;
@@ -109,11 +109,10 @@ int actmon(int type, int nm, int x, int y)
     pc->y = y;
     pc->current_room = crum;
     pc->poison_mode_1 = p->poison_mode;
-    pc->unknown38[1] = i;
+    pc->unknown39 = i;
     pc->unlit_torches = 10;
-    pc->poison_mode_2 = p->poison_mode;
-    
-    pc->magic_mode_1 = p->base_chance_1_attack;
+    pc->good_hand = p->poison_mode;
+    pc->other_hand = p->base_chance_1_attack;
     pc->perception = p->base_chance_2_attack;
     pc->magic_level = p->base_chance_3_attack;
 
@@ -211,8 +210,8 @@ int actmon(int type, int nm, int x, int y)
 
     // Now copy monster type to monster instance
     c[0] = p->in_use;
-    c[1] = p->unknown1;
-    c[2] = p->unknown2;
+    c[1] = p->damage;
+    c[2] = p->max_health;
     c[3] = p->monster_name_id;
     c[4] = p->sprite_id;
     c[5] = p->unknown5;
@@ -254,19 +253,19 @@ int actmon(int type, int nm, int x, int y)
 
     // ...same again, but for new_curmon
     new_c->in_use = p->in_use;
-    new_c->damage = p->unknown1;
-    new_c->max_health = p->unknown2;
+    new_c->damage = p->damage;
+    new_c->max_health = p->max_health;
     new_c->monster_name_id = p->monster_name_id;
     new_c->sprite_id = p->sprite_id;
-    new_c->unknown5[0] = p->unknown5;
-    new_c->unknown5[1] = p->unknown6;
-    new_c->unknown5[2] = p->unknown7;
-    new_c->unknown5[3] = p->unknown8;
-    new_c->unknown5[4] = p->unknown9;
-    new_c->unknown5[5] = p->unknown10;
-    new_c->unknown5[6] = p->unknown11;
-    new_c->unknown5[7] = p->unknown12;
-    new_c->unknown5[8] = p->unknown13;
+    new_c->spells[0] = p->unknown5;
+    new_c->spells[1] = p->unknown6;
+    new_c->spells[2] = p->unknown7;
+    new_c->spells[3] = p->unknown8;
+    new_c->spells[4] = p->unknown9;
+    new_c->spell_cast = p->unknown10;
+    new_c->unknown11 = p->unknown11;
+    new_c->unknown12 = p->unknown12;
+    new_c->unknown13 = p->unknown13;
     new_c->spell_units = p->spell_units;    
 
     new_c->intelligence_routine = p->intell_routine;   /* intell routine */
@@ -291,7 +290,7 @@ int actmon(int type, int nm, int x, int y)
     new_c->unknown15[0] = 8;       /* installed with a wait */
     new_c->unknown15[1] = 1;
     new_c->current_room = crum;
-    new_c->unknown38[1] = i + 4;
+    new_c->unknown39 = i + 4;
 
     // Pedestrian?
     if (type == 18) {

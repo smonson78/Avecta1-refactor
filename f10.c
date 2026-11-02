@@ -21,13 +21,15 @@ int i10(int pc)
   int obj, ret;
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
+  curmon2_t *ch = &new_curmon2[pc];
   char *w = (pc == 0 ? pname : name[c[3]]);
 
   if (outside) {
     return 0;
   }
 
-  if (c[45] > 0 && c[46] > 0) {
+  // if (c[45] > 0 && c[46] > 0) {
+  if (ch->player.good_hand > 0 && ch->player.other_hand > 0) {
     error(ERROR_HANDS_FULL);
     return 0;
   }
@@ -50,7 +52,8 @@ int i10(int pc)
     return 0;
   }
 
-  c[7] = c[8] = c[9] = 0;
+  // c[7] = c[8] = c[9] = 0;
+  c[7] = c[8] = 0;
   c[5] = x;
   c[6] = y;
   c[9] = obj;
@@ -58,16 +61,16 @@ int i10(int pc)
   c[16] = 6;
   c[34] = 0;
 
-  new_c->unknown5[2] = 0;
-  new_c->unknown5[3] = 0;
-  //new_c->unknown5[4] = 0;
+  ch->player.unknown7 = 0;
+  ch->player.unknown8 = 0;
+  //new_c->unknown9 = 0; // set done again a few lines down
 
-  new_c->unknown5[0] = x;
-  new_c->unknown5[1] = y;
-  new_c->unknown5[4] = obj;
-  new_c->unknown15[0] = 10;
-  new_c->unknown15[1] = 6;
-  new_c->unknown33[1] = 0;
+  ch->player.unknown5 = x;
+  ch->player.unknown6 = y;
+  ch->player.unknown9 = obj;
+  ch->player.unknown15[0] = 10;
+  ch->player.unknown15[1] = 6;
+  ch->player.unknown33[1] = 0;
 
   debug_printf("< i10()\n");
   return 1;

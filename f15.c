@@ -25,17 +25,18 @@ int i15(int pc)
   winker = 0;
   tar = zline[x][y][2];
   if(tar == 0 || tar > 3) {
-    error(8);
+    error(ERROR_NO_CHARACTER);
     return(0);
     }
   if(!los(pc,x,y)) {
-    error(3);
-    return(0);
-    }
+    error(ERROR_NO_LINE_OF_SIGHT);
+    return 0;
+  }
   c[7] = tar;
   c[15] = 15;
   c[16] = 1;
-  return(1);
+
+  return 1;
 }
 
 int o15(int pc)

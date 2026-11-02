@@ -22,7 +22,7 @@ int i3(int pc)
   int16_t x, y;
   int i, bot = 0, top1 = 0, type, ret;
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  player_t *new_c = &players[pc];
   char z1, z2, scratch[15];
   char *w = (pc == 0 ? pname : name[*(c + 3)]);
 
@@ -36,8 +36,7 @@ int i3(int pc)
     top1 = 3;
   }
 
-  if (type == 0)
-  {
+  if (type == 0) {
     header(w);
     domsg(6);
   } else {
@@ -87,36 +86,36 @@ int i3(int pc)
     *(c + 10) = (!z1 ? 2 : 1);
     *(c + 7) = z2;
     *(c + 9) = z1;
-    //new_c->unknown5[2] = 0;
-    new_c->unknown5[3] = 0;
-    //new_c->unknown5[4] = 0;
-    new_c->unknown5[5] = (!z1 ? 2 : 1);
-    new_c->unknown5[2] = z2;
-    new_c->unknown5[4] = z1;
+    //new_c->unknown7 = 0;
+    new_c->unknown8 = 0;
+    //new_c->unknown9 = 0;
+    new_c->spell_cast = (!z1 ? 2 : 1);
+    new_c->unknown7 = z2;
+    new_c->unknown9 = z1;
 
     if (c[24] == x && c[25] == y) {
       c[10] = 3;
       c[8] = (c[45] == 0 ? c[46] : c[45]);
-      new_c->unknown5[5] = 3;
-      new_c->unknown5[3] = (new_c->poison_mode_2 == 0 ? new_c->magic_mode_1 : new_c->poison_mode_2);
+      new_c->spell_cast = 3;
+      new_c->unknown8 = (new_c->good_hand == 0 ? new_c->other_hand : new_c->good_hand);
       
       if (c[45] != 0 && c[46] != 0 && c[46] != 81) {
         // Get the number of the button clicked by the user on modal 31, which is
         // "Which hand's object? 1=Good, 2=Other"
         i = error(ERROR_WHICH_HANDS_OBJECT);
         c[8] = c[44 + i];
-        new_c->unknown5[3] = i == 1 ? new_c->poison_mode_2 : new_c->magic_mode_1;
+        new_c->unknown8 = i == 1 ? new_c->good_hand : new_c->other_hand;
       }
 
       c[7] = c[9] = 0;
-      new_c->unknown5[2] = 0;
-      new_c->unknown5[4] = 0;
+      new_c->unknown7 = 0;
+      new_c->unknown9 = 0;
     }
   } else {
     c[10] = 3;
     c[8] = scratch[ret];
-    new_c->unknown5[5] = 3;
-    new_c->unknown5[3] = scratch[ret];
+    new_c->spell_cast = 3;
+    new_c->unknown8 = scratch[ret];
   }
 
   c[15] = 3;
@@ -135,7 +134,7 @@ int i3(int pc)
 int o3(int pc)
 {
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  player_t *new_c = &players[pc];
   char *w, *w1, scratch[10];
   uint8_t *t;
   curmon_t *new_t;
@@ -156,10 +155,10 @@ int o3(int pc)
 
       if (c[46] == 0) {
         c[46] = c[8];
-        new_c->magic_mode_1 = new_c->unknown5[3];
+        new_c->other_hand = new_c->unknown8;
       } else {
         c[45] = c[8];
-        new_c->poison_mode_2 = new_c->unknown5[3];
+        new_c->good_hand = new_c->unknown8;
       }
 
       takeout(pc, c[8]);
@@ -175,7 +174,7 @@ int o3(int pc)
     }
 
     prnt(msg[object], NULL, NULL, NULL, NULL, NULL, NULL);
-    return (1);
+    return 1;
   }
 
   if (type == 2) {

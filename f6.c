@@ -4,6 +4,7 @@
 #include "trapaux.h"
 #include "start.h"
 #include "caux.h"
+#include "tos_compat.h"
 
 #include "f5.h"
 
@@ -12,7 +13,12 @@
 int i6(int pc)
 {
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  player_t *new_c = &players[pc];
+
+  if (pc >= 4) {
+    debug_printf(">>> ERROR: non-character calling i6() pc=%d\n", pc);
+    appl_exit();
+  }
 
   if (outside) {
     return 0;
@@ -24,9 +30,9 @@ int i6(int pc)
 
   new_c->unknown15[0] = 6;
   new_c->unknown15[1] = 6;
-  new_c->unknown5[2] = 0;
-  new_c->unknown5[3] = 0;
-  new_c->unknown5[4] = 0;
+  new_c->unknown7 = 0;
+  new_c->unknown8 = 0;
+  new_c->unknown9 = 0;
 
   return 1;
 }
@@ -34,16 +40,17 @@ int i6(int pc)
 int o6(int pc)
 {
   uint8_t *c = curmon[pc], *z, *o;
-  curmon_t *new_c = &new_curmon[pc];
-  char *w = ( pc == 0 ? &pname[0] : name[c[3]]);
+  player_t *new_c = &players[pc];
+  char *w = pc == 0 ? &pname[0] : name[c[3]];
   uint8_t *r = putbuf;
-  int x = c[24], y = c[25];
+  //int x = c[24], y = c[25];
+  int x = new_c->x, y = new_c->y;
   int i,j,k,l,m = 0,num = 0,flag;
 
   c[7] = c[8] = c[9] = 0;
-  new_c->unknown5[2] = 0;
-  new_c->unknown5[3] = 0;
-  new_c->unknown5[4] = 0;
+  new_c->unknown7 = 0;
+  new_c->unknown8 = 0;
+  new_c->unknown9 = 0;
 
   if (pc == 0 && c[18] != 6) {
     prnt("-> %s searches nearby...", w, NULL, NULL, NULL, NULL, NULL);
@@ -73,8 +80,10 @@ int o6(int pc)
           flag++;          
           k = r[m + 1];
           
-          if (pc != 3 || c[38] == 1) {
-            prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[*o], NULL, NULL, NULL);
+          // Who is 3?
+          // if (pc != 3 || c[38] == 1) {
+          if (pc != 3 || new_c->controlled == 1) {
+            prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[o[0]], NULL, NULL, NULL);
           }
         
           c[18] = 0;
@@ -82,30 +91,32 @@ int o6(int pc)
           
           num++;
 
-          if (pc == 3 || ((pc != 3 || c[38] == 1) && error(ERROR_TAKE_OBJECT) == 1)) {
+          // if (pc == 3 || ((pc != 3 || c[38] == 1) && error(ERROR_TAKE_OBJECT) == 1)) {
+          if (pc == 3 || ((pc != 3 || new_c->controlled == 1) && error(ERROR_TAKE_OBJECT) == 1)) {
             flag--;
             if (!handman(pc, 0, k, 0)) {
               return 1;
             }
 
-            l = (c[45] == 0 ? 0 : 1);
+            // l = c[45] == 0 ? 0 : 1;
+            l = new_c->good_hand == 0 ? 0 : 1;
             c[45 + l] = k;
 
             if (l == 0) {
-              new_c->poison_mode_2 = k;
+              new_c->good_hand = k;
             } else {
-              new_c->magic_mode_1 = k;
+              new_c->other_hand = k;
             }
 
             invtrap(k);
-            remove(z[1], k);
+            remove_object(z[1], k);
             
             c[15] = 7;
             c[8] = k;
             c[10] = 0;
             new_c->unknown15[0] = 7;
-            new_c->unknown5[3] = k;
-            new_c->unknown5[5] = 0;
+            new_c->unknown8 = k;
+            new_c->spell_cast = 0;
             
             prnt("-> %s breaks off the search to take the %s.", w, obj[k], NULL, NULL, NULL, NULL);
 

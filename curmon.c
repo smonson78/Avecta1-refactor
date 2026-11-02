@@ -8,6 +8,9 @@ player_t *player = (player_t *)&new_curmon[0];
 player_t *players = (player_t *)&new_curmon[0];
 curmon_t *monsters = &new_curmon[4];
 
+// Maybe a better way when type is shared:
+curmon2_t *new_curmon2 = (curmon2_t *)&new_curmon[0];
+
 // If it's curmon[0]:
 //   44 - number of arrows owned but also "bane"?
 //   49 - gold amount
@@ -41,16 +44,15 @@ void init_curmon() {
   player->in_use = 1;
   player->damage = 4;
   player->max_health = 50;
-  //player->unknown1[2] = 0;
   player->sprite_id = 81;
-  player->unknown5[0] = 5;
-  player->unknown5[1] = 60;
-  player->unknown5[2] = 8;
+  player->unknown5 = 5;
+  player->unknown6 = 60;
+  player->unknown7 = 8;
   //player->unknown1[7] = 0;
   //player->unknown1[8] = 0;
   //player->unknown1[9] = 0;
-  player->unknown5[6] = 4;
-  player->unknown5[7] = 3;
-  player->unknown5[8] = 90;
+  player->unknown11 = 4;
+  player->unknown12 = 3;
+  player->unknown13 = 90;
   player->spell_units = 10;
 }

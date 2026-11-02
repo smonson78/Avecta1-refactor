@@ -33,12 +33,12 @@ int i13(int pc)
   tar = zline[x][y][2];
 
   if (!los(pc,x,y)) {
-    error(3);
+    error(ERROR_NO_LINE_OF_SIGHT);
     return 0;
   }
 
   if ((tar == 0 && (curmon[0][24] != x || curmon[0][25] != y)) || tar > 3) {
-    error(8);
+    error(ERROR_NO_CHARACTER);
     return 0;
   }
 

@@ -20,7 +20,7 @@
 int i7(int pc)
 {
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  player_t *new_c = &players[pc];
 
   uint8_t *z;
   char scratch[15],*w = (pc == 0 ? pname : name[c[3]]);
@@ -57,7 +57,9 @@ int i7(int pc)
   winker = 0;
   top(1);
   clrinp();
-  self = (x == c[24] && y == c[25] ? 1 : 0);
+  
+  //self = (x == c[24] && y == c[25] ? 1 : 0);
+  self = x == new_c->x && y == new_c->y ? 1 : 0;
 
   if (ret == 0 && !self) {
     if ((object = zline[x][y][1]) == 0) {
@@ -82,20 +84,20 @@ int i7(int pc)
   }
 
   c[7] = c[8] = c[9] = 0;      
-  new_c->unknown5[2] = 0;
-  new_c->unknown5[3] = 0;
-  new_c->unknown5[4] = 0;
+  new_c->unknown7 = 0;
+  new_c->unknown8 = 0;
+  new_c->unknown9 = 0;
   
   if (ret == 0 && !self) {
     c[9] = zline[x][y][1];
-    new_c->unknown5[4] = zline[x][y][1];
+    new_c->unknown9 = zline[x][y][1];
     c[10] = 0;
     c[15] = 7;  
     c[16] = 6;
-    new_c->unknown5[5] = 0;
+    new_c->spell_cast = 0;
     new_c->unknown15[0] = 7;
     new_c->unknown15[1] = 6;
-    return(1);
+    return 1;
   } else {
     /* this is a drop out of inventory */
     if (self) {
@@ -120,40 +122,41 @@ int i7(int pc)
     undomsg();
 
     if (!adjac(pc,x,y)) {
-      error(11);
-      return(0);
+      error(ERROR_LOCATION_NOT_ADJACENT);
+      return 0;
     } 
 
     z = zline[x][y];
-    if (*z == 0 || ( (k = z[1] ) != 0 && crumobj[k][5] < 0) ) {
-      error(12);
-      return(0);
+    if (z[0] == 0 || ( (k = z[1] ) != 0 && crumobj[k][5] < 0) ) {
+      error(ERROR_OBJECT_IS_CLOSED);
+      return 0;
     }
 
     c[8] = scratch[ret];
-    new_c->unknown5[3] = scratch[ret];
+    new_c->unknown8 = scratch[ret];
     c[7] = c[9] = 0;
-    new_c->unknown5[2] = 0;
-    new_c->unknown5[4] = 0;
+    new_c->unknown7 = 0;
+    new_c->unknown9 = 0;
 
     if (k != 0) {
       c[9] = k;
-      new_c->unknown5[4] = k;
+      new_c->unknown9 = k;
     }
 
     c[5] = x;
-    new_c->unknown5[0] = x;
+    new_c->unknown5 = x;
     c[6] = y;
-    new_c->unknown5[1] = y;
+    new_c->unknown6 = y;
 
     c[10] = 1;
-    new_c->unknown5[5] = 1;
+    new_c->spell_cast = 1;
     c[15] = 7;
     new_c->unknown15[0] = 7;
     c[16] = 2;
     new_c->unknown15[1] = 2;
 
-    if (c[8] != c[45]) {
+    //if (c[8] != c[45]) {
+    if (new_c->unknown8 != new_c->good_hand) {
       c[16] += 4;
       new_c->unknown15[1] += 4;
     }
@@ -171,21 +174,29 @@ int o7(int pc)
 {
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
+  curmon2_t *ch = &new_curmon2[pc];
+
+  player_t *p = &players[pc];
 
   uint8_t *t, *z;
   char *w, *w1 = (pc == 0 ? pname : name[c[3]]);
-  int i,k,l,inv = c[8],r = c[9],x = c[5],y = c[6],j = c[10], id;
+
+  // Interesting these seem to apply only to player characters. But further down,
+  // there a conditional to check whether pc < 4.
+  //int i, k, l, inv = c[8], r = c[9],x = c[5],y = c[6],j = c[10], id;
+  int i, k, l, inv = p->unknown8, r = p->unknown9;
+  int x = p->unknown5, y = p->unknown6, j = p->spell_cast, id;
 
   debug_printf("> o7\n");
 
   c[18] = 7;
-  new_c->unknown15[3] = 7;
+  ch->monster.unknown15[3] = 7;
 
   if (j > 0) {
     r = 0;
   }
   
-  if (!handman(pc,inv,r,j)) {
+  if (!handman(pc, inv, r, j)) {
     return 1;
   }
 
@@ -201,13 +212,15 @@ int o7(int pc)
     prnt("-> %s puts the %s in the %s.", w1, obj[c[8]], obj[crumobj[k][0]], NULL, NULL, NULL);
     crumobj[k][5] = 1;
     takeout(pc, c[8]);
+
     if (c[45] == c[8]) {
       c[45] = 0;
-      new_c->poison_mode_2 = 0;
+      ch->player.good_hand = 0;
     } else {
-      if (c[46] != 81 && c[45] != 0 && c[46] == c[8]) {
+      //if (c[46] != OBJECT_TORCH && c[45] != 0 && c[46] == c[8]) {
+      if (p->other_hand != OBJECT_TORCH && p->good_hand != 0 && p->other_hand == p->unknown8) {
         c[46] = 0;
-        new_c->magic_mode_1 = 0;
+        ch->player.other_hand = 0;
       }
     }
 
@@ -216,10 +229,15 @@ int o7(int pc)
 
   if (j > 0 && k == 0) {
     c[9] = 0;
-    new_c->unknown5[4] = 0;
+    if (pc < 4) {
+      ch->player.unknown9 = 0;
+    } else {
+      ch->monster.spells[4] = 0;
+    }
 
     i = rumslot();
-    prnt("-> %s puts the %s down.", w1, obj[c[8]], NULL, NULL, NULL, NULL);
+    // prnt("-> %s puts the %s down.", w1, obj[c[8]], NULL, NULL, NULL, NULL);
+    prnt("-> %s puts the %s down.", w1, obj[ch->player.unknown8], NULL, NULL, NULL, NULL);
     z = crumobj[i];
     
     if (i > 13) { 
@@ -232,15 +250,21 @@ int o7(int pc)
       // check_rumdata("o7");
     }
 
-    takeout(pc,c[8]);
-    if (c[45] == c[8]) {
+    //takeout(pc, c[8]);
+    takeout(pc, new_c->spells[3]);
+
+    //if (c[45] == c[8]) {
+    if (ch->player.good_hand == ch->player.unknown8) {
       c[45] = 0;
-      new_c->poison_mode_2 = 0;
+      ch->player.good_hand = 0;
     }
-    if (c[46] == c[8]) {
+
+    //if (c[46] == c[8]) {
+    if (ch->player.other_hand == ch->player.unknown8) {
       c[46] = 0;
-      new_c->magic_mode_1 = 0;
+      ch->player.other_hand = 0;
     }
+
     if (pc < 4 && c[32] == c[8]) {
       c[32] = 0;
       new_c->poison_mode_1 = 0;
@@ -253,11 +277,13 @@ int o7(int pc)
       }
     }
 
-    *z = c[8];
+    // z[0] = c[8];
+    z[0] = ch->player.unknown8;
     z[1] = 1;
     z[6] = x;
     z[7] = y;
-    z[4] = c[8];
+    //z[4] = c[8];
+    z[4] = ch->player.unknown8;
     z[5] = -1;
     z[8] = 1;
     z[2] = z[3] = 0;
@@ -272,7 +298,8 @@ int o7(int pc)
     // This clearly overflows invtrig[20]! Let's reduce it.
     // for (k = 0; k < 40; k++) {
     for (k = 0; k < 20; k++) {
-      if (c[8] == 0) {
+      // if (c[8] == 0) {
+      if (ch->player.unknown8 == 0) {
         break;
       }
       
@@ -280,8 +307,9 @@ int o7(int pc)
         for (l = 1; l < 14; l++) {
           if (triglist[l] == c[8] ) {
             t = trigval[triglist[l]];
-            if ((*t & 16) && t[3] == 7) {
-              trapres(pc, t[5], c[24], c[25]);
+            if ((t[0] & 16) && t[3] == 7) {
+              // trapres(pc, t[5], c[24], c[25]);
+              trapres(pc, t[5], ch->player.x, ch->player.y);
             }
             triglist[l] = 0;
             triglist[0]--;
@@ -350,9 +378,9 @@ int o7(int pc)
     c[5] = x;
     c[6] = y;
     c[8] = k;
-    new_c->unknown5[0] = x;
-    new_c->unknown5[1] = y;
-    new_c->unknown5[3] = k;
+    new_c->spells[0] = x;
+    new_c->spells[1] = y;
+    new_c->spells[3] = k;
 
     if (k < 46 && k > 40 && c[32] == 0) {
       c[32] = k;
@@ -367,6 +395,6 @@ int o7(int pc)
   }
 
   debug_printf("< o7\n");
-  return(1);
+  return 1;
 }
 

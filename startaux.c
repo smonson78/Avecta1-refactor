@@ -200,7 +200,7 @@ int init(int flag) {
   new_c->spell_units = 6 * val[0];
   new_c->magic_level = val[0];
   new_c->max_health = 50;
-  new_c->unknown5[6] = 4;
+  new_c->unknown11 = 4;
 
   check_curmon("init near end");
 

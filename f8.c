@@ -5,17 +5,17 @@ int i8(int pc)
 {
   debug_printf("> i8()\n");
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  curmon2_t *ch = &new_curmon2[pc];
 
   c[16] = 4;
   c[15] = 8;
   c[7] = c[8] = c[9] = 0;      
 
-  new_c->unknown15[0] = 8;
-  new_c->unknown15[1] = 4;
-  new_c->unknown5[2] = 0;
-  new_c->unknown5[3] = 0;
-  new_c->unknown5[4] = 0;
+  ch->player.unknown15[0] = 8;
+  ch->player.unknown15[1] = 4;
+  ch->player.unknown7 = 0;
+  ch->player.unknown8 = 0;
+  ch->player.unknown9 = 0;
 
   debug_printf("< i8()\n");
 
