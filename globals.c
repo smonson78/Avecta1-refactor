@@ -49,8 +49,8 @@ int row, col = 2;
 int grflist[13];
 int winroom;
 
-int (*inverb[])(int pc)  = {i0, i1, cast_in, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14};
-int (*outverb[])(int pc) = {o0, o1, cast_out, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13, o14};
+int (*inverb[])(int pc)  = {i0, i1, cast_in, i3, i4, drag_eat_in, i6, i7, i8, i9, i10, i11, i12, i13, i14};
+int (*outverb[])(int pc) = {o0, o1, cast_out, o3, o4, drag_eat_out, o6, o7, o8, o9, o10, o11, o12, o13, o14};
 
 int winker = 0, winktime = 0, combat = 0;
 char *posture[] = {"All Out","Standard","Defensive","Fall Back"};

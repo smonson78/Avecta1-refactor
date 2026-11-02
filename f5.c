@@ -18,7 +18,7 @@
 
 void header(char *string);
 
-int i5(int pc)
+int drag_eat_in(int pc)
 {
   int self = 0, ret, time;
   int16_t x, y;
@@ -31,127 +31,176 @@ int i5(int pc)
   if (outside) {
     return 0;
   }
-  
-  if(invnpc[pc][0] == 0 ) {
+
+  if (invnpc[pc][0] == 0 ) {
     type = 0;
-    }
-  else {
+  } else {
     top = 3;
-    bot = 2 + listinv(pc,scratch);
+    bot = 2 + listinv(pc, scratch);
     type = 1;
-    }
-  if(type == 0)
+  }
+
+  if (type == 0) {
     header(w);
-  else {
+  } else {
     header("Eat");
     prhand(pc);
-    }
-  if(!type)
+  }
+
+  if (!type) {
     domsg(7);
-  winker = pc+1;
-  sgetxy(&x,&y,type,top,bot,&ret);
-  if(!type)
+  }
+
+  winker = pc + 1;
+  sgetxy(&x, &y, type, top, bot, &ret);
+  if (!type) {
     undomsg();
+  }
   winker = 0;
   clrinp();
-  if((type == 1 && ret == 0) || type == 0) { /* this is a drag option */
-    if(x == c[24] && y == c[25]) { /* going for an eat in hand */
-      if(c[45] == 0 && (c[46] == 0 || c[46] == 81)) {
-        error(27);
-        return(0);
-        }
-      if(c[45] != 0 && c[46] != 0 && c[46] != 81) 
+
+  if ((type == 1 && ret == 0) || type == 0) { /* this is a drag option */
+    if (x == c[24] && y == c[25]) { /* going for an eat in hand */
+      if (c[45] == 0 && (c[46] == 0 || c[46] == OBJECT_TORCH)) {
+        error(ERROR_NOTHING_IN_HAND);
+        return 0;
+      }
+
+      if (c[45] != 0 && c[46] != 0 && c[46] != OBJECT_TORCH) {
         self = error(31);
-      else 
-        self = (c[45] == 0 ? 2 : 1 );
-      c[8] = *(c+44+self);
+      } else {
+        self = c[45] == 0 ? 2 : 1;
+      }
+
+      c[8] = c[44 + self];
       c[10] = 1;
       c[15] = 5;
       c[16] = 4;
-      return(1);
-      }  /* now continue with drag */
-    if((object = zline[x][y][1]) == 0) {
+      ch->player.unknown8 = self == 1 ? ch->player.good_hand : ch->player.other_hand;
+      ch->player.spell_cast = 1;
+      ch->player.unknown15[0] = 5;
+      ch->player.unknown15[1] = 4;
+
+      return 1;
+    }  /* now continue with drag */
+
+    if ((object = zline[x][y][1]) == 0) {
       error(ERROR_NO_OBJECT);
-      return(0);
-      } 
-    if(crumobj[object][1] < 0) {
-      error(24);
-      return(0);
-      }
-    if(!adjac(pc,x,y)) {
-      error(5);
-      return(0);
-      }
-    if(c[45] > 0 && c[46] > 0) {
-    error(29);
-    return(0);
+      return 0;
     }
+
+    if (crumobj[object][1] < 0) {
+      error(ERROR_IMMOVABLE_OBJECT);
+      return 0;
+    }
+
+    if (!adjac(pc, x, y)) {
+      error(ERROR_OBJECT_NOT_ADJACENT);
+      return 0;
+    }
+
+    if (c[45] > 0 && c[46] > 0) {
+      error(ERROR_HANDS_FULL);
+      return 0;
+    }
+
     c[7] = c[8] = c[10] = 0;
     c[9] = object;
+    ch->player.unknown7 = 0;
+    ch->player.unknown8 = 0;
+    ch->player.spell_cast = 0;
+    ch->player.unknown9 = object;
+
+    // Let the user select the location on the map
     header(w);
     domsg(COMMAND_PLACE);
-    winker = pc+1;
-    sgetxy(&x,&y,0,0,0,&ret);
+    winker = pc + 1;
+    sgetxy(&x, &y, 0, 0, 0, &ret);
     undomsg();
     winker = 0;
-    if(!lom(pc,x,y)) {
-      error(1);
-      return(0);
-      }
+
+    if (!lom(pc, x, y)) {
+      error(ERROR_PATH_BLOCKED);
+      return 0;
+    }
+
     c[5] = x;
     c[6] = y;
     c[15] = 5;
-    if(object > 0 && crumobj[object][0] < 41)
-      time = 3*(c[50] - weight[crumobj[object][0]]);
-    else
+    ch->player.unknown5 = x;
+    ch->player.unknown6 = y;
+    ch->player.unknown15[0] = 5;
+
+    if (object > 0 && crumobj[object][0] < 41) {
+      time = 3 * (c[50] - weight[crumobj[object][0]]);
+    } else {
       time = 5;
+    }
+
     time = (time < 1 ? 4 : time);
     time = (time > 20 ? 20 : time); 
     c[16] = time;
     c[34] = 0;
-    return(1);
-    }
-  else {
+    ch->player.unknown15[1] = time;
+    ch->player.unknown33[1] = 0;
+
+    return 1;
+  } else {
     c[8] = scratch[ret];
     c[10] = 1;
     c[15] = 5;
     c[16] = 6;
-    }
-  return(1);
+
+    ch->player.unknown8 = scratch[ret];
+    ch->player.spell_cast = 1;
+    ch->player.unknown15[0] = 5;
+    ch->player.unknown15[1] = 6;
+  }
+
+  return 1;
 }
 
 /*****************************************************************************/
 /* This is DRag/eat  out function.                                           */
 /*****************************************************************************/
 
-int o5(int pc)
+int drag_eat_out(int pc)
 {
   uint8_t *z, *c = curmon[pc];
+  curmon2_t *ch = &new_curmon2[pc];
   char *w, *w1 = (pc == 0 ? &pname[0] : name[c[3]]);
-  int flag = 1,x1,y1,x2,y2,j = c[10],x = c[5],y = c[6],k;
+  int flag = 1, x1, y1, x2, y2, j = c[10], x = c[5], y = c[6], k;
 
-  if(!handman(pc,c[8],c[9],!j)) {
-    return(1);
+  if (!handman(pc,c[8],c[9],!j)) {
+    return 1;
   }
 
   if (j == 1) {
     w = obj[c[8]];
+
     if (eats[c[8] - 40] == 0) {
       prnt("-> %s attempts to consume the %s, but such a thing is clearly impossible!  "
         "It is apparent that %s is becoming a little strange.", w1, w, w1, NULL, NULL, NULL);
       c[8] = 0;
-      return(1);
+      ch->player.unknown8 = 0;
+
+      return 1;
     } else {
       prnt("-> %s swallows the %s!", w1, w, NULL, NULL, NULL, NULL);
-      if(c[8] != c[45] && c[8] != c[46])
-        takeout(pc,c[8]);
-      if(c[8] == c[45]) {
+
+      if (c[8] != c[45] && c[8] != c[46]) {
+        takeout(pc, c[8]);
+      }
+      
+      if (c[8] == c[45]) {
         c[45] = 0;
-        return(1);
-        }
-      if(c[8] == c[46])
+        ch->player.good_hand = 0;
+      } else if (c[8] == c[46]) {
         c[46] = 0;
-      return(1);
+        ch->player.other_hand = 0;
+      }
+
+      return 1;
     }
   }
    
@@ -159,48 +208,68 @@ int o5(int pc)
     j = c[9];
     x = crumobj[j][6];
     y = crumobj[j][7];
-    if(!adjac(pc,x,y))
-      return(1);
+    if (!adjac(pc, x, y)) {
+      return 1;
+    }
+
     k = crumobj[j][0];
-    if(k < 41 && weight[k] < 0) {
+
+    if (k < 41 && weight[k] < 0) {
       prnt("-> %s attempts to drag the %s, but that is impossible!", w1, obj[k], NULL, NULL, NULL, NULL);
-      return(1);
-      }
-    if(k < 41 && c[50] + rnd(3) < weight[k]) {
+      return 1;
+    }
+
+    if (k < 41 && c[50] + rnd(3) < weight[k]) {
       flag = 1; 
       prnt("-> %s is unable to budge the %s.", w1, obj[k], NULL, NULL, NULL, NULL);
+    } else {  
+      if (c[24] == c[5] && c[25] == c[6]) {
+        return 1;
       }
-    else {  
-      if(c[24] == c[5] && c[25] == c[6])
-        return(1);
-      nextxy(c[24],c[25],c[5],c[6],c[24],c[25],&x1,&y1);
+
+      nextxy(c[24], c[25], c[5], c[6], c[24], c[25], &x1, &y1);
       x2 = x + x1 - c[24];
       y2 = y + y1 - c[25];
       z = zline[x2][y2];
-      if(*z != 1 || z[1] != 0 || (z[2] > 0 && z[2] != pc) ||
+
+      if (z[0] != 1 || z[1] != 0 || (z[2] > 0 && z[2] != pc) ||
         (curmon[0][24] == x2 && curmon[0][25] == y2 && pc != 0) ) {
         flag = 1;
         prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j][0]], w1, NULL, NULL, NULL, NULL);
-        }
-      else {
+      } else {
         c[26] = c[5];
         c[27] = c[6];
+        ch->player.old_x = ch->player.unknown5;
+        ch->player.old_y = ch->player.unknown6;
+
         flag = 1;  
-        if(i4(pc)) {
+        
+        if (i4(pc)) {
           flag = o4(pc);
           c[9] = j;
-          move(j,0,x2,y2);
-          }
+          ch->player.unknown9 = j;
+
+          move(j, 0, x2, y2);
+        }
+
         c[15] = 5;
-        if(!flag) {
-          if(k < 41)
+        ch->player.unknown15[0] = 5;
+
+        if (!flag) {
+          if (k < 41) {
             c[16] += 4 - c[50] + weight[k];
-          c[16] = (c[16] < 0 ? 1 : c[16]);
+            ch->player.unknown15[1] += 4 - ch->player.physical_strength + weight[k];
           }
+
+          c[16] = (c[16] < 0 ? 1 : c[16]);
+          // FIXME this is uint8_t! not signed
+          ch->player.unknown15[1] = ch->player.unknown15[1] < 0 ? 1 : ch->player.unknown15[1];
         }
       }
     }
-  return(flag);
+  }
+
+  return flag;
 }
 
 
@@ -214,8 +283,8 @@ void header(char *string)
   vsf_interior(handle,0);
   vsf_style(handle,0);
   vsf_color(handle,0);
-  i = (11 - i)/2;
-  textsix(1,260 + 6*i,1,strlen(string),string);
+  i = (11 - i) / 2;
+  textsix(1, 260 + 6 * i, 1, strlen(string), string);
 }
 
 int prhand(int pc)
@@ -224,40 +293,55 @@ int prhand(int pc)
   uint8_t *c = curmon[pc];
   int i;
   v_rvon(handle);
-  for(i=2;i<=3;i++) {
+  for (i = 2; i <= 3; i++) {
     vs_curaddress(handle,i,33);
     printf("        ");
-    }
+  }
   v_rvoff(handle);
-  for(i=0;i<2;i++) {
-    if(c[45+i] != 0)
+
+  for (i = 0; i < 2; i++) {
+    if (c[45+i] != 0) {
       sprintf(scratch, "%s", obj[c[45+i]]);
-    else
+    } else {
       sprintf(scratch, "%s", "Empty");
-    textsix(1,260,9+8*i,strlen(scratch),scratch);
     }
-  return(1);
+    textsix(1, 260, 9 + 8 * i, strlen(scratch), scratch);
+  }
+
+  return 1;
 }
 
 int handman(int pc, int inv, int rum, int flag)
 {
   uint8_t *c = curmon[pc];
+  curmon2_t *ch = &new_curmon2[pc];
+
   char *w1 = (pc == 0 ? pname : name[c[3]]);
   int l;	
 
   if (rum != 0 || (flag == 1 && inv != c[45] && inv != c[46]) ) {
     if (c[45] > 0 && c[46] > 0) {
-      l = (c[46] != 81 ? 1 : 0);
-      if(putaway(pc,*(c+45+l)) == 0 && pc != 3) {
-        error(7);
-        return(0);
-        }
-      if(inv != 0 && pc != 3)
+      l = c[46] != OBJECT_TORCH ? 1 : 0;
+      
+      if (putaway(pc, c[45 + l]) == 0 && pc != 3) {
+        error(ERROR_INVENTORY_TOO_FULL);
+        return 0;
+      }
+
+      if (inv != 0 && pc != 3) {
         prnt("-> %s puts away the %s in order to handle the %s.",
           w1, obj[c[45+l]], obj[inv], NULL, NULL, NULL);
-      if(rum != 0 && pc != 3)
+      }
+      if (rum != 0 && pc != 3) {
         prnt("-> %s puts away the %s to free a hand.", w1, obj[c[45+l]], NULL, NULL, NULL, NULL);
-      c[45+l] = 0;
+      }
+
+      c[45 + l] = 0;
+      if (l == 0) {
+        ch->player.good_hand = 0;
+      } else {
+        ch->player.other_hand = 0;
+      }
     }
   }
   return(1);

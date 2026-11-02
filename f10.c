@@ -20,7 +20,6 @@ int i10(int pc)
   int16_t x, y;
   int obj, ret;
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
   curmon2_t *ch = &new_curmon2[pc];
   char *w = (pc == 0 ? pname : name[c[3]]);
 
