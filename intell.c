@@ -279,7 +279,7 @@ int morale(int npc)
   }
   
   // level -= 5 * ((c[2]) / dam);
-  level -= 5 * ((new_c->monster.max_health / dam);
+  level -= 5 * (new_c->monster.max_health / dam);
 
   if (rnd(100) > level) {
     c[36] = 1;
