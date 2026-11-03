@@ -27,7 +27,6 @@ int main()
 {
    int old, i, j;
    uint8_t *c = curmon[0];
-   curmon_t *new_c = &new_curmon[0];
 
    debug_printf("Main started\n");
 
@@ -78,7 +77,7 @@ int main()
          j = fileio(2);
          if (j == -1) {
             mouse_on();
-            form_alert(1, errmsg[18]);
+            form_alert(1, errmsg[ERROR_READ_WRITE_FAILURE]);
             mouse_off();
          }
          i = 0;
@@ -114,13 +113,13 @@ int main()
          case -5:
             if ((j = fileio(2)) == -1) {
                mouse_on();
-               form_alert(1, errmsg[18]);
+               form_alert(1, errmsg[ERROR_READ_WRITE_FAILURE]);
                mouse_off();
             }
 
             if (j == 0) {
                mouse_on();
-               form_alert(1, errmsg[33]);
+               form_alert(1, errmsg[ERROR_RESTORE_MISMATCH]);
                mouse_off();
             }
 
@@ -130,7 +129,7 @@ int main()
          /* this is the store game option */            
          case -4:
             if ((j = fileio(1)) == -1) {
-               form_alert(1, errmsg[18]);
+               form_alert(1, errmsg[ERROR_READ_WRITE_FAILURE]);
             }
 
             i = 3;
@@ -155,31 +154,32 @@ int main()
             if (dungeon != 0) {
                c[54] = c[4];
                c[59] = 0;
-               new_c->magic_mode_2 = new_c->sprite_id;
-               new_c->unknown59 = 0;
+               // Back up the player's sprite ID when going out into the world map
+               player->original_sprite_id = player->sprite_id;
+               player->unknown59 = 0;
             } else {
                police = 0;
 
-               if (c[46] == 81) {
+               if (c[46] == OBJECT_TORCH) {
                   c[46] = 0;
-                  new_c->magic_mode_1 = 0;
+                  player->other_hand = 0;
                }
 
                c[52] = c[53] = 0;
                c[56] = c[24];
                c[57] = c[25];
                c[55] = crum;
-               new_c->seekshard_imprinted_room = 0;
-               new_c->seekshard_imprinted_xy = 0;
-               new_c->unknown55[1] = new_c->x;
-               new_c->unknown55[2] = new_c->y;
-               new_c->unknown55[0] = crum;
+               player->seekshard_imprinted_room = 0;
+               player->seekshard_imprinted_xy = 0;
+               player->unknown55[1] = player->x;
+               player->unknown55[2] = player->y;
+               player->unknown55[0] = crum;
             }
 
             if (loadnew() == 0) {
                mouse_on();
                i = 0;
-               form_alert(1, errmsg[32]);
+               form_alert(1, errmsg[ERROR_DISK_SPACE]);
                mouse_off();
                break;
             }
@@ -189,17 +189,18 @@ int main()
                c[4] = 125;
                c[24] = c[56];
                c[25] = c[57];
-               new_c->current_room = new_c->unknown55[0];
-               new_c->sprite_id = 125; // Small player sprite
-               new_c->x = new_c->unknown55[1];
-               new_c->y = new_c->unknown55[2];
+               player->current_room = player->unknown55[0];
+               player->sprite_id = SPRITE_PLAYER_SMALL;
+               player->x = player->unknown55[1];
+               player->y = player->unknown55[2];
 
                outside = 1;
             } else {
                c[4] = c[54];
                c[54] = 0;
-               new_c->sprite_id = new_c->magic_mode_2; // Small player sprite
-               new_c->magic_mode_2 = 0;
+               // Now restore the player's original sprite ID
+               player->sprite_id = player->original_sprite_id;
+               player->original_sprite_id = 0;
 
                outside = 0;
             }

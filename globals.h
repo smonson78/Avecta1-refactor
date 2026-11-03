@@ -28,7 +28,13 @@ extern uint16_t *addr;
 
 extern char pname[20];
 
-extern char weapon[][3];
+typedef struct {
+  uint8_t chance;
+  uint8_t damage;
+  uint8_t weight;
+} weapon_t;
+
+extern weapon_t weapon[];
 extern char wepmatx[4][4];
 extern char spelinfo[24][3];
 
@@ -160,6 +166,7 @@ extern char *name[];
 #define ERROR_NO_LINE_OF_SIGHT 3
 #define ERROR_NOTHING_TO_EXAMINE 4
 #define ERROR_OBJECT_NOT_ADJACENT 5
+#define ERROR_NOTHING_TO_TAKE 6
 #define ERROR_INVENTORY_TOO_FULL 7
 #define ERROR_NO_CHARACTER 8
 #define ERROR_TARGET_NOT_ADJACENT 9
@@ -168,6 +175,9 @@ extern char *name[];
 #define ERROR_INSUFFICIENT_SPELL_UNITS 13
 #define ERROR_NO_EXIT 15
 #define ERROR_TAKE_OBJECT 16
+#define ERROR_ABORT_QUIT_FILE 17
+#define ERROR_READ_WRITE_FAILURE 18
+#define ERROR_STOP_SAVE_LOAD 19
 #define ERROR_NO_WEAPON_IN_HAND 20
 #define ERROR_BOW_TWO_FREE_HANDS 22
 #define ERROR_NO_OBJECT 23
@@ -178,6 +188,8 @@ extern char *name[];
 #define ERROR_HANDS_FULL 29
 #define ERROR_NO_BOW_OR_ARROWS 30
 #define ERROR_WHICH_HANDS_OBJECT 31
+#define ERROR_DISK_SPACE 32
+#define ERROR_RESTORE_MISMATCH 33
 
 #define SPELL_CURE_LIGHT_WOUNDS 1
 #define SPELL_SEARCH 2
@@ -216,11 +228,15 @@ extern char *name[];
 
 #define INTELLIGENCE_FRIEND 4
 
+#define OBJECT_BROADSWORD 41
 #define OBJECT_SCIMITAR 42
 #define OBJECT_BOW 45
 #define OBJECT_POWER_VIAL 69
 #define OBJECT_SEEKSHARD 80
 #define OBJECT_TORCH 81
+
+#define SPRITE_PLAYER_SMALL 125
+#define SPRITE_PLAYER_NORMAL 81
 
 extern char *errmsg[];
 

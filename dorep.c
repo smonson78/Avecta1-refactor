@@ -65,14 +65,14 @@ void dorep()
   mode = 1;
   Vsync();
   vbl_animation_off();
-  form_dial(1,0,0,0,0,x,y,w,h);
+  form_dial(1, 0, 0, 0, 0, x, y, w, h);
   v_pline(handle, 5, pxy);
 
   v_rvon(handle);
-  vs_curaddress(handle,17,33);
+  vs_curaddress(handle, 17, 33);
   printf("        ");
   v_rvoff(handle);
-  textsix(1,259,129,10,"Opponents ");
+  textsix(1, 259, 129, 10, "Opponents ");
 
   j = 17;
   for (k = 4; k < 12; k++) {
@@ -87,12 +87,15 @@ void dorep()
       new_c->unknown33[0] = j;
 
       i = (c[1] * 4) / (c[2]);
+
       if (c[36] == 1) {
         i = 5;
       }
+
       if (c[38]) {
         i = 6;
       }
+      
       textsix(1, 313, 1 + (8 * j), 1, mod[i]);
       j++;
     }

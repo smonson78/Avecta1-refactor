@@ -31,6 +31,8 @@
 #include "f6.h"
 #include "f10.h"
 
+#include "debug.h"
+
 int savthrow(int npc, int mag);
 
 int cast_in(int pc)
@@ -264,7 +266,7 @@ void flash()
 int cast_out(int pc)
 {
   uint8_t *c = curmon[pc];
-  curmon_t *new_c;
+  curmon_t *new_c = &new_curmon[pc];
   player_t *pt;
   uint8_t *p, *z;
   char *w, *wt;
@@ -315,18 +317,24 @@ int cast_out(int pc)
     //num = c[10];
     num = pt->spell_cast;
 
-
     if (spelinfo[num - 1][0] != 2) {
       target = c[7]; // ...While this version is for player characters
+      debug_printf("! The target is character %d\n", target);
+
       t = curmon[target];
       new_t = &new_curmon[target];
-      if (!t[0] || t[30] != crum || !los(pc,t[24],t[25]))  {
+      debug_printf("! spell target: new_t is new_curmon + %d\n", new_t - new_curmon);
+
+      if (!t[0] || t[30] != crum || !los(pc, t[24], t[25]))  {
         flag = 1;
       }
       wt = (target == 0 ? pname : name[t[3]]);
     } else {
       target = c[9]; // ...And this version is for objects!
+      debug_printf("! The target is object %d\n", target);
+
       t = crumobj[target];
+
       wt = obj[t[0]];
       if (t[0] == 0) {
         flag = 1;
@@ -646,6 +654,7 @@ int cast_out(int pc)
       new_t->unknown15[4] = 38;
       new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
 
+      check_curmon("charm");
       dorep();
       break;
 

@@ -1,4 +1,5 @@
 #include "curmon.h"
+#include "globals.h"
 #include <libc.h>
 #include "tos_compat.h"
 
@@ -45,7 +46,7 @@ void init_curmon() {
   player->in_use = 1;
   player->damage = 4;
   player->max_health = 50;
-  player->sprite_id = 81;
+  player->sprite_id = SPRITE_PLAYER_NORMAL;
   player->unknown5 = 5;
   player->unknown6 = 60;
   player->unknown7 = 8;

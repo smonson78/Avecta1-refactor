@@ -67,7 +67,7 @@ int drag_eat_in(int pc)
       }
 
       if (c[45] != 0 && c[46] != 0 && c[46] != OBJECT_TORCH) {
-        self = error(31);
+        self = error(ERROR_WHICH_HANDS_OBJECT);
       } else {
         self = c[45] == 0 ? 2 : 1;
       }

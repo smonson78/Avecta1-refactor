@@ -63,23 +63,23 @@ int i7(int pc)
 
   if (ret == 0 && !self) {
     if ((object = zline[x][y][1]) == 0) {
-      error(6);
-      return(0);
+      error(ERROR_NOTHING_TO_TAKE);
+      return 0;
     }
     
     if (crumobj[object][1] != 1 || crumobj[object][0] < 41 ) {
-      error(6);
-      return(0);
+      error(ERROR_NOTHING_TO_TAKE);
+      return 0;
     }
     
     if (!adjac(pc,x,y)) {
-      error(5);
-      return(0);
+      error(ERROR_NOTHING_TO_TAKE);
+      return 0;
     }
     
     if (invnpc[pc][0] == 13) {
-      error(7);
-      return(0);
+      error(ERROR_NOTHING_TO_TAKE);
+      return 0;
     }
   }
 
@@ -102,12 +102,12 @@ int i7(int pc)
     /* this is a drop out of inventory */
     if (self) {
       if (c[45] == 0 && (c[46] == 0 || c[46] == 81)) {
-        error(27);
-        return(0);
+        error(ERROR_NOTHING_IN_HAND);
+        return 0;
       }
       
       if (c[45] > 0 && c[46] > 0 && c[46] != 81) {
-        l = error(31);
+        l = error(ERROR_WHICH_HANDS_OBJECT);
       } else {
         l = ( c[46] == 0 || c[46] == 81 ? 1 : 2);
       }

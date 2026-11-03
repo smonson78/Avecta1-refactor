@@ -1006,7 +1006,7 @@ int status(int pc)
       j = invent(pc);
       if (j == 0) {
         if (!putaway(pc, c[44 + ret])) {
-          error(7);
+          error(ERROR_INVENTORY_TOO_FULL);
           break;
         }
 
@@ -1027,7 +1027,7 @@ int status(int pc)
       // if (c[44 + ret] != 0 ) { 
       if (object_in_hand != 0 ) { 
         if (!putaway(pc, object_in_hand)) {
-          error(7);
+          error(ERROR_INVENTORY_TOO_FULL);
           break;
         }
       }

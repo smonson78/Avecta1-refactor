@@ -477,7 +477,7 @@ int loadnew() {
   } else {
     // Big size player sprite
     c[4] = 81;
-    new_c->sprite_id = 81;
+    new_c->sprite_id = SPRITE_PLAYER_NORMAL;
   }
 
   Fclose(fhandle);

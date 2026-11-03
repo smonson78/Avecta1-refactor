@@ -363,13 +363,13 @@ int tacmode() {
               }
 
               if (k == -1) {
-                if ((k = error(17)) > 1) {
+                if ((k = error(ERROR_ABORT_QUIT_FILE)) > 1) {
                   if (k == 2) {
                     return -2;
                   }
 
                   if (k == 3 && !outside && !fromout) {
-                    k = error(19);
+                    k = error(ERROR_STOP_SAVE_LOAD);
 
                     if (k == 1) {
                       l = 0;

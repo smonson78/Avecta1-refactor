@@ -16,7 +16,7 @@
 /* can see the object.                                                        */
 /******************************************************************************/
 
-int i3(int pc)
+int examine_in(int pc)
 {
   debug_printf("> i3() (examine)\n");
   int16_t x, y;
@@ -131,7 +131,7 @@ int i3(int pc)
 /* O3(pc) is a call to output an EXAMINE function.                           */
 /*****************************************************************************/
 
-int o3(int pc)
+int examine_out(int pc)
 {
   uint8_t *c = curmon[pc];
   player_t *new_c = &players[pc];

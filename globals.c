@@ -50,24 +50,32 @@ int row, col = 2;
 int grflist[13];
 int winroom;
 
-int (*inverb[])(int pc)  = {i0, i1, cast_in, i3, i4, drag_eat_in, i6, i7, i8, i9, i10, i11, i12, i13, i14};
-int (*outverb[])(int pc) = {o0, o1, cast_out, o3, o4, drag_eat_out, o6, o7, o8, o9, o10, o11, o12, o13, o14};
+// These functions are called when selecting an action to perform
+int (*inverb[])(int pc)  = {
+  i0, i1, cast_in, examine_in, i4, drag_eat_in, i6, i7, i8, i9, i10, i11, i12, i13, i14
+};
+
+int (*outverb[])(int pc) = {
+  o0, o1, cast_out, examine_out, o4, drag_eat_out, o6, o7, o8, o9, o10, o11, o12, o13, o14
+};
 
 int winker = 0, winktime = 0, combat = 0;
 char *posture[] = {"All Out","Standard","Defensive","Fall Back"};
 char *wordmod[] = {"None","Low","Medium","Severe","Dead","Panicked"};
-                      
 
 uint8_t putbuf[320], specbuf[40];
-char monbuf[320],junk[20];
+char monbuf[320];
+char junk[20];
 
 /* chance,damage,weight */
-char weapon[][3] = { {0,0,0},                                 /* no weapon */
-                     {60,12,10},                              /* broad sword */
-                     {60,8,5},                              /* scimitar  */
-                     {60,6,5},                                  /* mace */
-                     {40,3,1},                                  /* dagger */
-                     {-1,12,8}};                                  /* bow */
+weapon_t weapon[] = {
+  {0, 0, 0},     /* no weapon */
+  {60, 12, 10},  /* broad sword */
+  {60, 8, 5},    /* scimitar  */
+  {60, 6, 5},    /* mace */
+  {40, 3, 1},    /* dagger */
+  {-1, 12, 8}    /* bow */
+};
 char *wepname[] = {"","Broadsword","Scimitar","Mace","Dagger","Bow"};
 char wepmatx[4][4] = { {0,-40,-40,-40},
                        {40,0,20,-20},
@@ -176,23 +184,23 @@ char *errmsg[] = {
                    "[1][ The inventory is too | full.  Drop something.][OK]",
                    "[1][ There is no character|  there. Try again!][OK]", 
                    "[1][  The target must be  | adjacent. Try again!][OK]",
-                   "[1][ The inventory is empty.|  Try something else!][OK]", // 10
+                   "[1][ The inventory is empty.|  Try something else!][OK]", // 10 - not used
                    "[1][ The location must be | adjacent. Try again!][OK]",
                    "[1][ The object | is closed!][OK]",
                    "[1][  Insufficent spell  |  units!  Try again!][OK]",
-                   "[1][ There is nothing to | disarm! Try again!][OK]",
+                   "[1][ There is nothing to | disarm! Try again!][OK]", // not used
                    "[1][ There is no exit! |   Try again!][OK]",
                    "[2][ Will the object  |    be taken? ][Yes| No]",
                    "[2][ Do you wish to  ][Abort|Quit|File]",
                    "[1][ Read/Write failure. ][OK]",
                    "[2][ Do you wish to      ][Stop|Save|Load]",
  /* #20 errmsg */  "[1][  No weapon in hand! ][OK]",
-                   "[1][ A bow must be FIRED!][OK]",
+                   "[1][ A bow must be FIRED!][OK]", // not used
                    "[1][  A bow requires  | two free hands!][OK]",
                    "[1][ There is no   | object there!][OK]",
                    "[1][ This object is   | immoveable!][OK]",
                    "[1][ There is nothing | to rook/snoop!][OK]",
-                   "[1][   There are no   | torches left!][OK]",
+                   "[1][   There are no   | torches left!][OK]", // not used
                    "[1][ There is nothing |   in hand!][OK]",
 /* 28 */           "[1][ Insufficient   | magic ability!][OK]",
                    "[1][  Hands are full! ][OK]",
@@ -252,9 +260,21 @@ char fname[] = "grafx.dat";
 char pname[20];
 
 /* load the collection of trees into memory */
-char *verblist[] = {"Cast ","Examine","Drag/Eat","Search","Take/Drop","Wait",
-                    "X-it","Rook/Snoop","Fire Arrow","Burn/Snuff","Give",
-                    "Voice","Quit/File"};
+char *verblist[] = {
+  "Cast ",
+  "Examine",
+  "Drag/Eat",
+  "Search",
+  "Take/Drop",
+  "Wait",
+  "X-it",
+  "Rook/Snoop",
+  "Fire Arrow",
+  "Burn/Snuff",
+  "Give",
+  "Voice",
+  "Quit/File"
+};
 
 uint8_t zline[16][8][7];                    
 

@@ -4,109 +4,123 @@
 #include "startaux.h"
 #include "attack.h"
 #include "damage.h"
+#include "tos_compat.h"
 
 int i1(int pc)
 {
+  debug_printf("> i1()\n");
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
-  uint8_t *t = curmon[c[39]];
-  // curmon_t *new_t = &new_curmon[new_c->unknown38[1]];
+  curmon2_t *new_c = &new_curmon2[pc];
+  // uint8_t *t = curmon[c[39]];
+  curmon2_t *new_t = &new_curmon2[new_c->monster.unknown39];
 
-  int x = t[24], y = t[25];
+  // int x = t[24], y = t[25];
+  int x = new_t->monster.x, y = new_t->monster.y;
 
   if (outside) {
     return 0;
   }
 
   combat = 0;
-  if (!adjac(pc,x,y)) {
+  if (!adjac(pc, x, y)) {
     error(ERROR_TARGET_NOT_ADJACENT);
     return 0;
   }
 
   // Characters (including the player) only:
-  if (pc < 4 && (c[45] > 45 || c[45] < 41) ) {
+  // if (pc < 4 && (c[45] > 45 || c[45] < 41) ) {
+  if (pc < 4 && (new_c->player.good_hand > OBJECT_BOW || new_c->player.good_hand < OBJECT_BROADSWORD) ) {
     error(ERROR_NO_WEAPON_IN_HAND);
     return 0;
   }
 
   // The player only:
-  if (pc == 0 && c[45] == 45 && c[46] != 0) {
+  // if (pc == 0 && c[45] == 45 && c[46] != 0) {
+  if (pc == 0 && new_c->player.good_hand == OBJECT_BOW && new_c->player.other_hand != 0) {
     error(ERROR_BOW_TWO_FREE_HANDS);
     return 0;
   }
 
   if (pc < 4 && pc > 0) {
     c[7] = c[39];
-    new_c->spells[2] = new_c->unknown39;
+    new_c->player.unknown7 = new_c->player.unknown39;
   }
 
   c[15] = 1;
-  new_c->unknown15[0] = 1;
+  new_c->monster.unknown15[0] = 1;
 
   c[16] = c[11];
-  new_c->unknown15[1] = new_c->unknown11;
+  new_c->monster.unknown15[1] = new_c->monster.unknown11;
 
   c[9] = 0;
-  new_c->spells[4] = 0;
+  new_c->monster.spells[4] = 0;
 
   return 1;
 }
 
 int o1(int pc) 
 {
+  debug_printf("> o1()\n");
   uint8_t *a = curmon[pc];
   uint8_t *t = curmon[a[39]];
-
-  curmon_t *new_a = &new_curmon[pc];
-  player_t *p = &players[pc];
-
-  curmon_t *new_t = &new_curmon[new_a->unknown39];
+  curmon2_t *new_a = &new_curmon2[pc];
+  curmon2_t *new_t = &new_curmon2[new_a->monster.unknown39];
 
   char *w;
-  int base, roll, dam, wepchanz;
+  int base, roll, dam, weapon_chance;
 
-  if (new_t->in_use == 0 || new_t->current_room != crum) {
+  if (new_t->monster.in_use == 0 || new_t->monster.current_room != crum) {
     return 1;
   }
 
-  if (!adjac(pc, new_t->x, new_t->y)) {
+  if (!adjac(pc, new_t->monster.x, new_t->monster.y)) {
     return 1;
   }
 
-  attack(pc, new_t->x, new_t->y);
+  attack(pc, new_t->monster.x, new_t->monster.y);
 
   //if (pc < 4 && t[46] && !a[43]) {
-  if (pc < 4 && new_t->magic_mode_1 && !p->base_chance_3_attack) {
+  if (pc < 4 && new_t->player.other_hand && !new_a->player.base_chance_3_attack) {
     a[34] = -1;
-    p->unknown33[1] = -1;
+    new_a->player.unknown33[1] = -1;
     
     return 1;
   }
 
   if (pc < 4) {
-    wepchanz = weapon[a[45] - 40][0] + 20 * (a[43]);
+    // weapon_chance = weapon[a[45] - 40].chance + 20 * (a[43]);
+    weapon_chance = weapon[new_a->player.good_hand - 40].chance + (20 * new_a->player.base_chance_3_attack);
   }
 
-  if (pc < 4 && a[51] > 5) {
-    wepchanz /= a[51] - 4;
+  // if (pc < 4 && a[51] > 5) {
+  if (pc < 4 && new_a->player.magic_level > 5) {
+    // weapon_chance /= a[51] - 4;
+    weapon_chance /= new_a->player.magic_level - 4;
   } else {
-    wepchanz = *(a + 40 + a[40]);
+    // weapon_chance = *(a + 40 + a[40]);
+    // FIXME need to know what that value is
+    weapon_chance = a[40 + new_a->player.unknown40];
   }
   
-  if (t[39] == pc) {
-    wepchanz += wepmatx[a[40]][t[40]];
+  // if (t[39] == pc) {
+  if (new_t->monster.unknown39 == pc) {
+    // weapon_chance += wepmatx[a[40]][t[40]];
+    weapon_chance += wepmatx[new_a->monster.unknown40][new_t->monster.unknown40];
   } else {
-    wepchanz += 40;   /* big bonus for blind side shots */         
+    weapon_chance += 40;   /* big bonus for blind side shots */         
   }
 
   roll = rnd(100);
-  base = wepchanz + 3*( a[50] - 10 + a[11] - t[11] );
+  // base = weapon_chance + 3 * (a[50] - 10 + a[11] - t[11]);
+  base = weapon_chance + 3 * (new_a->monster.physical_strength - 
+    10 + new_a->monster.unknown11 - new_t->monster.unknown11);
 
   if (pc < 4) {
     // dam = weapon[a[45] - 40][1];
-    dam = weapon[p->good_hand - 40][1];
+    dam = weapon[new_a->player.good_hand - 40].damage;
   } else {
+    // dam = a[3 + 2 * (a[40])];
+    // FIXME
     dam = a[3 + 2 * (a[40])];
   }
 
@@ -116,39 +130,47 @@ int o1(int pc)
     dam += rnd(dam / 2);
   }
 
-  if (pc < 4 && t[31] > 3) {
+  // if (pc < 4 && t[31] > 3) {
+  if (pc < 4 && new_t->monster.intelligence_routine > 3) {
     base += 200;
     dam += 10;
   }
 
   if (pc < 4) {
     a[8] = a[45];
-    p->unknown8 = p->good_hand;
+    new_a->player.unknown8 = new_a->player.good_hand;
   }
 
   if (base > roll && dam > 0) {
-    if (pc > 3 && a[40] == a[45] && t[47] == 0) {
-      w = (a[39] == 0 ? pname : name[curmon[a[39]][3]]);
-      if (a[39] < 4) {
+    // if (pc > 3 && a[40] == a[45] && t[47] == 0) {
+    if (pc > 3 && new_a->monster.unknown40 == new_a->monster.poison_mode_2 && new_t->monster.poisoned == 0) {
+      
+      // w = (a[39] == 0 ? pname : name[curmon[a[39]][3]]);
+      w = (new_a->monster.unknown39 == 0 ? 
+        pname : name[new_curmon2[new_a->monster.unknown39].monster.monster_name_id]);
+
+      // if (a[39] < 4) {
+      if (new_a->monster.unknown39 < 4) {
         prnt("-> %s is envenomed!", w, NULL, NULL, NULL, NULL, NULL);
       } else {
         prnt("-> The %s is envenomed!", w, NULL, NULL, NULL, NULL, NULL);
       }
 
       t[47] = 1;
-      new_t->poisoned = 1;
+      new_t->monster.poisoned = 1;
     }
 
     if (pc < 4) {
       a[34] = 1;
-      new_a->unknown33[1] = 1;
+      new_a->player.unknown33[1] = 1;
     }
 
-    return damage(a[39], dam);
+    // return damage(a[39], dam);
+    return damage(new_a->monster.unknown39, dam);
   } else {
     if (pc < 4) {
       a[34] = -1;
-      new_a->unknown33[1] = -1;
+      new_a->player.unknown33[1] = -1;
     }
   }
 

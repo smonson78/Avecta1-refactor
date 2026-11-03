@@ -198,43 +198,53 @@ int intell(int npc)
 /* MORALE(NPC) checks the NPC for a failure of nerve.                        */
 /*****************************************************************************/
 
+// 0 = panic
+// 1 = no panic
 int morale(int npc)
 {
   uint8_t *c = curmon[npc];
-  curmon_t *new_c = &new_curmon[npc];
+  curmon2_t *new_c = &new_curmon2[npc];
   uint8_t *d;
   int level,num,i,dam,top,bot;
   
   if (c[36] == 1 || c[0] == 0) {
     c[38] = 0;
-    new_c->controlled = 0;
+    new_c->monster.controlled = 0;
     return 0;
   }
 
   // Only monsters
   if (npc > 3 && c[44] > 0) {
-    // Only players
+    // Check against the 4 player characters
     for (i = 0; i < 4; i++) {
       d = curmon[i];
-      //curmon_t *new_d = &new_curmon[i];
-      if (!d[0] || d[30] != crum) {
+      player_t *new_d = &players[i];
+
+      // if (!d[0] || d[30] != crum) {
+      if (!new_d->in_use || new_d->current_room != crum) {
+        // They're not here, skip
         continue;
       }
 
-      if (d[45] == c[44] || d[46] == c[44]) {
+      // if (d[45] == c[44] || d[46] == c[44]) {
+      if (new_d->good_hand == new_c->monster.bane || new_d->other_hand == new_c->monster.bane) {
         prnt("-> The %s is gripped by terror at the sight of the %s!",
-              name[c[3]], obj[c[44]], NULL, NULL, NULL, NULL);
+              name[new_c->monster.monster_name_id], 
+              obj[new_c->monster.bane], NULL, NULL, NULL, NULL);
         damage(npc, c[12]);
         return 0;
       }
     }
   }
 
-  if (c[13] > 100 || c[1] < (c[2])/2 ) { /* not intelligent creature */
+  // if (c[13] > 100 || c[1] < (c[2])/2 ) { /* not intelligent creature */
+  if (new_c->monster.unknown13 > 100 || new_c->monster.damage < (new_c->monster.max_health) / 2) { 
+    /* not intelligent creature */
     return 1;
   }
 
   num = 0;
+  // How many friends are there around?
   top = (npc > 3 ? 12 : 4);
   bot = (npc > 3 ? 4 : 0);
   
@@ -243,31 +253,39 @@ int morale(int npc)
       continue;
     }
     
-    if(curmon[i][0] == 1 && curmon[i][30] == crum) {
+    // if (curmon[i][0] == 1 && curmon[i][30] == crum) {
+    if (new_curmon2[i].monster.in_use == 1 && new_curmon2[i].monster.current_room == crum) {
       num++;
     }
   }
   
+  // 3 or more friends? No panic.
   if (num > 2) {
     return 1;
   }
 
-  level = 5 * (c[2] / 5) + c[13];
-  dam = c[2] - c[1];
+  // level = 5 * (c[2] / 5) + c[13];
+  level = 5 * (new_c->monster.max_health / 5) + new_c->monster.unknown13;
+  // dam = c[2] - c[1];
+  // Done in two steps in order to force signed maths
+  dam = new_c->monster.max_health;
+  dam -= new_c->monster.damage;
+  
   
   if (dam <= 0) {
     c[0] = 0; /* you're dead but too stupid to know it */
-    new_c->in_use = 0;
+    new_c->monster.in_use = 0;
     return 0;
   }
   
-  level -= 5 * ((c[2])/dam);
+  // level -= 5 * ((c[2]) / dam);
+  level -= 5 * ((new_c->monster.max_health / dam);
 
   if (rnd(100) > level) {
     c[36] = 1;
     c[38] = 0;
-    new_c->flee = 1;
-    new_c->controlled = 0;
+    new_c->monster.flee = 1;
+    new_c->monster.controlled = 0;
     damage(npc, 0);
     return 0;
   }
