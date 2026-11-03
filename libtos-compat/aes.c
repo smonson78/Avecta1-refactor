@@ -397,8 +397,9 @@ int16_t vst_color(int16_t handle, int16_t color_index)
 
 int16_t vsf_interior(int16_t handle, int16_t style)
 {
+  // Spams the console if present
+  // printf("vsf_interior setting fill style %d\n", style);
   GLOBAL_LOCK();
-  printf("vsf_interior setting fill style %d\n", style);
   globals.video.interior_fill_type = style;
   GLOBAL_UNLOCK();
   return 0;
@@ -406,7 +407,8 @@ int16_t vsf_interior(int16_t handle, int16_t style)
 
 void vsf_udpat(int16_t handle, int16_t *pfill_pat, int16_t planes)
 {
-  printf("vsf_udpat setting custom fill pattern\n");
+  // Spams the console if present
+  // printf("vsf_udpat setting custom fill pattern\n");
   GLOBAL_LOCK();
   for (int i = 0; i < planes * 16; i++) {
     globals.video.udpat[i] = pfill_pat[i];
