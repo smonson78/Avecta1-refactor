@@ -73,7 +73,7 @@ int o4(int pc)
   int light = new_rumdata[crum].room_has_bg;
 
   z = zline[x][y];
-  id = crumobj[z[1]][0];
+  id = crumobj[z[1]].object_id;
   w = (pc == 0 ? &pname[0] : name[curmon[pc][3]]);
 
   if (z[0] != 1 || (id < 41 && id > 0) || z[2] != 0) {

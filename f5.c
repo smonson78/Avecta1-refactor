@@ -89,7 +89,8 @@ int drag_eat_in(int pc)
       return 0;
     }
 
-    if (crumobj[object][1] < 0) {
+    // if (crumobj[object][1] < 0) {
+    if (crumobj[object].unknown1 < 0) {
       error(ERROR_IMMOVABLE_OBJECT);
       return 0;
     }
@@ -131,8 +132,10 @@ int drag_eat_in(int pc)
     ch->player.unknown6 = y;
     ch->player.unknown15[0] = 5;
 
-    if (object > 0 && crumobj[object][0] < 41) {
-      time = 3 * (c[50] - weight[crumobj[object][0]]);
+    // if (object > 0 && crumobj[object][0] < 41) {
+    if (object > 0 && crumobj[object].object_id < OBJECT_BROADSWORD) {
+      // time = 3 * (c[50] - weight[crumobj[object][0]]);
+      time = 3 * (ch->player.physical_strength - weight[crumobj[object].object_id]);
     } else {
       time = 5;
     }
@@ -206,13 +209,16 @@ int drag_eat_out(int pc)
    
   if (j == 0) {
     j = c[9];
-    x = crumobj[j][6];
-    y = crumobj[j][7];
+    // x = crumobj[j][6];
+    // y = crumobj[j][7];
+    x = crumobj[j].x;
+    y = crumobj[j].y;
     if (!adjac(pc, x, y)) {
       return 1;
     }
 
-    k = crumobj[j][0];
+    // k = crumobj[j][0];
+    k = crumobj[j].object_id;
 
     if (k < 41 && weight[k] < 0) {
       prnt("-> %s attempts to drag the %s, but that is impossible!", w1, obj[k], NULL, NULL, NULL, NULL);
@@ -235,7 +241,8 @@ int drag_eat_out(int pc)
       if (z[0] != 1 || z[1] != 0 || (z[2] > 0 && z[2] != pc) ||
         (curmon[0][24] == x2 && curmon[0][25] == y2 && pc != 0) ) {
         flag = 1;
-        prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j][0]], w1, NULL, NULL, NULL, NULL);
+        // prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j][0]], w1, NULL, NULL, NULL, NULL);
+        prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j].object_id], w1, NULL, NULL, NULL, NULL);
       } else {
         c[26] = c[5];
         c[27] = c[6];

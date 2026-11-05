@@ -39,7 +39,9 @@ int i6(int pc)
 
 int o6(int pc)
 {
-  uint8_t *c = curmon[pc], *z, *o;
+  uint8_t *c = curmon[pc], *z;
+  // uint8_t *o;
+  room_object_t *object;
   player_t *new_c = &players[pc];
   char *w = pc == 0 ? &pname[0] : name[c[3]];
   uint8_t *r = putbuf;
@@ -67,8 +69,10 @@ int o6(int pc)
         continue;
       }
 
-      if (z[1] != 0 && crumobj[z[1]][5] > 0) {
-        o = crumobj[z[1]];
+      // if (z[1] != 0 && crumobj[z[1]][5] > 0) {
+      if (z[1] != 0 && crumobj[z[1]].unknown5 > 0) {
+        // o = crumobj[z[1]];
+        object = &crumobj[z[1]];
         flag = 0;
 
         while (m < 320) {
@@ -83,7 +87,8 @@ int o6(int pc)
           // Who is 3?
           // if (pc != 3 || c[38] == 1) {
           if (pc != 3 || new_c->controlled == 1) {
-            prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[o[0]], NULL, NULL, NULL);
+            // prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[o[0]], NULL, NULL, NULL);
+            prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[object->object_id], NULL, NULL, NULL);
           }
         
           c[18] = 0;
@@ -127,30 +132,40 @@ int o6(int pc)
         }
 
         if (flag == 0) {
-          crumobj[z[1]][5] = 0;
+          // crumobj[z[1]][5] = 0;
+          crumobj[z[1]].unknown5 = 0;
         }
       }
 
-      if (z[1] != 0 && crumobj[z[1]][5] == -2 && c[18] != 6) {
-        prnt("-> %s notices the %s is locked!", w, obj[crumobj[z[1]][0]], NULL, NULL, NULL, NULL);
+      // if (z[1] != 0 && crumobj[z[1]][5] == -2 && c[18] != 6) {
+      if (z[1] != 0 && crumobj[z[1]].unknown5 == -2 && c[18] != 6) {
+        // prnt("-> %s notices the %s is locked!", w, obj[crumobj[z[1]][0]], NULL, NULL, NULL, NULL);
+        prnt("-> %s notices the %s is locked!", w, obj[crumobj[z[1]].object_id], NULL, NULL, NULL, NULL);
       }
 
       for (k = 1; k < 17; k++) {
-        o = crumobj[k];
-        if (o[0] != 0 && c[37] > rnd(100) && o[8] == 0 && o[6] == x + i && o[7] == y + j) {
-          o[8] = 1;
-          prnt("-> %s discovers a hidden %s!", w, obj[*o], NULL, NULL, NULL, NULL);
+        // o = crumobj[k];
+        object = &crumobj[k];
+        // if (o[0] != 0 && c[37] > rnd(100) && o[8] == 0 && o[6] == x + i && o[7] == y + j) {
+        if (object->object_id != 0 && new_c->perception > rnd(100) && object->visible == 0 
+            && object->x == x + i && object->y == y + j) {
+          // o[8] = 1;
+          object->visible = 1;
+          // prnt("-> %s discovers a hidden %s!", w, obj[*o], NULL, NULL, NULL, NULL);
+          prnt("-> %s discovers a hidden %s!", w, obj[object->object_id], NULL, NULL, NULL, NULL);
           
           c[18] = 0;
           new_c->unknown15[3] = 0;
 
-          if (new_rumdata[crum].room_has_bg || zline[x+i][y+j][5] > 0) {
-            blt(&bitmap[o[0]],16 * (x + i),16 * (y + j));
+          if (new_rumdata[crum].room_has_bg || zline[x + i][y + j][5] > 0) {
+            // blt(&bitmap[o[0]],16 * (x + i),16 * (y + j));
+            blt(&bitmap[object->object_id], 16 * (x + i), 16 * (y + j));
           }
 
           z[1] = k;
           
-          if (o[3] != 0) {
+          // if (o[3] != 0) {
+          if (object->target != 0) {
             z[0] = 2;
           }
           num++;

@@ -31,22 +31,24 @@ int switchrum() {
   room_data_t *new_r = &new_rumdata[crum];
 
   uint8_t *c;
+  room_object_t *object;
 
   char pan[12];
 
   if (crum != p[30] && crum != -1 && !outside) {
     for (i = 0; i < 13; i++) {
       
-      c = crumobj[i+1];
+      object = &crumobj[i + 1];
 
       // Each of these iterations is for one object inside the current room.
       // Copy 9 bytes for each
-      for (j = 0; j < 9; j++) {
-        // Copy the objects data from the current room array data back into storage in rumdata[]
-        // Maybe because we're leaving the room which suggests p[30] is a room number
-        // r[31 + (9 * i) + j] = c[j];
-        new_r->object[i].unknown[j] = c[j];
-      }
+      // for (j = 0; j < 9; j++) {
+      //   // Copy the objects data from the current room array data back into storage in rumdata[]
+      //   // Maybe because we're leaving the room which suggests p[30] is a room number
+      //   // r[31 + (9 * i) + j] = c[j];
+      //   new_r->object[i].unknown[j] = c[j];
+      // }
+      memcpy(&new_r->object[i], object, sizeof(room_object_t));
     }
 
     // Init pursuit[3] to all zeroes
@@ -150,12 +152,15 @@ int switchrum() {
     // 1..13
     for (i = 1; i < 14; i++) {
       // This array is 19x9 or possibly 18x9
-      c = crumobj[i];
+      object = &crumobj[i];
 
-      if (c[3] == oldrum) {
+      // if (c[3] == oldrum) {
+      if (object->target == oldrum) {
         
-        x = c[6];
-        y = c[7];
+        // x = c[6];
+        // y = c[7];
+        x = object->x;
+        y = object->y;
 
         p[24] = x;
         p[25] = y;
@@ -163,11 +168,13 @@ int switchrum() {
         new_p->y = y;
 
         /* must reveal hidden door */
-        if (c[8] == 0) { 
-          c[8] = 1;
+        // if (c[8] == 0) { 
+        if (object->visible == 0) { 
+          // c[8] = 1;
+          object->visible = 1;
           Vsync(); 
 
-          blt(&bitmap[c[0]], 16 * x, 16 * y);
+          blt(&bitmap[object->object_id], 16 * x, 16 * y);
 
           zline[x][y][1] = i;
         }

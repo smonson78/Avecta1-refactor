@@ -108,7 +108,7 @@ extern room_zero_data_t room_zero;
 extern uint8_t triglist[25];
 extern char invtrig[20];
 
-extern uint8_t crumobj[19][9];
+extern room_object_t crumobj[19];
 extern uint8_t invnpc[4][20];
 extern int pursuit[3];
 extern int mode, dismax;
@@ -228,9 +228,15 @@ extern char *name[];
 
 #define INTELLIGENCE_FRIEND 4
 
+#define OBJECT_DOOR 1
+#define OBJECT_ECTOPLASMIC_CONVERTER 25
+#define OBJECT_ORC_MACHINE 32
+#define OBJECT_DEAD_EIRIK 40
 #define OBJECT_BROADSWORD 41
 #define OBJECT_SCIMITAR 42
 #define OBJECT_BOW 45
+#define OBJECT_RUNE 49
+#define OBJECT_BLACK_BALL 66
 #define OBJECT_POWER_VIAL 69
 #define OBJECT_SEEKSHARD 80
 #define OBJECT_TORCH 81

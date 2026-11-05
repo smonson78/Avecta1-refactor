@@ -42,7 +42,8 @@ int sell(int npc)
   // All monsters
   for (j = 4; j < 12; j++) {
     // if (curmon[j][0] && curmon[j][30] == crum && curmon[j][31] < 4) {
-    if (new_curmon2[j].monster.in_use && new_curmon2[j].monster.current_room == crum && new_curmon2[j].monster.intelligence_routine < 4) {
+    if (new_curmon2[j].monster.in_use && new_curmon2[j].monster.current_room == crum 
+        && new_curmon2[j].monster.intelligence_routine < 4) {
       num++;
     }
   }
@@ -124,6 +125,7 @@ int sell(int npc)
   }
   
   if (c[6] == 0) {
+    h[15] = 8;
     player->unknown15[0] = 8; 
     prnt("-> The merchant says `Are you interested in buying one of my \
   exceptional %ss?  They are a mere %s goldpieces!  Yes or no?'",
@@ -337,13 +339,13 @@ int wander(int npc)
 {
   uint8_t *c = curmon[npc];
   curmon2_t *new_c = &new_curmon2[npc];
-  uint8_t *o;
-  int i,j,k,l;
-  int x = crumobj[new_c->monster.unknown48][6];
-  int y = crumobj[new_c->monster.unknown48][7];
+  room_object_t *o;
+  int i, j, k, l;
+  int x = crumobj[new_c->monster.unknown48].x;
+  int y = crumobj[new_c->monster.unknown48].y;
 
   // This is the room number that a door leads to.
-  int ex = crumobj[c[48]][3];
+  int ex = crumobj[c[48]].target;
 
   // if (c[48] != 0 && adjac(npc, x, y) && ex != 0 && ex != 8) {
   if (new_c->monster.unknown48 != 0 && adjac(npc, x, y) && ex != 0 && ex != 8) {
@@ -371,17 +373,17 @@ int wander(int npc)
       }
 
       k = 1 + rnd(13); // 1 to 13
-      o = crumobj[k];
-      j = o[3];
+      o = &crumobj[k];
+      j = o->target;
 
-      if (o[0] == 0 || j == 0 || j == 15 || j == 16 || j == 13 || j == 8 
+      if (o->object_id == 0 || j == 0 || j == 15 || j == 16 || j == 13 || j == 8 
           || j == 20 || j == 21 || j == 19 || j == 23 || j == 25 || j == 4
-          || j == 5 || o[5] == -2 || adjac(npc, o[6], o[7])) {
+          || j == 5 || o->unknown5 == -2 || adjac(npc, o->x, o->y)) {
         continue;
       }
 
-      x = o[6];
-      y = o[7];
+      x = o->x;
+      y = o->y;
 
       c[48] = k;
       new_c->monster.unknown48 = k;

@@ -121,7 +121,7 @@ int litetrol(int x, int y, int s)
 void drawsq(int x, int y)
 {
   uint8_t *z = zline[x][y];
-  uint8_t *c;
+  // uint8_t *c;
   int i, pc;
 
   if (z[0] == 1) {
@@ -153,8 +153,10 @@ void drawsq(int x, int y)
   x *= 16;
   y *= 16;
   
-  if (z[1] != 0 && crumobj[z[1]][8] == 1) {
-    blt(&bitmap[crumobj[z[1]][0]], x, y);
+  // if (z[1] != 0 && crumobj[z[1]][8] == 1) {
+  if (z[1] != 0 && crumobj[z[1]].visible == 1) {
+    // blt(&bitmap[crumobj[z[1]][0]], x, y);
+    blt(&bitmap[crumobj[z[1]].object_id], x, y);
   }
   
   // This could be a character or a monster

@@ -192,9 +192,14 @@ int examine_out(int pc)
   }
 
   // This isn't great for structures...
-  t = (type == 1 ? crumobj[object] : curmon[object]);
+  // t = (type == 1 ? crumobj[object] : curmon[object]);
+  room_object_t *obj_t;
+  t = curmon[object];
+
   if (type != 1) {
     new_t = &new_curmon[object];
+  } else {
+    obj_t = &crumobj[object];
   }
 
   if (type == 2) {
@@ -202,20 +207,27 @@ int examine_out(int pc)
     w = name[t[3]];
   } else {
     // Get object name
-    w = obj[t[0]];
+    // w = obj[t[0]];
+    w = obj[obj_t->object_id];
 
-    if (t[4] > 0 && t[0] < 41) {
-      mess = t[4] + (1 - outside) * 80 * dungeon;
+    // if (t[4] > 0 && t[0] < 41) {
+    if (obj_t->unknown4 > 0 && obj_t->object_id < OBJECT_BROADSWORD) {
+      // mess = t[4] + (1 - outside) * 80 * dungeon;
+      mess = obj_t->unknown4 + (1 - outside) * 80 * dungeon;
       if (fromout > 0) {
         mess -= 80;
       }
     }
 
-    if (t[4] > 0 && t[0] > 40) {
-      mess = t[4];
+    // if (t[4] > 0 && t[0] > 40) {
+    if (obj_t->unknown4 > 0 && obj_t->object_id > OBJECT_DEAD_EIRIK) {
+      // mess = t[4];
+      mess = obj_t->unknown4;
     }
 
-    if (t[4] == 0) {
+    // if (t[4] == 0) {
+    if (obj_t->unknown4 == 0) {
+      // mess = 0;
       mess = 0;
     }
   }
@@ -224,6 +236,7 @@ int examine_out(int pc)
     prnt("-> %s examines the %s.", w1, w, NULL, NULL, NULL, NULL);
   }
 
+  // Curmons:
   if (type == 2) {
     if (t[39] != pc) {
       if (t[39] == 0) {
@@ -254,12 +267,17 @@ int examine_out(int pc)
 
   flag = 0;
 
-  if (type == 1 && mess == 0 && t[5] == -1 && t[3] == 0 && (t[2] == 0 || rnd(100) > c[37])) {
+  // Crumobjs:
+  // if (type == 1 && mess == 0 && t[5] == -1 && t[3] == 0 && (t[2] == 0 || rnd(100) > c[37])) {
+  if (type == 1 && mess == 0 && obj_t->unknown5 == -1 && obj_t->target == 0 
+      && (obj_t->unknown2 == 0 || rnd(100) > c[37])) {
     prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
     return 1;
   }
 
-  if (!outside && type == 1 && t[2] != 0 && c[37] > rnd(100)) {
+  // Crumobjs:
+  // if (!outside && type == 1 && t[2] != 0 && c[37] > rnd(100)) {
+  if (!outside && type == 1 && obj_t->unknown2 != 0 && c[37] > rnd(100)) {
     flag = 1;
     prnt("-> %s senses something strange about the %s.", w1, w, NULL, NULL, NULL, NULL);
   }
@@ -269,19 +287,25 @@ int examine_out(int pc)
     return 1;
   }
 
-  if (!outside && type == 1 && mess == 0 && t[3] != 0) {
+  // Crumobjs:
+  // if (!outside && type == 1 && mess == 0 && t[3] != 0) {
+  if (!outside && type == 1 && mess == 0 && obj_t->target != 0) {
     flag = 1;
     prnt("-> %s notices an exit through the %s.", w1, w, NULL, NULL, NULL, NULL);
   }
 
-  if (type == 1 && t[5] == -2) {
+  // Crumobjs:
+  // if (type == 1 && t[5] == -2) {
+  if (type == 1 && obj_t->unknown5 == -2) {
     flag = 1;
     prnt("-> %s notices the %s is locked.", w1, w, NULL, NULL, NULL, NULL);
   }
 
+  // Crumobjs:
   if ((type == 1 || mess == 0) && !flag) {
     prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
   }
+
   c[18] = 3;
   new_c->unknown15[3] = 3;
   

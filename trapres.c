@@ -168,7 +168,8 @@ void trapres(int pc, int type, int x, int y)
     break;
 
   case 11:
-    if (c[8] == 0 || crumobj[c[9]][0] != 25 || c[10] == 0) {
+    // if (c[8] == 0 || crumobj[c[9]][0] != 25 || c[10] == 0) {
+    if (c[8] == 0 || crumobj[c[9]].object_id != OBJECT_ECTOPLASMIC_CONVERTER || c[10] == 0) {
       break;
     }
 
@@ -186,7 +187,8 @@ void trapres(int pc, int type, int x, int y)
       prnt("-> The ectoplasmic converter explodes, releasing a bewildering \
 flood of strange energy!  Ethereal shrieks, moans, and laughter can be heard \
 as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NULL, NULL, NULL);
-      blowup(crumobj[c[9]][6], crumobj[c[9]][7]);
+      // blowup(crumobj[c[9]][6], crumobj[c[9]][7]);
+      blowup(crumobj[c[9]].x, crumobj[c[9]].y);
       flash();
       flash();
       specbuf[30] = 1;
@@ -195,7 +197,8 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
     break;
 
   case 20: /* black key stuff */
-    if (c[8] == 0 || c[10] == 0 || crumobj[c[9]][0] != 1) {
+    // if (c[8] == 0 || c[10] == 0 || crumobj[c[9]][0] != 1) {
+    if (c[8] == 0 || c[10] == 0 || crumobj[c[9]].object_id != OBJECT_DOOR) {
       break;
     }
 
@@ -211,12 +214,14 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
     } else {
       prnt("-> The black key turns and the door unlocks!  "
         "The black key pops back into %s's hand!", s2, NULL, NULL, NULL, NULL, NULL);
-      crumobj[1][3] = 8;
+      // crumobj[1][3] = 8;
+      crumobj[1].target = 8;
     }
     break;
 
   case 6: /* let Bab loose */
-    if (c[10] == 0 || c[8] == 0 || crumobj[c[9]][0] != 1) {
+    // if (c[10] == 0 || c[8] == 0 || crumobj[c[9]][0] != 1) {
+    if (c[10] == 0 || c[8] == 0 || crumobj[c[9]].object_id != OBJECT_DOOR) {
       break;
     }
 
@@ -233,9 +238,9 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
     }
     
     if (mode) {
-      prnt("-> The battle in progress distracts %s and prevents %s from \
-inserting the key into the door's keyhole.",
-           s2, s2, NULL, NULL, NULL, NULL);
+      prnt("-> The battle in progress distracts %s and prevents %s from "
+        "inserting the key into the door's keyhole.",
+        s2, s2, NULL, NULL, NULL, NULL);
       break;
     }
 
@@ -430,7 +435,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     break;
 
   case 16: /* the first duplicator trap */
-    if (c[8] == 0 || crumobj[c[9]][0] != 32 || c[10] == 0) {
+    // if (c[8] == 0 || crumobj[c[9]][0] != 32 || c[10] == 0) {
+    if (c[8] == 0 || crumobj[c[9]].object_id != OBJECT_ORC_MACHINE || c[10] == 0) {
       break;
     }
 
@@ -447,7 +453,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     break;
 
   case 17: /* the second duplicator trap */
-    if (c[8] == 0 || crumobj[c[9]][0] != 32 || c[10] == 0) {
+    // if (c[8] == 0 || crumobj[c[9]][0] != 32 || c[10] == 0) {
+    if (c[8] == 0 || crumobj[c[9]].object_id != OBJECT_ORC_MACHINE || c[10] == 0) {
       break;
     }
 
@@ -667,12 +674,14 @@ said the last time they met.",
     break;
 
   case 25: /* generic end up in a weird outside room situation */
-    c[30] = crumobj[z[1]][3];
-    new_c->current_room = crumobj[z[1]][3];
+    // c[30] = crumobj[z[1]][3];
+    c[30] = crumobj[z[1]].target;
+    // new_c->current_room = crumobj[z[1]][3];
+    new_c->current_room = crumobj[z[1]].target;
     outside = 0;
     fromout = 2;
     c[4] = c[7];
-    // Seems wrong
+    // Seems wrong?
     new_c->sprite_id = new_c->spells[2];
     break;
 
@@ -680,11 +689,13 @@ said the last time they met.",
     if (police) {
       break;
     }
-    crumobj[1][3] = 30;
+    // crumobj[1][3] = 30;
+    crumobj[1].target = 30;
     break;
 
   case 27: /* disable entering Lev's room */
-    crumobj[1][3] = 29;
+    // crumobj[1][3] = 29;
+    crumobj[1].target = 29;
     break;
 
   case 28: /* turn into orc or turn not into orc */
@@ -729,7 +740,8 @@ said the last time they met.",
 
   case 29: /* dropped black ball */
     flag = zline[c[5]][c[6]][1];
-    if (crumobj[flag][0] != 66 || dungeon == 2) {
+    // if (crumobj[flag][0] != 66 || dungeon == 2) {
+    if (crumobj[flag].object_id != OBJECT_BLACK_BALL || dungeon == 2) {
       break;
     }
 
@@ -951,7 +963,8 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     break;
 
   case 36: /* The evil key into Melkthrop's lair */
-    if (c[10] == 0 || c[8] == 0 || crumobj[c[9]][0] != 1) {
+    // if (c[10] == 0 || c[8] == 0 || crumobj[c[9]][0] != 1) {
+    if (c[10] == 0 || c[8] == 0 || crumobj[c[9]].object_id != OBJECT_DOOR) {
       break;
     }
     
@@ -972,7 +985,8 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
       new_c->poison_mode_2 = 0;
       prnt("-> The evil key turns and the door to the monastery unlocks!  The evil key explodes. "
         "I don't think %s is in Kansas anymore.", s2, NULL, NULL, NULL, NULL, NULL);
-      crumobj[1][3] = 1;
+      // crumobj[1][3] = 1;
+      crumobj[1].target = 1;
     }
     break;
 

@@ -139,7 +139,7 @@ int actmon(int type, int nm, int x, int y)
     // if (c[0] == 0 || c[30] != crum) {
     if (new_c->in_use == 0 || new_c->current_room != crum) {
       z = zline[x][y];
-      if (z[0] == 1 && (z[1] == 0 || crumobj[z[1]][0] > 40) && z[2] == 0 && 
+      if (z[0] == 1 && (z[1] == 0 || crumobj[z[1]].object_id > OBJECT_DEAD_EIRIK) && z[2] == 0 && 
         // (curmon[0][24] != x || curmon[0][25] != y) ) { 
         (player->x != x || player->y != y) ) { 
         zline[x][y][2] = i + 4;   /* then square is available */
@@ -166,7 +166,7 @@ int actmon(int type, int nm, int x, int y)
 
           if (k == -2 || *z != 1 || z[2] != 0 || (player->x == (x + k) && 
             player->y == (y + l)) || 
-            (z[1] > 0 && crumobj[z[1]][0] < 41) ) {
+            (z[1] > 0 && crumobj[z[1]].object_id < OBJECT_BROADSWORD) ) {
             /* if it doesn't continue then square available */
             continue;  
           } else {

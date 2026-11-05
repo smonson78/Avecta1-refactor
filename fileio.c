@@ -98,12 +98,14 @@ int fileio(int flow) {
   debug_printf("> fileio(%d)\n", flow);
 
   int16_t button;
-  int i, j, filehandle;
+  int i, filehandle;
+  // int j;
   
   //uint8_t *r = rumdata[crum];
   room_data_t *r = &new_rumdata[crum];
   
-  uint8_t check,*c;
+  uint8_t check;
+  room_object_t *c;
   DTA dta;
   char filename[13];
   
@@ -173,11 +175,12 @@ int fileio(int flow) {
 
     // Copy all objects from current room into room data array
     for (i = 0; i < 13; i++) {
-      c = crumobj[i + 1];
-      for (j = 0; j < 9; j++) {
-        //r[31 + (9 * i) + j] = c[j];
-        r->object[i].unknown[j] = c[j];
-      }
+      c = &crumobj[i + 1];
+      // for (j = 0; j < 9; j++) {
+        // //r[31 + (9 * i) + j] = c[j];
+        // r->object[i].unknown[j] = c[j];
+      // }
+      memcpy(&r->object[i], c, sizeof(room_object_t));
     }
 
     // Writes 14546 bytes to save the game.

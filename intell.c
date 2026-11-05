@@ -162,7 +162,7 @@ int intell(int npc)
 
           if (crum == 31) {
             prnt("-> The forlorn creature sobs `All is lost. I die now.'", NULL, NULL, NULL, NULL, NULL, NULL);
-            damage(npc,c[2] + c[12]);
+            damage(npc, c[2] + c[12]);
             
             c[0] = 0;
             new_c->in_use = 0;
@@ -204,7 +204,7 @@ int morale(int npc)
 {
   uint8_t *c = curmon[npc];
   curmon2_t *new_c = &new_curmon2[npc];
-  uint8_t *d;
+  // uint8_t *d;
   int level,num,i,dam,top,bot;
   
   if (c[36] == 1 || c[0] == 0) {
@@ -217,7 +217,7 @@ int morale(int npc)
   if (npc > 3 && c[44] > 0) {
     // Check against the 4 player characters
     for (i = 0; i < 4; i++) {
-      d = curmon[i];
+      // d = curmon[i];
       player_t *new_d = &players[i];
 
       // if (!d[0] || d[30] != crum) {
@@ -302,7 +302,7 @@ int morale(int npc)
 int setflee(int npc)
 {
   int i,x,y;
-  uint8_t *d;
+  room_object_t *d;
   uint8_t *c = curmon[npc];
   curmon_t *new_c = &new_curmon[npc];
 
@@ -310,27 +310,27 @@ int setflee(int npc)
   new_c->flee = 1;
 
   for (i = 1; i < 14; i++) {
-    d = crumobj[i];
-    if (d[3] != 0 && d[8] == 1 && d[5] != -2) {
+    d = &crumobj[i];
+    if (d->target != 0 && d->visible == 1 && d->unknown5 != -2) {
 
-      if (adjac(npc,d[6],d[7]) ) { /* then we're at exit */
+      if (adjac(npc, d->x, d->y) ) { /* then we're at exit */
         c[15] = 9;                 /* so we set up a X-it act */
         c[16] = 6;
-        c[26] = d[6]; // Presumably this is where they're headed
-        c[27] = d[7];
+        c[26] = d->x; // Presumably this is where they're headed
+        c[27] = d->y;
 
         new_c->unknown15[0] = 9;
         new_c->unknown15[1] = 6;
-        new_c->old_x = d[6];
-        new_c->old_y = d[7];
+        new_c->old_x = d->x;
+        new_c->old_y = d->y;
 
         return 1;
       }
 
-      c[26] = d[6];
-      c[27] = d[7];
-      new_c->old_x = d[6]; // FIXME this happens regardless of the conditional
-      new_c->old_y = d[7];
+      c[26] = d->x;
+      c[27] = d->y;
+      new_c->old_x = d->x; // FIXME this happens regardless of the conditional
+      new_c->old_y = d->y;
 
       c[22] = c[24];
       c[23] = c[25];
@@ -339,7 +339,7 @@ int setflee(int npc)
       new_c->unknown15[8] = new_c->y;
 
 
-      nextxy(c[22],c[23],c[26],c[27],c[24],c[25],&x,&y);
+      nextxy(c[22], c[23], c[26], c[27], c[24], c[25], &x, &y);
 
       c[28] = x;
       c[29] = y;
@@ -448,12 +448,12 @@ int setmove(int npc, int flag)
     // Monsters
     c[15] = 9;
     c[16] = 6;
-    c[9] = crumobj[c[18]][3];
+    c[9] = crumobj[c[18]].target;
 
     new_c->unknown15[0] = 9;
     new_c->unknown15[1] = 6;
     // This is a bit of a concern because it doesn't seem to make sense
-    new_c->spells[4] = crumobj[new_c->unknown15[3]][3];
+    new_c->spells[4] = crumobj[new_c->unknown15[3]].target;
 
     return 1;
   }
@@ -463,7 +463,7 @@ int setmove(int npc, int flag)
       return 0;
     }
 
-    nextxy(c[22],c[23],c[26],c[27],c[24],c[25],&xdes,&ydes);
+    nextxy(c[22], c[23], c[26], c[27], c[24], c[25], &xdes, &ydes);
     c[28] = xdes;
     c[29] = ydes;
     new_c->unknown28[0] = xdes;
@@ -480,16 +480,16 @@ int setmove(int npc, int flag)
         l = xdes - c[24];
         m = ydes - c[25];
         do {
-          x = c[24]+(i*l);
-          y = c[25]+(j*m);
+          x = c[24] + (i * l);
+          y = c[25] + (j * m);
           z = zline[x][y];
-          if (*z == 1 && z[6] == 0 && z[2] == 0 && 
+          if (z[0] == 1 && z[6] == 0 && z[2] == 0 && 
             (x != c[24] || y != c[25]) ) {
             if (z[1] != 0 && (npc < 4 || !c[37]) && 
-              (n = crumobj[z[1]][0]) < 41) {
+              (n = crumobj[z[1]].object_id) < 41) {
               
               if (c[51] > weight[n] && weight[n] != -1) {
-                if (!move(z[1],1,x,y)) {
+                if (!move(z[1], 1, x, y)) {
                   goto next;
                 }
               } else {

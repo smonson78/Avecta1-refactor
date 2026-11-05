@@ -53,23 +53,26 @@ int i13(int pc)
 int o13(int pc)
 {
   uint8_t *c = curmon[pc];
-  uint8_t *z, *t;
+  curmon2_t *new_c = &new_curmon2[pc];
+  room_object_t *z;
+  uint8_t *t;
   char *wt,*w = (pc == 0 ? pname : name[c[3]]);
   int tar = c[7],x,y,d,miss,i,j,k;
   t = curmon[tar];
+  curmon2_t *new_t = &new_curmon2[tar];
   x = t[24];
   y = t[25];
   d = dist(c[24],c[25],0,x,y,0);
   wt = (tar == 0 ? pname : name[t[3]]);
 
-  if (!los(pc,x,y)) {
+  if (!los(pc, x, y)) {
     prnt("-> %s cannot see %s to give the %s!", w, wt, obj[c[45]], NULL, NULL, NULL);
-    return(1);
+    return 1;
   }
 
-  if (!adjac(pc,x,y)) { /* gotta throw the damned thing */
+  if (!adjac(pc, x, y)) { /* gotta throw the damned thing */
     miss = 0;
-    if (rnd(100) > 5*(c[50]) - 5*d) {
+    if (rnd(100) > 5 * (c[50]) - 5 * d) {
       miss = 1;
     }
     
@@ -80,18 +83,19 @@ int o13(int pc)
         k++;
         i = 2 - rnd(5);
         j = 2 - rnd(5);
-      } while(k < 20 && (zline[x+i][y+j][1] != 0 || zline[x+i][y+j][0] != 1));
+      } while (k < 20 && (zline[x + i][y + j][1] != 0 || zline[x + i][y + j][0] != 1));
     }
     
     if (k == 20) {
       prnt("-> %s cannot spot a place to which to throw the %s!", w, obj[c[45]], NULL, NULL, NULL, NULL);
-      return(1);
+      return 1;
     }
+
     prnt("-> %s throws the %s to %s!", w, obj[c[45]], wt, NULL, NULL, NULL);
 
     k = rumslot();
     // k could be 1 to 18 here
-    z = crumobj[k];
+    z = &crumobj[k];
     
     if (k > 13) {
       // Now k should be 14 to 18
@@ -101,42 +105,65 @@ int o13(int pc)
       new_rumdata[crum].room_unknown_3[k - 14] = c[45];
     }
 
-    z[0] = c[45];
-    z[1] = 1;
-    z[6] = x+i;
-    z[7] = y+j;
-    z[4] = c[45];
-    z[5] = -1;
-    z[8] = 1;
-    z[2] = z[3] = 0;
+    // z[0] = c[45];
+    // z[1] = 1;
+    // z[6] = x+i;
+    // z[7] = y+j;
+    // z[4] = c[45];
+    // z[5] = -1;
+    // z[8] = 1;
+    // z[2] = z[3] = 0;
+    z->object_id = new_c->monster.poison_mode_2;
+    z->unknown1 = 1;
+    z->x = x+i;
+    z->y = y+j;
+    z->unknown4 = new_c->monster.poison_mode_2;
+    z->unknown5 = -1;
+    z->visible = 1;
+    z->unknown2 = 0;
+    z->target = 0;
+
     c[45] = 0;
-    zline[x+i][y+j][1] = k;
+    new_c->monster.poison_mode_2 = 0;
+
+    zline[x + i][y + j][1] = k;
 
     // if (rumdata[crum][30] || zline[x+i][y+j][5] > 0)
-    if (new_rumdata[crum].room_has_bg || zline[x+i][y+j][5] > 0) {
+    if (new_rumdata[crum].room_has_bg || zline[x + i][y + j][5] > 0) {
       drawsq(x + i, y + j);
     }
+
     return 1;
   }
 
-  prnt("-> %s gives the %s to %s.", w, obj[c[45]], wt, NULL, NULL, NULL);
+  // prnt("-> %s gives the %s to %s.", w, obj[c[45]], wt, NULL, NULL, NULL);
+  prnt("-> %s gives the %s to %s.", w, obj[new_c->monster.poison_mode_2], wt, NULL, NULL, NULL);
 
   if (t[45] != 0) {
     putaway(tar, t[45]);
   }
+
   c[8] = c[45];
-  t[45] = c[45];
+  new_c->monster.spells[3] = new_c->monster.poison_mode_2;
+  // t[45] = c[45];
+  t[45] = new_c->monster.poison_mode_2;
+  new_t->monster.poison_mode_2 = new_c->monster.poison_mode_2;
   
   if (t[45] == 45) {
     t[44] = c[44];
+    new_t->monster.poison_mode_2 = new_c->monster.poison_mode_2;
+
     c[44] = 0;
+    new_c->monster.bane = 0;
   }
 
   if (t[32] == 0 && t[45] < 46 && t[45] > 40) {
     t[32] = t[45];
+    new_t->monster.poison_mode_1 = new_t->monster.poison_mode_2;
   }
 
   c[45] = 0;
+  new_c->monster.poison_mode_2 = 0;
 
   return 1;
 }

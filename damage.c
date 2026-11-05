@@ -22,8 +22,8 @@ int damage(int pc, int level)
 {
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
-
-  uint8_t *z1, *z;
+  room_object_t *z;
+  uint8_t *z1;
 
   check_curmon("damage 0");
 
@@ -159,7 +159,7 @@ int damage(int pc, int level)
       // Players:
       if (pc < 4) {
         j = rumslot();
-        z = crumobj[j];
+        z = &crumobj[j];
 
         prnt("-> %s IS DEAD!", w, NULL, NULL, NULL, NULL, NULL);
 
@@ -169,7 +169,7 @@ int damage(int pc, int level)
 
         i = zline[x][y][1];
 
-        if (i != 0 && crumobj[i][3] != 0) {
+        if (i != 0 && crumobj[i].target != 0) {
           storsc(storbuf[pc],16*x,16*y,1,addr);
           do {
             i = 1 - rnd(3);
@@ -179,7 +179,7 @@ int damage(int pc, int level)
             z1 = zline[x][y];
             l = z1[1];
           } while ( x < 0 || x > 15 || y < 0 || y > 7 ||  
-            (crumobj[l][0] < 41 && crumobj[l][3] != 0) || *z1 != 1);
+            (crumobj[l].object_id < OBJECT_BROADSWORD && crumobj[l].target != 0) || z1[0] != 1);
 
           c[24] = x;
           c[25] = y;
@@ -188,8 +188,8 @@ int damage(int pc, int level)
 
           storsc(storbuf[pc], 16 * x, 16 * y, 0, addr);
 
-          if (l!= 0 && crumobj[l][0] > 40) {
-            putaway(pc, crumobj[l][0]);
+          if (l!= 0 && crumobj[l].object_id > 40) {
+            putaway(pc, crumobj[l].object_id);
           }
         } 
         zline[x][y][1] = j;
@@ -215,29 +215,33 @@ int damage(int pc, int level)
           //check_rumdata("damage");
         }
 
-        z[0] = z[4] = 41 - pc;
-        z[1] = z[8] = 1;
-        z[7] = c[25];
-        z[6] = c[24];
+        z->object_id = 41 - pc;
+        z->unknown4 = 41 - pc;
+        z->unknown1 = 1;
+        z->visible = 1;
+        z->x = c[24];
+        z->y = c[25];
 
         if (invnpc[pc][0] > 0) {
-          for (i=1;i<=13;i++) {
+          for (i = 1; i <= 13; i++) {
             if (invnpc[pc][i] != 0) {
-              putinto(j,invnpc[pc][i]);
+              putinto(j, invnpc[pc][i]);
               invnpc[pc][i] = 0;
             }
           }
 
           invnpc[pc][0] = 0;
-          z[5] = 1;
+          z->unknown5 = 1;
         } else {
-          z[5] = 0;
+          z->unknown5 = 0;
         }
-        z[2] = z[3] = 0;
+
+        z->unknown2 = 0;
+        z->target = 0;
       }
       
       if (light || zline[x][y][5] > 0) {
-        drawsq(x,y);
+        drawsq(x, y);
       }
       check_curmon("damage 0.9");
 

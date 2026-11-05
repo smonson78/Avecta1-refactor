@@ -131,21 +131,24 @@ int i9(int pc)
 
   z = zline[x][y];
   
-  if (crumobj[z[1]][3] == 0) {
+  // if (crumobj[z[1]][3] == 0) {
+  if (crumobj[z[1]].target == 0) {
     error(ERROR_NO_EXIT);
     return 0;
   }
 
   c[7] = c[8] = 0;      
   c[9] = z[1];
-  c[10] = crumobj[z[1]][3];
+  // c[10] = crumobj[z[1]][3];
+  c[10] = crumobj[z[1]].target;
   c[15] = 9;
   c[16] = 6;
 
   ch->player.unknown7 = 0;
   ch->player.unknown8 = 0;
   ch->player.unknown9 = z[1];
-  ch->player.spell_cast = crumobj[z[1]][3];
+  // ch->player.spell_cast = crumobj[z[1]][3];
+  ch->player.spell_cast = crumobj[z[1]].target;
   ch->player.unknown15[0] = 9;
   ch->player.unknown15[1] = 6;
 
@@ -161,7 +164,8 @@ int o9(int pc)
   uint8_t *z = zline[x][y];
   
   // Player
-  if (pc == 0 && crumobj[c[9]][5] == -2) {
+  // if (pc == 0 && crumobj[c[9]][5] == -2) {
+  if (pc == 0 && crumobj[c[9]].unknown5 == -2) {
     prnt("-> %s finds the exit is locked!", pname, NULL, NULL, NULL, NULL, NULL);
     c[30] = crum;
     ch->player.current_room = crum;
@@ -180,8 +184,10 @@ int o9(int pc)
 
   if (pc != 0) {
     z = zline[c[26]][c[27]];
-    c[30] = crumobj[z[1]][3];
-    ch->player.current_room = crumobj[z[1]][3];
+    // c[30] = crumobj[z[1]][3];
+    c[30] = crumobj[z[1]].target;
+    // ch->player.current_room = crumobj[z[1]][3];
+    ch->player.current_room = crumobj[z[1]].target;
     
     if (mode) {
       dorep();

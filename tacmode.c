@@ -75,7 +75,8 @@ int tacmode() {
   int flag, i, j = 0, k, l, n, p, timer = 0, x, y;
   int actlist[13];
   uint8_t *c;
-  uint8_t *o;
+  // uint8_t *o;
+  room_object_t *object;
   curmon_t *new_c;
 
   debug_printf("> tacmode()\n");
@@ -124,16 +125,20 @@ int tacmode() {
             // For each object in the room
             for (j = 0; j < 14; j++) {
               
-              o = crumobj[j];
-              if (o[0] == 0 || flag > 0) {
+              object = &crumobj[j];
+              if (object->object_id == 0 || flag > 0) {
                 continue;
               }
 
-              if (o[3] == pursuit[2]) {
-                x = o[6];
-                y = o[7];
+              // if (o[3] == pursuit[2]) {
+              if (object->target == pursuit[2]) {
+                // x = o[6];
+                // y = o[7];
+                x = object->x;
+                y = object->y;
 
-                if (zline[x][y][2] != 0 || (curmon[0][24] == x && curmon[0][25] == y)) {
+                // if (zline[x][y][2] != 0 || (curmon[0][24] == x && curmon[0][25] == y)) {
+                if (zline[x][y][2] != 0 || (player->x == x && player->y == y)) {
                   pursuit[0] += 2;
                   flag = 2;
                   break;
@@ -190,13 +195,13 @@ int tacmode() {
       if (police && rnd(100) < 15) {
 
         for (i = 1; i < 17; i++) {
-          o = crumobj[i];
-          if (o[3] != 0) {
+          object = &crumobj[i];
+          if (object->target != 0) {
             break;
           }
         }
 
-        if (i < 17 && actmon(17, 4, o[6], o[7]) > 0) {
+        if (i < 17 && actmon(17, 4, object->x, object->y) > 0) {
           prnt("-> The guards are pursuing!", NULL, NULL, NULL, NULL, NULL, NULL);
           mode = 1;
         }

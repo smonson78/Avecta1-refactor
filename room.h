@@ -17,9 +17,22 @@ typedef struct {
 //   uint8_t room_id;
 // } room_unknown_t;
 
+
 typedef struct {
-  // 9 bytes
-  uint8_t unknown[9];
+  // 0: Index into obj[] and bitmap[]
+  uint8_t object_id;
+  uint8_t unknown1; // "take"
+  uint8_t unknown2; // "trap"
+  // 3: For doors: this is the room number
+  uint8_t target;
+  uint8_t unknown4; // "nmsg"
+  uint8_t unknown5; // "hide"
+  // 6
+  uint8_t x;
+  // 7
+  uint8_t y;
+  // 8
+  uint8_t visible;
 } room_object_t;
 
 typedef struct {
@@ -64,7 +77,7 @@ typedef struct {
   // - 30  = room has background graphics if non-zero
   uint8_t room_has_bg;
 
-  // - 31  = 14 room objects, 9 bytes each
+  // - 31  = 13 room objects, 9 bytes each
   room_object_t object[13];
   // ... 31  - object 0
   // ... 40  - object 1

@@ -105,6 +105,7 @@ void rumdraw(char *pan)
 
   // c must be uint8_t or else we'll crash
   uint8_t *c;
+  room_object_t *object;
 
   // uint8_t *r = rumdata[crum];
   room_data_t *new_r = &new_rumdata[crum];
@@ -113,28 +114,30 @@ void rumdraw(char *pan)
   // Do 13 times, for a maximum of 13 objects in each room
   for (i = 0; i < 13; i++) {
 
-    c = crumobj[i + 1]; // 1 to 13
+    object = &crumobj[i + 1]; // 1 to 13
 
     // Copy 9 bytes from rumdata into crumobj[i + 1] 0..8, which is all of the crumobj object
-    for (j = 0; j < 9; j++) {
-      //*(c + j) = *(r + 31 + (9 * i) + j);
-      //c[j] = r[31 + (9 * i) + j];
-      c[j] = new_r->object[i].unknown[j];
-    }
+    // for (j = 0; j < 9; j++) {
+    //   //*(c + j) = *(r + 31 + (9 * i) + j);
+    //   //c[j] = r[31 + (9 * i) + j];
+    //   c[j] = new_r->object[i].unknown[j];
+    // }
+    memcpy(object, &new_r->object[i], sizeof(room_object_t));
   }
 
   debug_printf("-- rumdraw did rumdata -> crumobj copies\n");
 
   // 5 things, 14..18
   for (i = 14; i < 19; i++) {
-    c = crumobj[i];
+    object = &crumobj[i];
     // for (j = 0; j < 9; c[(j++]) = 0) {
     // }
 
     // Blank it out
-    for (j = 0; j < 9; j++) {
-      c[j] = 0;
-    }
+    // for (j = 0; j < 9; j++) {
+    //   c[j] = 0;
+    // }
+    memset(object, 0, sizeof(room_object_t));
   }
 
   debug_printf("-- rumdraw blanked zline\n");
@@ -142,9 +145,9 @@ void rumdraw(char *pan)
   // This is blanking out the entire zline array
   for (i = 0; i < 16; i++) {
     for (j = 0; j < 8; j++) {
-        for (k = 0; k < 7; k++) {
-          zline[i][j][k] = 0;
-        }
+      for (k = 0; k < 7; k++) {
+        zline[i][j][k] = 0;
+      }
     }
   }
 
@@ -158,12 +161,12 @@ void rumdraw(char *pan)
   // objnum = 0;
   // 13 things, 1 to 13
   for (i = 1; i < 14; i++) {
-    c = crumobj[i]; 
-    if (c[0] != 0) {
+    object = &crumobj[i]; 
+    if (object->object_id != 0) {
       // objnum++;
-      if (c[2] != 0) {
+      if (object->unknown2 != 0) {
         triglist[0]++;
-        triglist[i] = c[2];
+        triglist[i] = object->unknown2;
       }
     }
   }
@@ -359,17 +362,18 @@ void rumdraw(char *pan)
   for (i = 1; i < 14; i++) {
 
     // Get object i data
-    c = crumobj[i];
+    object = &crumobj[i];
 
-    if (c[0] != 0) {
-      int obj_x = c[6];
-      int obj_y = c[7];
+    // if (c[0] != 0) {
+    if (object->object_id != 0) {
+      int obj_x = object->x;
+      int obj_y = object->y;
 
-      if (c[8]) {
+      if (object->visible) {
         // if (r[30]) {
         if (new_r->room_has_bg) {
           // Draw the sprite for room object
-          blt(&bitmap[c[0]], obj_x * 16, obj_y *16);
+          blt(&bitmap[object->object_id], obj_x * 16, obj_y * 16);
         }
 
         zline[obj_x][obj_y][1] = i; // put the object ID into position 1
@@ -416,7 +420,7 @@ void rumdraw(char *pan)
 
     // Meaning offset 14...18
     //c = crumobj[i - 134];
-    c = crumobj[14 + i];
+    object = &crumobj[14 + i];
     // Get some coords
     // x = rumdata[0][j + 1] % 16;
     // y = rumdata[0][j + 1] / 16;
@@ -435,18 +439,29 @@ void rumdraw(char *pan)
     }
 
     // c is a crumobj
-    c[0] = new_r->room_unknown_3[i];
+    // c[0] = new_r->room_unknown_3[i];
+    // zline[x][y][1] = 14 + i; // 14..18
+    // invtrap(c[0]);
+    // c[1] = 1;
+    // c[2] = 0;
+    // c[3] = 0;
+    // c[4] = c[0];
+    // c[5] = -1;
+    // c[6] = x;
+    // c[7] = y;
+    // c[8] = 1;
+    object->object_id = new_r->room_unknown_3[i];
     //zline[x][y][1] = i - 134; // 14..18
     zline[x][y][1] = 14 + i; // 14..18
-    invtrap(c[0]);
-    c[1] = 1;
-    c[2] = 0;
-    c[3] = 0;
-    c[4] = c[0];
-    c[5] = -1;
-    c[6] = x;
-    c[7] = y;
-    c[8] = 1;
+    invtrap(object->object_id);
+    object->unknown1 = 1;
+    object->unknown2 = 0;
+    object->target = 0;
+    object->unknown4 = c[0];
+    object->unknown5 = -1;
+    object->x = x;
+    object->y = y;
+    object->visible = 1;
 
     //if (rumdata[crum][30]) {
     if (new_rumdata[crum].room_has_bg) {

@@ -29,15 +29,15 @@ int check_char_waiting() {
 int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 {
   int16_t status;
-  int oldline = -1,newline=0,newx,newy,oldx = -1, oldy=0,i,j,k;
-  int light, keybd = 0, keystk = 0, mflag=0,rflag=0, tflag = 0,inrflag,intflag = 0;
+  int oldline = -1, newline=0, newx, newy, oldx = -1, oldy = 0, i, j, k;
+  int light, keybd = 0, keystk = 0, mflag=0, rflag=0, tflag = 0, inrflag, intflag = 0;
   uint8_t *z;
-  uint8_t *c = NULL;
+  // uint8_t *c = NULL;
   curmon_t *new_c = NULL;
   char *string, letter = 0;
 
   if (winker != 0) {
-    c = curmon[winker - 1];
+    // c = curmon[winker - 1];
     new_c = &new_curmon[winker - 1];
   }
 
@@ -452,7 +452,7 @@ int lom(int pc, int x, int y)
   while ( (x != x2) || (y != y2) ) {
     if (q == 1) {
       z = zline[x][y];
-      z1 = crumobj[z[1]][0];
+      z1 = crumobj[z[1]].object_id;
       
       if (z[1] != 0) {
         if (z1 < 41 && z1 > 1) {
@@ -531,7 +531,7 @@ int los(int pc, int x, int y)
    while ( (x != x2) || (y != y2) ) {
       if (q == 1) {
          z = zline[x][y];
-         z1 = crumobj[z[1]][0];
+         z1 = crumobj[z[1]].object_id;
          if(*z != 1 || ( z[1] != 0 && z1 == 1) )
             return(0);    
          q = 0;  /* all this is stored in zline array for each room     */
@@ -667,7 +667,7 @@ int adjac(int pc, int x, int y)
 
 int move(int obj, int flag, int x, int y)
 {
-  uint8_t *c = crumobj[obj];
+  room_object_t *c = &crumobj[obj];
   uint8_t *z;
   int done, i, j;
   int light = new_rumdata[crum].room_has_bg;
@@ -681,12 +681,12 @@ int move(int obj, int flag, int x, int y)
         }
 
         z = zline[x+i][y+j];
-        if (*z == 1 && z[1] == 0 && z[2] == 0 &&
+        if (z[0] == 1 && z[1] == 0 && z[2] == 0 &&
           (curmon[0][24] != x+i || curmon[0][25] != y+j)) {
         // if (*z == 1 && z[1] == 0 && z[2] == 0 &&
         //   (new_curmon[0].x != x+i || new_curmon[0].y != y+j)) {
           if (obj > 13) {
-            xobj(*c, crum);
+            xobj(c->object_id, crum);
           }
 
           zline[x][y][1] = 0;
@@ -696,11 +696,11 @@ int move(int obj, int flag, int x, int y)
           }
 
           z[1] = obj;
-          c[6] = x+i;
-          c[7] = y+j;
+          c->x = x + i;
+          c->y = y + j;
 
           if (obj > 13) {
-            storobj(*c, x + i, y + j);
+            storobj(c->object_id, x + i, y + j);
           }
 
           if (light || z[5] > 0) {
@@ -719,23 +719,23 @@ int move(int obj, int flag, int x, int y)
   }
 
   if (!flag) {
-    zline[c[6]][c[7]][1] = 0;
+    zline[c->x][c->y][1] = 0;
     
-    if (light || zline[c[6]][c[7]][5] > 0) {
-      drawsq(c[6],c[7]);
+    if (light || zline[c->x][c->y][5] > 0) {
+      drawsq(c->x, c->y);
     }
 
-    c[6] = x;
-    c[7] = y;
+    c->x = x;
+    c->y = y;
     zline[x][y][1] = obj;
 
     if (light || zline[x][y][5] > 0) {
-      drawsq(x,y);
+      drawsq(x, y);
     }
 
     if (obj > 13) {
-      xobj(*c,crum);
-      storobj(*c,x,y);
+      xobj(c->object_id, crum);
+      storobj(c->object_id, x, y);
     }
     done = 1;
   }

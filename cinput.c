@@ -148,7 +148,7 @@ top:
         i = 1;
       }
 
-      j = crumobj[z[1]][0];
+      j = crumobj[z[1]].object_id;
 
       if ((j > 0 && j < 41) || (z[2] < 4 && pc > 0 && z[2] > 0) 
           || (z[0] == 2 && z[2] == 0)) {
@@ -208,9 +208,11 @@ top:
   if (ret == 13) {
     return -1;
   }
+
   if (ret < 3) {
     return ret + 1;
   }
+  
   if (ret > 2) {
     return ret + 2;
   }

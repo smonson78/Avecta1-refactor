@@ -195,7 +195,8 @@ int cast_in(int pc)
       return 0;
     }
 
-    if (zline[x][y][1] != 0 && crumobj[zline[x][y][1]][0] < 41) {
+    // if (zline[x][y][1] != 0 && crumobj[zline[x][y][1]][0] < 41) {
+    if (zline[x][y][1] != 0 && crumobj[zline[x][y][1]].object_id < OBJECT_BROADSWORD) {
       error(ERROR_PATH_BLOCKED);
       return 0;
     }
@@ -271,6 +272,7 @@ int cast_out(int pc)
   uint8_t *p, *z;
   char *w, *wt;
   uint8_t *t;
+  room_object_t *object;
   curmon_t *new_t = NULL;
   int k, m, flag = 0, dam, j, trap, num, target, i, x, y;
   w = (pc == 0 ? pname :  name[c[3]]);
@@ -333,10 +335,14 @@ int cast_out(int pc)
       target = c[9]; // ...And this version is for objects!
       debug_printf("! The target is object %d\n", target);
 
-      t = crumobj[target];
+      // t = crumobj[target];
+      object = &crumobj[target];
 
-      wt = obj[t[0]];
-      if (t[0] == 0) {
+      // wt = obj[t[0]];
+      wt = obj[object->object_id];
+      
+      // if (t[0] == 0) {
+      if (object->object_id == 0) {
         flag = 1;
       }
     }
@@ -468,12 +474,15 @@ int cast_out(int pc)
 
     case 8: /* disarm trap */
       // t is a crumobj    
-      trap = t[2];
+      // trap = t[2];
+      trap = object->unknown2;
+      
       if (trap > dismax || trap == 0) {
         return 1;
       }
 
-      t[2] = 0;
+      // t[2] = 0;
+      object->unknown2 = 0;
 
       untrap(target);
       break;
@@ -499,7 +508,7 @@ int cast_out(int pc)
         j = 2;
       }
 
-      if (!los(pc,t[24],t[25])) {
+      if (!los(pc, t[24], t[25])) {
         prnt("-> But the target is out of sight!", NULL, NULL, NULL, NULL, NULL, NULL);
         return 1;
       }
@@ -515,14 +524,18 @@ int cast_out(int pc)
       break;
 
     case 10: /* thief spell */
-      // t is a crumobj    
-      num = c[37];
+      // t is a crumobj - but we don't seem to need it
+      // num = c[37];
+      num = new_c->perception;
+
+      // Pump up the perception skill
       c[37] = 120;
       new_c->perception = 120;
 
       // Rook/snoop probably
       o10(pc);
       
+      // Return it to the original value
       c[37] = num;
       new_c->perception = num;
 
@@ -593,15 +606,23 @@ int cast_out(int pc)
     case 14: /* reveal */
       // no t for reveal   
       for (i = 1; i < 19; i++) {
-        c = crumobj[i];
-        if (c[8] == 0) {
-          c[8] = 1;
+        // c = crumobj[i];
+        room_object_t *obj2 = &crumobj[i];
+
+        // if (c[8] == 0) {
+        if (obj2->visible == 0) {
+          // c[8] = 1;
+          obj2->visible = 1;
           // c is a crumobj! no need to do new_c
 
-          zline[c[6]][c[7]][1] = i;
+          // zline[c[6]][c[7]][1] = i;
+          zline[obj2->x][obj2->y][1] = i;
 
-          if (new_rumdata[crum].room_has_bg || zline[c[6]][c[7]][5] > 0) {
-            blt(&bitmap[c[0]],16*(c[6]),16*(c[7]));
+          // if (new_rumdata[crum].room_has_bg || zline[c[6]][c[7]][5] > 0) {
+          //   blt(&bitmap[c[0]],16*(c[6]),16*(c[7]));
+          // }
+          if (new_rumdata[crum].room_has_bg || zline[obj2->x][obj2->y][5] > 0) {
+            blt(&bitmap[obj2->object_id], 16 * obj2->x, 16 * obj2->y);
           }
         }       
       }
@@ -630,13 +651,20 @@ int cast_out(int pc)
       }
 
       if (flag) {
+        // FIXME
+        // But how? If t is a crumobj there are only [9]. I suspect this was never tested and is 
+        // probably a bug.
         t[16] = 6;
         return 0;
       }
 
-      if (pursuit[2] == t[3]) {
-        pursuit[0] = pursuit[1] = pursuit[2] = 0;
+      // if (pursuit[2] == t[3]) {
+      if (pursuit[2] == object->target) {
+        pursuit[0] = 0;
+        pursuit[1] = 0;
+        pursuit[2] = 0;
       }
+
       break;
 
     case 18: /* charm old scratch */
@@ -680,12 +708,15 @@ int cast_out(int pc)
 
     case 20:  /* destroy an object */
       // t is a crumobj
-      if (t[2] > dismax || t[3] > 0 || t[0] == 1) {
+      // if (t[2] > dismax || t[3] > 0 || t[0] == 1) {
+      if (object->unknown2 > dismax || object->target > 0 || object->object_id == OBJECT_DOOR) {
+        // I guess you can't destroy doors
         prnt("-> The spell inexplicably fails!", NULL, NULL, NULL, NULL, NULL, NULL);
         break;
       }
 
-      explode(t[6],t[7],0);
+      // explode(t[6],t[7],0);
+      explode(object->x, object->y, 0);
       destroy(1, target);
       break;
 
@@ -699,7 +730,7 @@ int cast_out(int pc)
         x = c[5];
         y = c[6];
       } else {
-        // XY for monsters
+        // XY for monsters - around the monster themselves
         x = t[24];
         y = t[25];
       }

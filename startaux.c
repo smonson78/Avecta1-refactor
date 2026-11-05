@@ -147,7 +147,7 @@ int init(int flag) {
   // new_c->lit_torches = 0;
   // These are the curmon_t versions:
   new_c->base_chance_2_attack = 20;
-  new_c->base_chance_3_attack = 0;
+  new_c->base_chance_1_attack = 0;
 
   new_c->poison_mode_1 = 2;  
   new_c->unknown33[0] = 4;

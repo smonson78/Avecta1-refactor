@@ -102,7 +102,8 @@ char *spell[] = {
 };
 
 // Spell magic points costs I think
-char spelunit[] = {0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5};
+// Note this is not used in the menu display where it just divides by 4
+char spelunit[] = {0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
 char *name[] = {
   "goblin","skeleton","spider","firewolf","ghost","thrang", "ghoul","snake","vampire",
   "gork","Melkthrop","merchant", "bat","Eirik","guard","pedestrian","Mage Leveth",
@@ -276,6 +277,15 @@ char *verblist[] = {
   "Quit/File"
 };
 
+// X, Y, then 7-byte structure
+//   0 =
+//   1 = visible object
+//   2 =
+//   3 = invisible object
+//   4 =
+//   5 =
+//   6 =
+//   7 =
 uint8_t zline[16][8][7];                    
 
 room_data_t new_rumdata[80];
@@ -287,7 +297,7 @@ uint8_t triglist[25];
 // This was declared as [18][9] but is accessed as [19][9] in trapaux.c
 // crumobj[][] is used to hold data about objects in the current room
 // hence "current room objects" -> crumobj
-uint8_t crumobj[19][9];
+room_object_t crumobj[19];
 // The first dimension is the objects in the room.
 // 0 - unknown
 // 1..13  - 13 room objects like furniture copied from rumdata[]
@@ -438,8 +448,8 @@ char *obj[] = {
   "wrecked wagon",
   "",
   "",
-  "dead Eirik", // 40
-  "broadsword",
+  "dead Eirik", // 40 
+  "broadsword", // ---------------- everything before this point can block your movement
   "scimitar",
   "mace",
   "dagger",

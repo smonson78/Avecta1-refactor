@@ -41,7 +41,8 @@ int i10(int pc)
   winker = 0;
   clrinp();
   obj = zline[x][y][1];
-  if (obj == 0 || (crumobj[obj][5] != -2 && crumobj[obj][3] < 1) ) {
+  // if (obj == 0 || (crumobj[obj][5] != -2 && crumobj[obj][3] < 1) ) {
+  if (obj == 0 || (crumobj[obj].unknown5 != -2 && crumobj[obj].target < 1) ) {
     error(ERROR_NOTHING_TO_ROOK_SNOOP);
     return 0;
   }
@@ -79,7 +80,8 @@ int o10(int pc)
 {
   debug_printf("> o10()\n");
   int x, y, object, flag=0;
-  uint8_t *c = curmon[pc], *o;
+  uint8_t *c = curmon[pc];
+  room_object_t *o;
   curmon_t *new_c = &new_curmon[pc];
   //uint8_t *r;
   room_data_t *new_r;
@@ -89,40 +91,51 @@ int o10(int pc)
   y = c[6];
 
   object = c[9];
-  o = crumobj[object];
+  o = &crumobj[object];
   // r = rumdata[o[3]];
-  new_r = &new_rumdata[o[3]];
+  // new_r = &new_rumdata[o[3]];
+  new_r = &new_rumdata[o->target];
 
   if (object != zline[x][y][1]) {
     return 1;
   }
 
-  if (rnd(100) < c[37] && o[5] == -2) {
-    if (o[3] == 0) {
-      o[5] = 1;
+  // if (rnd(100) < c[37] && o[5] == -2) {
+  if (rnd(100) < c[37] && o->unknown5 == -2) {
+    // if (o[3] == 0) {
+    if (o->target == 0) {
+      // o[5] = 1;
+      o->unknown5 = 1;
     } else {
-      if (o[2] == 0) {
-        o[5] = -1;
+      // if (o[2] == 0) {
+      if (o->unknown2 == 0) {
+        // o[5] = -1;
+        o->unknown5 = -1;
       } else {
         return 1;
       }
     }
-    prnt("-> %s unlocks the %s!", w, obj[o[0]], NULL, NULL, NULL, NULL);
+    // prnt("-> %s unlocks the %s!", w, obj[o[0]], NULL, NULL, NULL, NULL);
+    prnt("-> %s unlocks the %s!", w, obj[o->object_id], NULL, NULL, NULL, NULL);
     flag = 1;
   }
 
   //if (o[3] != 0 && r[22] != 0 && rnd(100) < r[26] && rnd(100) < c[37]) {
-  if (o[3] != 0 && new_r->room_monster_type != 0 && (rnd(100) < new_r->room_monsters_chance) && rnd(100) < c[37]) {
+  //if (o[3] != 0 && new_r->room_monster_type != 0 && (rnd(100) < new_r->room_monsters_chance) && rnd(100) < c[37]) {
+  if (o->target != 0 && new_r->room_monster_type != 0 
+      && (rnd(100) < new_r->room_monsters_chance) && rnd(100) < c[37]) {
     flag = 1; 
     prnt("-> %s hears one or more %ss through the %s!", w,
         //name[permon[r[22]].unknown3],
         name[permon[new_r->room_monster_type].monster_name_id],
-        obj[o[0]],
+        // obj[o[0]],
+        obj[o->object_id],
         NULL, NULL, NULL);
   }
 
   if (flag == 0 && c[18] != 10) {
-    prnt("-> %s has no success with the %s!", w, obj[o[0]], NULL, NULL, NULL, NULL);
+    // prnt("-> %s has no success with the %s!", w, obj[o[0]], NULL, NULL, NULL, NULL);
+    prnt("-> %s has no success with the %s!", w, obj[o->object_id], NULL, NULL, NULL, NULL);
   }
 
   c[18] = 10;
