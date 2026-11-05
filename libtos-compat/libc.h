@@ -8,19 +8,19 @@
 
 #define MALLOC_MIN_ALLOCATION 32
 
-#ifndef __cplusplus
+#ifndef NULL
 #define NULL ((void *)0)
 #endif
 
 extern compat_FILE *compat_stdout;
 extern void compat_exit(uint16_t retval);
 
-struct memblock_t {
-    struct memblock_t *next;
-    struct memblock_t *prev;
-    size_t size;
-    uint8_t used;
-};
+// struct memblock_t {
+//     struct memblock_t *next;
+//     struct memblock_t *prev;
+//     size_t size;
+//     uint8_t used;
+// };
 
 int compat_printf(const char *format, ...);
 int compat_sprintf(char *dest, const char *format, ...);
