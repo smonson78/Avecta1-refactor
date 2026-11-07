@@ -4,3 +4,10 @@ OUTSIDE.DAT corresponds to the world map.
 The maximum number of room_unknown_xy uses is
   Kilkaney: 9
   World map: 3
+
+
+  Dungeon numbers:
+  - according to msg[]:
+    1: Monastery (msg 81 - 160)
+    2: Kilkaney (161 - 320)
+    3: Cave (321 - 480)
