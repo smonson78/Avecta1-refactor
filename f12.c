@@ -40,8 +40,8 @@ int i12(int pc)
 
   c[15] = 12;
   c[16] = 6;
-  ch->player.unknown15[0] = 12;
-  ch->player.unknown15[1] = 6;
+  ch->player.command = 12;
+  ch->player.unknown16[0] = 6;
 
   return 1;
 }

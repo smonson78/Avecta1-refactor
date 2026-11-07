@@ -121,8 +121,8 @@ int examine_in(int pc)
   c[15] = 3;
   c[16] = 6;
   c[34] = 0;
-  new_c->unknown15[0] = 3;
-  new_c->unknown15[1] = 6;
+  new_c->command = 3;
+  new_c->unknown16[0] = 6;
 
   return 1;
 }
@@ -309,7 +309,7 @@ int examine_out(int pc)
   }
 
   c[18] = 3;
-  new_c->unknown15[3] = 3;
+  new_c->unknown16[2] = 3;
   
   return 1;
 }

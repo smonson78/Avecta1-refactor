@@ -68,8 +68,8 @@ int i10(int pc)
   ch->player.unknown5 = x;
   ch->player.unknown6 = y;
   ch->player.unknown9 = obj;
-  ch->player.unknown15[0] = 10;
-  ch->player.unknown15[1] = 6;
+  ch->player.command = 10;
+  ch->player.unknown16[0] = 6;
   ch->player.unknown33[1] = 0;
 
   debug_printf("< i10()\n");
@@ -139,7 +139,7 @@ int o10(int pc)
   }
 
   c[18] = 10;
-  new_c->unknown15[3] = 10;
+  new_c->unknown16[2] = 10;
 
   debug_printf("< o10()\n");
   return 1;

@@ -1,7 +1,7 @@
 #ifndef __F6_H
 #define __F6_H
 
-int i6(int pc);
-int o6(int pc);
+int search_in(int pc);
+int search_out(int pc);
 
 #endif

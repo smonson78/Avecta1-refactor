@@ -17,7 +17,7 @@
 /* takeable, which means its type must be greater than 40.                    */
 /******************************************************************************/
 
-int i7(int pc)
+int take_drop_in(int pc)
 {
   uint8_t *c = curmon[pc];
   player_t *new_c = &players[pc];
@@ -96,8 +96,8 @@ int i7(int pc)
     c[15] = 7;  
     c[16] = 6;
     new_c->spell_cast = 0;
-    new_c->unknown15[0] = 7;
-    new_c->unknown15[1] = 6;
+    new_c->command = 7;
+    new_c->unknown16[0] = 6;
     return 1;
   } else {
     /* this is a drop out of inventory */
@@ -153,14 +153,14 @@ int i7(int pc)
     c[10] = 1;
     new_c->spell_cast = 1;
     c[15] = 7;
-    new_c->unknown15[0] = 7;
+    new_c->command = 7;
     c[16] = 2;
-    new_c->unknown15[1] = 2;
+    new_c->unknown16[0] = 2;
 
     //if (c[8] != c[45]) {
     if (new_c->unknown8 != new_c->good_hand) {
       c[16] += 4;
-      new_c->unknown15[1] += 4;
+      new_c->unknown16[0] += 4;
     }
 
     return 1;
@@ -172,7 +172,7 @@ int i7(int pc)
 /****************************************************************************/
 
 // pc = player (0) or character (1 or more)
-int o7(int pc)
+int take_drop_out(int pc)
 {
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
@@ -193,7 +193,7 @@ int o7(int pc)
   debug_printf("> o7\n");
 
   c[18] = 7;
-  ch->monster.unknown15[3] = 7;
+  ch->monster.unknown16[2] = 7;
 
   if (j > 0) {
     r = 0;

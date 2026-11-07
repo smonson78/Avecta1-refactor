@@ -94,7 +94,7 @@ int damage(int pc, int level)
     }
 
     // if (curmon[0][39] == pc || (curmon[0][15] == 2 && curmon[0][7] == pc) ) {
-    if (curmon[0][39] == pc || (player->unknown15[0] == 2 && player->unknown7 == pc) ) {
+    if (curmon[0][39] == pc || (player->command == 2 && player->unknown7 == pc) ) {
       c[38] = 0;
       new_c->controlled = 0;
 

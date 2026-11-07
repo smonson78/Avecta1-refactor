@@ -69,9 +69,9 @@ int i11(int pc)
   ch->player.unknown9 = 0;
 
   c[15] = 11;
-  ch->player.unknown15[0] = 11;
+  ch->player.command = 11;
   c[16] = 2 + c[11];
-  ch->player.unknown15[1] = 2 + ch->player.unknown11;
+  ch->player.unknown16[0] = 2 + ch->player.unknown11;
 
   debug_printf("< i11()\n");
   return 1;

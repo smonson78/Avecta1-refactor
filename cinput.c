@@ -175,7 +175,7 @@ top:
         if (pc == 0 || (pc < 4 && c[38])) {
           c[15] = 1;
           c[39] = c[7];
-          new_c->unknown15[0] = 1;
+          new_c->command = 1;
           new_c->unknown39 = new_c->unknown7;
           goto com;
         } else {
@@ -186,7 +186,7 @@ top:
           i = status(c[7]);
           if (!i) {
             curmon[c[7]][15] = 8;
-            new_curmon[new_c->unknown7].unknown15[0] = 8;
+            new_curmon[new_c->unknown7].command = 8;
           }
         } else {
           goto top;
@@ -293,15 +293,32 @@ int comwind(int pc)
   if (*(c1+39) != pc) {
     i = 0;
   }
-  if (i < 4) {
-    textsix(1,260,49,strlen(att[j][i]),att[j][i]);
+
+  // Display the attack option
+  char *attack_name = NULL;
+  switch (i) {
+    //case 0:
+    //  attack_name = att[j].unused; // blank string. Maybe it just means "no attack"
+    //  break;
+    case 1:
+      attack_name = att[j].allout;
+      break;
+    case 2:
+      attack_name = att[j].standard;
+      break;
+    case 3:
+      attack_name = att[j].defensive;
   }
+  if (attack_name) {
+    textsix(1, 260, 49, strlen(attack_name), attack_name);
+  }
+
   if (i == 4) {
-    textsix(1,260,49,10,"Cast spell");
+    textsix(1, 260, 49, 10, "Cast spell");
   }
   
   for (i = 0; i < 4; i++) {
-    textsix(1,260,65+8*i,strlen(posture[i]),posture[i]);
+    textsix(1, 260, 65+8*i, strlen(posture[i]), posture[i]);
   }
 
   winker = 1;

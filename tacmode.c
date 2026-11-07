@@ -156,8 +156,8 @@ int tacmode() {
 
                 new_c->x = x;
                 new_c->y = y;
-                new_c->unknown15[1] = 1;
-                new_c->unknown15[0] = 8;
+                new_c->unknown16[0] = 1;
+                new_c->command = 8;
                 new_c->old_x = new_curmon[0].x;
                 new_c->old_y = new_curmon[0].y;
                 new_c->current_room = crum;                
@@ -264,11 +264,11 @@ int tacmode() {
         grflist[grflist[0]] = i;
 
         c[16] -= 1;
-        new_c->unknown15[1]--;
+        new_c->unknown16[0]--;
 
         // This player or monster will move, so add them to the activity list
         // if (c[16] == 0) {
-        if (new_c->unknown15[1] == 0) {
+        if (new_c->unknown16[0] == 0) {
           actlist[0] += 1;
           actlist[actlist[0]] = i;
         }
@@ -322,7 +322,7 @@ int tacmode() {
         p = Bconin(2) & 0xff;
         if (p == ' ') {
           c[16] = 0;
-          new_c->unknown15[1] = 0;
+          new_c->unknown16[0] = 0;
           j = 1;
         }
       }

@@ -12,9 +12,9 @@
 
 // I think this is "move"
 
-int i4(int pc)
+int move_in(int pc)
 {
-  debug_printf("> i4()\n");
+  debug_printf("> move_in()\n");
   check_curmon("pre-i4");
   
   uint8_t *c = curmon[pc];
@@ -25,16 +25,16 @@ int i4(int pc)
   c[23] = c[25];
   c[15] = 4;
   c[16] = c[11] > 0 ? c[11] : 1;
-  new_c->unknown15[7] = new_c->x;
-  new_c->unknown15[8] = new_c->y;
-  new_c->unknown15[0] = 4;
-  new_c->unknown15[1] = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
+  new_c->unknown16[6] = new_c->x;
+  new_c->unknown16[7] = new_c->y;
+  new_c->command = 4;
+  new_c->unknown16[0] = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
 
   nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &x, &y);
 
   if (x - c[24] != 0 && y - c[25] != 0) {
     c[16] += c[16] / 2;
-    new_c->unknown15[1] += new_c->unknown15[1] / 2;
+    new_c->unknown16[0] += new_c->unknown16[0] / 2;
   }
 
   c[28] = x;
@@ -62,8 +62,9 @@ int i4(int pc)
   return 1;
 }
 
-int o4(int pc)
+int move_out(int pc)
 {
+  debug_printf("> move_out()\n");
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
   uint8_t *z;
@@ -100,7 +101,7 @@ int o4(int pc)
     }
 
     c[18] = 4;
-    new_c->unknown15[3] = 4;
+    new_c->unknown16[2] = 4;
   }
 
   xroll = 2 * (x - xnow) / (1 + outside);
@@ -194,11 +195,11 @@ int o4(int pc)
   nextxy(c[22], c[23], c[26], c[27], c[24], c[25], &x, &y);
 
   c[16] = c[11] > 0 ? c[11] : 1;
-  new_c->unknown15[1] = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
+  new_c->unknown16[0] = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
 
   if (x - c[24] != 0 && y - c[25] != 0) {
     c[16] += c[16] / 2;
-    new_c->unknown15[1] += new_c->unknown15[1] / 2;
+    new_c->unknown16[0] += new_c->unknown16[0] / 2;
   }
 
   c[28] = x;

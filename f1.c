@@ -6,9 +6,9 @@
 #include "damage.h"
 #include "tos_compat.h"
 
-int i1(int pc)
+int attack_in(int pc)
 {
-  debug_printf("> i1()\n");
+  debug_printf("> attack_in()\n");
   uint8_t *c = curmon[pc];
   curmon2_t *new_c = &new_curmon2[pc];
   // uint8_t *t = curmon[c[39]];
@@ -47,10 +47,10 @@ int i1(int pc)
   }
 
   c[15] = 1;
-  new_c->monster.unknown15[0] = 1;
+  new_c->monster.command = 1;
 
   c[16] = c[11];
-  new_c->monster.unknown15[1] = new_c->monster.unknown11;
+  new_c->monster.unknown16[0] = new_c->monster.unknown11;
 
   c[9] = 0;
   new_c->monster.spells[4] = 0;
@@ -58,9 +58,9 @@ int i1(int pc)
   return 1;
 }
 
-int o1(int pc) 
+int attack_out(int pc) 
 {
-  debug_printf("> o1()\n");
+  debug_printf("> attack_out()\n");
   uint8_t *a = curmon[pc];
   uint8_t *t = curmon[a[39]];
   curmon2_t *new_a = &new_curmon2[pc];

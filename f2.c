@@ -213,8 +213,8 @@ int cast_in(int pc)
   c[14] -= 1 + (numb - 1) / 5;
 
   new_c->spell_cast = numb;
-  new_c->unknown15[0] = 2;
-  new_c->unknown15[1] = spelinfo[numb - 1][2];
+  new_c->command = 2;
+  new_c->unknown16[0] = spelinfo[numb - 1][2];
   new_c->spell_units -= 1 + (numb - 1) / 5;
   
   debug_printf("< i2\n");
@@ -229,7 +229,7 @@ void losespel(int pc)
   char *n = (pc < 4 ? rummsg[0] : msg[0]);
 
   // if (c[21] != 0) {
-  if (new_c->unknown15[6] != 0) {
+  if (new_c->unknown16[5] != 0) {
     prnt("-> The original spell on %s%s was lost!", n, w, NULL, NULL, NULL, NULL);  
     // WTF
     //*(c + c[19]) = c[20];
@@ -240,7 +240,7 @@ void losespel(int pc)
     // }
 
     c[21] = 0;
-    new_c->unknown15[6] = 0;
+    new_c->unknown16[5] = 0;
   }
 }
 
@@ -384,7 +384,7 @@ int cast_out(int pc)
       new_c->perception = 120;
       
       // Search action
-      o6(pc);
+      search_out(pc);
 
       c[37] = num; // put back to original value
       new_c->perception = num;
@@ -410,10 +410,10 @@ int cast_out(int pc)
 
       // Crash here:
       printf("--> t is %p, new_t is %p\n", t, new_t);
-      new_t->unknown15[1] = 50 + (5 * new_c->magic_level);
-      new_t->unknown15[4] = 0;
-      new_t->unknown15[5] = 1;
-      new_t->unknown15[6] = new_t->unknown15[1] / 5; // Note we just set this value earlier
+      new_t->unknown16[0] = 50 + (5 * new_c->magic_level);
+      new_t->unknown16[3] = 0;
+      new_t->unknown16[4] = 1;
+      new_t->unknown16[5] = new_t->unknown16[0] / 5; // Note we just set this value earlier
 
       break;
 
@@ -435,10 +435,10 @@ int cast_out(int pc)
       t[43] = 1;
       t[19] = 43;
       t[21] = 20 + 2*(c[51]);
-      new_t->unknown15[5] = new_t->base_chance_3_attack; // this was a crash
+      new_t->unknown16[4] = new_t->base_chance_3_attack; // this was a crash
       new_t->base_chance_3_attack = 1;
-      new_t->unknown15[4] = 43;
-      new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
+      new_t->unknown16[3] = 43;
+      new_t->unknown16[5] = 20 + (2 * new_c->magic_level);
 
       break;
 
@@ -450,10 +450,10 @@ int cast_out(int pc)
       t[11] = 1;
       t[19] = 11;
       t[21] = 20 + 2*(c[51]);
-      new_t->unknown15[5] = new_t->unknown11;
+      new_t->unknown16[4] = new_t->unknown11;
       new_t->unknown11 = 1;
-      new_t->unknown15[4] = 11;
-      new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
+      new_t->unknown16[3] = 11;
+      new_t->unknown16[5] = 20 + (2 * new_c->magic_level);
 
       break;
 
@@ -465,10 +465,10 @@ int cast_out(int pc)
       t[12] += c[51];
       t[19] = 12;
       t[21] = 20 + 2*(c[51]);
-      new_t->unknown15[5] = new_t->unknown12;
+      new_t->unknown16[4] = new_t->unknown12;
       new_t->unknown12 += new_c->magic_level;
-      new_t->unknown15[4] = 12;
-      new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
+      new_t->unknown16[3] = 12;
+      new_t->unknown16[5] = 20 + (2 * new_c->magic_level);
 
       break;
 
@@ -552,10 +552,10 @@ int cast_out(int pc)
       t[36] = 1;
       t[19] = 36;
       t[21] = 40 + 2*(c[51]);
-      new_t->unknown15[5] = new_t->flee;
+      new_t->unknown16[4] = new_t->flee;
       new_t->flee = 1;
-      new_t->unknown15[4] = 36;
-      new_t->unknown15[6] = 40 + (2 * new_c->magic_level);
+      new_t->unknown16[3] = 36;
+      new_t->unknown16[5] = 40 + (2 * new_c->magic_level);
 
       damage(target, 0);
       break;
@@ -599,7 +599,7 @@ int cast_out(int pc)
       }
 
       t[15] = 8;
-      new_t->unknown15[0] = 8;
+      new_t->command = 8;
 
       break;
 
@@ -678,9 +678,9 @@ int cast_out(int pc)
       t[19] = 38;
       t[21] = 20 + 2*(c[51]);
       new_t->controlled = 1;
-      new_t->unknown15[5] = 0;
-      new_t->unknown15[4] = 38;
-      new_t->unknown15[6] = 20 + (2 * new_c->magic_level);
+      new_t->unknown16[4] = 0;
+      new_t->unknown16[3] = 38;
+      new_t->unknown16[5] = 20 + (2 * new_c->magic_level);
 
       check_curmon("charm");
       dorep();

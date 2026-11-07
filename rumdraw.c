@@ -544,9 +544,9 @@ void rumdraw(char *pan)
       c[18] = 0;
       c[39] = i;
 
-      new_c->unknown15[0] = 8;
-      new_c->unknown15[1] = 1;
-      new_c->unknown15[3] = 0;
+      new_c->command = 8;
+      new_c->unknown16[0] = 1;
+      new_c->unknown16[2] = 0;
       new_c->unknown39 = i; // i is just the monster array index
 
       zline[x1][y1][2] = i;

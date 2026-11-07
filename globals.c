@@ -52,11 +52,11 @@ int winroom;
 
 // These functions are called when selecting an action to perform
 int (*inverb[])(int pc)  = {
-  i0, i1, cast_in, examine_in, i4, drag_eat_in, i6, i7, i8, i9, i10, i11, i12, i13, i14
+  i0, attack_in, cast_in, examine_in, move_in, drag_eat_in, search_in, take_drop_in, wait_in, i9, i10, i11, i12, i13, i14
 };
 
 int (*outverb[])(int pc) = {
-  o0, o1, cast_out, examine_out, o4, drag_eat_out, o6, o7, o8, o9, o10, o11, o12, o13, o14
+  o0, attack_out, cast_out, examine_out, move_out, drag_eat_out, search_out, take_drop_out, wait_out, o9, o10, o11, o12, o13, o14
 };
 
 int winker = 0, winktime = 0, combat = 0;
@@ -105,8 +105,8 @@ char *spell[] = {
 // Note this is not used in the menu display where it just divides by 4
 char spelunit[] = {0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
 char *name[] = {
-  "goblin","skeleton","spider","firewolf","ghost","thrang", "ghoul","snake","vampire",
-  "gork","Melkthrop","merchant", "bat","Eirik","guard","pedestrian","Mage Leveth",
+  "goblin","skeleton","spider","firewolf","ghost","thrang","ghoul","snake","vampire",
+  "gork","Melkthrop","merchant","bat","Eirik","guard","pedestrian","Mage Leveth",
   "orc","crusher","flamer","rat","bartender","rogue"
 };
 
@@ -312,33 +312,34 @@ room_object_t crumobj[19];
 // 7 - object Y coord
 // 8 - if the object is visible
 
-char *att[][4] = {
+// Only used once - in cinput.c
+attack_t att[] = {
   {"","","",""},
-  /* spidey*/        {"","bite/all","",""},
-  /* skelly*/        {"","blade/all","",""},
-  /* snake */        {"","crush/all","bite/std","bite/def"},
-  /* dogs */         {"","bite/all","",""},
-  /* goblin*/        {"","mace/all","mace/std","mace/def"},
-  /* bat*/           {"","bite/all","claw/std",""},
-  /* thrang*/        {"","","",""},
-  /* Bab */          {"","","",""},
-  /* */              {"","","",""},
-  /* */              {"","","",""},
-  /* spook */        {"","drain/all","","drain/def"},
-  /* ghoul */        {"","bite/all","","claw/def"},
-  /* vampire */      {"","bite/all","strike/std","glare/def"},
-  /* gork */         {"","spray/all","slash/std",""},
-  /* merchant */     {"","","",""},
-  /* melkthrop */    {"","","",""},
-  /* cop */          {"","club/all","club/std","club/def"},
-  /* ped */          {"","","",""},
-  /* Lev */          {"","","",""},
-  /* orc */          {"","slash/all","slash/std","slash/def"},
-  /* crush */        {"","crush/all","",""},
-  /* flamer */       {"","","",""},
-  /* rat */          {"","bite/all","","bite/def"},
-  /* bar */          {"","club/all","",""},
-  /* rogue */        {"","blade/all","blade/std","blade/def"}
+  /* spidey*/        {"bite/all","",""},
+  /* skelly*/        {"blade/all","",""},
+  /* snake */        {"crush/all","bite/std","bite/def"},
+  /* dogs */         {"bite/all","",""},
+  /* goblin*/        {"mace/all","mace/std","mace/def"},
+  /* bat*/           {"bite/all","claw/std",""},
+  /* thrang*/        {"","",""},
+  /* Bab */          {"","",""},
+  /* */              {"","",""},
+  /* */              {"","",""},
+  /* spook */        {"drain/all","","drain/def"},
+  /* ghoul */        {"bite/all","","claw/def"},
+  /* vampire */      {"bite/all","strike/std","glare/def"},
+  /* gork */         {"spray/all","slash/std",""},
+  /* merchant */     {"","",""},
+  /* melkthrop */    {"","",""},
+  /* cop */          {"club/all","club/std","club/def"},
+  /* ped */          {"","",""},
+  /* Lev */          {"","",""},
+  /* orc */          {"slash/all","slash/std","slash/def"},
+  /* crush */        {"crush/all","",""},
+  /* flamer */       {"","",""},
+  /* rat */          {"bite/all","","bite/def"},
+  /* bar */          {"club/all","",""},
+  /* rogue */        {"blade/all","blade/std","blade/def"}
 };
 
 char *monmsg[] = {

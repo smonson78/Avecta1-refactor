@@ -319,8 +319,8 @@ int setflee(int npc)
         c[26] = d->x; // Presumably this is where they're headed
         c[27] = d->y;
 
-        new_c->unknown15[0] = 9;
-        new_c->unknown15[1] = 6;
+        new_c->command = 9;
+        new_c->unknown16[0] = 6;
         new_c->old_x = d->x;
         new_c->old_y = d->y;
 
@@ -335,8 +335,8 @@ int setflee(int npc)
       c[22] = c[24];
       c[23] = c[25];
 
-      new_c->unknown15[7] = new_c->x;
-      new_c->unknown15[8] = new_c->y;
+      new_c->unknown16[6] = new_c->x;
+      new_c->unknown16[7] = new_c->y;
 
 
       nextxy(c[22], c[23], c[26], c[27], c[24], c[25], &x, &y);
@@ -348,9 +348,9 @@ int setflee(int npc)
       c[15] = 4;
       c[18] = i;
       c[16] = (c[11] < 1 ? 1 : c[11]);
-      new_c->unknown15[0] = 4;
-      new_c->unknown15[3] = i;
-      new_c->unknown15[1] = (new_c->unknown11 < 1 ? 1 : new_c->unknown11);
+      new_c->command = 4;
+      new_c->unknown16[2] = i;
+      new_c->unknown16[0] = (new_c->unknown11 < 1 ? 1 : new_c->unknown11);
 
       return 1;
     }
@@ -450,10 +450,10 @@ int setmove(int npc, int flag)
     c[16] = 6;
     c[9] = crumobj[c[18]].target;
 
-    new_c->unknown15[0] = 9;
-    new_c->unknown15[1] = 6;
+    new_c->command = 9;
+    new_c->unknown16[0] = 6;
     // This is a bit of a concern because it doesn't seem to make sense
-    new_c->spells[4] = crumobj[new_c->unknown15[3]].target;
+    new_c->spells[4] = crumobj[new_c->unknown16[2]].target;
 
     return 1;
   }
@@ -504,12 +504,12 @@ int setmove(int npc, int flag)
 
             new_c->unknown28[0] = new_c->x + (i * l);
             new_c->unknown28[1] = new_c->y + (j * m);
-            new_c->unknown15[0] = 4;
-            new_c->unknown15[1] = new_c->unknown11;
+            new_c->command = 4;
+            new_c->unknown16[0] = new_c->unknown11;
 
             if (i * l != 0 && j*m != 0) {
               c[16] += (c[16])/2;
-              new_c->unknown15[1] += new_c->unknown15[1] / 2;
+              new_c->unknown16[0] += new_c->unknown16[0] / 2;
             }
             return 1;
           }
@@ -638,8 +638,8 @@ int pass(int npc)
 
   c[15] = 8;
   c[16] = 4;
-  new_c->unknown15[0] = 8;
-  new_c->unknown15[1] = 4;
+  new_c->command = 8;
+  new_c->unknown16[0] = 4;
 
   return 1;
 }
@@ -809,9 +809,9 @@ int matt(int npc)
     a[10] = sp;
 
     new_a->spell_units -= spelunit[sp];
-    new_a->unknown15[1] = spelinfo[sp - 1][2];
+    new_a->unknown16[0] = spelinfo[sp - 1][2];
     new_a->unknown40 = 4;
-    new_a->unknown15[0] = 2;
+    new_a->command = 2;
     new_a->spell_units = new_a->spell_units < 5 ? -1 : new_a->spell_units;
     new_a->spell_cast = sp;
 
@@ -819,19 +819,19 @@ int matt(int npc)
   }
 
   a[15] = 1;
-  new_a->unknown15[0] = 1;
+  new_a->command = 1;
 
   if (a[45] == 45) {
     a[15] = 11;
-    new_a->unknown15[0] = 11;
+    new_a->command = 11;
   }
 
   a[16] = a[11];
-  new_a->unknown15[1] = new_a->unknown11;
+  new_a->unknown16[0] = new_a->unknown11;
 
   if (a[15] == 11) {
     a[16] *= 2;
-    new_a->unknown15[1] *= 2;
+    new_a->unknown16[0] *= 2;
   }
 
   // Monsters only
@@ -901,8 +901,8 @@ int friend(int npc)
     c[16] = 6;
 
     new_c->spell_cast = SPELL_CURE_LIGHT_WOUNDS;
-    new_c->unknown15[0] = 12;
-    new_c->unknown15[1] = 6;
+    new_c->command = 12;
+    new_c->unknown16[0] = 6;
     return 1;
   }
 
@@ -1023,7 +1023,7 @@ int friend(int npc)
       }
 
       if (c[15] != 6) {
-        i6(npc);
+        search_in(npc);
         return 1;
       } else {
         do {
@@ -1036,7 +1036,7 @@ int friend(int npc)
           new_c->old_x = xrnd;
           new_c->old_y = yrnd;
 
-        } while (!i4(npc));
+        } while (!move_in(npc));
       }
     }
   }

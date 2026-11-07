@@ -61,8 +61,8 @@ int sell(int npc)
     c[6] = c[8] = 1;
     c[5] = 2;
 
-    ch->player.unknown15[0] = 8;
-    ch->player.unknown15[1] = 80;
+    ch->player.command = 8;
+    ch->player.unknown16[0] = 80;
     ch->player.unknown6 = 1;
     ch->player.unknown8 = 1;
     ch->player.unknown5 = 2;
@@ -85,8 +85,8 @@ int sell(int npc)
     prnt("-> The merchant shouts `Kill the ruffian!'", NULL, NULL, NULL, NULL, NULL, NULL);
     c[15] = 8;
     c[16] = 75;
-    ch->player.unknown15[0] = 8;
-    ch->player.unknown15[1] = 75;
+    ch->player.command = 8;
+    ch->player.unknown16[0] = 75;
 
     return 1;
   }
@@ -126,9 +126,9 @@ int sell(int npc)
   
   if (c[6] == 0) {
     h[15] = 8;
-    player->unknown15[0] = 8; 
-    prnt("-> The merchant says `Are you interested in buying one of my \
-  exceptional %ss?  They are a mere %s goldpieces!  Yes or no?'",
+    player->command = 8; 
+    prnt("-> The merchant says `Are you interested in buying one of my "
+      "exceptional %ss?  They are a mere %s goldpieces!  Yes or no?'",
       obj[selllist[i].object], temp, NULL, NULL, NULL, NULL);
   }
 
@@ -162,8 +162,8 @@ int sell(int npc)
     c[15] = 8;
     c[16] = 30;
 
-    ch->player.unknown15[0] = 8;
-    ch->player.unknown15[1] = 30;    
+    ch->player.command = 8;
+    ch->player.unknown16[0] = 30;    
 
   } else {
     prnt("-> The merchant smiles and burbles `What excellent taste you have!  How many gold pieces "
@@ -291,8 +291,8 @@ int sell(int npc)
       c[8] = 0;
       c[9] = 0;
       c[10] = 0;
-      ch->player.unknown15[0] = 8;
-      ch->player.unknown15[1] = 100;
+      ch->player.command = 8;
+      ch->player.unknown16[0] = 100;
       ch->player.unknown6 = 0;
       ch->player.unknown7 = 0;
       ch->player.unknown8 = 0;
@@ -354,8 +354,8 @@ int wander(int npc)
     c[10] = ex;
     c[9] = c[48];
 
-    new_c->monster.unknown15[0] = 9;
-    new_c->monster.unknown15[1] = 4;
+    new_c->monster.command = 9;
+    new_c->monster.unknown16[0] = 4;
     new_c->monster.spell_cast = ex;
     new_c->monster.spells[4] = new_c->monster.unknown48;
 
@@ -406,7 +406,7 @@ int wander(int npc)
       new_c->monster.old_y = new_c->monster.y + j;
 
       // Now move there (if possible)
-      if (!i4(npc)) {
+      if (!move_in(npc)) {
         c[48] = 0;
         new_c->monster.unknown48 = 0;
 
@@ -424,7 +424,7 @@ int wander(int npc)
   new_c->monster.old_y = y;
 
   // Try to move there
-  if (!i4(npc)) {
+  if (!move_in(npc)) {
     c[48] = 0;
     new_c->monster.unknown48 = 0;
     pass(npc);

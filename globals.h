@@ -248,7 +248,14 @@ extern char *errmsg[];
 
 extern char *com[];
 extern char *verblist[];
-extern char *att[][4];
+
+typedef struct {
+  // char *unused;
+  char *allout;
+  char *standard;
+  char *defensive;
+} attack_t;
+extern attack_t att[];
 extern char *monmsg[];
 
 

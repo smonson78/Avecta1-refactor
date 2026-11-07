@@ -32,8 +32,8 @@ int i9(int pc)
     c[15] = 8;
     c[16] = curmon[0][16] + 1;
 
-    new_c->unknown15[0] = 8;
-    new_c->unknown15[1] = new_curmon[0].unknown15[1];
+    new_c->command = 8;
+    new_c->unknown16[0] = player->unknown16[0] + 1;
 
     return 1;
   }
@@ -99,8 +99,8 @@ int i9(int pc)
             clrinp();
             c[15] = 8;
             c[16] = 1;
-            new_c->unknown15[0] = 8;
-            new_c->unknown15[1] = 1;
+            new_c->command = 8;
+            new_c->unknown16[0] = 1;
 
             return 1;
           }
@@ -149,8 +149,8 @@ int i9(int pc)
   ch->player.unknown9 = z[1];
   // ch->player.spell_cast = crumobj[z[1]][3];
   ch->player.spell_cast = crumobj[z[1]].target;
-  ch->player.unknown15[0] = 9;
-  ch->player.unknown15[1] = 6;
+  ch->player.command = 9;
+  ch->player.unknown16[0] = 6;
 
   return 1;
 }
@@ -205,7 +205,7 @@ int o9(int pc)
     }
 
     c[18] = 8;
-    ch->player.unknown15[3] = 8;
+    ch->player.unknown16[2] = 8;
   }
 
   return -1;

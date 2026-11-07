@@ -103,8 +103,8 @@ void trapres(int pc, int type, int x, int y)
 
     c[15] = 8;
     c[16] = 127;
-    new_c->unknown15[0] = 8;
-    new_c->unknown15[1] = 127;
+    new_c->command = 8;
+    new_c->unknown16[0] = 127;
 
     for (i = 4; i < 12; i++) {
       c = curmon[i];
@@ -118,11 +118,11 @@ void trapres(int pc, int type, int x, int y)
         c[16] = 1;
 
         new_c->flee = 1;
-        new_c->unknown15[3] = 1;
+        new_c->unknown16[2] = 1;
         new_c->old_x = 7;
         new_c->old_y = 7;
-        new_c->unknown15[0] = 8;
-        new_c->unknown15[1] = 1;
+        new_c->command = 8;
+        new_c->unknown16[0] = 1;
       }
     }
     break;
@@ -392,8 +392,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       c[48] = 1;
       c[10] = 13;
       c[39] = j;
-      new_c->unknown15[0] = 2;
-      new_c->unknown15[1] = 1;
+      new_c->command = 2;
+      new_c->unknown16[0] = 1;
       new_c->unknown48 = 1;
       new_c->spell_cast = SPELL_BLINK;
       new_c->unknown39 = j;
@@ -428,9 +428,9 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     c[21] = 40 - rnd(10);
     c[54] = 1;
     c[8] = 0;
-    new_c->unknown15[4] = 54;
-    new_c->unknown15[5] = 0;
-    new_c->unknown15[6] = 40 - rnd(10);
+    new_c->unknown16[3] = 54;
+    new_c->unknown16[4] = 0;
+    new_c->unknown16[5] = 40 - rnd(10);
     new_c->magic_mode_2 = 0;
     break;
 
@@ -545,8 +545,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
 
     c[15] = 8;
     c[16] = 1;
-    new_c->unknown15[0] = 8;
-    new_c->unknown15[1] = 1;
+    new_c->command = 8;
+    new_c->unknown16[0] = 1;
 
     flash();
     make(20, 0, 0, 12, 0, 0, 6, 1, 1);
@@ -756,7 +756,7 @@ said the last time they met.",
         curmon[i][36] = 1;
         curmon[i][15] = 8;
         new_curmon[i].flee = 1;
-        new_curmon[i].unknown15[0] = 8;
+        new_curmon[i].command = 8;
         j = 1;
       }
     }
@@ -1045,10 +1045,10 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     c[20] = c[50];
     c[50] = 20;
     c[21] = 10;
-    new_c->unknown15[4] = 50;
-    new_c->unknown15[5] = new_c->physical_strength;
+    new_c->unknown16[3] = 50;
+    new_c->unknown16[4] = new_c->physical_strength;
     new_c->physical_strength = 20;
-    new_c->unknown15[7] = 10;
+    new_c->unknown16[6] = 10;
     break;
 
   case 40:
@@ -1075,8 +1075,8 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     new_c->old_x = 7;
     new_c->old_y = 2;
     new_c->spell_cast = SPELL_BLINK;
-    new_c->unknown15[0] = 2;
-    new_c->unknown15[1] = 1;
+    new_c->command = 2;
+    new_c->unknown16[0] = 1;
     break;
 
   case 42:
@@ -1109,8 +1109,8 @@ the stuff!",
          s2, s2, NULL, NULL, NULL, NULL);
     c[15] = 8;
     c[16] = 254;
-    new_c->unknown15[0] = 8;
-    new_c->unknown15[1] = 254;
+    new_c->command = 8;
+    new_c->unknown16[0] = 254;
 
     if (actmon(5, 6, x, y) > 0) {
       prnt("-> And, of course, a pack of irate goblins, hearing the familiar \
@@ -1272,15 +1272,15 @@ Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
       }
 
     moan:
-      prnt("-> `Wethwicker's' the creature moans, `you must ... find it\
- ... please. I ... must conserve ... my strength.' And it slumps forward, as \
-if in a coma.", NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> `Wethwicker's' the creature moans, `you must ... find it"
+        " ... please. I ... must conserve ... my strength.' And it slumps "
+        "forward, as if in a coma.", NULL, NULL, NULL, NULL, NULL, NULL);
       curmon[0][15] = 4;
       curmon[0][16] = 1;
       curmon[0][26] = curmon[0][28] = 2;
       curmon[0][27] = curmon[0][29] = 4;
-      new_curmon[0].unknown15[0] = 4;
-      new_curmon[0].unknown15[1] = 1;
+      new_curmon[0].command = 4;
+      new_curmon[0].unknown16[0] = 1;
       new_curmon[0].old_x = 2;
       new_curmon[0].old_y = 4;
 

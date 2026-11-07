@@ -88,7 +88,7 @@ int timetrol()
 
     if (c[21] > 0) { /* checks for expiration of spells */
 			c[21] -= 1;
-			new_c->unknown15[6]--;
+			new_c->unknown16[5]--;
 
 			if (c[21] == 0) {
 				// FIXME how can I implement that?!?

@@ -10,13 +10,13 @@
 
 // Search
 
-int i6(int pc)
+int search_in(int pc)
 {
   uint8_t *c = curmon[pc];
   player_t *new_c = &players[pc];
 
   if (pc >= 4) {
-    debug_printf(">>> ERROR: non-character calling i6() pc=%d\n", pc);
+    debug_printf(">>> ERROR: non-character calling search_in() pc=%d\n", pc);
     appl_exit();
   }
 
@@ -28,8 +28,8 @@ int i6(int pc)
   c[15] = 6;
   c[7] = c[8] = c[9] = 0;      
 
-  new_c->unknown15[0] = 6;
-  new_c->unknown15[1] = 6;
+  new_c->command = 6;
+  new_c->unknown16[0] = 6;
   new_c->unknown7 = 0;
   new_c->unknown8 = 0;
   new_c->unknown9 = 0;
@@ -37,7 +37,7 @@ int i6(int pc)
   return 1;
 }
 
-int o6(int pc)
+int search_out(int pc)
 {
   uint8_t *c = curmon[pc], *z;
   // uint8_t *o;
@@ -92,7 +92,7 @@ int o6(int pc)
           }
         
           c[18] = 0;
-          new_c->unknown15[3] = 0;
+          new_c->unknown16[2] = 0;
           
           num++;
 
@@ -119,7 +119,7 @@ int o6(int pc)
             c[15] = 7;
             c[8] = k;
             c[10] = 0;
-            new_c->unknown15[0] = 7;
+            new_c->command = 7;
             new_c->unknown8 = k;
             new_c->spell_cast = 0;
             
@@ -155,7 +155,7 @@ int o6(int pc)
           prnt("-> %s discovers a hidden %s!", w, obj[object->object_id], NULL, NULL, NULL, NULL);
           
           c[18] = 0;
-          new_c->unknown15[3] = 0;
+          new_c->unknown16[2] = 0;
 
           if (new_rumdata[crum].room_has_bg || zline[x + i][y + j][5] > 0) {
             // blt(&bitmap[o[0]],16 * (x + i),16 * (y + j));
@@ -177,7 +177,7 @@ int o6(int pc)
   if (num == 0 && c[18] != 6 && (pc != 3 || c[38] == 1)) {
     prnt("-> %s discovers nothing.", w, NULL, NULL, NULL, NULL, NULL);
     c[18] = 6;
-    new_c->unknown15[3] = 6;
+    new_c->unknown16[2] = 6;
   }
 
   return 1;
