@@ -102,7 +102,7 @@ int actmon(int type, int nm, int x, int y)
     pc->unknown13 = p->unknown13;
     pc->spell_units = p->spell_units;
 
-    pc->command = 8;
+    pc->command = ACTION_WAIT;
     pc->unknown16[0] = 1;
 
     pc->x = x;
@@ -287,7 +287,7 @@ int actmon(int type, int nm, int x, int y)
       new_c->magic_mode_2 = 1;     /* then he is immune to magic as in p.magic_mode */
     }
 
-    new_c->command = 8;       /* installed with a wait */
+    new_c->command = ACTION_WAIT;       /* installed with a wait */
     new_c->unknown16[0] = 1;
     new_c->current_room = crum;
     new_c->unknown39 = i + 4;

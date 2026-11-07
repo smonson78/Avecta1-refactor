@@ -103,7 +103,7 @@ void trapres(int pc, int type, int x, int y)
 
     c[15] = 8;
     c[16] = 127;
-    new_c->command = 8;
+    new_c->command = ACTION_WAIT;
     new_c->unknown16[0] = 127;
 
     for (i = 4; i < 12; i++) {
@@ -121,7 +121,7 @@ void trapres(int pc, int type, int x, int y)
         new_c->unknown16[2] = 1;
         new_c->old_x = 7;
         new_c->old_y = 7;
-        new_c->command = 8;
+        new_c->command = ACTION_WAIT;
         new_c->unknown16[0] = 1;
       }
     }
@@ -392,7 +392,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       c[48] = 1;
       c[10] = 13;
       c[39] = j;
-      new_c->command = 2;
+      new_c->command = ACTION_CAST;
       new_c->unknown16[0] = 1;
       new_c->unknown48 = 1;
       new_c->spell_cast = SPELL_BLINK;
@@ -545,7 +545,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
 
     c[15] = 8;
     c[16] = 1;
-    new_c->command = 8;
+    new_c->command = ACTION_WAIT;
     new_c->unknown16[0] = 1;
 
     flash();
@@ -756,7 +756,7 @@ said the last time they met.",
         curmon[i][36] = 1;
         curmon[i][15] = 8;
         new_curmon[i].flee = 1;
-        new_curmon[i].command = 8;
+        new_curmon[i].command = ACTION_WAIT;
         j = 1;
       }
     }
@@ -1075,7 +1075,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     new_c->old_x = 7;
     new_c->old_y = 2;
     new_c->spell_cast = SPELL_BLINK;
-    new_c->command = 2;
+    new_c->command = ACTION_CAST;
     new_c->unknown16[0] = 1;
     break;
 
@@ -1109,7 +1109,7 @@ the stuff!",
          s2, s2, NULL, NULL, NULL, NULL);
     c[15] = 8;
     c[16] = 254;
-    new_c->command = 8;
+    new_c->command = ACTION_WAIT;
     new_c->unknown16[0] = 254;
 
     if (actmon(5, 6, x, y) > 0) {
@@ -1279,10 +1279,10 @@ Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
       curmon[0][16] = 1;
       curmon[0][26] = curmon[0][28] = 2;
       curmon[0][27] = curmon[0][29] = 4;
-      new_curmon[0].command = 4;
-      new_curmon[0].unknown16[0] = 1;
-      new_curmon[0].old_x = 2;
-      new_curmon[0].old_y = 4;
+      player->command = ACTION_MOVE;
+      player->unknown16[0] = 1;
+      player->old_x = 2;
+      player->old_y = 4;
 
       break;
     }

@@ -121,7 +121,7 @@ int examine_in(int pc)
   c[15] = 3;
   c[16] = 6;
   c[34] = 0;
-  new_c->command = 3;
+  new_c->command = ACTION_EXAMINE;
   new_c->unknown16[0] = 6;
 
   return 1;

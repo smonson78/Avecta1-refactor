@@ -99,7 +99,7 @@ int switchrum() {
 
   p[15] = 8;
   p[16] = 1;
-  new_p->command = 8;
+  new_p->command = ACTION_WAIT;
   new_p->unknown16[0] = 1;
 
   x = p[24];
@@ -415,7 +415,7 @@ int getmon(int room)
           mon->current_room = room;
           mon->unknown39 = j + 4; // monster index in array? what's the good of that
           mon->damage = r[i + 2];
-          mon->command = 8;
+          mon->command = ACTION_WAIT;
           mon->unknown16[0] = 1;
 
           zline[x][y][2] = j + 4;

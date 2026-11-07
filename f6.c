@@ -28,7 +28,7 @@ int search_in(int pc)
   c[15] = 6;
   c[7] = c[8] = c[9] = 0;      
 
-  new_c->command = 6;
+  new_c->command = ACTION_SEARCH;
   new_c->unknown16[0] = 6;
   new_c->unknown7 = 0;
   new_c->unknown8 = 0;
@@ -119,7 +119,7 @@ int search_out(int pc)
             c[15] = 7;
             c[8] = k;
             c[10] = 0;
-            new_c->command = 7;
+            new_c->command = ACTION_TAKE_DROP;
             new_c->unknown8 = k;
             new_c->spell_cast = 0;
             

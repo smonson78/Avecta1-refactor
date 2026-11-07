@@ -213,7 +213,7 @@ int cast_in(int pc)
   c[14] -= 1 + (numb - 1) / 5;
 
   new_c->spell_cast = numb;
-  new_c->command = 2;
+  new_c->command = ACTION_CAST;
   new_c->unknown16[0] = spelinfo[numb - 1][2];
   new_c->spell_units -= 1 + (numb - 1) / 5;
   
@@ -599,7 +599,7 @@ int cast_out(int pc)
       }
 
       t[15] = 8;
-      new_t->command = 8;
+      new_t->command = ACTION_WAIT;
 
       break;
 

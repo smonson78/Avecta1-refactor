@@ -69,7 +69,7 @@ int i11(int pc)
   ch->player.unknown9 = 0;
 
   c[15] = 11;
-  ch->player.command = 11;
+  ch->player.command = ACTION_FIRE_ARROW;
   c[16] = 2 + c[11];
   ch->player.unknown16[0] = 2 + ch->player.unknown11;
 

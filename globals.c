@@ -314,7 +314,7 @@ room_object_t crumobj[19];
 
 // Only used once - in cinput.c
 attack_t att[] = {
-  {"","","",""},
+  {"","",""},
   /* spidey*/        {"bite/all","",""},
   /* skelly*/        {"blade/all","",""},
   /* snake */        {"crush/all","bite/std","bite/def"},

@@ -161,6 +161,22 @@ extern char *wepname[];
 extern char *spell[];
 extern char *name[];
 
+#define ACTION_NOOP 0
+#define ACTION_ATTACK 1
+#define ACTION_CAST 2
+#define ACTION_EXAMINE 3
+#define ACTION_MOVE 4
+#define ACTION_DRAG_EAT 5
+#define ACTION_SEARCH 6
+#define ACTION_TAKE_DROP 7
+#define ACTION_WAIT 8
+#define ACTION_EXIT 9
+#define ACTION_ROOK_SNOOP 10
+#define ACTION_FIRE_ARROW 11
+#define ACTION_BURN_SNUFF 12
+#define ACTION_GIVE 13
+#define ACTION_VOICE 14
+
 #define ERROR_PATH_BLOCKED 1
 #define ERROR_SAME_SQUARE 2
 #define ERROR_NO_LINE_OF_SIGHT 3

@@ -78,7 +78,7 @@ int drag_eat_in(int pc)
       c[16] = 4;
       ch->player.unknown8 = self == 1 ? ch->player.good_hand : ch->player.other_hand;
       ch->player.spell_cast = 1;
-      ch->player.command = 5;
+      ch->player.command = ACTION_DRAG_EAT;
       ch->player.unknown16[0] = 4;
 
       return 1;
@@ -130,7 +130,7 @@ int drag_eat_in(int pc)
     c[15] = 5;
     ch->player.unknown5 = x;
     ch->player.unknown6 = y;
-    ch->player.command = 5;
+    ch->player.command = ACTION_DRAG_EAT;
 
     // if (object > 0 && crumobj[object][0] < 41) {
     if (object > 0 && crumobj[object].object_id < OBJECT_BROADSWORD) {
@@ -156,7 +156,7 @@ int drag_eat_in(int pc)
 
     ch->player.unknown8 = scratch[ret];
     ch->player.spell_cast = 1;
-    ch->player.command = 5;
+    ch->player.command = ACTION_DRAG_EAT;
     ch->player.unknown16[0] = 6;
   }
 
@@ -260,7 +260,7 @@ int drag_eat_out(int pc)
         }
 
         c[15] = 5;
-        ch->player.command = 5;
+        ch->player.command = ACTION_DRAG_EAT;
 
         if (!flag) {
           if (k < 41) {

@@ -319,7 +319,7 @@ int setflee(int npc)
         c[26] = d->x; // Presumably this is where they're headed
         c[27] = d->y;
 
-        new_c->command = 9;
+        new_c->command = ACTION_EXIT;
         new_c->unknown16[0] = 6;
         new_c->old_x = d->x;
         new_c->old_y = d->y;
@@ -348,7 +348,7 @@ int setflee(int npc)
       c[15] = 4;
       c[18] = i;
       c[16] = (c[11] < 1 ? 1 : c[11]);
-      new_c->command = 4;
+      new_c->command = ACTION_MOVE;
       new_c->unknown16[2] = i;
       new_c->unknown16[0] = (new_c->unknown11 < 1 ? 1 : new_c->unknown11);
 
@@ -450,7 +450,7 @@ int setmove(int npc, int flag)
     c[16] = 6;
     c[9] = crumobj[c[18]].target;
 
-    new_c->command = 9;
+    new_c->command = ACTION_EXIT;
     new_c->unknown16[0] = 6;
     // This is a bit of a concern because it doesn't seem to make sense
     new_c->spells[4] = crumobj[new_c->unknown16[2]].target;
@@ -504,7 +504,7 @@ int setmove(int npc, int flag)
 
             new_c->unknown28[0] = new_c->x + (i * l);
             new_c->unknown28[1] = new_c->y + (j * m);
-            new_c->command = 4;
+            new_c->command = ACTION_MOVE;
             new_c->unknown16[0] = new_c->unknown11;
 
             if (i * l != 0 && j*m != 0) {
@@ -638,7 +638,7 @@ int pass(int npc)
 
   c[15] = 8;
   c[16] = 4;
-  new_c->command = 8;
+  new_c->command = ACTION_WAIT;
   new_c->unknown16[0] = 4;
 
   return 1;
@@ -811,7 +811,7 @@ int matt(int npc)
     new_a->spell_units -= spelunit[sp];
     new_a->unknown16[0] = spelinfo[sp - 1][2];
     new_a->unknown40 = 4;
-    new_a->command = 2;
+    new_a->command = ACTION_CAST;
     new_a->spell_units = new_a->spell_units < 5 ? -1 : new_a->spell_units;
     new_a->spell_cast = sp;
 
@@ -819,11 +819,11 @@ int matt(int npc)
   }
 
   a[15] = 1;
-  new_a->command = 1;
+  new_a->command = ACTION_ATTACK;
 
   if (a[45] == 45) {
     a[15] = 11;
-    new_a->command = 11;
+    new_a->command = ACTION_FIRE_ARROW;
   }
 
   a[16] = a[11];
@@ -894,14 +894,14 @@ int friend(int npc)
   // if (npc < 4 && new_rumdata[crum].room_has_bg == 0 && c[41] < 3 && c[42] > 0) {
   if (npc < 4 && new_rumdata[crum].room_has_bg == 0 && p->lit_torches < 3 && p->unlit_torches > 0) {
     // If room is dark and character has less than three turns of torchlight left, 
-    // and still has unlit torches: cast cure light wounds?!?
+    // and still has unlit torches: light a torch
 
     c[10] = 1;
     c[15] = 12;
     c[16] = 6;
 
-    new_c->spell_cast = SPELL_CURE_LIGHT_WOUNDS;
-    new_c->command = 12;
+    new_c->spell_cast = 1;
+    new_c->command = ACTION_BURN_SNUFF;
     new_c->unknown16[0] = 6;
     return 1;
   }

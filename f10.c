@@ -68,7 +68,7 @@ int i10(int pc)
   ch->player.unknown5 = x;
   ch->player.unknown6 = y;
   ch->player.unknown9 = obj;
-  ch->player.command = 10;
+  ch->player.command = ACTION_ROOK_SNOOP;
   ch->player.unknown16[0] = 6;
   ch->player.unknown33[1] = 0;
 

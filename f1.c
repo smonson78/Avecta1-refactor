@@ -47,7 +47,7 @@ int attack_in(int pc)
   }
 
   c[15] = 1;
-  new_c->monster.command = 1;
+  new_c->monster.command = ACTION_ATTACK;
 
   c[16] = c[11];
   new_c->monster.unknown16[0] = new_c->monster.unknown11;

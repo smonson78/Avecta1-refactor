@@ -61,7 +61,7 @@ int sell(int npc)
     c[6] = c[8] = 1;
     c[5] = 2;
 
-    ch->player.command = 8;
+    ch->player.command = ACTION_WAIT;
     ch->player.unknown16[0] = 80;
     ch->player.unknown6 = 1;
     ch->player.unknown8 = 1;
@@ -85,7 +85,7 @@ int sell(int npc)
     prnt("-> The merchant shouts `Kill the ruffian!'", NULL, NULL, NULL, NULL, NULL, NULL);
     c[15] = 8;
     c[16] = 75;
-    ch->player.command = 8;
+    ch->player.command = ACTION_WAIT;
     ch->player.unknown16[0] = 75;
 
     return 1;
@@ -126,7 +126,7 @@ int sell(int npc)
   
   if (c[6] == 0) {
     h[15] = 8;
-    player->command = 8; 
+    player->command = ACTION_WAIT; 
     prnt("-> The merchant says `Are you interested in buying one of my "
       "exceptional %ss?  They are a mere %s goldpieces!  Yes or no?'",
       obj[selllist[i].object], temp, NULL, NULL, NULL, NULL);
@@ -162,7 +162,7 @@ int sell(int npc)
     c[15] = 8;
     c[16] = 30;
 
-    ch->player.command = 8;
+    ch->player.command = ACTION_WAIT;
     ch->player.unknown16[0] = 30;    
 
   } else {
@@ -291,7 +291,7 @@ int sell(int npc)
       c[8] = 0;
       c[9] = 0;
       c[10] = 0;
-      ch->player.command = 8;
+      ch->player.command = ACTION_WAIT;
       ch->player.unknown16[0] = 100;
       ch->player.unknown6 = 0;
       ch->player.unknown7 = 0;
@@ -354,7 +354,7 @@ int wander(int npc)
     c[10] = ex;
     c[9] = c[48];
 
-    new_c->monster.command = 9;
+    new_c->monster.command = ACTION_EXIT;
     new_c->monster.unknown16[0] = 4;
     new_c->monster.spell_cast = ex;
     new_c->monster.spells[4] = new_c->monster.unknown48;

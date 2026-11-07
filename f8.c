@@ -11,7 +11,7 @@ int wait_in(int pc)
   c[15] = 8;
   c[7] = c[8] = c[9] = 0;      
 
-  ch->player.command = 8;
+  ch->player.command = ACTION_WAIT;
   ch->player.unknown16[0] = 4;
   ch->player.unknown7 = 0;
   ch->player.unknown8 = 0;

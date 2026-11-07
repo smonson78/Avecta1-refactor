@@ -40,7 +40,7 @@ int i12(int pc)
 
   c[15] = 12;
   c[16] = 6;
-  ch->player.command = 12;
+  ch->player.command = ACTION_BURN_SNUFF;
   ch->player.unknown16[0] = 6;
 
   return 1;

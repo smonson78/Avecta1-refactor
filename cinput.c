@@ -175,7 +175,7 @@ top:
         if (pc == 0 || (pc < 4 && c[38])) {
           c[15] = 1;
           c[39] = c[7];
-          new_c->command = 1;
+          new_c->command = ACTION_ATTACK;
           new_c->unknown39 = new_c->unknown7;
           goto com;
         } else {
@@ -186,7 +186,7 @@ top:
           i = status(c[7]);
           if (!i) {
             curmon[c[7]][15] = 8;
-            new_curmon[new_c->unknown7].command = 8;
+            new_curmon[new_c->unknown7].command = ACTION_WAIT;
           }
         } else {
           goto top;

@@ -27,7 +27,7 @@ int move_in(int pc)
   c[16] = c[11] > 0 ? c[11] : 1;
   new_c->unknown16[6] = new_c->x;
   new_c->unknown16[7] = new_c->y;
-  new_c->command = 4;
+  new_c->command = ACTION_MOVE;
   new_c->unknown16[0] = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
 
   nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &x, &y);

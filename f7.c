@@ -96,7 +96,7 @@ int take_drop_in(int pc)
     c[15] = 7;  
     c[16] = 6;
     new_c->spell_cast = 0;
-    new_c->command = 7;
+    new_c->command = ACTION_TAKE_DROP;
     new_c->unknown16[0] = 6;
     return 1;
   } else {
@@ -153,7 +153,7 @@ int take_drop_in(int pc)
     c[10] = 1;
     new_c->spell_cast = 1;
     c[15] = 7;
-    new_c->command = 7;
+    new_c->command = ACTION_TAKE_DROP;
     c[16] = 2;
     new_c->unknown16[0] = 2;
 

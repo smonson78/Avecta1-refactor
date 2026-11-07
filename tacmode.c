@@ -157,9 +157,9 @@ int tacmode() {
                 new_c->x = x;
                 new_c->y = y;
                 new_c->unknown16[0] = 1;
-                new_c->command = 8;
-                new_c->old_x = new_curmon[0].x;
-                new_c->old_y = new_curmon[0].y;
+                new_c->command = ACTION_WAIT;
+                new_c->old_x = player->x;
+                new_c->old_y = player->y;
                 new_c->current_room = crum;                
 
                 drawman(i, x, y);
