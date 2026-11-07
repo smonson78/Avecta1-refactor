@@ -90,7 +90,7 @@ int drag_eat_in(int pc)
     }
 
     // if (crumobj[object][1] < 0) {
-    if (crumobj[object].unknown1 < 0) {
+    if (crumobj[object].movable < 0) {
       error(ERROR_IMMOVABLE_OBJECT);
       return 0;
     }

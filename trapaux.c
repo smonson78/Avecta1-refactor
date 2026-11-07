@@ -92,7 +92,7 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
   // c[7] = y;
   // c[8] = vis;
   c->object_id = id;
-  c->unknown1 = take;
+  c->movable = take;
   c->trap = trap;
   c->target = con;
   c->unknown4 = nmsg;

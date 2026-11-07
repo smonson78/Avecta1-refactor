@@ -21,8 +21,9 @@ typedef struct {
 typedef struct {
   // 0: Index into obj[] and bitmap[]
   uint8_t object_id;
-  uint8_t unknown1; // "take"
-  uint8_t trap; // "trap"
+  // 1: < 0 means "can't be dragged", 1 means "can be picked up". I don't think there are any other values
+  int8_t movable;
+  uint8_t trap;
   // 3: For doors: this is the room number
   uint8_t target;
   uint8_t unknown4; // "nmsg"

@@ -68,7 +68,7 @@ int i7(int pc)
     }
     
     // if (crumobj[object][1] != 1 || crumobj[object][0] < 41 ) {
-    if (crumobj[object].unknown1 != 1 || crumobj[object].object_id < OBJECT_BROADSWORD ) {
+    if (crumobj[object].movable != 1 || crumobj[object].object_id < OBJECT_BROADSWORD ) {
       error(ERROR_NOTHING_TO_TAKE);
       return 0;
     }
@@ -294,7 +294,7 @@ int o7(int pc)
     // z[2] = z[3] = 0;
 
     z->object_id = ch->player.unknown8;
-    z->unknown1 = 1;
+    z->movable = 1;
     z->x = x;
     z->y = y;
     z->unknown4 = ch->player.unknown8;

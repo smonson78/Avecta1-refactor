@@ -217,7 +217,7 @@ int damage(int pc, int level)
 
         z->object_id = 41 - pc;
         z->unknown4 = 41 - pc;
-        z->unknown1 = 1;
+        z->movable = 1;
         z->visible = 1;
         z->x = c[24];
         z->y = c[25];

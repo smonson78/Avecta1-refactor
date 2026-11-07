@@ -454,7 +454,7 @@ void rumdraw(char *pan)
     //zline[x][y][1] = i - 134; // 14..18
     zline[x][y][1] = 14 + i; // 14..18
     invtrap(object->object_id);
-    object->unknown1 = 1;
+    object->movable = 1;
     object->trap = 0;
     object->target = 0;
     object->unknown4 = c[0];

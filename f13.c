@@ -114,7 +114,7 @@ int o13(int pc)
     // z[8] = 1;
     // z[2] = z[3] = 0;
     z->object_id = new_c->monster.poison_mode_2;
-    z->unknown1 = 1;
+    z->movable = 1;
     z->x = x+i;
     z->y = y+j;
     z->unknown4 = new_c->monster.poison_mode_2;
