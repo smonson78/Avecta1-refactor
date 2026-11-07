@@ -164,9 +164,9 @@ void rumdraw(char *pan)
     object = &crumobj[i]; 
     if (object->object_id != 0) {
       // objnum++;
-      if (object->unknown2 != 0) {
+      if (object->trap != 0) {
         triglist[0]++;
-        triglist[i] = object->unknown2;
+        triglist[i] = object->trap;
       }
     }
   }
@@ -455,7 +455,7 @@ void rumdraw(char *pan)
     zline[x][y][1] = 14 + i; // 14..18
     invtrap(object->object_id);
     object->unknown1 = 1;
-    object->unknown2 = 0;
+    object->trap = 0;
     object->target = 0;
     object->unknown4 = c[0];
     object->unknown5 = -1;

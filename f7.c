@@ -300,7 +300,7 @@ int o7(int pc)
     z->unknown4 = ch->player.unknown8;
     z->unknown5 = -1;
     z->visible = 1;
-    z->unknown2 = 0;
+    z->trap = 0;
     z->target = 0;
 
     zline[x][y][1] = i;

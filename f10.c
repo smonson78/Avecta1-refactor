@@ -108,7 +108,7 @@ int o10(int pc)
       o->unknown5 = 1;
     } else {
       // if (o[2] == 0) {
-      if (o->unknown2 == 0) {
+      if (o->trap == 0) {
         // o[5] = -1;
         o->unknown5 = -1;
       } else {

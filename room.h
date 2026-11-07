@@ -22,7 +22,7 @@ typedef struct {
   // 0: Index into obj[] and bitmap[]
   uint8_t object_id;
   uint8_t unknown1; // "take"
-  uint8_t unknown2; // "trap"
+  uint8_t trap; // "trap"
   // 3: For doors: this is the room number
   uint8_t target;
   uint8_t unknown4; // "nmsg"

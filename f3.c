@@ -270,14 +270,14 @@ int examine_out(int pc)
   // Crumobjs:
   // if (type == 1 && mess == 0 && t[5] == -1 && t[3] == 0 && (t[2] == 0 || rnd(100) > c[37])) {
   if (type == 1 && mess == 0 && obj_t->unknown5 == -1 && obj_t->target == 0 
-      && (obj_t->unknown2 == 0 || rnd(100) > c[37])) {
+      && (obj_t->trap == 0 || rnd(100) > c[37])) {
     prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
     return 1;
   }
 
   // Crumobjs:
   // if (!outside && type == 1 && t[2] != 0 && c[37] > rnd(100)) {
-  if (!outside && type == 1 && obj_t->unknown2 != 0 && c[37] > rnd(100)) {
+  if (!outside && type == 1 && obj_t->trap != 0 && c[37] > rnd(100)) {
     flag = 1;
     prnt("-> %s senses something strange about the %s.", w1, w, NULL, NULL, NULL, NULL);
   }

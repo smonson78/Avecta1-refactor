@@ -93,7 +93,7 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
   // c[8] = vis;
   c->object_id = id;
   c->unknown1 = take;
-  c->unknown2 = trap;
+  c->trap = trap;
   c->target = con;
   c->unknown4 = nmsg;
   c->unknown5 = hide;
@@ -155,7 +155,7 @@ int invtrap(char obj)
 int untrap(int num)
 {
   // crumobj[num][2] = 0;
-  crumobj[num].unknown2 = 0;
+  crumobj[num].trap = 0;
   triglist[num] = 0;
   triglist[0]--;
   return 1;
@@ -197,7 +197,7 @@ int blowup(int x, int y)
   if (z[1] > 0 && crumobj[z[1]].object_id != OBJECT_RUNE) {
     c = &crumobj[z[1]];
     // if (c[3] != 0 || c[2] != 0) {
-    if (c->target != 0 || c->unknown2 != 0) {
+    if (c->target != 0 || c->trap != 0) {
       return 1;
     }
     destroy(1, z[1]);

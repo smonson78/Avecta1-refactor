@@ -236,7 +236,7 @@ int damage(int pc, int level)
           z->unknown5 = 0;
         }
 
-        z->unknown2 = 0;
+        z->trap = 0;
         z->target = 0;
       }
       

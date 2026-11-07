@@ -475,14 +475,14 @@ int cast_out(int pc)
     case 8: /* disarm trap */
       // t is a crumobj    
       // trap = t[2];
-      trap = object->unknown2;
+      trap = object->trap;
       
       if (trap > dismax || trap == 0) {
         return 1;
       }
 
       // t[2] = 0;
-      object->unknown2 = 0;
+      object->trap = 0;
 
       untrap(target);
       break;
@@ -709,7 +709,7 @@ int cast_out(int pc)
     case 20:  /* destroy an object */
       // t is a crumobj
       // if (t[2] > dismax || t[3] > 0 || t[0] == 1) {
-      if (object->unknown2 > dismax || object->target > 0 || object->object_id == OBJECT_DOOR) {
+      if (object->trap > dismax || object->target > 0 || object->object_id == OBJECT_DOOR) {
         // I guess you can't destroy doors
         prnt("-> The spell inexplicably fails!", NULL, NULL, NULL, NULL, NULL, NULL);
         break;

@@ -120,7 +120,7 @@ int o13(int pc)
     z->unknown4 = new_c->monster.poison_mode_2;
     z->unknown5 = -1;
     z->visible = 1;
-    z->unknown2 = 0;
+    z->trap = 0;
     z->target = 0;
 
     c[45] = 0;
