@@ -311,7 +311,7 @@ int setflee(int npc)
 
   for (i = 1; i < 14; i++) {
     d = &crumobj[i];
-    if (d->target != 0 && d->visible == 1 && d->unknown5 != -2) {
+    if (d->target != 0 && d->visible == 1 && d->hide != -2) {
 
       if (adjac(npc, d->x, d->y) ) { /* then we're at exit */
         c[15] = 9;                 /* so we set up a X-it act */

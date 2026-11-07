@@ -231,9 +231,9 @@ int damage(int pc, int level)
           }
 
           invnpc[pc][0] = 0;
-          z->unknown5 = 1;
+          z->hide = 1;
         } else {
-          z->unknown5 = 0;
+          z->hide = 0;
         }
 
         z->trap = 0;

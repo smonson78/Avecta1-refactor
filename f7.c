@@ -129,7 +129,7 @@ int i7(int pc)
 
     z = zline[x][y];
     // if (z[0] == 0 || ( (k = z[1] ) != 0 && crumobj[k][5] < 0) ) {
-    if (z[0] == 0 || ( (k = z[1] ) != 0 && crumobj[k].unknown5 < 0) ) {
+    if (z[0] == 0 || ( (k = z[1] ) != 0 && crumobj[k].hide < 0) ) {
       error(ERROR_OBJECT_IS_CLOSED);
       return 0;
     }
@@ -215,7 +215,7 @@ int o7(int pc)
     // prnt("-> %s puts the %s in the %s.", w1, obj[c[8]], obj[crumobj[k][0]], NULL, NULL, NULL);
     prnt("-> %s puts the %s in the %s.", w1, obj[c[8]], obj[crumobj[k].object_id], NULL, NULL, NULL);
     // crumobj[k][5] = 1;
-    crumobj[k].unknown5 = 1;
+    crumobj[k].hide = 1;
     takeout(pc, c[8]);
 
     if (c[45] == c[8]) {
@@ -298,7 +298,7 @@ int o7(int pc)
     z->x = x;
     z->y = y;
     z->unknown4 = ch->player.unknown8;
-    z->unknown5 = -1;
+    z->hide = -1;
     z->visible = 1;
     z->trap = 0;
     z->target = 0;

@@ -26,8 +26,10 @@ typedef struct {
   uint8_t trap;
   // 3: For doors: this is the room number
   uint8_t target;
+  // 4
   uint8_t unknown4; // "nmsg"
-  uint8_t unknown5; // "hide"
+  // 5: can be -2 (locked), -1, 0 meaning "empty", 1 possibly meaning "the object has something in it"
+  int8_t hide;
   // 6
   uint8_t x;
   // 7

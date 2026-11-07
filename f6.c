@@ -70,7 +70,7 @@ int o6(int pc)
       }
 
       // if (z[1] != 0 && crumobj[z[1]][5] > 0) {
-      if (z[1] != 0 && crumobj[z[1]].unknown5 > 0) {
+      if (z[1] != 0 && crumobj[z[1]].hide > 0) {
         // o = crumobj[z[1]];
         object = &crumobj[z[1]];
         flag = 0;
@@ -133,12 +133,12 @@ int o6(int pc)
 
         if (flag == 0) {
           // crumobj[z[1]][5] = 0;
-          crumobj[z[1]].unknown5 = 0;
+          crumobj[z[1]].hide = 0;
         }
       }
 
       // if (z[1] != 0 && crumobj[z[1]][5] == -2 && c[18] != 6) {
-      if (z[1] != 0 && crumobj[z[1]].unknown5 == -2 && c[18] != 6) {
+      if (z[1] != 0 && crumobj[z[1]].hide == -2 && c[18] != 6) {
         // prnt("-> %s notices the %s is locked!", w, obj[crumobj[z[1]][0]], NULL, NULL, NULL, NULL);
         prnt("-> %s notices the %s is locked!", w, obj[crumobj[z[1]].object_id], NULL, NULL, NULL, NULL);
       }

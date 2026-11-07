@@ -58,7 +58,7 @@ int destroy(int type, int num)
 int empty(int num)
 {
   // crumobj[num][5] = 0;
-  crumobj[num].unknown5 = 0;
+  crumobj[num].hide = 0;
   return 1;
 }
 
@@ -96,7 +96,7 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
   c->trap = trap;
   c->target = con;
   c->unknown4 = nmsg;
-  c->unknown5 = hide;
+  c->hide = hide;
   c->x = x;
   c->y = y;
   c->visible = vis;

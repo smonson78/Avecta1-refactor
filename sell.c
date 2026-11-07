@@ -378,7 +378,7 @@ int wander(int npc)
 
       if (o->object_id == 0 || j == 0 || j == 15 || j == 16 || j == 13 || j == 8 
           || j == 20 || j == 21 || j == 19 || j == 23 || j == 25 || j == 4
-          || j == 5 || o->unknown5 == -2 || adjac(npc, o->x, o->y)) {
+          || j == 5 || o->hide == -2 || adjac(npc, o->x, o->y)) {
         continue;
       }
 

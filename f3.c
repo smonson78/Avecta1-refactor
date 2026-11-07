@@ -269,7 +269,7 @@ int examine_out(int pc)
 
   // Crumobjs:
   // if (type == 1 && mess == 0 && t[5] == -1 && t[3] == 0 && (t[2] == 0 || rnd(100) > c[37])) {
-  if (type == 1 && mess == 0 && obj_t->unknown5 == -1 && obj_t->target == 0 
+  if (type == 1 && mess == 0 && obj_t->hide == -1 && obj_t->target == 0 
       && (obj_t->trap == 0 || rnd(100) > c[37])) {
     prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
     return 1;
@@ -296,7 +296,7 @@ int examine_out(int pc)
 
   // Crumobjs:
   // if (type == 1 && t[5] == -2) {
-  if (type == 1 && obj_t->unknown5 == -2) {
+  if (type == 1 && obj_t->hide == -2) {
     flag = 1;
     prnt("-> %s notices the %s is locked.", w1, w, NULL, NULL, NULL, NULL);
   }

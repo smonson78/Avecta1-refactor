@@ -165,7 +165,7 @@ int o9(int pc)
   
   // Player
   // if (pc == 0 && crumobj[c[9]][5] == -2) {
-  if (pc == 0 && crumobj[c[9]].unknown5 == -2) {
+  if (pc == 0 && crumobj[c[9]].hide == -2) {
     prnt("-> %s finds the exit is locked!", pname, NULL, NULL, NULL, NULL, NULL);
     c[30] = crum;
     ch->player.current_room = crum;

@@ -118,7 +118,7 @@ int o13(int pc)
     z->x = x+i;
     z->y = y+j;
     z->unknown4 = new_c->monster.poison_mode_2;
-    z->unknown5 = -1;
+    z->hide = -1;
     z->visible = 1;
     z->trap = 0;
     z->target = 0;

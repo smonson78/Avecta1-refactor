@@ -42,7 +42,7 @@ int i10(int pc)
   clrinp();
   obj = zline[x][y][1];
   // if (obj == 0 || (crumobj[obj][5] != -2 && crumobj[obj][3] < 1) ) {
-  if (obj == 0 || (crumobj[obj].unknown5 != -2 && crumobj[obj].target < 1) ) {
+  if (obj == 0 || (crumobj[obj].hide != -2 && crumobj[obj].target < 1) ) {
     error(ERROR_NOTHING_TO_ROOK_SNOOP);
     return 0;
   }
@@ -101,16 +101,16 @@ int o10(int pc)
   }
 
   // if (rnd(100) < c[37] && o[5] == -2) {
-  if (rnd(100) < c[37] && o->unknown5 == -2) {
+  if (rnd(100) < c[37] && o->hide == -2) {
     // if (o[3] == 0) {
     if (o->target == 0) {
       // o[5] = 1;
-      o->unknown5 = 1;
+      o->hide = 1;
     } else {
       // if (o[2] == 0) {
       if (o->trap == 0) {
         // o[5] = -1;
-        o->unknown5 = -1;
+        o->hide = -1;
       } else {
         return 1;
       }
