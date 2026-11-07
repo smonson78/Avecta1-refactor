@@ -216,13 +216,9 @@ extern char *name[];
 #define SPELL_LIFE 23
 #define SPELL_TELEPORT 24
 
-#define COMMAND_THE 0
-#define COMMAND_PLACE 1
-#define COMMAND_OBJECT 2
-#define COMMAND_TARGET 3
-#define COMMAND_SPOT 4
-#define COMMAND_EXIT 5
-#define COMMAND_ITEM 6
+#define TARGET_PLACE 1
+#define TARGET_OBJECT 2
+#define TARGET_PLAYER 3
 
 #define MONSTER_MELKTHROP 16
 

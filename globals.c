@@ -218,29 +218,29 @@ char *errmsg[] = {
 // 2 - Object
 // 3 - Player
 char spelinfo[24][3] = {
-  {3, COMMAND_TARGET, 6 },  /* cure light wounds */
+  {3, TARGET_PLAYER, 6 },  /* cure light wounds */
   {0, 0, 6 },  /* search */
-  {1, COMMAND_TARGET, 6 },  /* freeze */
-  {3, COMMAND_TARGET, 6 },  /* unvenom */
-  {3, COMMAND_TARGET, 6 },  /* vorpal */
-  {3, COMMAND_TARGET, 6 },  /* speed */
-  {3, COMMAND_TARGET, 6 },  /* armor */
-  {2, COMMAND_OBJECT, 6 },  /* disarm */
-  {1, COMMAND_TARGET, 6 },  /* bolt */
-  {2, COMMAND_OBJECT, 6 },  /* unlock */
-  {1, COMMAND_TARGET, 6 },  /* fear */
-  {1, COMMAND_TARGET, 8 },  /* fireball */
-  {3, COMMAND_TARGET, 8 },  /* blink */
+  {1, TARGET_PLAYER, 6 },  /* freeze */
+  {3, TARGET_PLAYER, 6 },  /* unvenom */
+  {3, TARGET_PLAYER, 6 },  /* vorpal */
+  {3, TARGET_PLAYER, 6 },  /* speed */
+  {3, TARGET_PLAYER, 6 },  /* armor */
+  {2, TARGET_OBJECT, 6 },  /* disarm */
+  {1, TARGET_PLAYER, 6 },  /* bolt */
+  {2, TARGET_OBJECT, 6 },  /* unlock */
+  {1, TARGET_PLAYER, 6 },  /* fear */
+  {1, TARGET_PLAYER, 8 },  /* fireball */
+  {3, TARGET_PLAYER, 8 },  /* blink */
   {0, 0, 10 }, /* reveal */
-  {3, COMMAND_OBJECT, 15 }, /* heal */
-  {1, COMMAND_TARGET, 10 }, /* prism */
-  {2, COMMAND_OBJECT, 6 },  /* block */
-  {1, COMMAND_TARGET, 10 }, /* charm */
-  {0, COMMAND_TARGET, 10 }, /* firewall */
-  {2, COMMAND_OBJECT, 8 },  /* destroy */
-  {0, COMMAND_PLACE, 20 }, /* summon */
-  {1, COMMAND_TARGET, 8 },  /* death */
-  {2, COMMAND_TARGET, 30 }, /* life */
+  {3, TARGET_OBJECT, 15 }, /* heal */
+  {1, TARGET_PLAYER, 10 }, /* prism */
+  {2, TARGET_OBJECT, 6 },  /* block */
+  {1, TARGET_PLAYER, 10 }, /* charm */
+  {0, TARGET_PLAYER, 10 }, /* firewall */
+  {2, TARGET_OBJECT, 8 },  /* destroy */
+  {0, TARGET_PLACE, 20 }, /* summon */
+  {1, TARGET_PLAYER, 8 },  /* death */
+  {2, TARGET_PLAYER, 30 }, /* life */
   {0, 0, 10}   /* teleport */
 };
 

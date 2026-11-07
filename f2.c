@@ -183,7 +183,7 @@ int cast_in(int pc)
   }
 
   if (numb == SPELL_BLINK) { /* asshole wants to blink */
-    domsg(COMMAND_PLACE);
+    domsg(TARGET_PLACE);
     header(w);
     winker = pc + 1;
     sgetxy(&x, &y, 0, 0, 0, &ret);

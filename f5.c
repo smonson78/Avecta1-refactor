@@ -114,7 +114,7 @@ int drag_eat_in(int pc)
 
     // Let the user select the location on the map
     header(w);
-    domsg(COMMAND_PLACE);
+    domsg(TARGET_PLACE);
     winker = pc + 1;
     sgetxy(&x, &y, 0, 0, 0, &ret);
     undomsg();
