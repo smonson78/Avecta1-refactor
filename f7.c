@@ -297,7 +297,7 @@ int o7(int pc)
     z->movable = 1;
     z->x = x;
     z->y = y;
-    z->unknown4 = ch->player.unknown8;
+    z->nmsg = ch->player.unknown8;
     z->hide = -1;
     z->visible = 1;
     z->trap = 0;

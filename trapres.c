@@ -296,8 +296,8 @@ torch %s is holding goes out, as if the darkness was an evil presence!",
 
   case 8:
     flash();
-    prnt("-> A pile of useless goblin junk, primarily memorabilia from \
-Goblin High's class of -234 BM, falls on top of %s!",
+    prnt("-> A pile of useless goblin junk, primarily memorabilia from "
+      "Goblin High's class of -234 BM, falls on top of %s!",
          s2, NULL, NULL, NULL, NULL, NULL);
     make(11, 0, 0, 0, 0, 0, x, y, 1);
     damage(pc, 8);

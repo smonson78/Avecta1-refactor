@@ -170,7 +170,7 @@ int damage(int pc, int level)
         i = zline[x][y][1];
 
         if (i != 0 && crumobj[i].target != 0) {
-          storsc(storbuf[pc],16*x,16*y,1,addr);
+          storsc(storbuf[pc],16 * x, 16 * y, 1, addr);
           do {
             i = 1 - rnd(3);
             k = 1 - rnd(3);
@@ -209,14 +209,22 @@ int damage(int pc, int level)
           // Old
           //rumdata[crum][134 + j] = 41 - pc;
           // New
-          new_rumdata[crum].room_unknown_3[j - 14] = 41 - pc;
+          new_rumdata[crum].room_unknown_3[j - 14] = OBJECT_BROADSWORD - pc;
 
-          storobj(41 - pc,x,y);
+          // This is a really weird number. pc must be 0-3 here, which means:
+          // It may be the case that Eirik is the only possible playable character that 
+          // matters here, since if the player (0) dies the game ends. PC values 2 and 3 
+          // may never come up.
+          // 0 - broadsword
+          // 1 - Eirik's dead body
+          // 2 - nothing (an object in the array without a name)
+          // 3 - nothing again
+          storobj(OBJECT_BROADSWORD - pc, x, y);
           //check_rumdata("damage");
         }
 
-        z->object_id = 41 - pc;
-        z->unknown4 = 41 - pc;
+        z->object_id = OBJECT_BROADSWORD - pc;
+        z->nmsg = z->object_id;
         z->movable = 1;
         z->visible = 1;
         z->x = c[24];
@@ -263,8 +271,8 @@ int damage(int pc, int level)
     }
   }
 
-  if (pc < 4 && (old*4)/(c[2]) < (i = (c[1]*4)/(c[2]))) {
-    prnt("-> %s's damage is now %s!",w,wordmod[i], NULL, NULL, NULL, NULL);
+  if (pc < 4 && (old * 4)/(c[2]) < (i = (c[1] * 4)/(c[2]))) {
+    prnt("-> %s's damage is now %s!", w, wordmod[i], NULL, NULL, NULL, NULL);
   }
   
   check_curmon("damage 2");

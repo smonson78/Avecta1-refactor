@@ -340,50 +340,53 @@ light-headed residents of Avecta, of which there are an inordinate number.",
  a bone key in the garbage for you. Your wife and children \
 are safe in my keeping. I am sure they miss you. Please visit them. \
 Melkthrop the Merciful.'",
-
+// 60
 " -> The note written in angry scrawl reads `Any goblin found guilty of not \
 covering the hidden stairwell with the middle forge will be used at the weekly \
 sacrifice! - signed Melkthrop the Merciless'.",
-
+// 61
 "-> This is an old bone of indeterminate origin. It serves as a ritual bone \
  for the goblins, reminding them of all their victory meals in the past as \
 they beat the victory drum with it.",
-
+// 62
 "-> The mighty tome entitled 'Melkthrop's Memoirs' pompously details the career of\
  the demon Melkthrop, his 'fall' from grace in Hell, and his plans to use the \
 ectoplasmic converter to return. It mentions a secret door in the machine \
 room.",
-
+// 63
 "-> Looking at this key induces a sense of nausea and dread. Strange and \
 disorienting patterns are cut in the metal which convey a sense of vileness.",
-
+// 64
 "-> The thick book is labelled Wethwicker's All the World's Spells. It is full \
 of strange symbols and tables, inexplicable diagrams, odd lists, and unpronoun\
 ceable incantations. At the end it contains a 224 page theory of magic due to \
 Wethwicker and others.",
-
+// 65
 "-> This mask seems to be cut in the form of an orc's face. Along one side is \
 written `Property of Guldor Ragoth. Return to Capetown Immediately.'",
-
+// 66
 "-> The black ball has written on its surface `Store only in a dark place. \
 When firing keep eyes safely covered. Good for one use only. Manufactured by \
 the King's Torpedo Works, Bromley, Chale.'",
-
+// 67
 "-> The note written in claw marks and blood reads `I, Gondrath, in service of \
 Hissar Zul, do proclaim Melkthrop to be recipient of the benefits and entitle\
 ments due him upon the arrival of the Dark One, the New God, the Avatar of \
 Despair'.",
-
+// 68
 "-> Well, congratulations, you made it all the way through! But don't get a \
 swelled head over it! New trouble is brewing and I'm sure it will probably \
 involve you. After all, the forces of darkness have a long memory. Until then\
 , happy adventuring!",
-
+// 69
 "-> The potion has a label depicting an extremely muscular man being admired \
 by a bevy of scantily clad beauties. Written underneath is `Laglolly's Elixir\
  of Power'",
+// 70
 "-> The heavy bag bulges as if it were full of small hard disks.",
+// 71-79
 "","","","","","","","","",
+// 80
 "-> The seekshard is an infallible mechanism for imprinting the structure of \
 the local spacetime for later use in a teleport spell. Instructions on the \
 side read 'Simply place the seekshard on the floor of the room. Report any \
@@ -518,9 +521,9 @@ Proprietor'.",
 "-> The sign reads `Blademaster - Finest Steel - Shamus McGee, Steelmaster.'",
 "-> The sign reads `Magic Potions - Elixirs of Strength - Axel Laglolly, \
 Proprietor'.",
-"-> The sign outside the tavern depicts a red lion roaring. Legend has it that\
- the original owner named the tavern after one of the creatures who perpetual\
-ly inhabited his attacks of delirium tremens following lost weekends.",
+"-> The sign outside the tavern depicts a red lion roaring. Legend has it that"
+  " the original owner named the tavern after one of the creatures who "
+  "perpetually inhabited his attacks of delirium tremens following lost weekends.",
 /* 21 */
 "-> The sign reads `Town Dump - Do not enter alone as there is considerable \
 danger from rats. Collection times are Tuesdays and Thursdays, from 1 to 4. \
@@ -587,10 +590,11 @@ the warmth ... surrender it to us.'",
 /* 26 */
 "-> A hideous thrang appears! It slowly cackles `I am the eternal thrang. \
 Slay me and I shall return again. In the end I shall feed upon your flesh!'",
-
+// 27
 "-> The crusher appears! In all of Avecta this creature is only a legend! \
 The crusher smiles idiotically and splutters `Oh boy! Oh boy! A cute little \
 human! I want to hug it and squeeze it and pet it and mash it!'",
+// 28, 29
 "","",
 /* 30 */
 "-> The flamers appear, crackling and hissing. One of their fiery numbers \

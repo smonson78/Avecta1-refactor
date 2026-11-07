@@ -95,7 +95,7 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
   c->movable = take;
   c->trap = trap;
   c->target = con;
-  c->unknown4 = nmsg;
+  c->nmsg = nmsg;
   c->hide = hide;
   c->x = x;
   c->y = y;

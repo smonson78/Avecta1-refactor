@@ -211,22 +211,22 @@ int examine_out(int pc)
     w = obj[obj_t->object_id];
 
     // if (t[4] > 0 && t[0] < 41) {
-    if (obj_t->unknown4 > 0 && obj_t->object_id < OBJECT_BROADSWORD) {
+    if (obj_t->nmsg > 0 && obj_t->object_id < OBJECT_BROADSWORD) {
       // mess = t[4] + (1 - outside) * 80 * dungeon;
-      mess = obj_t->unknown4 + (1 - outside) * 80 * dungeon;
+      mess = obj_t->nmsg + (1 - outside) * 80 * dungeon;
       if (fromout > 0) {
         mess -= 80;
       }
     }
 
     // if (t[4] > 0 && t[0] > 40) {
-    if (obj_t->unknown4 > 0 && obj_t->object_id > OBJECT_DEAD_EIRIK) {
+    if (obj_t->nmsg > 0 && obj_t->object_id > OBJECT_DEAD_EIRIK) {
       // mess = t[4];
-      mess = obj_t->unknown4;
+      mess = obj_t->nmsg;
     }
 
     // if (t[4] == 0) {
-    if (obj_t->unknown4 == 0) {
+    if (obj_t->nmsg == 0) {
       // mess = 0;
       mess = 0;
     }
@@ -289,6 +289,7 @@ int examine_out(int pc)
 
   // Crumobjs:
   // if (!outside && type == 1 && mess == 0 && t[3] != 0) {
+  // FIXME mess is always 0 here as per above
   if (!outside && type == 1 && mess == 0 && obj_t->target != 0) {
     flag = 1;
     prnt("-> %s notices an exit through the %s.", w1, w, NULL, NULL, NULL, NULL);
@@ -302,6 +303,7 @@ int examine_out(int pc)
   }
 
   // Crumobjs:
+  // FIXME mess is always 0 here as per above
   if ((type == 1 || mess == 0) && !flag) {
     prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
   }

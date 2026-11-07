@@ -457,7 +457,7 @@ void rumdraw(char *pan)
     object->movable = 1;
     object->trap = 0;
     object->target = 0;
-    object->unknown4 = c[0];
+    object->nmsg = object->object_id;
     object->hide = -1;
     object->x = x;
     object->y = y;
