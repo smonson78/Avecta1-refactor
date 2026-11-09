@@ -31,7 +31,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
   int16_t status;
   int oldline = -1, newline=0, newx, newy, oldx = -1, oldy = 0, i, j, k;
   int light, keybd = 0, keystk = 0, mflag=0, rflag=0, tflag = 0, inrflag, intflag = 0;
-  uint8_t *z;
+  zline_t *z;
   // uint8_t *c = NULL;
   curmon_t *new_c = NULL;
   char *string, letter = 0;
@@ -101,7 +101,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 
           if (rflag) {
             Vsync();
-            zline[oldx][oldy][4] = 0;
+            zline[oldx][oldy].unknown4 = 0;
             
             for (j = 0; j < 2; j++) {
               for (k = 0; k < 2; k++) {
@@ -109,8 +109,8 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
               }
             }
 
-            if (mflag>0 && mode) {
-              toggle(32, mflag,7);
+            if (mflag > 0 && mode) {
+              toggle(32, mflag, 7);
               mflag = 0;
             }
           }
@@ -164,7 +164,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
           }
         }
 
-        zline[oldx][oldy][4] = 0;
+        zline[oldx][oldy].unknown4 = 0;
         if (mflag > 0 && mode) {
           toggle(32, mflag, 7);
           mflag = 0;
@@ -204,7 +204,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             toggle(2 * oldx + j, 2 * oldy + k, 0);
           }
         }
-        zline[oldx][oldy][4] = 0;
+        zline[oldx][oldy].unknown4 = 0;
         if (mflag > 0 && mode) {
           toggle(32, mflag, 7);
           mflag = 0;
@@ -242,22 +242,24 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
     }
 
     if (type == 0 || (type == 1 && inrflag)) {
-      z = zline[newx][newy];
+      z = &zline[newx][newy];
       if (tflag) {
         tflag = 0;
         Vsync();
         mouse_off();
-        toggle(32,oldline,7);
+        toggle(32, oldline, 7);
         mouse_on();
       } 
 
-      if (newx < 16 && newy < 8 && (*z == 1 || (*z == 2 && z[1] != 0 ) ) ) {
+      // if (newx < 16 && newy < 8 && (*z == 1 || (*z == 2 && z[1] != 0 ) ) ) {
+      if (newx < 16 && newy < 8 && (z->unknown0 == 1 || (z->unknown0 == 2 && z->visible != 0 ) ) ) {
         if(newx != oldx || newy != oldy) {
           Vsync();
           if (tflag) {
             tflag = 0;
-            toggle(32,oldline,7);
-          } 
+            toggle(32, oldline, 7);
+          }
+
           mouse_off();
           if (oldx != -1 && rflag) {
             Vsync();
@@ -266,7 +268,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
                 toggle(2 * oldx + j, 2 * oldy + k, 0);
               }
             }
-            zline[oldx][oldy][4] = 0;
+            zline[oldx][oldy].unknown4 = 0;
             if (mflag > 0 && mode) {
               toggle(32, mflag, 7);
               mflag = 0;
@@ -274,28 +276,30 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             rflag = 0;
           }
 
-          if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
+          if (z->unknown5 > 0 || light || (z->monster > 0 && z->monster < 4) || 
             //(winker > 0 && c[24] == newx && c[25] == newy) ) {
             (winker > 0 && new_c->x == newx && new_c->y == newy) ) {
-          // if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
-          //   (winker > 0 && new_c->x == newx && new_c->y == newy) ) {              
+            // if (z[5] > 0 || light || (z[2] > 0 && z[2] < 4) || 
+            //   (winker > 0 && new_c->x == newx && new_c->y == newy) ) {              
             Vsync();
             for (j = 0; j < 2; j++) {
               for (k = 0; k < 2; k++) {
                   toggle(2 * newx + j, 2 * newy + k, 0);
               }
             }
-            z[4] = 1;
+            z->unknown4 = 1;
             rflag = 1;
           }
+
           oldx = newx;
           oldy = newy;
+
           // if (mflag == 0 && mode && z[2] > 3 && (z[5] > 0 || light) 
           //   && curmon[z[2]][31] < 4 ) {
-          if (mflag == 0 && mode && z[2] > 3 && (z[5] > 0 || light) 
-             && new_curmon[z[2]].intelligence_routine < 4 ) {
+          if (mflag == 0 && mode && z->monster > 3 && (z->unknown5 > 0 || light) 
+             && new_curmon[z->monster].intelligence_routine < 4 ) {
             // mflag = curmon[z[2]][33];
-            mflag = new_curmon[z[2]].unknown33[0];
+            mflag = new_curmon[z->monster].unknown33[0];
             Vsync();
             toggle(32, mflag, 7);             
           }
@@ -311,7 +315,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             }
           }
 
-          zline[oldx][oldy][4] = 0;
+          zline[oldx][oldy].unknown4 = 0;
           if (mflag > 0 && mode) {
             toggle(32, mflag, 7);
             mflag = 0;
@@ -335,9 +339,9 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
           }
         }
 
-        zline[oldx][oldy][4] = 0;
+        zline[oldx][oldy].unknown4 = 0;
         if (mflag > 0 && mode) {
-          toggle(32, mflag,7);
+          toggle(32, mflag, 7);
           mflag = 0;
         }
         mouse_on();
@@ -347,12 +351,12 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       }
     
       if (newx > 15 && newline >= top1 && newline <= bot) {
-        if(newline != oldline || oldx < 16) {
+        if (newline != oldline || oldx < 16) {
           Vsync();
           mouse_off();
           if(oldline != -1 && tflag && oldx > 15) 
-            toggle(32,oldline,7);
-          toggle(32,newline,7);
+            toggle(32, oldline, 7);
+          toggle(32, newline, 7);
           tflag = 1;
           oldline = newline;
           oldx = newx;
@@ -378,7 +382,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
       Vsync();
 
       if (rflag) {
-        zline[oldx][oldy][4] = 0;
+        zline[oldx][oldy].unknown4 = 0;
         for (j = 0; j < 2; j++) {
           for (k = 0; k < 2; k++) {
             toggle(2 * oldx + j, 2 * oldy + k, 0);
@@ -412,10 +416,10 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 
 int lom(int pc, int x, int y)
 {
-  int x2,y2,i,j,q;
-  long int k,l,m,n;
+  int x2, y2, i, j, q;
+  long int k, l, m, n;
   char z1;
-  uint8_t *z;
+  zline_t *z;
   // uint8_t *c0 = curmon[pc];
   curmon_t *new_c0 = &new_curmon[pc];
 
@@ -433,7 +437,7 @@ int lom(int pc, int x, int y)
     return 1;
   }
 
-  if (!zline[x][y][5] && !new_rumdata[crum].room_has_bg && pc < 4) { /* the square is dark */
+  if (!zline[x][y].unknown5 && !new_rumdata[crum].room_has_bg && pc < 4) { /* the square is dark */
     return 0;
   }
 
@@ -451,19 +455,20 @@ int lom(int pc, int x, int y)
 
   while ( (x != x2) || (y != y2) ) {
     if (q == 1) {
-      z = zline[x][y];
-      z1 = crumobj[z[1]].object_id;
+      z = &zline[x][y];
+      z1 = crumobj[z->visible].object_id;
       
-      if (z[1] != 0) {
+      if (z->visible != 0) {
         if (z1 < 41 && z1 > 1) {
           return 0;
         }
       }
 
-      if (z[2] != 0 || *z == 0 || ( *z == 2 && z1 == 0)) {
+      if (z->monster != 0 || z->unknown0 == 0 || (z->unknown0 == 2 && z1 == 0)) {
         return 0;    
       }
-      q = 0;  /* all this is stored in zline array  for each room     */
+
+      q = 0;  /* all this is stored in zline array for each room */
     }
 
     --m;         /* decrement each roll variable */
@@ -471,11 +476,11 @@ int lom(int pc, int x, int y)
 
     if (m < 0) {   /* if x separation variable is 0 then roll y */
       y += j;
-      q = 1;    /* alert system to check if los is blocked   */
+      q = 1;    /* alert system to check if los is blocked */
       m = k;
     }
 
-    if (n < 0) {   /* same for y separation variable            */
+    if (n < 0) {   /* same for y separation variable */
       x += i;
       q = 1;
       n = l;
@@ -488,69 +493,75 @@ int lom(int pc, int x, int y)
 // Line-Of-Sight
 int los(int pc, int x, int y)
 {
-   int x2,y2,i,j,q;
-   long int k,l,m,n;
-   uint8_t *c0 = curmon[pc];
-   //curmon_t *new_c0 = &new_curmon[pc];
-   uint8_t *z;
-   char z1;
+  int x2, y2, i, j, q;
+  long int k, l, m, n;
+  uint8_t *c0 = curmon[pc];
+  //curmon_t *new_c0 = &new_curmon[pc];
+  zline_t *z;
+  char z1;
 
-   x2 = *(c0+24); /* fetch the x-coordinate of the PC */
-   y2 = *(c0+25); /* fetch the y-coordinate of the PC */
+  x2 = c0[24]; /* fetch the x-coordinate of the PC */
+  y2 = c0[25]; /* fetch the y-coordinate of the PC */
   //  x2 = *(new_c0->x); /* fetch the x-coordinate of the PC */
   //  y2 = *(new_c0->y); /* fetch the y-coordinate of the PC */   
 
-   i = (x2-x);            /* find difference between target and PC */
-   j = (y2-y);
+  i = x2 - x;            /* find difference between target and PC */
+  j = y2 - y;
 
-   k = abs(i);   /* take absolute value of i and j */
-   l = abs(j);
+  k = abs(i);   /* take absolute value of i and j */
+  l = abs(j);
 
-   if (k < 2 && l < 2) {
-      /* always adjacent will make it through */
-      return 1;
-   }
+  if (k < 2 && l < 2) {
+    /* always adjacent will make it through */
+    return 1;
+  }
 
-   if (!zline[x][y][5] && !new_rumdata[crum].room_has_bg && pc < 4) {
-      /* the square is dark */
-      return 0;
-   }
+  if (!zline[x][y].unknown5 && !new_rumdata[crum].room_has_bg && pc < 4) {
+    /* the square is dark */
+    return 0;
+  }
 
-   if (i != 0) {
-      i = ( i/k ); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
-   }
+  if (i != 0) {
+    i = ( i/k ); /* i is +1 if x2>x and i is -1 if x2<x, else = 0 */
+  }
 
-   if (j != 0) {
-      j = ( j/l );  /* j is +1 if y2>y and j is -1 if y2<y, else = 0  */
-   }
+  if (j != 0) {
+    j = ( j/l );  /* j is +1 if y2>y and j is -1 if y2<y, else = 0  */
+  }
 
-   m = k;      /* m is the temporary value of x separation, called roll variable */
-   n = l;      /* n is the temporary value of y separation, called roll variable */
-   q = 0;
+  m = k;      /* m is the temporary value of x separation, called roll variable */
+  n = l;      /* n is the temporary value of y separation, called roll variable */
+  q = 0;
 
-   while ( (x != x2) || (y != y2) ) {
-      if (q == 1) {
-         z = zline[x][y];
-         z1 = crumobj[z[1]].object_id;
-         if(*z != 1 || ( z[1] != 0 && z1 == 1) )
-            return(0);    
-         q = 0;  /* all this is stored in zline array for each room     */
+  while ( (x != x2) || (y != y2) ) {
+    
+    if (q == 1) {
+      z = &zline[x][y];
+      z1 = crumobj[z->visible].object_id;
+      
+      if (z->unknown0 != 1 || (z->visible != 0 && z1 == 1)) {
+        return 0;
       }
-      --m;         /* decrement each roll variable */
-      --n;
-      if (m<0) {   /* if x separation variable is 0 then roll y */
-         y += j;
-         q = 1;    /* alert system to check if los is blocked   */
-         m = k;
-      }
-      if (n<0) {   /* same for y separation variable            */
-         x += i;
-         q = 1;
-         n = l;
-      }
-   }
+      q = 0;  /* all this is stored in zline array for each room     */
+    }
 
-   return 1;  /* if it makes it all the way through then los is open */         
+    --m;         /* decrement each roll variable */
+    --n;
+
+    if (m < 0) {   /* if x separation variable is 0 then roll y */
+        y += j;
+        q = 1;    /* alert system to check if los is blocked   */
+        m = k;
+    }
+
+    if (n < 0) {   /* same for y separation variable            */
+        x += i;
+        q = 1;
+        n = l;
+    }
+  }
+
+  return 1;  /* if it makes it all the way through then los is open */         
 }
 
 /*****************************************************************************/
@@ -566,82 +577,106 @@ int los(int pc, int x, int y)
 
 void nextxy(int xlo, int ylo, int xhi, int yhi, int xnow, int ynow, int *xnext, int *ynext)
 {
-   int i,j,k=1,rollx,rolly,signx=0,signy=0;
-   i = xhi - xlo;
-   j = yhi - ylo;
-   rollx = abs(i);
-   rolly = abs(j);
-   if (i != 0)
-      signx = i/rollx;
-   if (j != 0)
-      signy = j/rolly;
-   do {
-      if (line(xlo,ylo,xhi,yhi,xnow+signx,ynow+signy)) {
-         *xnext = xnow + signx;
-         *ynext = ynow + signy;
-         k = 0;
-         break;
-      }
+  int i, j, k = 1, rollx, rolly, signx = 0, signy = 0;
 
-      if (line(xlo,ylo,xhi,yhi,xnow+signx,ynow)) {
-         *xnext = xnow + signx;
-         *ynext = ynow;
-         signy = 0;
-         k = 0;
-         break;
-      }
-      *xnext = xnow;
+  i = xhi - xlo;
+  j = yhi - ylo;
+
+  rollx = abs(i);
+  rolly = abs(j);
+
+  if (i != 0) {
+    signx = i/rollx;
+  }
+
+  if (j != 0) {
+    signy = j/rolly;
+  }
+
+  do {
+    if (line(xlo, ylo, xhi, yhi, xnow + signx, ynow + signy)) {
+      *xnext = xnow + signx;
       *ynext = ynow + signy;
-      k = 0;    
-   } while (k == 1);
+      k = 0;
+      break;
+    }
+
+    if (line(xlo,ylo,xhi,yhi,xnow+signx,ynow)) {
+      *xnext = xnow + signx;
+      *ynext = ynow;
+      signy = 0;
+      k = 0;
+      break;
+    }
+
+    *xnext = xnow;
+    *ynext = ynow + signy;
+    k = 0;    
+  } while (k == 1);
 }
 
 
 int line(int xlo, int ylo, int xhi, int yhi, int xnow, int ynow)
 {
-   int i,j,q;
-   int k,l,m,n;
-   i = (xhi-xlo);            /* find difference between two coordinates */
-   j = (yhi-ylo);            
-   if((xnow == xlo && ynow == ylo) || (xnow == xhi && ynow == yhi) ) 
-      return(1);
-   k = abs(i);   /* take absolute value of i and j */
-   l = abs(j);
-   if (i != 0)
-      i = ( i/k ); /* i is +1 if xhi>xlo and i is -1 if xhi<xlo, else = 0 */
-   if (j != 0)
-      j = ( j/l );  /* j is +1 if yhi>ylo and j is -1 if yhi<ylo, else = 0  */
-   m = k;      /* m is the temporary value of x separation,called roll variable */
-   n = l;      /* n is the temporary value of y separation, called roll variable */
-   q = 0;
-   while ( (xlo != xhi) || (ylo != yhi) ) {
-      if (q == 1) {
-         if(xnow == xlo && ynow == ylo)
-            return(1); /* then it's along the line */
-         q = 0;  
-         }
-      --m;         /* decrement each roll variable */
-      --n;
-      if (m<0) {   /* if x separation variable is 0 then roll y */
-         ylo += j;
-         q = 1;    /* alert system to check if los is blocked   */
-         m = k;
-         }
-      if (n<0) {   /* same for y separation variable            */
-         xlo += i;
-         q = 1;
-         n = l;
-         }
+  int i, j, q;
+  int k, l, m, n;
+
+  i = xhi - xlo;            /* find difference between two coordinates */
+  j = yhi - ylo;
+
+  if ((xnow == xlo && ynow == ylo) || (xnow == xhi && ynow == yhi)) {
+    return 1;
+  }
+
+  k = abs(i);   /* take absolute value of i and j */
+  l = abs(j);
+
+  if (i != 0) {
+    i = ( i/k ); /* i is +1 if xhi>xlo and i is -1 if xhi<xlo, else = 0 */
+  }
+
+  if (j != 0) {
+    j = ( j/l );  /* j is +1 if yhi>ylo and j is -1 if yhi<ylo, else = 0  */
+  }
+
+  m = k;      /* m is the temporary value of x separation,called roll variable */
+  n = l;      /* n is the temporary value of y separation, called roll variable */
+  q = 0;
+
+  while ((xlo != xhi) || (ylo != yhi)) {
+    if (q == 1) {
+      if (xnow == xlo && ynow == ylo) {
+        return 1; /* then it's along the line */
       }
-   return(0);  /* if it makes it all the way through then it's NOT in line */     
+      q = 0;  
+    }
+
+    --m;         /* decrement each roll variable */
+    --n;
+
+    if (m < 0) {   /* if x separation variable is 0 then roll y */
+      ylo += j;
+      q = 1;    /* alert system to check if los is blocked   */
+      m = k;
+    }
+
+    if (n < 0) {   /* same for y separation variable            */
+      xlo += i;
+      q = 1;
+      n = l;
+    }
+  }
+
+  return 0;  /* if it makes it all the way through then it's NOT in line */     
 }
 
 int rnd(int max)
 {
-   if (max == 0 || max == 1) {
-      return 0;
-   }
-   return Random() % max;
+  if (max == 0 || max == 1) {
+    return 0;
+  }
+
+  return Random() % max;
 }
 
 int adjac(int pc, int x, int y)
@@ -668,7 +703,7 @@ int adjac(int pc, int x, int y)
 int move(int obj, int flag, int x, int y)
 {
   room_object_t *c = &crumobj[obj];
-  uint8_t *z;
+  zline_t *z;
   int done, i, j;
   int light = new_rumdata[crum].room_has_bg;
 
@@ -680,22 +715,22 @@ int move(int obj, int flag, int x, int y)
           continue;
         }
 
-        z = zline[x+i][y+j];
-        if (z[0] == 1 && z[1] == 0 && z[2] == 0 &&
-          (curmon[0][24] != x+i || curmon[0][25] != y+j)) {
-        // if (*z == 1 && z[1] == 0 && z[2] == 0 &&
-        //   (new_curmon[0].x != x+i || new_curmon[0].y != y+j)) {
+        z = &zline[x + i][y + j];
+        if (z->unknown0 == 1 && z->visible == 0 && z->monster == 0 &&
+          (curmon[0][24] != x + i || curmon[0][25] != y + j)) {
+          // if (*z == 1 && z[1] == 0 && z[2] == 0 &&
+          //   (new_curmon[0].x != x+i || new_curmon[0].y != y+j)) {
           if (obj > 13) {
             xobj(c->object_id, crum);
           }
 
-          zline[x][y][1] = 0;
+          zline[x][y].visible = 0;
 
-          if (light || zline[x][y][5] > 0) {
+          if (light || zline[x][y].unknown5 > 0) {
             drawsq(x, y);
           }
 
-          z[1] = obj;
+          z->visible = obj;
           c->x = x + i;
           c->y = y + j;
 
@@ -703,7 +738,7 @@ int move(int obj, int flag, int x, int y)
             storobj(c->object_id, x + i, y + j);
           }
 
-          if (light || z[5] > 0) {
+          if (light || z->unknown5 > 0) {
             drawsq(x + i, y + j);
           }
 
@@ -719,17 +754,17 @@ int move(int obj, int flag, int x, int y)
   }
 
   if (!flag) {
-    zline[c->x][c->y][1] = 0;
+    zline[c->x][c->y].visible = 0;
     
-    if (light || zline[c->x][c->y][5] > 0) {
+    if (light || zline[c->x][c->y].unknown5 > 0) {
       drawsq(c->x, c->y);
     }
 
     c->x = x;
     c->y = y;
-    zline[x][y][1] = obj;
+    zline[x][y].visible = obj;
 
-    if (light || zline[x][y][5] > 0) {
+    if (light || zline[x][y].unknown5 > 0) {
       drawsq(x, y);
     }
 
@@ -739,26 +774,27 @@ int move(int obj, int flag, int x, int y)
     }
     done = 1;
   }
+
   return done;
 }
 
 int putinto(int rumobj, int thing)
 {
-   int i = 0;
-   while (putbuf[i] != 0 && i < 320) {
-      i += 4;
-   }
+  int i = 0;
+  while (putbuf[i] != 0 && i < 320) {
+    i += 4;
+  }
 
-   if (i >= 320) {
-      return 0;
-   }
+  if (i >= 320) {
+    return 0;
+  }
 
-   putbuf[i] = 1;
-   putbuf[i+1] = thing;
-   putbuf[i+2] = rumobj;
-   putbuf[i+3] = crum;
+  putbuf[i] = 1;
+  putbuf[i+1] = thing;
+  putbuf[i+2] = rumobj;
+  putbuf[i+3] = crum;
 
-   return 1;
+  return 1;
 }
 
 int putaway(int pc, int thing)
@@ -818,91 +854,92 @@ int takeout(int pc, int thing)
 
 int remove_object(int rumobj, int thing)
 {
-   int i = 0;
-   
-   while ((putbuf[i + 3] != crum || putbuf[i + 2] != rumobj || putbuf[i + 1] != thing) && i < 320) {
-      i += 4;
-   }
+  int i = 0;
+  
+  while ((putbuf[i + 3] != crum || putbuf[i + 2] != rumobj || putbuf[i + 1] != thing) && i < 320) {
+    i += 4;
+  }
 
-   if (i >= 320) {
-      return 0;
-   }
+  if (i >= 320) {
+    return 0;
+  }
 
-   putbuf[i] = 0;
-   putbuf[i + 1] = 0;
-   putbuf[i + 2] = 0;
-   putbuf[i + 3] = 0;
-   return 1;
+  putbuf[i] = 0;
+  putbuf[i + 1] = 0;
+  putbuf[i + 2] = 0;
+  putbuf[i + 3] = 0;
+  
+  return 1;
 } 
 
 // Put an object into the room_zero array
 int storobj(int thing, int x, int y)
 {
-   // Room Zero
-   //uint8_t *r = &room_zero;
+  // Room Zero
+  //uint8_t *r = &room_zero;
 
-   // int i = 1;
-   // while (r[i] != 0 && i < 157) {
-   //    i += 3;
-   // }
+  // int i = 1;
+  // while (r[i] != 0 && i < 157) {
+  //    i += 3;
+  // }
 
-   int i;
-   for (i = 0; i < 52; i++) {
-      if (room_zero.unknown2[i].thing_id == 0) {
-         break;
-      }
-   }
+  int i;
+  for (i = 0; i < 52; i++) {
+    if (room_zero.unknown2[i].thing_id == 0) {
+      break;
+    }
+  }
 
-   // if (i >= 157)
-   //    return 0;
-   if (i >= 52) {
-      return 0;
-   }
+  // if (i >= 157)
+  //    return 0;
+  if (i >= 52) {
+    return 0;
+  }
 
-   // Old rumdata[0]
-   // r[i * 3 + 1] = thing;
-   // r[i * 3 + 2] = 16*y + x;
-   // r[i * 3 + 3] = crum;
+  // Old rumdata[0]
+  // r[i * 3 + 1] = thing;
+  // r[i * 3 + 2] = 16*y + x;
+  // r[i * 3 + 3] = crum;
 
-   // New room_zero
-   room_zero.unknown2[i].thing_id = thing;
-   room_zero.unknown2[i].thing_xy = (16 * y) + x;
-   room_zero.unknown2[i].room_id = crum;   
+  // New room_zero
+  room_zero.unknown2[i].thing_id = thing;
+  room_zero.unknown2[i].thing_xy = (16 * y) + x;
+  room_zero.unknown2[i].room_id = crum;   
 
-   // check_rumdata("storobj");
+  // check_rumdata("storobj");
 
-   return 1;
+  return 1;
 }
 
 int xobj(int thing, int room)
 {
-   //int i = 1;
-   int i = 0;
-   // Room zero
-   //uint8_t *r = rumdata[0];
+  //int i = 1;
+  int i = 0;
+  // Room zero
+  //uint8_t *r = rumdata[0];
 
-   // while( ( r[i] != thing || *(r+i+2) != room) && i < 157) {
-   //    i += 3;
-   // }
-   // Search for a room zero entry which has the thing and room we're looking for
-   while (
-      (room_zero.unknown2[i].thing_id != thing || room_zero.unknown2[i].room_id != room) 
-      && i < 52) {
-      i++;
-   }
+  // while( ( r[i] != thing || *(r+i+2) != room) && i < 157) {
+  //    i += 3;
+  // }
+  // Search for a room zero entry which has the thing and room we're looking for
+  while (
+    (room_zero.unknown2[i].thing_id != thing || room_zero.unknown2[i].room_id != room) 
+    && i < 52) {
+    i++;
+  }
 
-   if (i >= 52) {
-      // Didn't find it
-      return 0;
-   }
+  if (i >= 52) {
+    // Didn't find it
+    return 0;
+  }
 
-   // Now blank it out to zeroes
-   //r[i] = *(r+i+1) = *(r+i+2) = 0;
-   room_zero.unknown2[i].thing_id = 0;
-   room_zero.unknown2[i].thing_xy = 0;
-   room_zero.unknown2[i].room_id = 0;
-   
-   return 1;
+  // Now blank it out to zeroes
+  //r[i] = *(r+i+1) = *(r+i+2) = 0;
+  room_zero.unknown2[i].thing_id = 0;
+  room_zero.unknown2[i].thing_xy = 0;
+  room_zero.unknown2[i].room_id = 0;
+  
+  return 1;
 }
 
 /****************************************************************************/
@@ -913,7 +950,7 @@ int xobj(int thing, int room)
 int status(int pc)
 {
   int16_t i, j;
-  int ret,flag = 0;
+  int ret, flag = 0;
   uint8_t *c = curmon[pc];
   // curmon_t *new_c = &new_curmon[pc];
   char scratch[3];
@@ -924,6 +961,7 @@ int status(int pc)
   if (pc > 3) {
     return 1;
   }
+  
   player_t *p = &players[pc];
 
   Vsync();

@@ -39,7 +39,8 @@ int search_in(int pc)
 
 int search_out(int pc)
 {
-  uint8_t *c = curmon[pc], *z;
+  uint8_t *c = curmon[pc];
+  zline_t *z;
   // uint8_t *o;
   room_object_t *object;
   player_t *new_c = &players[pc];
@@ -60,23 +61,23 @@ int search_out(int pc)
 
   for (i = -1; i < 2; i++) {
     for (j = -1; j < 2; j++) {
-      z = zline[x+i][y+j];
+      z = &zline[x+i][y+j];
 
       // Don't search squares outside the map, or under the player
       // if (x + i < 0 || x + i > 15 || y + j < 0 || y + j > 7 || z[0] == 0 || (x + i == c[24]
       //     && y + j == c[25])) {
-      if (x + i < 0 || x + i > 15 || y + j < 0 || y + j > 7 || z[0] == 0 || (i == 0 && j == 0)) {            
+      if (x + i < 0 || x + i > 15 || y + j < 0 || y + j > 7 || z->unknown0 == 0 || (i == 0 && j == 0)) {            
         continue;
       }
 
       // if (z[1] != 0 && crumobj[z[1]][5] > 0) {
-      if (z[1] != 0 && crumobj[z[1]].hide > 0) {
+      if (z->visible != 0 && crumobj[z->visible].hide > 0) {
         // o = crumobj[z[1]];
-        object = &crumobj[z[1]];
+        object = &crumobj[z->visible];
         flag = 0;
 
         while (m < 320) {
-          if (r[m + 3] != crum || r[m + 2] != z[1]) {
+          if (r[m + 3] != crum || r[m + 2] != z->visible) {
             m += 4;
             continue;
           }
@@ -114,7 +115,7 @@ int search_out(int pc)
             }
 
             invtrap(k);
-            remove_object(z[1], k);
+            remove_object(z->visible, k);
             
             c[15] = 7;
             c[8] = k;
@@ -133,14 +134,14 @@ int search_out(int pc)
 
         if (flag == 0) {
           // crumobj[z[1]][5] = 0;
-          crumobj[z[1]].hide = 0;
+          crumobj[z->visible].hide = 0;
         }
       }
 
       // if (z[1] != 0 && crumobj[z[1]][5] == -2 && c[18] != 6) {
-      if (z[1] != 0 && crumobj[z[1]].hide == -2 && c[18] != 6) {
+      if (z->visible != 0 && crumobj[z->visible].hide == -2 && c[18] != 6) {
         // prnt("-> %s notices the %s is locked!", w, obj[crumobj[z[1]][0]], NULL, NULL, NULL, NULL);
-        prnt("-> %s notices the %s is locked!", w, obj[crumobj[z[1]].object_id], NULL, NULL, NULL, NULL);
+        prnt("-> %s notices the %s is locked!", w, obj[crumobj[z->visible].object_id], NULL, NULL, NULL, NULL);
       }
 
       for (k = 1; k < 17; k++) {
@@ -157,16 +158,16 @@ int search_out(int pc)
           c[18] = 0;
           new_c->unknown16[2] = 0;
 
-          if (new_rumdata[crum].room_has_bg || zline[x + i][y + j][5] > 0) {
+          if (new_rumdata[crum].room_has_bg || zline[x + i][y + j].unknown5 > 0) {
             // blt(&bitmap[o[0]],16 * (x + i),16 * (y + j));
             blt(&bitmap[object->object_id], 16 * (x + i), 16 * (y + j));
           }
 
-          z[1] = k;
+          z->visible = k;
           
           // if (o[3] != 0) {
           if (object->target != 0) {
-            z[0] = 2;
+            z->unknown0 = 2;
           }
           num++;
         }

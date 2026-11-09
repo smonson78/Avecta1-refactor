@@ -23,7 +23,8 @@
 
 int actmon(int type, int nm, int x, int y)
 {
-  uint8_t *c, *z;
+  uint8_t *c;
+  zline_t *z;
   curmon_t *new_c;
   player_t *pc;
   permon_t *p;
@@ -120,7 +121,7 @@ int actmon(int type, int nm, int x, int y)
 
     check_curmon("actmon 1");
 
-    zline[x][y][2] = type;
+    zline[x][y].monster = type;
     drawman(type, x, y);
 
     return 1;
@@ -138,11 +139,11 @@ int actmon(int type, int nm, int x, int y)
 
     // if (c[0] == 0 || c[30] != crum) {
     if (new_c->in_use == 0 || new_c->current_room != crum) {
-      z = zline[x][y];
-      if (z[0] == 1 && (z[1] == 0 || crumobj[z[1]].object_id > OBJECT_DEAD_EIRIK) && z[2] == 0 && 
+      z = &zline[x][y];
+      if (z->unknown0 == 1 && (z->visible == 0 || crumobj[z->visible].object_id > OBJECT_DEAD_EIRIK) && z->monster == 0 && 
         // (curmon[0][24] != x || curmon[0][25] != y) ) { 
         (player->x != x || player->y != y) ) { 
-        zline[x][y][2] = i + 4;   /* then square is available */
+        zline[x][y].monster = i + 4;   /* then square is available */
 
         c[24] = x;
         c[25] = y;
@@ -162,15 +163,15 @@ int actmon(int type, int nm, int x, int y)
             l++;
           }
 
-          z = zline[x+k][y+l];
+          z = &zline[x + k][y + l];
 
-          if (k == -2 || *z != 1 || z[2] != 0 || (player->x == (x + k) && 
+          if (k == -2 || z->unknown0 != 1 || z->monster != 0 || (player->x == (x + k) && 
             player->y == (y + l)) || 
-            (z[1] > 0 && crumobj[z[1]].object_id < OBJECT_BROADSWORD) ) {
+            (z->visible > 0 && crumobj[z->visible].object_id < OBJECT_BROADSWORD) ) {
             /* if it doesn't continue then square available */
             continue;  
           } else {
-            z[2] = i + 4;
+            z->monster = i + 4;
             
             c[24] = x + k;
             c[25] = y + l;

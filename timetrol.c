@@ -12,9 +12,10 @@
 
 int timetrol()
 {
-	uint8_t *c, *z;
+	uint8_t *c;
+	zline_t *z;
 	char *w;
-	int i,j,x,y;
+	int i, j, x, y;
 	curmon_t *new_c;
 
 	debug_printf("> timetrol\n");
@@ -67,7 +68,7 @@ int timetrol()
 					w = name[c[3]];
 				}
 
-				j = (4*(c[47]))/(c[2]);
+				j = (4 * c[47]) / c[2];
 				if (j > 0) {
 					if (i < 4 || c[58] == 16) {
 						prnt("-> %s's level of poisoning is %s!", w, wordmod[j], NULL, NULL, NULL, NULL);
@@ -115,8 +116,8 @@ int timetrol()
 			}
 		}
 
-		if (zline[c[24]][c[25]][6] > 0 && c[30] == crum && c[46] == 0) {
-			damage(i,20 + rnd(10));
+		if (zline[c[24]][c[25]].unknown6 > 0 && c[30] == crum && c[46] == 0) {
+			damage(i, 20 + rnd(10));
 		}
 	}
 
@@ -124,25 +125,27 @@ int timetrol()
 		specbuf[35]--;
 		if (specbuf[35] == 0) {
 			prnt("-> The Wallfire spell has expired!", NULL, NULL, NULL, NULL, NULL, NULL);
-			x = specbuf[36]%16;
-			y = specbuf[36]/16;
-			for (i=x-1;i<=x+1;i++) {
-				for (j=y-1;j<=y+1;j++) {
-					z = zline[i][j];
-					if (z[0] != 1) {
+			
+			x = specbuf[36] % 16;
+			y = specbuf[36] / 16;
+
+			for (i = x - 1; i <= x + 1; i++) {
+				for (j = y - 1; j <= y + 1; j++) {
+					z = &zline[i][j];
+					if (z->unknown0 != 1) {
 						continue;
 					}
 
-					z[6] = 0;
-					if (z[5] > 0) {
-						z[5] -= 1;
+					z->unknown6 = 0;
+					if (z->unknown5 > 0) {
+						z->unknown5 -= 1;
 					}
 
-					if (z[5] > 0 || new_rumdata[crum].room_has_bg) {
-						drawsq(i,j);
+					if (z->unknown5 > 0 || new_rumdata[crum].room_has_bg) {
+						drawsq(i, j);
 					} else {
 						setfill(2);
-						fillsq(i,j);
+						fillsq(i, j);
 					}
 				}
 			}

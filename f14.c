@@ -24,7 +24,7 @@ int i14(int pc)
   sgetxy(&x, &y, 0, 0, 0, &ret);
   undomsg();
   winker = 0;
-  tar = zline[x][y][2];
+  tar = zline[x][y].monster;
 
   if (tar == 0 || tar > 3) {
     error(ERROR_NO_CHARACTER);

@@ -370,8 +370,9 @@ int setmove(int npc, int flag)
   curmon_t *new_c = &new_curmon[npc];
   curmon_t *new_t;
 
-  uint8_t *z, *c1, *t;
-  int top,bot,i,j,l,m,n,k=0,xdes,ydes,x,y,buddy=0;
+  uint8_t *c1, *t;
+  zline_t *z;
+  int top, bot, i, j, l, m, n, k = 0, xdes, ydes, x, y, buddy = 0;
   int tar = c[39];
 
   t = curmon[tar];
@@ -386,7 +387,7 @@ int setmove(int npc, int flag)
   }
 
   if (c[36] == 0) {
-    if (los(npc,t[24],t[25])) {
+    if (los(npc, t[24], t[25])) {
       c[26] = t[24];
       c[27] = t[25];
       new_c->old_x = new_t->x;
@@ -419,7 +420,7 @@ int setmove(int npc, int flag)
           new_c->old_x = new_c->x + x;
           new_c->old_y = new_c->y + y;          
 
-          if (zline[c[26]][c[27]][0] != 1) {
+          if (zline[c[26]][c[27]].unknown0 != 1) {
             // A little random movement!
             int rand_x = rnd(3);
             int rand_y = rnd(3);
@@ -482,14 +483,14 @@ int setmove(int npc, int flag)
         do {
           x = c[24] + (i * l);
           y = c[25] + (j * m);
-          z = zline[x][y];
-          if (z[0] == 1 && z[6] == 0 && z[2] == 0 && 
+          z = &zline[x][y];
+          if (z->unknown0 == 1 && z->unknown6 == 0 && z->monster == 0 && 
             (x != c[24] || y != c[25]) ) {
-            if (z[1] != 0 && (npc < 4 || !c[37]) && 
-              (n = crumobj[z[1]].object_id) < 41) {
+            if (z->visible != 0 && (npc < 4 || !c[37]) && 
+              (n = crumobj[z->visible].object_id) < 41) {
               
               if (c[51] > weight[n] && weight[n] != -1) {
-                if (!move(z[1], 1, x, y)) {
+                if (!move(z->visible, 1, x, y)) {
                   goto next;
                 }
               } else {
@@ -507,10 +508,11 @@ int setmove(int npc, int flag)
             new_c->command = ACTION_MOVE;
             new_c->unknown16[0] = new_c->unknown11;
 
-            if (i * l != 0 && j*m != 0) {
-              c[16] += (c[16])/2;
+            if (i * l != 0 && j * m != 0) {
+              c[16] += c[16] / 2;
               new_c->unknown16[0] += new_c->unknown16[0] / 2;
             }
+
             return 1;
           }
 
@@ -518,14 +520,14 @@ int setmove(int npc, int flag)
           if (i == 1 && j == 0) {
             i = 0; 
             if (m == 0) {
-              m = (rnd(2) ? 1 : -1);
+              m = rnd(2) ? 1 : -1;
             }
           }
 
           if (i == 0 && j == 1) {
             i = 1;
             if (l == 0) {
-              l = (rnd(2) ? 1 : -1);
+              l = rnd(2) ? 1 : -1;
             }
             j = 0;
           }
@@ -533,7 +535,7 @@ int setmove(int npc, int flag)
           if (i == 1 && j == 1) {
             i = 0;
             if (m == 0) {
-              m = (rnd(2) ? 1 : -1);
+              m = rnd(2) ? 1 : -1;
             }
           }             
         } while (i != 0 || j != 0);
@@ -542,8 +544,8 @@ int setmove(int npc, int flag)
 
     case 1: /* chasing a charac */
       flag = 0;
-      if (!los(npc,curmon[tar][24],curmon[tar][25])) {
-        nextxy(c[24],c[25],c[26],c[27],c[24],c[25],&xdes,&ydes);
+      if (!los(npc,curmon[tar][24], curmon[tar][25])) {
+        nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &xdes, &ydes);
         c[28] = xdes;
         c[29] = ydes;
         new_c->unknown28[0] = xdes;
@@ -568,9 +570,9 @@ int setmove(int npc, int flag)
 
       if (t[15] == 4) {       /* target in motion                        */
         if (k > 0) {          /* somebody's already stompin' his butt    */
-          nextxy(c[24],c[25],t[24],t[25],c[24],c[25],&xdes,&ydes);
+          nextxy(c[24], c[25], t[24], t[25], c[24], c[25], &xdes, &ydes);
         } else { /* he's not being attacked */
-          nextxy(c[24],c[25],t[28],t[29],c[24],c[25],&xdes,&ydes);
+          nextxy(c[24], c[25], t[28], t[29], c[24], c[25], &xdes, &ydes);
         } 
 
         c[28] = xdes;
@@ -581,32 +583,33 @@ int setmove(int npc, int flag)
         break;
       }
 
-      if (k > 1) {/* charac not moving but under attack  so nail rear */
-        nextxy(t[24],t[25],c[24],c[25],t[24],t[25],&xdes,&ydes);
+      /* charac not moving but under attack so nail rear */
+      if (k > 1) {
+        nextxy(t[24], t[25], c[24], c[25], t[24], t[25], &xdes, &ydes);
         c[26] = xdes;
         c[27] = ydes;
         new_c->old_x = xdes;
         new_c->old_y = ydes;
 
-        nextxy(c[24],c[25],c[26],c[27],c[24],c[25],&xdes,&ydes);
+        nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &xdes, &ydes);
 
         c[28] = xdes;
         c[29] = ydes;
         new_c->unknown28[0] = xdes;
         new_c->unknown28[1] = ydes;
 
-        if (zline[xdes][ydes][0] != 0) {
+        if (zline[xdes][ydes].unknown0 != 0) {
           break;
         }
       }
 
-      nextxy(t[24],t[25],c[24],c[25],t[24],t[25],&xdes,&ydes);
+      nextxy(t[24], t[25], c[24], c[25], t[24], t[25], &xdes, &ydes);
       c[26] = xdes;
       c[27] = ydes;
       new_c->old_x = xdes;
       new_c->old_y = ydes;
 
-      nextxy(c[24],c[25],c[26],c[27],c[24],c[25],&xdes,&ydes);
+      nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &xdes, &ydes);
       c[28] = xdes;
       c[29] = ydes;
       new_c->unknown28[0] = xdes;

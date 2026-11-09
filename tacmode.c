@@ -138,13 +138,13 @@ int tacmode() {
                 y = object->y;
 
                 // if (zline[x][y][2] != 0 || (curmon[0][24] == x && curmon[0][25] == y)) {
-                if (zline[x][y][2] != 0 || (player->x == x && player->y == y)) {
+                if (zline[x][y].monster != 0 || (player->x == x && player->y == y)) {
                   pursuit[0] += 2;
                   flag = 2;
                   break;
                 }
 
-                zline[x][y][2] = i; 
+                zline[x][y].monster = i; 
                 xmon(c[30], c[4], c[24], c[25]);
                 c[24] = x;
                 c[25] = y;

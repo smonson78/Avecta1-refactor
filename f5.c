@@ -84,7 +84,8 @@ int drag_eat_in(int pc)
       return 1;
     }  /* now continue with drag */
 
-    if ((object = zline[x][y][1]) == 0) {
+    object = zline[x][y].visible;
+    if (object == 0) {
       error(ERROR_NO_OBJECT);
       return 0;
     }
@@ -169,7 +170,8 @@ int drag_eat_in(int pc)
 
 int drag_eat_out(int pc)
 {
-  uint8_t *z, *c = curmon[pc];
+  uint8_t *c = curmon[pc];
+  zline_t *z;
   curmon2_t *ch = &new_curmon2[pc];
   char *w, *w1 = (pc == 0 ? &pname[0] : name[c[3]]);
   int flag = 1, x1, y1, x2, y2, j = c[10], x = c[5], y = c[6], k;
@@ -236,13 +238,15 @@ int drag_eat_out(int pc)
       nextxy(c[24], c[25], c[5], c[6], c[24], c[25], &x1, &y1);
       x2 = x + x1 - c[24];
       y2 = y + y1 - c[25];
-      z = zline[x2][y2];
+      z = &zline[x2][y2];
 
-      if (z[0] != 1 || z[1] != 0 || (z[2] > 0 && z[2] != pc) ||
-        (curmon[0][24] == x2 && curmon[0][25] == y2 && pc != 0) ) {
+      if (z->unknown0 != 1 || z->visible != 0 || (z->monster > 0 && z->monster != pc) ||
+        // (curmon[0][24] == x2 && curmon[0][25] == y2 && pc != 0) ) {
+        (player->x == x2 && player->y == y2 && pc != 0) ) {
         flag = 1;
         // prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j][0]], w1, NULL, NULL, NULL, NULL);
-        prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j].object_id], w1, NULL, NULL, NULL, NULL);
+        prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j].object_id], 
+          w1, NULL, NULL, NULL, NULL);
       } else {
         c[26] = c[5];
         c[27] = c[6];

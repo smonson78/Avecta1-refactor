@@ -60,8 +60,8 @@ int (*outverb[])(int pc) = {
 };
 
 int winker = 0, winktime = 0, combat = 0;
-char *posture[] = {"All Out","Standard","Defensive","Fall Back"};
-char *wordmod[] = {"None","Low","Medium","Severe","Dead","Panicked"};
+char *posture[] = {"All Out", "Standard", "Defensive", "Fall Back"};
+char *wordmod[] = {"None", "Low", "Medium", "Severe", "Dead", "Panicked"};
 
 uint8_t putbuf[320], specbuf[40];
 char monbuf[320];
@@ -76,28 +76,36 @@ weapon_t weapon[] = {
   {40, 3, 1},    /* dagger */
   {-1, 12, 8}    /* bow */
 };
-char *wepname[] = {"","Broadsword","Scimitar","Mace","Dagger","Bow"};
+
+char *wepname[] = {"", "Broadsword", "Scimitar", "Mace", "Dagger", "Bow"};
+
 char wepmatx[4][4] = { {0,-40,-40,-40},
                        {40,0,20,-20},
                        {40,-20,0,20},
                        {40,20,-20,0} };
-char *statword[] = {"Points","Spell","Good Hand",
-                    "Other Hand"," OPTIONS:","Good Hand",
-                    "Other Hand","Inventory","  Quit"};
+
+char *statword[] = {"Points", "Spell", "Good Hand",
+                    "Other Hand", " OPTIONS:", "Good Hand",
+                    "Other Hand", "Inventory", "  Quit"};
 long int saddr;
 
 int mode = 0, dismax;
+
 int pursuit[3] = {0, 0, 0};
+
 uint8_t trigval[80][6];
+
 char invtrig[20];
+
 char path[64] = "a:*.SAV";
+
 // char *filename = "________.___";
 char *spell[] = {
-  "Cure","Search","Freeze","Unvenom","Vorpal",
-  "Speed","Armor","Disarm","Bolt","Thief",
-  "Fear","Fireball","Blink","Reveal","Heal",
-  "Prism","Block","Charm","Wallfire","Destroy",
-  "Summon","Death","Life","Teleport",
+  "Cure", "Search", "Freeze", "Unvenom", "Vorpal",
+  "Speed", "Armor", "Disarm", "Bolt", "Thief",
+  "Fear", "Fireball", "Blink", "Reveal", "Heal",
+  "Prism", "Block", "Charm", "Wallfire", "Destroy",
+  "Summon", "Death", "Life", "Teleport",
   "CANCEL"
 };
 
@@ -105,9 +113,9 @@ char *spell[] = {
 // Note this is not used in the menu display where it just divides by 4
 char spelunit[] = {0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
 char *name[] = {
-  "goblin","skeleton","spider","firewolf","ghost","thrang","ghoul","snake","vampire",
-  "gork","Melkthrop","merchant","bat","Eirik","guard","pedestrian","Mage Leveth",
-  "orc","crusher","flamer","rat","bartender","rogue"
+  "goblin", "skeleton", "spider", "firewolf", "ghost", "thrang", "ghoul", "snake", "vampire",
+  "gork", "Melkthrop", "merchant", "bat", "Eirik", "guard", "pedestrian", "Mage Leveth",
+  "orc", "crusher", "flamer", "rat", "bartender", "rogue"
 };
 
 // Inventory of up to 4 player characters
@@ -169,10 +177,13 @@ char weight[41] = {
 };
 
 // Low damage, medium damage, heavy damage, dead, poisoned, charmed
-char *mod[] = {"0","L","M","H","X","P","C"};
+char *mod[] = {"0", "L", "M", "H", "X", "P", "C"};
 
 int16_t crudbuf[65];
-char *stuff[] = {"","                    "};
+char *stuff[] = {
+  "",
+  "                    "
+};
 
 char *errmsg[] = {
                    "",
@@ -286,7 +297,7 @@ char *verblist[] = {
 //   5 =
 //   6 =
 //   7 =
-uint8_t zline[16][8][7];                    
+zline_t zline[16][8];                    
 
 room_data_t new_rumdata[80];
 

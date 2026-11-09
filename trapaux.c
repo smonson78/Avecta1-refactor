@@ -13,11 +13,13 @@
 
 int rumslot();
 
+// type = 1 to destroy an object
+// type = 2 to destroy a player/monster
 int destroy(int type, int num)
 {
-  int x,y;
+  int x, y;
   // int i;
-  uint8_t *z;
+  zline_t *z;
   uint8_t *c;
   room_object_t *object;
 
@@ -33,7 +35,7 @@ int destroy(int type, int num)
     y = c[25];
   }
 
-  z = zline[x][y];
+  z = &zline[x][y];
   
   if (type == 1) {
     // for (i = 0; i < 9; i++) {
@@ -41,9 +43,9 @@ int destroy(int type, int num)
     // }
     memset(object, 0, sizeof(room_object_t));
 
-    z[1] = 0;
+    z->visible = 0;
 
-    if (z[5] > 0 || new_rumdata[crum].room_has_bg) {
+    if (z->unknown5 > 0 || new_rumdata[crum].room_has_bg) {
       drawsq(x, y);
     }
   }
@@ -67,7 +69,7 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
   int i;
   room_object_t *c;
 
-  i = zline[x][y][1];
+  i = zline[x][y].visible;
 
   if (i != 0) {
     destroy(1, i);
@@ -101,10 +103,10 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
   c->y = y;
   c->visible = vis;
 
-  zline[x][y][1] = i;
+  zline[x][y].visible = i;
 
   // if (c[8] == 1 && (new_rumdata[crum].room_has_bg == 1 || zline[x][y][5] == 1)) {
-  if (c->visible == 1 && (new_rumdata[crum].room_has_bg == 1 || zline[x][y][5] == 1)) {    
+  if (c->visible == 1 && (new_rumdata[crum].room_has_bg == 1 || zline[x][y].unknown5 == 1)) {    
     drawsq(x, y);
   }
   return i;
@@ -180,7 +182,7 @@ int untrap(int num)
 
 int blowup(int x, int y)
 {
-  uint8_t *z = zline[x][y];
+  zline_t *z = &zline[x][y];
   room_object_t *c;
   int i;
 
@@ -189,18 +191,18 @@ int blowup(int x, int y)
   }
 
   // if (z[2] > 0 || (curmon[0][24] == x && curmon[0][25] ==y) ) {
-  if (z[2] > 0 || (player->x == x && player->y == y)) {
-    destroy(2, z[2]);
+  if (z->monster > 0 || (player->x == x && player->y == y)) {
+    destroy(2, z->monster);
   }
 
   // if (z[1] > 0 && crumobj[z[1]][0] != 49) {
-  if (z[1] > 0 && crumobj[z[1]].object_id != OBJECT_RUNE) {
-    c = &crumobj[z[1]];
+  if (z->visible > 0 && crumobj[z->visible].object_id != OBJECT_RUNE) {
+    c = &crumobj[z->visible];
     // if (c[3] != 0 || c[2] != 0) {
     if (c->target != 0 || c->trap != 0) {
       return 1;
     }
-    destroy(1, z[1]);
+    destroy(1, z->visible);
   }
 
   return 1;

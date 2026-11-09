@@ -44,7 +44,7 @@ int i11(int pc)
   sgetxy(&x, &y, 0, 0, 0, &ret);
   winker = 0;
   undomsg();
-  tar = zline[x][y][2];
+  tar = zline[x][y].monster;
 
   if (pc < 4 && tar < 4) {
     error(ERROR_NO_CHARACTER);
@@ -115,7 +115,7 @@ int o11(int pc)
       i = 2 * i - 1;
       j = rnd(2);
       j = 2 * j - 1;
-    } while (k < 10 && zline[t[24] + i][t[25] + j][0] == 0);
+    } while (k < 10 && zline[t[24] + i][t[25] + j].unknown0 == 0);
   }
   nextxy(c[24], c[25], t[24] + i, t[25] + j, c[24], c[25], &x, &y);
 

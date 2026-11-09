@@ -30,7 +30,7 @@ int i13(int pc)
   sgetxy(&x,&y,0,0,0,&ret);
   undomsg();
   winker = 0;
-  tar = zline[x][y][2];
+  tar = zline[x][y].monster;
 
   if (!los(pc,x,y)) {
     error(ERROR_NO_LINE_OF_SIGHT);
@@ -57,12 +57,12 @@ int o13(int pc)
   room_object_t *z;
   uint8_t *t;
   char *wt,*w = (pc == 0 ? pname : name[c[3]]);
-  int tar = c[7],x,y,d,miss,i,j,k;
+  int tar = c[7], x, y, d, miss, i, j, k;
   t = curmon[tar];
   curmon2_t *new_t = &new_curmon2[tar];
   x = t[24];
   y = t[25];
-  d = dist(c[24],c[25],0,x,y,0);
+  d = dist(c[24], c[25], 0, x, y, 0);
   wt = (tar == 0 ? pname : name[t[3]]);
 
   if (!los(pc, x, y)) {
@@ -78,12 +78,12 @@ int o13(int pc)
     
     i = j = k = 0;
 
-    if (miss || zline[x][y][1] != 0) {
+    if (miss || zline[x][y].visible != 0) {
       do {
         k++;
         i = 2 - rnd(5);
         j = 2 - rnd(5);
-      } while (k < 20 && (zline[x + i][y + j][1] != 0 || zline[x + i][y + j][0] != 1));
+      } while (k < 20 && (zline[x + i][y + j].visible != 0 || zline[x + i][y + j].unknown0 != 1));
     }
     
     if (k == 20) {
@@ -126,10 +126,10 @@ int o13(int pc)
     c[45] = 0;
     new_c->monster.poison_mode_2 = 0;
 
-    zline[x + i][y + j][1] = k;
+    zline[x + i][y + j].visible = k;
 
     // if (rumdata[crum][30] || zline[x+i][y+j][5] > 0)
-    if (new_rumdata[crum].room_has_bg || zline[x + i][y + j][5] > 0) {
+    if (new_rumdata[crum].room_has_bg || zline[x + i][y + j].unknown5 > 0) {
       drawsq(x + i, y + j);
     }
 

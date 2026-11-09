@@ -143,20 +143,22 @@ void rumdraw(char *pan)
   debug_printf("-- rumdraw blanked zline\n");
 
   // This is blanking out the entire zline array
-  for (i = 0; i < 16; i++) {
-    for (j = 0; j < 8; j++) {
-      for (k = 0; k < 7; k++) {
-        zline[i][j][k] = 0;
-      }
-    }
-  }
+  // for (i = 0; i < 16; i++) {
+  //   for (j = 0; j < 8; j++) {
+  //     for (k = 0; k < 7; k++) {
+  //       zline[i][j][k] = 0;
+  //     }
+  //   }
+  // }
+  memset(&zline, 0, sizeof(zline));
 
   // 25 things, which is all of triglist
   // for(i=0;i<25;triglist[i++] = 0)
   //   ;
-  for (i = 0; i < 25; i++) {
-    triglist[i] = 0;
-  }
+  // for (i = 0; i < 25; i++) {
+  //   triglist[i] = 0;
+  // }
+  memset(&triglist, 0, sizeof(triglist));
     
   // objnum = 0;
   // 13 things, 1 to 13
@@ -232,12 +234,12 @@ void rumdraw(char *pan)
     // 0 stays
     // positive number turns into n/n AKA 1
     // negative number turns into n/-n AKA -1
-    stepx = (stepx != 0 ? stepx / abs(stepx) : 0);
-    stepy = (stepy != 0 ? stepy / abs(stepy) : 0);
+    stepx = stepx != 0 ? stepx / abs(stepx) : 0;
+    stepy = stepy != 0 ? stepy / abs(stepy) : 0;
 
     // Move toward the target goal (x2, y2) one square at a time, setting zline for this square to 2
     while (x1 != x2 || y1 != y2) {
-      zline[x1][y1][0] = 2;
+      zline[x1][y1].unknown0 = 2;
       x1 += stepx;
       y1 += stepy;
     }
@@ -264,13 +266,13 @@ void rumdraw(char *pan)
     for (i = 0; i < 16; i++) {
 
       // There is one "zline" entry for each square
-      uint8_t *z = zline[i][j];
-      if (top == -1 && z[0] != 0) {
+      zline_t *z = &zline[i][j];
+      if (top == -1 && z->unknown0 != 0) {
         top = j;
       }
 
       // We're looking at the square above to see if it's 2, but THIS square isn't 2.
-      if (i > 0 && zline[i-1][j][0] == 2 && z[0] != 2) {
+      if (i > 0 && zline[i - 1][j].unknown0 == 2 && z->unknown0 != 2) {
         open = !open;
         
         k = 0;
@@ -279,7 +281,7 @@ void rumdraw(char *pan)
             break;
           }
           
-          if (k > 0 && zline[i][j-k][0] != 2) {
+          if (k > 0 && zline[i][j - k].unknown0 != 2) {
             break;
           } else {
             k++;
@@ -287,16 +289,16 @@ void rumdraw(char *pan)
         }
 
         if (k == 1) { 
-          if (zline[i][j-1][0] != 2) {
-            open = zline[i][j-1][0];
+          if (zline[i][j - 1].unknown0 != 2) {
+            open = zline[i][j - 1].unknown0;
           } else {
             open = 1;
           }
         } else {
-          if (j == k && zline[i][j-k][0] == 2) {
+          if (j == k && zline[i][j - k].unknown0 == 2) {
             open = 1;
           } else {
-            open = !zline[i][j-k][0];
+            open = !zline[i][j - k].unknown0;
           }
         }
       }
@@ -305,8 +307,8 @@ void rumdraw(char *pan)
         open = 0;
       }
 
-      if (z[0] != 2) {
-        z[0] = open;
+      if (z->unknown0 != 2) {
+        z->unknown0 = open;
       }
     }   
   }
@@ -334,7 +336,7 @@ void rumdraw(char *pan)
 
           // I assume zline has ended up with the background tiles in the room that you can actually see from where you are
           // Relevant values in [0] here are either 2 or 1
-          if (zline[i][j][0] == 2 - k && (!outside || k != 0) ) {
+          if (zline[i][j].unknown0 == 2 - k && (!outside || k != 0)) {
             // Draw the background tile using the AES custom fill pattern
             fillsq(i, j);
           }
@@ -376,9 +378,9 @@ void rumdraw(char *pan)
           blt(&bitmap[object->object_id], obj_x * 16, obj_y * 16);
         }
 
-        zline[obj_x][obj_y][1] = i; // put the object ID into position 1
+        zline[obj_x][obj_y].visible = i; // put the object ID into position 1
       } else {
-        zline[obj_x][obj_y][3] = i; // put the object ID into position 3
+        zline[obj_x][obj_y].invisible = i; // put the object ID into position 3
       }
     }
   }
@@ -452,7 +454,7 @@ void rumdraw(char *pan)
     // c[8] = 1;
     object->object_id = new_r->room_unknown_3[i];
     //zline[x][y][1] = i - 134; // 14..18
-    zline[x][y][1] = 14 + i; // 14..18
+    zline[x][y].visible = 14 + i; // 14..18
     invtrap(object->object_id);
     object->movable = 1;
     object->trap = 0;
@@ -476,11 +478,11 @@ void rumdraw(char *pan)
     // This is indicating an area of one space around whatever's at (x, y)
     for(i = x - 1; i < x + 2; i++) {
       for (j = y - 1; j < y + 2; j++) {
-        uint8_t *z = zline[i][j];
+        zline_t *z = &zline[i][j];
 
-        if (z[0] == 1) {
-          z[5] += 1;
-          z[6] = 1;
+        if (z->unknown0 == 1) {
+          z->unknown5 += 1;
+          z->unknown6 = 1;
           drawsq(i, j);
         }
       }
@@ -504,7 +506,7 @@ void rumdraw(char *pan)
       }
       
       if (c[36] == 0) {
-        if (zline[x1][y1][2] != 0) {
+        if (zline[x1][y1].monster != 0) {
           c[0] = 0;
           new_c->in_use = 0;
           continue;
@@ -515,12 +517,12 @@ void rumdraw(char *pan)
         x1 = rnd(13);
         y1 = rnd(7);
 
-        uint8_t *z = zline[x1][y1];
+        zline_t *z = &zline[x1][y1];
         k = 0;
-        while (k < 100 && (z[0] != 1 || z[1] != 0 || z[2] != 0)) {
+        while (k < 100 && (z->unknown0 != 1 || z->visible != 0 || z->monster != 0)) {
           x1 = rnd(13);
           y1 = rnd(7);
-          z = zline[x1][y1];
+          z = &zline[x1][y1];
           k++;
         }
 
@@ -549,7 +551,7 @@ void rumdraw(char *pan)
       new_c->unknown16[2] = 0;
       new_c->unknown39 = i; // i is just the monster array index
 
-      zline[x1][y1][2] = i;
+      zline[x1][y1].monster = i;
 
       drawman(i, c[24], c[25]);
 

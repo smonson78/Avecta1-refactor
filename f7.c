@@ -22,7 +22,7 @@ int take_drop_in(int pc)
   uint8_t *c = curmon[pc];
   player_t *new_c = &players[pc];
 
-  uint8_t *z;
+  zline_t *z;
   char scratch[15],*w = (pc == 0 ? pname : name[c[3]]);
   int object,k,l,self,bot=0,top1=3,type,ret=0;
   int16_t x, y;
@@ -31,7 +31,7 @@ int take_drop_in(int pc)
     return 0;
   }
 
-  if (invnpc[pc][0] == 0 && c[45] == 0 && (c[46] == 0 || c[46] == 81) ) {
+  if (invnpc[pc][0] == 0 && c[45] == 0 && (c[46] == 0 || c[46] == OBJECT_TORCH) ) {
     type = 0;
   } else {
     bot = 2 + listinv(pc, scratch);
@@ -62,7 +62,7 @@ int take_drop_in(int pc)
   self = x == new_c->x && y == new_c->y ? 1 : 0;
 
   if (ret == 0 && !self) {
-    if ((object = zline[x][y][1]) == 0) {
+    if ((object = zline[x][y].visible) == 0) {
       error(ERROR_NOTHING_TO_TAKE);
       return 0;
     }
@@ -90,8 +90,8 @@ int take_drop_in(int pc)
   new_c->unknown9 = 0;
   
   if (ret == 0 && !self) {
-    c[9] = zline[x][y][1];
-    new_c->unknown9 = zline[x][y][1];
+    c[9] = zline[x][y].visible;
+    new_c->unknown9 = zline[x][y].visible;
     c[10] = 0;
     c[15] = 7;  
     c[16] = 6;
@@ -127,9 +127,10 @@ int take_drop_in(int pc)
       return 0;
     } 
 
-    z = zline[x][y];
+    z = &zline[x][y];
+    // NOTE ASSIGNMENT:
     // if (z[0] == 0 || ( (k = z[1] ) != 0 && crumobj[k][5] < 0) ) {
-    if (z[0] == 0 || ( (k = z[1] ) != 0 && crumobj[k].hide < 0) ) {
+    if (z->unknown0 == 0 || ((k = z->visible) != 0 && crumobj[k].hide < 0)) {
       error(ERROR_OBJECT_IS_CLOSED);
       return 0;
     }
@@ -203,7 +204,7 @@ int take_drop_out(int pc)
     return 1;
   }
 
-  if (j > 0 && (k = zline[x][y][1]) == 0 && slotnum() == 0) {
+  if (j > 0 && (k = zline[x][y].visible) == 0 && slotnum() == 0) {
     prnt("-> Supernatural forces prevent %s from dropping the %s!", w1,
         obj[c[8]], NULL, NULL, NULL, NULL);
     return 1;
@@ -303,9 +304,9 @@ int take_drop_out(int pc)
     z->trap = 0;
     z->target = 0;
 
-    zline[x][y][1] = i;
+    zline[x][y].visible = i;
 
-    if (zline[x][y][5] > 0 || new_rumdata[crum].room_has_bg) {
+    if (zline[x][y].unknown5 > 0 || new_rumdata[crum].room_has_bg) {
       drawsq(x,y);
     }
   }
@@ -354,7 +355,7 @@ int take_drop_out(int pc)
       return 1;
     }
 
-    id = zline[x][y][1];
+    id = zline[x][y].visible;
 
     // k = crumobj[id][0];
     k = crumobj[id].object_id;
@@ -394,7 +395,7 @@ int take_drop_out(int pc)
       // check_rumdata("o7 position 2");
     }
 
-    zline[x][y][1] = 0;
+    zline[x][y].visible = 0;
 
     c[5] = x;
     c[6] = y;
@@ -410,7 +411,7 @@ int take_drop_out(int pc)
 
     attack(pc, x, y);
 
-    if (new_rumdata[crum].room_has_bg || zline[x][y][5] > 0) {
+    if (new_rumdata[crum].room_has_bg || zline[x][y].unknown5 > 0) {
       drawsq(x,y);
     }
   }

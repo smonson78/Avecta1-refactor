@@ -54,8 +54,8 @@ int examine_in(int pc)
   clrinp();
 
   if (ret == 0) {
-    z1 = zline[x][y][1];
-    z2 = zline[x][y][2];
+    z1 = zline[x][y].visible;
+    z2 = zline[x][y].monster;
 
     if (!los(pc, x, y)) {
       error(ERROR_NO_LINE_OF_SIGHT);
@@ -168,7 +168,7 @@ int examine_out(int pc)
 
     prnt("-> %s examines the %s.", w1, obj[object], NULL, NULL, NULL, NULL);
 
-    if (!new_rumdata[crum].room_has_bg && !zline[x][y][5]) {
+    if (!new_rumdata[crum].room_has_bg && !zline[x][y].unknown5) {
       prnt("-> It is too dark for %s to see anything!", w1, NULL, NULL, NULL, NULL, NULL);
       return 1;
     }

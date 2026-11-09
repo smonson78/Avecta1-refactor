@@ -13,7 +13,8 @@ int16_t animate()
 {
    int m,n,j;
    int x,y;
-   uint8_t *c, *z;
+   uint8_t *c;
+   zline_t *z;
    curmon_t *new_c;
 
    time++;
@@ -27,12 +28,12 @@ int16_t animate()
       y = specbuf[36]/16;
       x += rnd(3) - 1;
       y += rnd(3) - 1;
-      z = zline[x][y];
+      z = &zline[x][y];
 
-      m = z[6];
+      m = z->unknown6;
       if (m != 0) {
          // More stupid pointer maths
-         blt(&bitmap[130 + 2*m + rnd(2)],16*x,16*y);
+         blt(&bitmap[130 + 2 * m + rnd(2)], 16 * x, 16 * y);
       }
    }
 
@@ -52,10 +53,10 @@ int16_t animate()
       y = c[25];
       // x = new_c->x;
       // y = new_c->y;
-      z = zline[x][y];
+      z = &zline[x][y];
 
       // if (!z[5] && !rumdata[crum][30] && j > 3) {
-      if (!z[5] && !new_rumdata[crum].room_has_bg && j > 3) {
+      if (!z->unknown5 && !new_rumdata[crum].room_has_bg && j > 3) {
          return 1;
       }
 
@@ -81,12 +82,13 @@ int16_t animate()
 
          new_c->stink_lines -= 1;
       } 
-
-      if ((m = z[6]) != 0) {
+      
+      m = z->unknown6;
+      if (m != 0) {
          blt(&bitmap[130 + 2 * m], 16 * x, 16 * y);
       }
 
-      if (z[4] == 1) {
+      if (z->unknown4 == 1) {
          for (m = 0; m < 2; m++) {
             for (n = 0; n < 2; n++) {
                toggle(2 * x + m, 2 * y + n, 0);

@@ -67,21 +67,21 @@ int move_out(int pc)
   debug_printf("> move_out()\n");
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
-  uint8_t *z;
+  zline_t *z;
   char id, *w;
   int flag, xroll, yroll, i, xnow = c[24], ynow = c[25], x = c[28], y = c[29];
   int j;
   int light = new_rumdata[crum].room_has_bg;
 
-  z = zline[x][y];
-  id = crumobj[z[1]].object_id;
+  z = &zline[x][y];
+  id = crumobj[z->visible].object_id;
   w = (pc == 0 ? &pname[0] : name[curmon[pc][3]]);
 
-  if (z[0] != 1 || (id < 41 && id > 0) || z[2] != 0) {
-    i = curmon[z[2]][3];
+  if (z->unknown0 != 1 || (id < 41 && id > 0) || z->monster != 0) {
+    i = curmon[z->monster][3];
 
-    if (pc < 4 && z[2] != 0 && pc != z[2]) {
-      if (z[2] > 3 && i != 10) {
+    if (pc < 4 && z->monster != 0 && pc != z->monster) {
+      if (z->monster > 3 && i != 10) {
         prnt("-> The %s blocks %s!", name[i], w, NULL, NULL, NULL, NULL);
       } else {
         prnt("-> %s blocks %s!", name[i], w, NULL, NULL, NULL, NULL);
@@ -91,7 +91,8 @@ int move_out(int pc)
     return 1;
   }
 
-  if (pc > 0 && z[2] == 0 && x == curmon[0][24] && y == curmon[0][25]) {
+  // if (pc > 0 && z->monster == 0 && x == curmon[0][24] && y == curmon[0][25]) {
+  if (pc > 0 && z->monster == 0 && x == player->x && y == player->y) {
     return 1;
   }
 
@@ -106,25 +107,25 @@ int move_out(int pc)
 
   xroll = 2 * (x - xnow) / (1 + outside);
   yroll = 2 * (y - ynow) / (1 + outside);
-  z = zline[xnow][ynow];
+  z = &zline[xnow][ynow];
   Vsync();
   vbl_animation_off();
   x = 16 * xnow;
   y = 16 * ynow;
 
-  if (!light && z[5] == 0) {
+  if (!light && z->unknown5 == 0) {
     flag = 1;
   } else {
     flag = 0;
   }
 
-  if (!light && zline[c[28]][c[29]][5] == 0) {
+  if (!light && zline[c[28]][c[29]].unknown5 == 0) {
     if (pc < 4) {
       drawsq(c[28], c[29]);
     } else {
-      z[2] = 0;
+      z->monster = 0;
       
-      if (z[5] > 0) {
+      if (z->unknown5 > 0) {
         drawsq(xnow, ynow);
       }
 
@@ -133,7 +134,7 @@ int move_out(int pc)
       new_c->x = new_c->unknown28[0];
       new_c->y = new_c->unknown28[1];
 
-      zline[c[24]][c[25]][2] = pc;
+      zline[c[24]][c[25]].monster = pc;
 
       return 1;
     }
@@ -168,20 +169,20 @@ int move_out(int pc)
   new_c->x = new_c->unknown28[0];
   new_c->y = new_c->unknown28[1];
 
-  z[2] = 0; /* reset the zline array to reflect move */
+  z->monster = 0; /* reset the zline array to reflect move */
 
-  zline[c[24]][c[25]][2] = pc;
+  zline[c[24]][c[25]].monster = pc;
 
   if (pc < 4) {
-    setlite(pc, *(c + 24) - xnow, *(c + 25) - ynow);
+    setlite(pc, c[24] - xnow, c[25] - ynow);
   }
 
-  if (!light && z[5] == 0) {
+  if (!light && z->unknown5 == 0) {
     setfill(2);
     fillsq(xnow, ynow);
   }
 
-  if (z[6]) {
+  if (z->unknown6) {
     blt(&bitmap[132], 16 * xnow, 16 * ynow);
   }
 

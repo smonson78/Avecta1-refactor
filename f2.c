@@ -41,7 +41,7 @@ int cast_in(int pc)
   int i, j, k, numb, ret;
   uint8_t *c = curmon[pc];
   player_t *new_c = &players[pc];
-  uint8_t *z;
+  zline_t *z;
   char scratch[3], *w = (pc == 0 ? pname : name[c[3]]);
 
   debug_printf("> cast (in)\n");
@@ -123,34 +123,34 @@ int cast_in(int pc)
       return 0;
     }
 
-    z = zline[x][y];
+    z = &zline[x][y];
     j = spelinfo[numb][0];
 
-    if (j == 1 && z[2] == 0 ) {
+    if (j == 1 && z->monster == 0 ) {
       error(ERROR_NO_CHARACTER);
       return 0;
     }
 
-    if (j == 2 && z[1] == 0) {
+    if (j == 2 && z->visible == 0) {
       error(ERROR_NO_OBJECT);
       return 0;
     }
 
     // if (j == 3 && (z[2] == 0 && (x != c[24] || y != c[25]) ) ) {
-    if (j == 3 && (z[2] == 0 && (x != new_c->x || y != new_c->y) )) {
+    if (j == 3 && (z->monster == 0 && (x != new_c->x || y != new_c->y) )) {
       error(ERROR_NO_CHARACTER);
       return 0;
     }
 
-    c[9] = z[1];
+    c[9] = z->visible;
     c[8] = 0;
-    c[7] = z[2];
+    c[7] = z->monster;
     c[5] = x;
     c[6] = y;
 
-    new_c->unknown9 = z[1];
+    new_c->unknown9 = z->visible;
     new_c->unknown8 = 0;
-    new_c->unknown7 = z[2];
+    new_c->unknown7 = z->monster;
     new_c->unknown5 = x;
     new_c->unknown6 = y;
   }
@@ -190,21 +190,21 @@ int cast_in(int pc)
     winker = 0;
     undomsg();
     
-    if (!los(pc, x, y) || zline[x][y][0] != 1) {
+    if (!los(pc, x, y) || zline[x][y].unknown0 != 1) {
       error(ERROR_NO_LINE_OF_SIGHT);
       return 0;
     }
 
     // if (zline[x][y][1] != 0 && crumobj[zline[x][y][1]][0] < 41) {
-    if (zline[x][y][1] != 0 && crumobj[zline[x][y][1]].object_id < OBJECT_BROADSWORD) {
+    if (zline[x][y].visible != 0 && crumobj[zline[x][y].visible].object_id < OBJECT_BROADSWORD) {
       error(ERROR_PATH_BLOCKED);
       return 0;
     }
 
     c[26] = x;
     c[27] = y;
-    new_c->x = x;
-    new_c->y = y;
+    new_c->old_x = x;
+    new_c->old_y = y;
   }
 
   c[10] = numb;
@@ -217,7 +217,8 @@ int cast_in(int pc)
   new_c->unknown16[0] = spelinfo[numb - 1][2];
   new_c->spell_units -= 1 + (numb - 1) / 5;
   
-  debug_printf("< i2\n");
+  debug_printf("< cast_in()\n");
+  check_curmon("end of cast_in()");
   return 1;
 }  
 
@@ -269,7 +270,8 @@ int cast_out(int pc)
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
   player_t *pt;
-  uint8_t *p, *z;
+  uint8_t *p;
+  zline_t *z;
   char *w, *wt;
   uint8_t *t;
   room_object_t *object;
@@ -562,7 +564,7 @@ int cast_out(int pc)
 
     case 13:  /* blink spell */
       // t is a curmon    
-      if (zline[c[26]][c[27]][2] != 0) {
+      if (zline[c[26]][c[27]].monster != 0) {
         prnt("-> %s's blink spell fails!", w, NULL, NULL, NULL, NULL, NULL);
         break;
       }
@@ -577,14 +579,14 @@ int cast_out(int pc)
       explode(x, y, 0);
       Vsync();
       storsc(storbuf[target], 16 * x, 16 * y, 1, addr);
-      zline[x][y][2] = 0;
+      zline[x][y].monster = 0;
 
       t[24] = c[26];
       t[25] = c[27];
       new_t->x = new_c->old_x;
       new_t->y = new_c->old_y;
 
-      zline[t[24]][t[25]][2] = target;
+      zline[t[24]][t[25]].monster = target;
       
       if (target < 4 && t[41] > 0) {
         setlite(target, t[24] - x, t[25] - y); 
@@ -593,9 +595,9 @@ int cast_out(int pc)
       x = c[26];
       y = c[27];
 
-      if (zline[t[24]][t[25]][5] > 0 || new_rumdata[crum].room_has_bg) {
-        explode(x,y,0);
-        drawsq(x,y);
+      if (zline[t[24]][t[25]].unknown5 > 0 || new_rumdata[crum].room_has_bg) {
+        explode(x, y, 0);
+        drawsq(x, y);
       }
 
       t[15] = 8;
@@ -616,12 +618,12 @@ int cast_out(int pc)
           // c is a crumobj! no need to do new_c
 
           // zline[c[6]][c[7]][1] = i;
-          zline[obj2->x][obj2->y][1] = i;
+          zline[obj2->x][obj2->y].visible = i;
 
           // if (new_rumdata[crum].room_has_bg || zline[c[6]][c[7]][5] > 0) {
           //   blt(&bitmap[c[0]],16*(c[6]),16*(c[7]));
           // }
-          if (new_rumdata[crum].room_has_bg || zline[obj2->x][obj2->y][5] > 0) {
+          if (new_rumdata[crum].room_has_bg || zline[obj2->x][obj2->y].unknown5 > 0) {
             blt(&bitmap[obj2->object_id], 16 * obj2->x, 16 * obj2->y);
           }
         }       
@@ -692,14 +694,14 @@ int cast_out(int pc)
         break;
       }
 
-      specbuf[35] = c[51]/3;
-      specbuf[36] = c[5] + 16*(c[6]);
+      specbuf[35] = c[51] / 3;
+      specbuf[36] = c[5] + 16 * c[6];
       for (i = -1; i < 2; i++) {
         for (j = -1; j < 2; j++) {
-          z = zline[c[5] + i][c[6] +j];
-          if (*z == 1) {
-            z[6] = 1;
-            z[5] += 1;
+          z = &zline[c[5] + i][c[6] +j];
+          if (z->unknown0 == 1) {
+            z->unknown6 = 1;
+            z->unknown5 += 1;
             drawsq(c[5] + i, c[6] + j);
           }
         }

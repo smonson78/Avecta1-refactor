@@ -97,7 +97,20 @@ extern char monbuf[320], junk[20];
 extern int16_t crudbuf[65];
 extern uint8_t specbuf[40], putbuf[320];
 
-extern uint8_t zline[16][8][7];
+typedef struct {
+  uint8_t unknown0;
+  // 1: A crumobj[] index if a visible object is present
+  uint8_t visible;
+  // 2: A curmon[] index
+  uint8_t monster;
+  
+  uint8_t invisible;
+  uint8_t unknown4;
+  uint8_t unknown5; // "torch overlay number"
+  uint8_t unknown6;
+} zline_t;
+
+extern zline_t zline[16][8];
 
 extern room_data_t new_rumdata[80];
 //extern uint8_t (*new_rumdata_as_array)[80][sizeof(room_data_t)];

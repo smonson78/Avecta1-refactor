@@ -74,7 +74,7 @@ int input(int pc)
   int i,j,ret;
   uint8_t *c = curmon[pc];
   player_t *new_c = &players[pc];
-  uint8_t *z = NULL;
+  zline_t *z = NULL;
   char *w = (pc == 0 ? pname : name[c[3]]);
 
   debug_printf("> input()\n");
@@ -142,16 +142,16 @@ top:
         goto top;
       }
 
-      z = zline[x][y];
+      z = &zline[x][y];
 
-      if (!lom(pc,x,y)) {
+      if (!lom(pc, x, y)) {
         i = 1;
       }
 
-      j = crumobj[z[1]].object_id;
+      j = crumobj[z->visible].object_id;
 
-      if ((j > 0 && j < 41) || (z[2] < 4 && pc > 0 && z[2] > 0) 
-          || (z[0] == 2 && z[2] == 0)) {
+      if ((j > 0 && j < 41) || (z->monster < 4 && pc > 0 && z->monster > 0) 
+          || (z->unknown0 == 2 && z->monster == 0)) {
         i = 1;
       }
     }
@@ -166,11 +166,11 @@ top:
   }
 
   if (ret == 0) {
-    if (z[2] != 0) {
-      c[7] = z[2];
-      new_c->unknown7 = z[2];
+    if (z->monster != 0) {
+      c[7] = z->monster;
+      new_c->unknown7 = z->monster;
 
-      if (z[2] > 3)  {
+      if (z->monster > 3)  {
         combat = 1;
         if (pc == 0 || (pc < 4 && c[38])) {
           c[15] = 1;
@@ -251,46 +251,58 @@ int comwind(int pc)
   v_rvon(handle);
 
   for (i = 1; i < 5; i++) {
-    vs_curaddress(handle,i,33);
+    vs_curaddress(handle, i, 33);
     printf("         ");
   }
 
-  vs_curaddress(handle,8,33);
+  vs_curaddress(handle, 8, 33);
   printf("        ");
-  textsix(1,260,57,8,"Options:");
+  textsix(1, 260, 57, 8, "Options:");
   v_rvoff(handle);
-  textsix(1,260,1,strlen(w),w);
-  sprintf(scratch,"%d",c[2] - c[1]);
-  textsix(1,280,9,strlen(scratch),scratch);
+  textsix(1, 260, 1, strlen(w), w);
+  sprintf(scratch,"%d", c[2] - c[1]);
+  textsix(1, 280, 9, strlen(scratch), scratch);
+  
   if (c[47] == 0) {
-    sprintf(scratch,"%c",'G');
+    sprintf(scratch, "%c", 'G');
   } else {
-    sprintf(scratch,"%c",'P');
+    sprintf(scratch, "%c", 'P');
   }
-  textsix(1,294,9,1,scratch);
-  textsix(1,260,17,strlen(obj[c[45]]),obj[c[45]]);
+
+  textsix(1, 294, 9, 1, scratch);
+  textsix(1, 260, 17, strlen(obj[c[45]]), obj[c[45]]);
+  
   if (c[34] < -1 || c[34] > 1) {
     c[34] = 0;
     new_c->unknown33[1] = 0;
   }
+
   if (c[34] == 1) {
     textsix(1,260,25,3,"Hit");
   }
+
   if (c[34] == -1) {
     textsix(1,260,25,4,"Miss");
   }
+
   if (c[34] == 0) {
-    textsix(1,260,25,4," -- ");
+    textsix(1, 260, 25, 4, " -- ");
   }
-  textsix(1,260,33,strlen(name[*(c1+3)]),name[*(c1+3)]);
-  i = (*(c1+1) * 4)/(*(c1+2));
-  if (*(c1+36) == 1 && *(c1+1) < *(c1+2)) {
+
+  textsix(1, 260, 33, strlen(name[c1[3]]), name[c1[3]]);
+
+  i = (c1[1] * 4) / (c1[2]);
+
+  if (c1[36] == 1 && c1[1] < c1[2]) {
     i = 5;
   }
-  textsix(1,260,41,strlen(wordmod[i]),wordmod[i]);
-  i = *(c1+40);
-  j = *(c1+58);
-  if (*(c1+39) != pc) {
+
+  textsix(1, 260, 41, strlen(wordmod[i]), wordmod[i]);
+
+  i = c1[40];
+  j = c1[58];
+
+  if (c1[39] != pc) {
     i = 0;
   }
 
@@ -309,6 +321,7 @@ int comwind(int pc)
     case 3:
       attack_name = att[j].defensive;
   }
+
   if (attack_name) {
     textsix(1, 260, 49, strlen(attack_name), attack_name);
   }
@@ -318,7 +331,7 @@ int comwind(int pc)
   }
   
   for (i = 0; i < 4; i++) {
-    textsix(1, 260, 65+8*i, strlen(posture[i]), posture[i]);
+    textsix(1, 260, 65 + 8 * i, strlen(posture[i]), posture[i]);
   }
 
   winker = 1;
@@ -327,7 +340,9 @@ int comwind(int pc)
   clrinp();
 
   if (ret == 11 || ret == 12) {
-    c[40] = c[39] = c[34] = 0;
+    c[40] = 0;
+    c[39] = 0;
+    c[34] = 0;
 
     new_c->unknown40 = 0;
     new_c->unknown39 = 0;
@@ -337,12 +352,14 @@ int comwind(int pc)
   }
 
   if (ret == 0) {
-    if (zline[x][y][2] == c[39]) { 
+    if (zline[x][y].monster == c[39]) { 
       c[40] = 2;
       new_c->unknown40 = 2;
       return 1;
     } else {
-      c[34] = c[39] = c[40] = 0;
+      c[34] = 0;
+      c[39] = 0;
+      c[40] = 0;
       new_c->unknown33[1] = 0;
       new_c->unknown39 = 0;
       new_c->unknown40 = 0;

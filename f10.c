@@ -40,7 +40,7 @@ int i10(int pc)
   undomsg();
   winker = 0;
   clrinp();
-  obj = zline[x][y][1];
+  obj = zline[x][y].visible;
   // if (obj == 0 || (crumobj[obj][5] != -2 && crumobj[obj][3] < 1) ) {
   if (obj == 0 || (crumobj[obj].hide != -2 && crumobj[obj].target < 1) ) {
     error(ERROR_NOTHING_TO_ROOK_SNOOP);
@@ -96,7 +96,7 @@ int o10(int pc)
   // new_r = &new_rumdata[o[3]];
   new_r = &new_rumdata[o->target];
 
-  if (object != zline[x][y][1]) {
+  if (object != zline[x][y].visible) {
     return 1;
   }
 

@@ -23,7 +23,7 @@ int damage(int pc, int level)
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
   room_object_t *z;
-  uint8_t *z1;
+  zline_t *z1;
 
   check_curmon("damage 0");
 
@@ -116,7 +116,7 @@ int damage(int pc, int level)
   Vsync();
   vbl_animation_off();
 
-  if (pc < 4 || light || zline[x][y][5] > 0) {
+  if (pc < 4 || light || zline[x][y].unknown5 > 0) {
     // Magic "splat" mark
     blt(&bitmap[128], 16 * x, 16 * y);
   }
@@ -138,7 +138,7 @@ int damage(int pc, int level)
     c[0] = 0;
     new_c->in_use = 0;
 
-    zline[x][y][2] = 0;
+    zline[x][y].monster = 0;
 
     check_curmon("damage 0.1");
 
@@ -167,19 +167,21 @@ int damage(int pc, int level)
           litetrol(x, y, 0);
         }
 
-        i = zline[x][y][1];
+        i = zline[x][y].visible;
 
         if (i != 0 && crumobj[i].target != 0) {
-          storsc(storbuf[pc],16 * x, 16 * y, 1, addr);
+          storsc(storbuf[pc], 16 * x, 16 * y, 1, addr);
           do {
             i = 1 - rnd(3);
             k = 1 - rnd(3);
+            
             x = c[24] + i;
             y = c[25] + k;
-            z1 = zline[x][y];
-            l = z1[1];
+
+            z1 = &zline[x][y];
+            l = z1->visible;
           } while ( x < 0 || x > 15 || y < 0 || y > 7 ||  
-            (crumobj[l].object_id < OBJECT_BROADSWORD && crumobj[l].target != 0) || z1[0] != 1);
+            (crumobj[l].object_id < OBJECT_BROADSWORD && crumobj[l].target != 0) || z1->unknown0 != 1);
 
           c[24] = x;
           c[25] = y;
@@ -192,7 +194,8 @@ int damage(int pc, int level)
             putaway(pc, crumobj[l].object_id);
           }
         } 
-        zline[x][y][1] = j;
+
+        zline[x][y].visible = j;
 
         if (c[45] != 0) {
           putaway(pc, c[45]);
@@ -248,9 +251,10 @@ int damage(int pc, int level)
         z->target = 0;
       }
       
-      if (light || zline[x][y][5] > 0) {
+      if (light || zline[x][y].unknown5 > 0) {
         drawsq(x, y);
       }
+
       check_curmon("damage 0.9");
 
       // Clear out curmon[i]
@@ -271,7 +275,7 @@ int damage(int pc, int level)
     }
   }
 
-  if (pc < 4 && (old * 4)/(c[2]) < (i = (c[1] * 4)/(c[2]))) {
+  if (pc < 4 && (old * 4) / c[2] < (i = (c[1] * 4) / c[2])) {
     prnt("-> %s's damage is now %s!", w, wordmod[i], NULL, NULL, NULL, NULL);
   }
   

@@ -17,7 +17,7 @@ int i9(int pc)
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
   curmon2_t *ch = &new_curmon2[pc];
-  uint8_t *z;
+  zline_t *z;
   char *w = (pc == 0 ? pname : name[c[3]]);
   int i, j, ret, quit = 0;
   int16_t x, y;
@@ -48,7 +48,7 @@ int i9(int pc)
       // -1, 0, 1
       for (j = -1; j < 2; j++) {
        
-        if (zline[x+i][y+j][0] == 2 && i * j == 0 && (i != 0 || j != 0)) { 
+        if (zline[x + i][y + j].unknown0 == 2 && i * j == 0 && (i != 0 || j != 0)) { 
           if (i == -1) {
             c[24] = 5;
             c[30] -= 1;
@@ -129,26 +129,26 @@ int i9(int pc)
     return 0;
   }
 
-  z = zline[x][y];
+  z = &zline[x][y];
   
   // if (crumobj[z[1]][3] == 0) {
-  if (crumobj[z[1]].target == 0) {
+  if (crumobj[z->visible].target == 0) {
     error(ERROR_NO_EXIT);
     return 0;
   }
 
   c[7] = c[8] = 0;      
-  c[9] = z[1];
+  c[9] = z->visible;
   // c[10] = crumobj[z[1]][3];
-  c[10] = crumobj[z[1]].target;
+  c[10] = crumobj[z->visible].target;
   c[15] = 9;
   c[16] = 6;
 
   ch->player.unknown7 = 0;
   ch->player.unknown8 = 0;
-  ch->player.unknown9 = z[1];
+  ch->player.unknown9 = z->visible;
   // ch->player.spell_cast = crumobj[z[1]][3];
-  ch->player.spell_cast = crumobj[z[1]].target;
+  ch->player.spell_cast = crumobj[z->visible].target;
   ch->player.command = ACTION_EXIT;
   ch->player.unknown16[0] = 6;
 
@@ -161,7 +161,7 @@ int o9(int pc)
   curmon2_t *ch = &new_curmon2[pc];
   // int x = c[24], y = c[25];
   int x = ch->player.x, y = ch->player.y;
-  uint8_t *z = zline[x][y];
+  zline_t *z = &zline[x][y];
   
   // Player
   // if (pc == 0 && crumobj[c[9]][5] == -2) {
@@ -172,9 +172,9 @@ int o9(int pc)
     return 1;
   }
 
-  z[2] = 0;
+  z->monster = 0;
   // if (z[5] > 0 || new_rumdata[c[30]].room_has_bg) {
-  if (z[5] > 0 || new_rumdata[ch->player.current_room].room_has_bg) {
+  if (z->unknown5 > 0 || new_rumdata[ch->player.current_room].room_has_bg) {
     Vsync();
     storsc(storbuf[pc], 16 * x, 16 * y, 1, addr);
   }
@@ -183,11 +183,11 @@ int o9(int pc)
   ch->player.current_room = ch->player.spell_cast;
 
   if (pc != 0) {
-    z = zline[c[26]][c[27]];
+    z = &zline[c[26]][c[27]];
     // c[30] = crumobj[z[1]][3];
-    c[30] = crumobj[z[1]].target;
+    c[30] = crumobj[z->visible].target;
     // ch->player.current_room = crumobj[z[1]][3];
-    ch->player.current_room = crumobj[z[1]].target;
+    ch->player.current_room = crumobj[z->visible].target;
     
     if (mode) {
       dorep();

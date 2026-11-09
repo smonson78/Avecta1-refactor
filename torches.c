@@ -63,11 +63,11 @@ int litetrol(int x, int y, int s)
     }
 
     for (k = -j; k <= j; k++) {
-      if (x + i > 15 || x + i < 0 || y + k > 7 || y + k < 0 || zline[x + i][y + k][0] == 0) {
+      if (x + i > 15 || x + i < 0 || y + k > 7 || y + k < 0 || zline[x + i][y + k].unknown0 == 0) {
         continue; /* if off display surface or square is void */
       }
 
-      a = zline[x + i][y + k][5]; /* fetch torch overlay number */
+      a = zline[x + i][y + k].unknown5; /* fetch torch overlay number */
 
       switch(s) { /* s=0 ->  turn lights out, s=1 -> turn 'em on */
         case 0: /* turn out the lights, the party's over */
@@ -77,7 +77,7 @@ int litetrol(int x, int y, int s)
             a = 0;
           }
 
-          zline[x + i][y + k][5] = a; /*set zline*/
+          zline[x + i][y + k].unknown5 = a; /*set zline*/
 
           if (a > 0) { /* another torch is carrying the lighting in the square */
             continue;
@@ -106,7 +106,7 @@ int litetrol(int x, int y, int s)
             flag = 1; /* so set up blit flag */
           }
           a++; /* increment the torch overlay number */
-          zline[x + i][y + k][5] = a;/*set zline*/
+          zline[x + i][y + k].unknown5 = a;/*set zline*/
           if (flag) {  /* blit flag is set so blit it, buster! */
             drawsq(x + i, y + k);
           }
@@ -120,30 +120,30 @@ int litetrol(int x, int y, int s)
 
 void drawsq(int x, int y)
 {
-  uint8_t *z = zline[x][y];
+  zline_t *z = &zline[x][y];
   // uint8_t *c;
   int i, pc;
 
-  if (z[0] == 1) {
+  if (z->unknown0 == 1) {
     i = 1;
   }
 
-  if (z[0] == 2) {
+  if (z->unknown0 == 2) {
     i = 0;
   }
 
-  if (z[0] == 0) {
+  if (z->unknown0 == 0) {
     i = 2;
   }
 
   setfill(i);
-  fillsq(x,y);
+  fillsq(x, y);
 
   if (i == 2) {
     return;
   }
 
-  pc = z[2];
+  pc = z->monster;
 
   if (!pc) {
     //pc = (curmon[0][24] == x && curmon[0][25] == y ? 0 : -1);
@@ -154,9 +154,9 @@ void drawsq(int x, int y)
   y *= 16;
   
   // if (z[1] != 0 && crumobj[z[1]][8] == 1) {
-  if (z[1] != 0 && crumobj[z[1]].visible == 1) {
+  if (z->visible != 0 && crumobj[z->visible].visible == 1) {
     // blt(&bitmap[crumobj[z[1]][0]], x, y);
-    blt(&bitmap[crumobj[z[1]].object_id], x, y);
+    blt(&bitmap[crumobj[z->visible].object_id], x, y);
   }
   
   // This could be a character or a monster
@@ -187,8 +187,8 @@ void drawsq(int x, int y)
     // blt(&bitmap[c[4]], x, y);
   }
   
-  if (z[6] != 0) {
-    blt(&bitmap[130 + 2 * (z[6])], x, y);
+  if (z->unknown6 != 0) {
+    blt(&bitmap[130 + 2 * z->unknown6], x, y);
   }
 }
 
@@ -201,7 +201,7 @@ void drawman(int pc, int x, int y)
     }
   }
  
-  if (pc < 4 || zline[x][y][5] > 0 || new_rumdata[crum].room_has_bg) {
+  if (pc < 4 || zline[x][y].unknown5 > 0 || new_rumdata[crum].room_has_bg) {
     drawsq(x, y);
   }
 }

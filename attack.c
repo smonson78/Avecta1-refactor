@@ -20,7 +20,7 @@ void attack(int pc, int xdes, int ydes) {
   xadd = xdes - xnow;  /* these better be either -1,0, or 1 */
   yadd = ydes - ynow;
 
-  if (!light && !zline[xnow][ynow][5] && pc > 3) {
+  if (!light && !zline[xnow][ynow].unknown5 && pc > 3) {
     flag = 0;
   }
 
@@ -28,10 +28,10 @@ void attack(int pc, int xdes, int ydes) {
   vbl_animation_off();
   
   if (!flag) {
-    storsc(storbuf[pc],16*xnow,16*ynow,0,addr); 
+    storsc(storbuf[pc], 16 * xnow, 16 * ynow, 0, addr); 
   }
 
-  if (!flag && !zline[xdes][ydes][5]) {
+  if (!flag && !zline[xdes][ydes].unknown5) {
     return;
   }
 
@@ -41,24 +41,24 @@ void attack(int pc, int xdes, int ydes) {
   for (i = 0; i < 8; i += 2) {
     Vsync();
     Vsync();
-    storsc(storbuf[pc], xnow + xadd*i,ynow + yadd*i,1,addr);
-    storsc(storbuf[pc], xnow + xadd*(2+i),ynow + yadd*(2+i),0,addr);
-    blt(&bitmap[bit], xnow + xadd*(2+i),ynow + yadd*(2+i));
+    storsc(storbuf[pc], xnow + xadd * i, ynow + yadd * i, 1, addr);
+    storsc(storbuf[pc], xnow + xadd * (2 + i), ynow + yadd * (2 + i), 0, addr);
+    blt(&bitmap[bit], xnow + xadd * (2 + i), ynow + yadd * (2 + i));
   }
 
   for (i = 8; i > 0; i -= 2) {
     Vsync();
     Vsync();
-    storsc(storbuf[pc], xnow + xadd*i,ynow + yadd*i,1,addr);
-    storsc(storbuf[pc], xnow + xadd*(i-2),ynow + yadd*(i-2),0,addr);
+    storsc(storbuf[pc], xnow + xadd * i, ynow + yadd * i, 1, addr);
+    storsc(storbuf[pc], xnow + xadd * (i - 2), ynow + yadd * (i - 2), 0, addr);
     if (i != 2 || flag) {
-      blt(&bitmap[bit], xnow + xadd*(i-2),ynow + yadd*(i-2));
+      blt(&bitmap[bit], xnow + xadd * (i - 2), ynow + yadd * (i - 2));
     }
   }
 
-  if ((i = zline[xnow/16][ynow/16][6]) > 0) {
+  if ((i = zline[xnow/16][ynow/16].unknown6) > 0) {
     Vsync();
-    blt(&bitmap[130 + 2*i],xnow,ynow);
+    blt(&bitmap[130 + 2 * i], xnow, ynow);
   }
 
   Vsync();

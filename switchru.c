@@ -176,7 +176,7 @@ int switchrum() {
 
           blt(&bitmap[object->object_id], 16 * x, 16 * y);
 
-          zline[x][y][1] = i;
+          zline[x][y].visible = i;
         }
         break;
       }
@@ -315,10 +315,11 @@ int getmon(int room)
 
       type = j;
       p = &permon[type];
-      x = r[i+3] % 16;
-      y = r[i+3] / 16;
+      x = r[i + 3] % 16;
+      y = r[i + 3] / 16;
 
-      if (zline[x][y][2] != 0 || (x == curmon[0][24] && y == curmon[0][25])) {
+      // if (zline[x][y].monster != 0 || (x == curmon[0][24] && y == curmon[0][25])) {
+      if (zline[x][y].monster != 0 || (x == player->x && y == player->y)) {
         continue;
       }
 
@@ -418,7 +419,7 @@ int getmon(int room)
           mon->command = ACTION_WAIT;
           mon->unknown16[0] = 1;
 
-          zline[x][y][2] = j + 4;
+          zline[x][y].monster = j + 4;
           count++;
 
           if (r[i] == 110) {

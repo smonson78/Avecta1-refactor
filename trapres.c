@@ -25,7 +25,7 @@ void trapres(int pc, int type, int x, int y)
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
 
-  uint8_t *z = zline[x][y];
+  zline_t *z = &zline[x][y];
 
   char *s1, *s2, str[20];
   int flag, flag2, flag3, i, j;
@@ -65,8 +65,8 @@ void trapres(int pc, int type, int x, int y)
         break;
       }
 
-    untrap(zline[x][y][1]);
-    destroy(1, zline[x][y][1]);
+    untrap(zline[x][y].visible);
+    destroy(1, zline[x][y].visible);
     flash();
     drawsq(x, y);
     prnt("-> The exit behind %s suddenly disappears!", s2, NULL, NULL, NULL, NULL, NULL);
@@ -401,8 +401,10 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       do {
         x = rnd(16);
         y = rnd(8);
-        z = zline[x][y];
-      } while (z[0] != 1 || z[1] != 0 || (curmon[0][24] == x && curmon[0][25] == y) || z[2] != 0 ||
+        z = &zline[x][y];
+      // } while (z->unknown0 != 1 || z->visible != 0 || (curmon[0][24] == x && curmon[0][25] == y) || z[2] != 0 ||
+      //   dist(x, y, 0, c[24], c[25], 0) < 7);
+      } while (z->unknown0 != 1 || z->visible != 0 || (player->x == x && player->y == y) || z->monster != 0 ||
         dist(x, y, 0, c[24], c[25], 0) < 7);
 
       c[26] = x;
@@ -675,9 +677,9 @@ said the last time they met.",
 
   case 25: /* generic end up in a weird outside room situation */
     // c[30] = crumobj[z[1]][3];
-    c[30] = crumobj[z[1]].target;
+    c[30] = crumobj[z->visible].target;
     // new_c->current_room = crumobj[z[1]][3];
-    new_c->current_room = crumobj[z[1]].target;
+    new_c->current_room = crumobj[z->visible].target;
     outside = 0;
     fromout = 2;
     c[4] = c[7];
@@ -739,7 +741,7 @@ said the last time they met.",
     break;
 
   case 29: /* dropped black ball */
-    flag = zline[c[5]][c[6]][1];
+    flag = zline[c[5]][c[6]].visible;
     // if (crumobj[flag][0] != 66 || dungeon == 2) {
     if (crumobj[flag].object_id != OBJECT_BLACK_BALL || dungeon == 2) {
       break;
@@ -772,10 +774,11 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
     c[0] = 0;
     new_c->in_use = 0;
 
-    zline[x][y][2] = 0;
-    if (pc != 0 && zline[x][y][5] > 0) {
+    zline[x][y].monster = 0;
+    if (pc != 0 && zline[x][y].unknown5 > 0) {
       drawsq(x, y);
     }
+    
     flash();
     prnt("-> The floor opens up underneath %s%s!  With a shriek %s%s plummets into the"
       " abyss below, never to be seen again!  The trapdoor swings shut again, ready for"
@@ -1249,9 +1252,9 @@ ever tell you about the time that Lady Andernith and I were travelling through \
 Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
 %s grumbles `Leveth, always a windbag.'",
            s2, NULL, NULL, NULL, NULL, NULL);
-      curmon[zline[5][4][2]][0] = 0;
-      new_curmon[zline[5][4][2]].in_use = 0;
-      zline[5][4][2] = 0;
+      curmon[zline[5][4].monster][0] = 0;
+      new_curmon[zline[5][4].monster].in_use = 0;
+      zline[5][4].monster = 0;
       drawsq(5, 4);
       explode(5, 4, 0);
       untrap(3);
