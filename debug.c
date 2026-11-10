@@ -45,8 +45,8 @@ void check_curmon(char *location) {
         debug_printf("Monster number %d, byte %d\n", c, b);
         debug_printf("curmon: 0x%02x vs new_curmon: 0x%02x\n", old, new);
         // Don't actually halt the game yet
-        //debug_printf("Press any key to continue\n");
-        // Cconin();
+        debug_printf("Press any key to continue\n");
+        Cconin();
 
         // One difference is enough
         return;

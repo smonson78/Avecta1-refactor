@@ -46,7 +46,7 @@ int move_in(int pc)
   
   if (pc < 4) {
     player_t *p = &players[pc];
-    p->unknown7 = 0;
+    p->target = 0;
     p->unknown8 = 0;
     p->unknown9 = 0;
   } else {

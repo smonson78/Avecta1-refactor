@@ -61,7 +61,7 @@ int i10(int pc)
   c[16] = 6;
   c[34] = 0;
 
-  ch->player.unknown7 = 0;
+  ch->player.target = 0;
   ch->player.unknown8 = 0;
   //new_c->unknown9 = 0; // set done again a few lines down
 

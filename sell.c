@@ -142,7 +142,7 @@ int sell(int npc)
   passed on by the local residents.", NULL, NULL, NULL, NULL, NULL, NULL);
       selllist[i].attitude = -1;
       c[7] = 1;
-      ch->player.unknown7 = 1;
+      ch->monster.spells[2] = 1;
 
       police = 1;
       return 1;
@@ -291,13 +291,13 @@ int sell(int npc)
       c[8] = 0;
       c[9] = 0;
       c[10] = 0;
-      ch->player.command = ACTION_WAIT;
-      ch->player.unknown16[0] = 100;
+      ch->monster.command = ACTION_WAIT;
+      ch->monster.unknown16[0] = 100;
       ch->player.unknown6 = 0;
-      ch->player.unknown7 = 0;
+      ch->monster.spells[2] = 0;
       ch->player.unknown8 = 0;
       ch->player.unknown9 = 0;
-      ch->player.spell_cast = 0;
+      ch->monster.spell_cast = 0;
 
       // If item is a bow, get 30 free arrows
       if (selllist[i].object == OBJECT_BOW) {

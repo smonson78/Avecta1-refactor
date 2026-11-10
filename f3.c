@@ -90,7 +90,7 @@ int examine_in(int pc)
     new_c->unknown8 = 0;
     //new_c->unknown9 = 0;
     new_c->spell_cast = (!z1 ? 2 : 1);
-    new_c->unknown7 = z2;
+    new_c->target = z2;
     new_c->unknown9 = z1;
 
     if (c[24] == x && c[25] == y) {
@@ -108,7 +108,7 @@ int examine_in(int pc)
       }
 
       c[7] = c[9] = 0;
-      new_c->unknown7 = 0;
+      new_c->target = 0;
       new_c->unknown9 = 0;
     }
   } else {
@@ -144,7 +144,7 @@ int examine_out(int pc)
   type = c[10];
 
   // Player name or monster name
-  w1 = (pc == 0 ? &pname[0] : name[c[3]]);
+  w1 = (pc == 0 ? &pname[0] : name[new_c->monster_name_id]);
 
   if ((type == 3 && (object = c[8]) > 40) ||
       (!outside && type == 1 && (object = c[9]) > 40)) {
@@ -204,7 +204,8 @@ int examine_out(int pc)
 
   if (type == 2) {
     // Get character name
-    w = name[t[3]];
+    // w = name[t[3]];
+    w = name[new_t->monster_name_id];
   } else {
     // Get object name
     // w = obj[t[0]];

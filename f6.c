@@ -7,6 +7,7 @@
 #include "tos_compat.h"
 
 #include "f5.h"
+#include "debug.h"
 
 // Search
 
@@ -30,7 +31,7 @@ int search_in(int pc)
 
   new_c->command = ACTION_SEARCH;
   new_c->unknown16[0] = 6;
-  new_c->unknown7 = 0;
+  new_c->target = 0;
   new_c->unknown8 = 0;
   new_c->unknown9 = 0;
 
@@ -48,12 +49,14 @@ int search_out(int pc)
   uint8_t *r = putbuf;
   //int x = c[24], y = c[25];
   int x = new_c->x, y = new_c->y;
-  int i,j,k,l,m = 0,num = 0,flag;
+  int i, j, k, l, m = 0, num = 0, flag;
 
   c[7] = c[8] = c[9] = 0;
-  new_c->unknown7 = 0;
+  new_c->target = 0;
   new_c->unknown8 = 0;
   new_c->unknown9 = 0;
+
+  check_curmon("search_out start");
 
   if (pc == 0 && c[18] != 6) {
     prnt("-> %s searches nearby...", w, NULL, NULL, NULL, NULL, NULL);
@@ -180,6 +183,8 @@ int search_out(int pc)
     c[18] = 6;
     new_c->unknown16[2] = 6;
   }
+
+  check_curmon("search_out end");
 
   return 1;
 }

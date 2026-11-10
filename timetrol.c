@@ -101,6 +101,25 @@ int timetrol()
 				// 43 - base_chance_3_attack
 				// 54 - magic_mode_2
 				// 50 (trapres.c) (that's physical strength)
+				switch (new_c->unknown16[3]) {
+					case 11:
+						new_c->unknown11 = new_c->unknown16[4];
+						break;
+					case 12:
+						new_c->unknown12 = new_c->unknown16[4];
+						break;
+					case 43:
+						new_c->base_chance_3_attack = new_c->unknown16[4];
+						break;
+					case 54:
+						new_c->magic_mode_2 = new_c->unknown16[4];
+						break;
+					case 50:
+						new_c->physical_strength = new_c->unknown16[4];
+						break;
+					default:
+						debug_printf("!!!!!!! weird logic in timetrol() %d\n", new_c->unknown16[3]);
+				}
 
 				if (i == 0) {
 					w = &pname[0];

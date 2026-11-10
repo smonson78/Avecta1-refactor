@@ -12,12 +12,13 @@ void trigtrol(int pc)
   int j, l, flag, type, i, x1, y1, hold = 0, x, y;
   uint8_t trapvec;
   uint8_t *c = curmon[pc];
-  // curmon_t *new_c = &new_curmon[pc];
+  curmon_t *new_c = &new_curmon[pc];
   uint8_t *t, *inv;
 
   check_curmon("trigtrol start");
 
-  if (triglist[0] == 0) { /* triglist[0] gives the number of traps in room */
+  /* triglist[0] gives the number of traps in room */
+  if (triglist[0] == 0) { 
     // No traps here, don't bother checking
     return;
   }
@@ -37,16 +38,16 @@ void trigtrol(int pc)
     // Bit field
     type = t[0];
 
-    x1 = (t[1]) % 16;
-    y1 = (t[1]) / 16;
+    x1 = t[1] % 16;
+    y1 = t[1] / 16;
 
     // Flag indicating consqeuences will happen for triggering the trap
     flag = 1;
 
     for (j = 1; j < 32; j *= 2) {
 
-      if ((j & type) ) {
-        switch(j) { 
+      if (j & type) {
+        switch (j) { 
           case 1:
             if (c[24] != x1 || c[25] != y1) {
               flag = 0;

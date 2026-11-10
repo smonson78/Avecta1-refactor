@@ -94,6 +94,7 @@ com:
   }
 
   if ((pc == 0 || (pc < 4 && c[38])) && combat) {
+    debug_printf("< input() 1\n");
     return 1;
   }
 
@@ -136,6 +137,7 @@ top:
         i = status(pc); /* if status returns a 0 it fixed the action */
 
         if (!i) {
+          debug_printf("< input() 2\n");
           return 8;
         }
 
@@ -168,7 +170,7 @@ top:
   if (ret == 0) {
     if (z->monster != 0) {
       c[7] = z->monster;
-      new_c->unknown7 = z->monster;
+      new_c->target = z->monster;
 
       if (z->monster > 3)  {
         combat = 1;
@@ -176,9 +178,10 @@ top:
           c[15] = 1;
           c[39] = c[7];
           new_c->command = ACTION_ATTACK;
-          new_c->unknown39 = new_c->unknown7;
+          new_c->unknown39 = new_c->target;
           goto com;
         } else {
+          debug_printf("< input() 3\n");
           return 1;
         }
       } else {
@@ -186,7 +189,7 @@ top:
           i = status(c[7]);
           if (!i) {
             curmon[c[7]][15] = 8;
-            new_curmon[new_c->unknown7].command = ACTION_WAIT;
+            new_curmon[new_c->target].command = ACTION_WAIT;
           }
         } else {
           goto top;
@@ -199,6 +202,7 @@ top:
       new_c->old_x = x;
       new_c->old_y = y;
 
+      debug_printf("< input() 4\n");
       return 4;
     }
   }
@@ -224,6 +228,7 @@ top:
 // pc is a character index, 0-3
 int comwind(int pc)
 {
+  debug_printf("> comwind\n");
   uint8_t *c = curmon[pc];
   uint8_t *c1 = curmon[c[39]];
   player_t *new_c = &players[pc];
@@ -239,7 +244,7 @@ int comwind(int pc)
 
     new_c->unknown33[1] = 0;
     new_c->unknown39 = 0;
-    new_c->unknown7 = 0;
+    new_c->target = 0;
 
     clrinp();
     return 0;

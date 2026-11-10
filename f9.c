@@ -119,7 +119,7 @@ int i9(int pc)
   domsg(5);
   header(w);
   winker = pc+1;
-  sgetxy(&x,&y,0,0,0,&ret);
+  sgetxy(&x, &y, 0, 0, 0, &ret);
   winker = 0;
   undomsg();
   clrinp();
@@ -144,7 +144,7 @@ int i9(int pc)
   c[15] = 9;
   c[16] = 6;
 
-  ch->player.unknown7 = 0;
+  ch->player.target = 0;
   ch->player.unknown8 = 0;
   ch->player.unknown9 = z->visible;
   // ch->player.spell_cast = crumobj[z[1]][3];

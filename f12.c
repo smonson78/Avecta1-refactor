@@ -34,7 +34,7 @@ int i12(int pc)
   }
 
   c[7] = c[8] = c[9] = 0;
-  ch->player.unknown7 = 0;
+  ch->player.target = 0;
   ch->player.unknown8 = 0;
   ch->player.unknown9 = 0;
 

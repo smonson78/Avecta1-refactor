@@ -22,8 +22,10 @@
 // This is something to do with passing through an exit into a different room or to/from the world map
 void trapres(int pc, int type, int x, int y)
 {
+  debug_printf("> trapres()\n");
+  check_curmon("trapres start");
   uint8_t *c = curmon[pc];
-  curmon_t *new_c = &new_curmon[pc];
+  curmon2_t *new_c = &new_curmon2[pc];
 
   zline_t *z = &zline[x][y];
 
@@ -50,7 +52,7 @@ void trapres(int pc, int type, int x, int y)
       // For each playable character:
       for (i = 0; i < 4; i++) {
         c = curmon[i];
-        new_c = &new_curmon[i];
+        new_c = &new_curmon2[i];
 
         if (i == pc) {
           continue;
@@ -70,12 +72,11 @@ void trapres(int pc, int type, int x, int y)
     flash();
     drawsq(x, y);
     prnt("-> The exit behind %s suddenly disappears!", s2, NULL, NULL, NULL, NULL, NULL);
-    if (dungeon != 1 || crum != 20)
-    {
-      for (i = 0; i < 4; i++)
-      {
+    
+    if (dungeon != 1 || crum != 20) {
+      for (i = 0; i < 4; i++) {
         c = curmon[i];
-        new_c = &new_curmon[i];
+        new_c = &new_curmon2[i];
 
         if (c[52] != 0) {
           prnt("-> The seekshard is heard to discharge its stored spacetime impression matrix!", 
@@ -83,8 +84,8 @@ void trapres(int pc, int type, int x, int y)
         }
 
         c[52] = c[53] = 0;
-        new_c->seekshard_imprinted_room = 0;
-        new_c->seekshard_imprinted_xy = 0;
+        new_c->player.seekshard_imprinted_room = 0;
+        new_c->player.seekshard_imprinted_xy = 0;
       }
     }
     break;
@@ -103,13 +104,15 @@ void trapres(int pc, int type, int x, int y)
 
     c[15] = 8;
     c[16] = 127;
-    new_c->command = ACTION_WAIT;
-    new_c->unknown16[0] = 127;
+    new_c->monster.command = ACTION_WAIT;
+    new_c->monster.unknown16[0] = 127;
 
     for (i = 4; i < 12; i++) {
       c = curmon[i];
-      if (c[58] == 11)
-      {
+      new_c = &new_curmon2[i];
+
+      // if (c[58] == 11) {
+      if (new_c->monster.monster_type == 11) {
         c[36] = 1;
         c[18] = 1;
         c[26] = 7;
@@ -117,12 +120,13 @@ void trapres(int pc, int type, int x, int y)
         c[15] = 8;
         c[16] = 1;
 
-        new_c->flee = 1;
-        new_c->unknown16[2] = 1;
-        new_c->old_x = 7;
-        new_c->old_y = 7;
-        new_c->command = ACTION_WAIT;
-        new_c->unknown16[0] = 1;
+        // Run for the door at the bottom of the room (7, 7)
+        new_c->monster.flee = 1;
+        new_c->monster.unknown16[2] = 1;
+        new_c->monster.old_x = 7;
+        new_c->monster.old_y = 7;
+        new_c->monster.command = ACTION_WAIT;
+        new_c->monster.unknown16[0] = 1;
       }
     }
     break;
@@ -131,16 +135,16 @@ void trapres(int pc, int type, int x, int y)
     prnt("-> %s enters the crumbling monastery!", s2, NULL, NULL, NULL, NULL, NULL);
     c[30] = 127;
     c[59] = 1;
-    new_c->current_room = 127;
-    new_c->unknown59 = 1;
+    new_c->monster.current_room = 127;
+    new_c->monster.unknown59 = 1;
     break;
 
   case 23: /* go into kilkaney */
     prnt("-> %s enters the ancient walled city of Kilkaney!", s2, NULL, NULL, NULL, NULL, NULL);
     c[30] = 127;
     c[59] = 2;
-    new_c->current_room = 127;
-    new_c->unknown59 = 2;
+    new_c->monster.current_room = 127;
+    new_c->monster.unknown59 = 2;
     break;
 
   case 5: /* took the  bone key */
@@ -177,7 +181,9 @@ void trapres(int pc, int type, int x, int y)
       if (c[8] != c[45]) {
         putaway(pc, c[45]);
         c[45] = c[8];
+        new_c->player.good_hand = new_c->player.unknown8;
       }
+
       remove_object(4, c[8]);
       prnt("-> The %s doesn't fit into the ectoplasmic converter's slot!",
            obj[c[8]], NULL, NULL, NULL, NULL, NULL);
@@ -206,6 +212,7 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
       putaway(pc, c[45]);
       remove_object(1, c[8]);
       c[45] = c[8];
+      new_c->player.good_hand = new_c->player.unknown8;
     }
 
     if (c[8] != 50) {
@@ -228,11 +235,12 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
     if (c[8] != c[45]) {
       putaway(pc, c[45]);
       c[45] = c[8];
+      new_c->player.good_hand = new_c->player.unknown8;
     }
 
     remove_object(1, c[8]);
     
-    if (c[8] != 46) {
+    if (c[8] != OBJECT_BONE_KEY) {
       prnt("-> The %s doesn't fit in the door's keyhole!", obj[c[8]], NULL, NULL, NULL, NULL, NULL);
       break;
     }
@@ -244,14 +252,16 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
       break;
     }
 
-    if (c[8] == 46) {
+    if (c[8] == OBJECT_BONE_KEY) {
       destroy(1, 1);
       prnt("-> The door swings wide open!", NULL, NULL, NULL, NULL, NULL, NULL);
       actmon(-1, 1, 12, 4);
-      if (c[4] != 81)
+      if (c[4] != 81) {
         prnt("-> Eirik glowers for an instant and then laughs, a rare \
 thing among barbarians `You have the appearance of an orc! But then you were \
 never known for your beauty.'", NULL, NULL, NULL, NULL, NULL, NULL);
+      }
+
       prnt("-> Eirik smiles at %s in his enigmatic way.  `By the Gods! It is \
 good to see you, my old friend.  I was next on these foul creatures' dining \
 list.'  He waves his massive arm in disgust toward the remains of the ghouls.",
@@ -281,8 +291,8 @@ torch %s is holding goes out, as if the darkness was an evil presence!",
       litetrol(x, y, 0);
       c[41] = 0;
       c[42] += 1;
-      new_c->base_chance_1_attack = 0;
-      new_c->base_chance_2_attack++;
+      new_c->monster.base_chance_1_attack = 0;
+      new_c->monster.base_chance_2_attack++;
       break;
     }
 
@@ -348,7 +358,7 @@ Then I kill you and take bad sword!'", NULL, NULL, NULL, NULL, NULL, NULL);
     }
 
     c = curmon[j];
-    new_c = &new_curmon[j];
+    new_c = &new_curmon2[j];
 
     if (curmon[pc][45] == 41 && specbuf[30] == 1) {
       curmon[pc][34] = 1;
@@ -392,11 +402,11 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       c[48] = 1;
       c[10] = 13;
       c[39] = j;
-      new_c->command = ACTION_CAST;
-      new_c->unknown16[0] = 1;
-      new_c->unknown48 = 1;
-      new_c->spell_cast = SPELL_BLINK;
-      new_c->unknown39 = j;
+      new_c->monster.command = ACTION_CAST;
+      new_c->monster.unknown16[0] = 1;
+      new_c->monster.unknown48 = 1;
+      new_c->monster.spell_cast = SPELL_BLINK;
+      new_c->monster.unknown39 = j;
 
       do {
         x = rnd(16);
@@ -409,8 +419,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
 
       c[26] = x;
       c[27] = y;
-      new_c->old_x = x;
-      new_c->old_y = y;
+      new_c->monster.old_x = x;
+      new_c->monster.old_y = y;
 
       prnt("-> `Melkthrop blinks!' rasps the demon! `You ugly humans not catch him now!'", 
         NULL, NULL, NULL, NULL, NULL, NULL);
@@ -427,13 +437,14 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     prnt("-> Suddenly %s feels completely immune to any form of sorcery!", s2, NULL, NULL, NULL, NULL, NULL);
     c[19] = 54;
     c[20] = 0;
-    c[21] = 40 - rnd(10);
+    uint16_t randomness = rnd(10);
+    c[21] = 40 - randomness;
     c[54] = 1;
     c[8] = 0;
-    new_c->unknown16[3] = 54;
-    new_c->unknown16[4] = 0;
-    new_c->unknown16[5] = 40 - rnd(10);
-    new_c->magic_mode_2 = 0;
+    new_c->monster.unknown16[3] = 54;
+    new_c->monster.unknown16[4] = 0;
+    new_c->monster.unknown16[5] = 40 - randomness;
+    new_c->monster.magic_mode_2 = 0;
     break;
 
   case 16: /* the first duplicator trap */
@@ -496,12 +507,12 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       takeout(pc, 41);
       if (c[45] == 41) {
         c[45] = 0;
-        new_c->poison_mode_2 = 0;
+        new_c->monster.poison_mode_2 = 0;
       }
 
       if (c[46] == 41) {
         c[46] = 0;
-        new_c->magic_mode_1 = 0;
+        new_c->monster.magic_mode_1 = 0;
       }
 
       make(41, 1, 0, 0, 41, -1, c[24], c[25], 1);
@@ -516,8 +527,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
            pname, NULL, NULL, NULL, NULL, NULL);
       c[48] = 1;
       c[32] = 41;
-      new_c->unknown48 = 1;
-      new_c->poison_mode_1 = 41;
+      new_c->monster.unknown48 = 1;
+      new_c->monster.poison_mode_1 = 41;
     }
     break;
 
@@ -532,7 +543,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
         "to chuckle viciously.", s1, s2, NULL, NULL, NULL, NULL);
       blowup(x, y);
       c[0] = 0;
-      new_c->in_use = 0;
+      new_c->monster.in_use = 0;
       break;
     }
 
@@ -547,8 +558,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
 
     c[15] = 8;
     c[16] = 1;
-    new_c->command = ACTION_WAIT;
-    new_c->unknown16[0] = 1;
+    new_c->monster.command = ACTION_WAIT;
+    new_c->monster.unknown16[0] = 1;
 
     flash();
     make(20, 0, 0, 12, 0, 0, 6, 1, 1);
@@ -612,7 +623,7 @@ Master...' He slowly fades out.", NULL, NULL, NULL, NULL, NULL, NULL);
       specbuf[22] = 8;
       specbuf[23] = 7;
       c[30] = 29;
-      new_c->current_room = ROOM_ID_LEVETHS_HOUSE;
+      new_c->monster.current_room = ROOM_ID_LEVETHS_HOUSE;
       break;
     }
 
@@ -679,12 +690,12 @@ said the last time they met.",
     // c[30] = crumobj[z[1]][3];
     c[30] = crumobj[z->visible].target;
     // new_c->current_room = crumobj[z[1]][3];
-    new_c->current_room = crumobj[z->visible].target;
+    new_c->monster.current_room = crumobj[z->visible].target;
     outside = 0;
     fromout = 2;
     c[4] = c[7];
     // Seems wrong?
-    new_c->sprite_id = new_c->spells[2];
+    new_c->monster.sprite_id = new_c->monster.spells[2];
     break;
 
   case 26: /* open up the doorway to leverneckel's room */
@@ -714,19 +725,19 @@ said the last time they met.",
       }
 
       c[4] = 102;
-      new_c->sprite_id = 102;
+      new_c->monster.sprite_id = 102;
       if (!putaway(pc, 65)) {
         break;
       }
 
       if (c[45] == 65) {
         c[45] = 0;
-        new_c->poison_mode_2 = 0;
+        new_c->monster.poison_mode_2 = 0;
       }
 
       if (c[46] == 65) {
         c[46] = 0;
-        new_c->magic_mode_1 = 0;
+        new_c->monster.magic_mode_1 = 0;
       }
     }
 
@@ -736,7 +747,7 @@ said the last time they met.",
       }
       prnt("-> The mask drops, and %s's original appearance is restored!", s2, NULL, NULL, NULL, NULL, NULL);
       c[4] = (pc == 0 ? 81 : 97);
-      new_c->sprite_id = (pc == 0 ? 81 : 97);
+      new_c->monster.sprite_id = (pc == 0 ? 81 : 97);
     }
     break;
 
@@ -772,7 +783,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
 
   case 30:
     c[0] = 0;
-    new_c->in_use = 0;
+    new_c->monster.in_use = 0;
 
     zline[x][y].monster = 0;
     if (pc != 0 && zline[x][y].unknown5 > 0) {
@@ -803,7 +814,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
     j = 0;
     for (i = 4; i < 12; i++) {
       c = curmon[i];
-      new_c = &new_curmon[i];
+      new_c = &new_curmon2[i];
       if (c[0] == 1 && c[30] == crum) {
         j = 1;
         break;
@@ -822,8 +833,9 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
     if (rnd(100) < 20) {
       police = 1;
     }
+
     c[48] = 1;
-    new_c->unknown48 = 1;
+    new_c->monster.unknown48 = 1;
     break;
 
   case 33:
@@ -897,7 +909,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
         if (j <= 1) {
           if (j == 1) {
             c[49] -= 1;
-            new_c->gold_amount--;
+            new_c->monster.gold_amount--;
             prnt("-> The bartender sneers `Regular spendthrift, you are.'", NULL, NULL, NULL, NULL, NULL, NULL);
           }
           if (j <= 0) {
@@ -912,7 +924,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
         }
 
         c[49] -= j;
-        new_c->gold_amount -= j;
+        new_c->monster.gold_amount -= j;
         
         if (j < 5 && j > 1) {
           prnt("-> The bartender accepts the money and puts it away, a slight look of "
@@ -961,8 +973,8 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     prnt("-> %s enters the foul-smelling cavern!", pname, NULL, NULL, NULL, NULL, NULL);
     c[30] = 127;
     c[59] = 3;
-    new_c->current_room = 127;
-    new_c->unknown59 = 3;
+    new_c->monster.current_room = 127;
+    new_c->monster.unknown59 = 3;
     break;
 
   case 36: /* The evil key into Melkthrop's lair */
@@ -976,7 +988,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
       remove_object(1, c[8]);
       c[45] = c[8];
       // Seems wrong
-      new_c->poison_mode_2 = new_c->spells[3];
+      new_c->monster.poison_mode_2 = new_c->monster.spells[3];
     }
 
     // 63 must be the specific key
@@ -985,7 +997,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
       break;
     } else {
       c[45] = 0;
-      new_c->poison_mode_2 = 0;
+      new_c->monster.poison_mode_2 = 0;
       prnt("-> The evil key turns and the door to the monastery unlocks!  The evil key explodes. "
         "I don't think %s is in Kansas anymore.", s2, NULL, NULL, NULL, NULL, NULL);
       // crumobj[1][3] = 1;
@@ -1002,26 +1014,26 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
 
     if (c[46] == 81) {
       c[46] = 0;
-      new_c->magic_mode_1 = 0;
+      new_c->monster.magic_mode_1 = 0;
       litetrol(c[24], c[25], 0);
     }
 
     putaway(pc, c[45]);
     c[45] = 0;
-    new_c->poison_mode_2 = 0;
+    new_c->monster.poison_mode_2 = 0;
     putaway(pc, c[46]);
     c[46] = 0;
-    new_c->magic_mode_1 = 0;
+    new_c->monster.magic_mode_1 = 0;
     specbuf[20] = 1;
     prnt("-> %s is overcome with drowsiness, falling into the bed to sleep.  "
       "Upon awakening, magically, %s feels completely refreshed.",
          s2, s2, NULL, NULL, NULL, NULL);
     flash();
     c[1] = c[41] = 0;
-    new_c->damage = 0;
-    new_c->base_chance_1_attack = 0;
+    new_c->monster.damage = 0;
+    new_c->monster.base_chance_1_attack = 0;
     c[14] = 6 * c[51];
-    new_c->spell_units = 6 * new_c->magic_level;
+    new_c->monster.spell_units = 6 * new_c->monster.magic_level;
     break;
 
   case 38: /* reset sleep by leaving Kilkaney */
@@ -1048,10 +1060,10 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     c[20] = c[50];
     c[50] = 20;
     c[21] = 10;
-    new_c->unknown16[3] = 50;
-    new_c->unknown16[4] = new_c->physical_strength;
-    new_c->physical_strength = 20;
-    new_c->unknown16[6] = 10;
+    new_c->monster.unknown16[3] = 50;
+    new_c->monster.unknown16[4] = new_c->monster.physical_strength;
+    new_c->monster.physical_strength = 20;
+    new_c->monster.unknown16[5] = 10;
     break;
 
   case 40:
@@ -1067,7 +1079,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
 
   case 41:
     c[41] = 0;
-    new_c->base_chance_1_attack = 0;
+    new_c->monster.base_chance_1_attack = 0;
     prnt("-> The old man in the bed waves his hand and %s is pulled through the space "
       "between by a powerful blink spell!", s2, NULL, NULL, NULL, NULL, NULL);
     c[26] = 7;
@@ -1075,11 +1087,11 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     c[10] = 13;
     c[15] = 2;
     c[16] = 1;
-    new_c->old_x = 7;
-    new_c->old_y = 2;
-    new_c->spell_cast = SPELL_BLINK;
-    new_c->command = ACTION_CAST;
-    new_c->unknown16[0] = 1;
+    new_c->monster.old_x = 7;
+    new_c->monster.old_y = 2;
+    new_c->monster.spell_cast = SPELL_BLINK;
+    new_c->monster.command = ACTION_CAST;
+    new_c->monster.unknown16[0] = 1;
     break;
 
   case 42:
@@ -1089,17 +1101,17 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
 
     if (c[46] == 70) {
       c[46] = 0;
-      new_c->magic_mode_1 = 0;
+      new_c->monster.magic_mode_1 = 0;
     }
     if (c[45] == 70) {
       c[45] = 0;
-      new_c->poison_mode_2 = 0;
+      new_c->monster.poison_mode_2 = 0;
     }
 
     prnt("-> The bag has ten gold pieces, which %s promptly pockets, while "
       "discarding the now empty bag!", s2, NULL, NULL, NULL, NULL, NULL);
     c[49] += 10;
-    new_c->gold_amount += 10;
+    new_c->monster.gold_amount += 10;
     break;
 
   case 46:
@@ -1112,8 +1124,8 @@ the stuff!",
          s2, s2, NULL, NULL, NULL, NULL);
     c[15] = 8;
     c[16] = 254;
-    new_c->command = ACTION_WAIT;
-    new_c->unknown16[0] = 254;
+    new_c->monster.command = ACTION_WAIT;
+    new_c->monster.unknown16[0] = 254;
 
     if (actmon(5, 6, x, y) > 0) {
       prnt("-> And, of course, a pack of irate goblins, hearing the familiar \
@@ -1146,6 +1158,7 @@ abbey don't notice subtleties such as that.",
 
     for (i = 4; i < 12; i++) {
       c = curmon[i];
+      new_c = &new_curmon2[i];
       if (c[30] == crum) {
         break;
       }
@@ -1156,7 +1169,7 @@ abbey don't notice subtleties such as that.",
     }
 
     c[31] = 7;
-    new_c->intelligence_routine = 7;
+    new_c->monster.intelligence_routine = 7;
 
     pass(i);
     undorep();
@@ -1166,7 +1179,7 @@ abbey don't notice subtleties such as that.",
       flag = 1;
     }
 
-    if (curmon[0][45] == 64 || curmon[0][46] == 64) {
+    if (player->good_hand == OBJECT_MAGIC_TOME || player->other_hand == OBJECT_MAGIC_TOME) {
       flag = 1;
     }
 
@@ -1189,13 +1202,13 @@ book.' The ghastly vision waves its skeletal hands and Wethwicker's All the \
 World's Spells sails across the room to him in a ball of flame!",
            s2, NULL, NULL, NULL, NULL, NULL);
       fireball(x, y, 5, 4, 0);
-      if (curmon[0][45] == 64) {
+      if (player->good_hand == OBJECT_MAGIC_TOME) {
         curmon[0][45] = 0;
-        new_curmon[0].poison_mode_2 = 0;
+        player->good_hand = 0;
       }
-      if (curmon[0][46] == 64) {
+      if (player->other_hand == OBJECT_MAGIC_TOME) {
         curmon[0][46] = 0;
-        new_curmon[0].magic_mode_1 = 0;
+        player->other_hand = 0;
       }
 
       prnt("-> As if from centuries of experience it opens the tome and \

@@ -150,7 +150,7 @@ int cast_in(int pc)
 
     new_c->unknown9 = z->visible;
     new_c->unknown8 = 0;
-    new_c->unknown7 = z->monster;
+    new_c->target = z->monster;
     new_c->unknown5 = x;
     new_c->unknown6 = y;
   }

@@ -52,11 +52,13 @@ int winroom;
 
 // These functions are called when selecting an action to perform
 int (*inverb[])(int pc)  = {
-  i0, attack_in, cast_in, examine_in, move_in, drag_eat_in, search_in, take_drop_in, wait_in, i9, i10, i11, i12, i13, i14
+  i0, attack_in, cast_in, examine_in, move_in, drag_eat_in, search_in, take_drop_in, 
+  wait_in, i9, i10, i11, i12, give_in, voice_in
 };
 
 int (*outverb[])(int pc) = {
-  o0, attack_out, cast_out, examine_out, move_out, drag_eat_out, search_out, take_drop_out, wait_out, o9, o10, o11, o12, o13, o14
+  o0, attack_out, cast_out, examine_out, move_out, drag_eat_out, search_out, take_drop_out, 
+  wait_out, o9, o10, o11, o12, give_out, voice_out
 };
 
 int winker = 0, winktime = 0, combat = 0;
@@ -67,7 +69,7 @@ uint8_t putbuf[320], specbuf[40];
 char monbuf[320];
 char junk[20];
 
-/* chance,damage,weight */
+/* chance, damage, weight */
 weapon_t weapon[] = {
   {0, 0, 0},     /* no weapon */
   {60, 12, 10},  /* broad sword */
@@ -410,11 +412,10 @@ int crum;
 sprite_t bitmap[200];
 sprite_t fillpic[41];
 
-// The number of objects in the current room - never used.
-//int objnum;
-
 int storbuf[12][130], num;
 int time = 0;
+
+// This is a graphics buffer for a sprite
 int firebuff[130];
 int16_t contrl[12], intin[128], intout[128], ptsin[128], ptsout[128];
 int16_t work_in[11], work_out[57];

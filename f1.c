@@ -41,9 +41,10 @@ int attack_in(int pc)
     return 0;
   }
 
+  // Other player characters
   if (pc < 4 && pc > 0) {
     c[7] = c[39];
-    new_c->player.unknown7 = new_c->player.unknown39;
+    new_c->player.target = new_c->player.unknown39;
   }
 
   c[15] = 1;

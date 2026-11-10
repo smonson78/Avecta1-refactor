@@ -85,7 +85,7 @@ int take_drop_in(int pc)
   }
 
   c[7] = c[8] = c[9] = 0;      
-  new_c->unknown7 = 0;
+  new_c->target = 0;
   new_c->unknown8 = 0;
   new_c->unknown9 = 0;
   
@@ -138,7 +138,7 @@ int take_drop_in(int pc)
     c[8] = scratch[ret];
     new_c->unknown8 = scratch[ret];
     c[7] = c[9] = 0;
-    new_c->unknown7 = 0;
+    new_c->target = 0;
     new_c->unknown9 = 0;
 
     if (k != 0) {

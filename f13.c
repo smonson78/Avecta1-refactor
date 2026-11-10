@@ -8,11 +8,12 @@
 
 #include "f5.h"
 
-int i13(int pc)
+int give_in(int pc)
 {
   uint8_t *c = curmon[pc];
+  curmon2_t *new_c = &new_curmon2[pc];
   char *w = (pc == 0 ? pname : name[c[3]]);
-  int ret,tar;
+  int ret, tar;
   int16_t x, y;
 
   if (outside) {
@@ -27,7 +28,7 @@ int i13(int pc)
   domsg(3);
   header(w);
   winker = pc + 1;
-  sgetxy(&x,&y,0,0,0,&ret);
+  sgetxy(&x, &y, 0, 0, 0, &ret);
   undomsg();
   winker = 0;
   tar = zline[x][y].monster;
@@ -47,19 +48,26 @@ int i13(int pc)
   c[15] = 13;
   c[16] = c[11];
 
-  return(1);
+  new_c->player.target = tar;
+  new_c->player.unknown8 = 0;
+  new_c->player.unknown9 = 0;
+  new_c->player.command = ACTION_GIVE;
+  new_c->player.unknown16[0] = new_c->player.unknown11;
+
+  return 1;
 }
 
-int o13(int pc)
+int give_out(int pc)
 {
   uint8_t *c = curmon[pc];
   curmon2_t *new_c = &new_curmon2[pc];
   room_object_t *z;
   uint8_t *t;
-  char *wt,*w = (pc == 0 ? pname : name[c[3]]);
+  char *wt, *w = (pc == 0 ? pname : name[c[3]]);
   int tar = c[7], x, y, d, miss, i, j, k;
   t = curmon[tar];
   curmon2_t *new_t = &new_curmon2[tar];
+
   x = t[24];
   y = t[25];
   d = dist(c[24], c[25], x, y);

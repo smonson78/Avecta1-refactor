@@ -94,7 +94,7 @@ int actmon(int type, int nm, int x, int y)
     pc->sprite_id = p->sprite_id;
     pc->unknown5 = p->unknown5;
     pc->unknown6 = p->unknown6;
-    pc->unknown7 = p->unknown7;
+    pc->target = p->unknown7;
     pc->unknown8 = p->unknown8;
     pc->unknown9 = p->unknown9;
     pc->spell_cast = p->unknown10;

@@ -1037,7 +1037,7 @@ int status(int pc)
         // if (c[41] > 0) {
         if (p->lit_torches > 0) {
           c[41] = 0;
-          p->unlit_torches = 0;
+          p->lit_torches = 0;
         }
       }
 

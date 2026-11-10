@@ -49,7 +49,7 @@ void init_curmon() {
   player->sprite_id = SPRITE_PLAYER_NORMAL;
   player->unknown5 = 5;
   player->unknown6 = 60;
-  player->unknown7 = 8;
+  player->target = 8;
   //player->unknown1[7] = 0;
   //player->unknown1[8] = 0;
   //player->unknown1[9] = 0;

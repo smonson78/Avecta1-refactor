@@ -222,7 +222,7 @@ end:
 }
 
 
-int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
+void prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
    int per = 0, i = 0, j, k = 0, l, len = 0, m, lines = 1;
    char buffer[30];
    char *c[6];
@@ -364,8 +364,6 @@ int prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
    vbl_animation_on();
    mouse_on();
    hold = 1;
-
-   return i;
 }   
 
 int stinit() {

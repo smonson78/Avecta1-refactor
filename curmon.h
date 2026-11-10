@@ -19,10 +19,11 @@ typedef struct {
   //        10: the spell number that was cast
   uint8_t unknown5;
   uint8_t unknown6;
-  uint8_t unknown7;
+  // 7
+  uint8_t target;   // Target voice, attack
   uint8_t unknown8; // Thing that is being dropped
   uint8_t unknown9;
-  // I think this is actually going to be more like a "target of the thing being done"
+  // 10: I think this is actually going to be more like a "target of the thing being done"
   uint8_t spell_cast; // This is also sometimes an object number, sometimes a room number
   uint8_t unknown11;
   uint8_t unknown12;
@@ -125,7 +126,7 @@ typedef struct {
   uint8_t unknown13;
   // 14
   uint8_t spell_units;
-  // the command that's just starting and is in progress. This is numbered the same as the 
+  // 15: the command that's just starting and is in progress. This is numbered the same as the 
   // original "iX.c" verb number.
   uint8_t command;
   // 16 - 23

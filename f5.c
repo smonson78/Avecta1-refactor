@@ -108,7 +108,7 @@ int drag_eat_in(int pc)
 
     c[7] = c[8] = c[10] = 0;
     c[9] = object;
-    ch->player.unknown7 = 0;
+    ch->player.target = 0;
     ch->player.unknown8 = 0;
     ch->player.spell_cast = 0;
     ch->player.unknown9 = object;

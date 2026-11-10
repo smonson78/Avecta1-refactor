@@ -57,7 +57,7 @@ int i11(int pc)
   }
 
   c[7] = tar;
-  ch->player.unknown7 = tar;
+  ch->player.target = tar;
 
   if (pc > 0) {
     c[39] = tar;
@@ -96,7 +96,7 @@ int o11(int pc)
   wt = (tar == 0 ? pname : name[t[3]]);
 
   c[7] = pc > 0 ? c[39] : c[7];
-  ch->player.unknown7 = pc > 0 ? ch->player.unknown39 : ch->player.unknown7;
+  ch->player.target = pc > 0 ? ch->player.unknown39 : ch->player.target;
 
   if (t[30] != crum || !los(pc, t[24], t[25])) {
     prnt("-> The %s is out of %s's sight!", wt, w, NULL, NULL, NULL, NULL);
