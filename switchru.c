@@ -71,7 +71,7 @@ int switchrum() {
         pursuit[2] = crum;
         xn = c[24];
         yn = c[25];
-        d = dist(x, y, 0, xn, yn, 0);
+        d = dist(x, y, xn, yn);
         pursuit[0] = (pursuit[0] > d ? d : pursuit[0]);
         pursuit[1]++;
       } 

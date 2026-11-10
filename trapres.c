@@ -405,7 +405,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       // } while (z->unknown0 != 1 || z->visible != 0 || (curmon[0][24] == x && curmon[0][25] == y) || z[2] != 0 ||
       //   dist(x, y, 0, c[24], c[25], 0) < 7);
       } while (z->unknown0 != 1 || z->visible != 0 || (player->x == x && player->y == y) || z->monster != 0 ||
-        dist(x, y, 0, c[24], c[25], 0) < 7);
+        dist(x, y, c[24], c[25]) < 7);
 
       c[26] = x;
       c[27] = y;

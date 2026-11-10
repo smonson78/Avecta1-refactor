@@ -873,7 +873,7 @@ int setatt(int npc)
 {
   uint8_t *a = curmon[npc];
   uint8_t *t = curmon[a[39]];
-  int d = dist(a[24], a[25], 0, t[24], t[25], 0);
+  int d = dist(a[24], a[25], t[24], t[25]);
 
   if (!los(npc,t[24],t[25])) {
     return 1;
@@ -997,22 +997,22 @@ int friend(int npc)
     new_c->flee = 0;
 
     if (curmon[0][15] == 4 || npc > 3 || !los(npc,x,y) || 
-      dist(c[24], c[25], 0, x, y, 0) > 3) {
+      dist(c[24], c[25], x, y) > 3) {
       c[39] = 0;
       new_c->unknown39 = 0;
 
-      if (dist(c[24],c[25],0,x,y,0) < 4 - rnd(2) && los(npc,x,y) ) {
+      if (dist(c[24], c[25], x, y) < 4 - rnd(2) && los(npc, x, y) ) {
         pass(npc);
         return 1;
       } else {
-        if (!los(npc,x,y) && c[24] == c[26] && c[25] == c[27]) {
+        if (!los(npc, x, y) && c[24] == c[26] && c[25] == c[27]) {
           c[26] = x;
           c[27] = y;
           new_c->old_x = x;
           new_c->old_y = y;
         }
 
-        if (!setmove(npc,1)) {
+        if (!setmove(npc, 1)) {
           pass(npc);
         }
 

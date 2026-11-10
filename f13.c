@@ -62,7 +62,7 @@ int o13(int pc)
   curmon2_t *new_t = &new_curmon2[tar];
   x = t[24];
   y = t[25];
-  d = dist(c[24], c[25], 0, x, y, 0);
+  d = dist(c[24], c[25], x, y);
   wt = (tar == 0 ? pname : name[t[3]]);
 
   if (!los(pc, x, y)) {
