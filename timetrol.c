@@ -89,7 +89,7 @@ int timetrol()
 
     if (c[21] > 0) { /* checks for expiration of spells */
 			c[21] -= 1;
-			new_c->unknown16[5]--;
+			new_c->unknown21--;
 
 			if (c[21] == 0) {
 				// FIXME how can I implement that?!?
@@ -101,24 +101,24 @@ int timetrol()
 				// 43 - base_chance_3_attack
 				// 54 - magic_mode_2
 				// 50 (trapres.c) (that's physical strength)
-				switch (new_c->unknown16[3]) {
+				switch (new_c->unknown19) {
 					case 11:
-						new_c->unknown11 = new_c->unknown16[4];
+						new_c->unknown11 = new_c->unknown20;
 						break;
 					case 12:
-						new_c->unknown12 = new_c->unknown16[4];
+						new_c->unknown12 = new_c->unknown20;
 						break;
 					case 43:
-						new_c->base_chance_3_attack = new_c->unknown16[4];
+						new_c->base_chance_3_attack = new_c->unknown20;
 						break;
 					case 54:
-						new_c->magic_mode_2 = new_c->unknown16[4];
+						new_c->magic_mode_2 = new_c->unknown20;
 						break;
 					case 50:
-						new_c->physical_strength = new_c->unknown16[4];
+						new_c->physical_strength = new_c->unknown20;
 						break;
 					default:
-						debug_printf("!!!!!!! weird logic in timetrol() %d\n", new_c->unknown16[3]);
+						debug_printf("!!!!!!! weird logic in timetrol() %d\n", new_c->unknown19);
 				}
 
 				if (i == 0) {

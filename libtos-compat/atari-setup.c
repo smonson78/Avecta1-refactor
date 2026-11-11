@@ -11,20 +11,35 @@ int16_t default_palette[16] = {0, 0x777, 0x700, 0x070, 0x007, 0x770, 0x707, 0x07
 
 uint16_t predefined_fill_patterns[24][16] = {
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 1
-	{0xAAAA, 0, 0xAAAA, 0, 0xAAAA, 0, 0xAAAA, 0, 0xAAAA, 0, 0xAAAA, 0, 0xAAAA, 0, 0xAAAA, 0}, // style 2
+	{
+		0xAAAA, 0, 0xAAAA, 0, 0xAAAA, 0, 0xAAAA, 0, 
+		0xAAAA, 0, 0xAAAA, 0, 0xAAAA, 0, 0xAAAA, 0,
+	}, // style 2
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 3
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 4
-	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 5
+	{
+		0xDDDD, 0xAAAA, 0x7777, 0xAAAA, 0xDDDD, 0xAAAA, 0x7777, 0xAAAA,
+		0xDDDD, 0xAAAA, 0x7777, 0xAAAA, 0xDDDD, 0xAAAA, 0x7777, 0xAAAA,
+	}, // style 5
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 6
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 7
-	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 8
+	{
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+	}, // style 8
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 9
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 10
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 11
-	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 12
+	{
+		0x0202, 0x0202, 0xAAAA, 0x5050, 0x2020, 0x2020, 0xAAAA, 0x0505,
+		0x0202, 0x0202, 0xAAAA, 0x5050, 0x2020, 0x2020, 0xAAAA, 0x0505,
+	}, // style 12
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 13
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // style 14
-	{0, 0, 0x0200, 0, 0x0008, 0, 0x4000, 0, 0, 0, 0x0200, 0, 0x0008, 0, 0x4000, 0}, // style 15
+	{
+		0, 0, 0x0200, 0, 0x0008, 0, 0x4000, 0, 
+		0, 0, 0x0200, 0, 0x0008, 0, 0x4000, 0,
+	}, // style 15
 	{
 		0xF8F8, 0x6C6C, 0xC6C6, 0x8F8F, 0x1F1F, 0x3636, 0x6363, 0xF1F1,
 		0xF8F8, 0x6C6C, 0xC6C6, 0x8F8F, 0x1F1F, 0x3636, 0x6363, 0xF1F1,

@@ -97,7 +97,7 @@ int take_drop_in(int pc)
     c[16] = 6;
     new_c->spell_cast = 0;
     new_c->command = ACTION_TAKE_DROP;
-    new_c->unknown16[0] = 6;
+    new_c->time_until_next_move = 6;
     return 1;
   } else {
     /* this is a drop out of inventory */
@@ -156,12 +156,12 @@ int take_drop_in(int pc)
     c[15] = 7;
     new_c->command = ACTION_TAKE_DROP;
     c[16] = 2;
-    new_c->unknown16[0] = 2;
+    new_c->time_until_next_move = 2;
 
     //if (c[8] != c[45]) {
     if (new_c->unknown8 != new_c->good_hand) {
       c[16] += 4;
-      new_c->unknown16[0] += 4;
+      new_c->time_until_next_move += 4;
     }
 
     return 1;
@@ -194,7 +194,7 @@ int take_drop_out(int pc)
   debug_printf("> o7\n");
 
   c[18] = 7;
-  ch->monster.unknown16[2] = 7;
+  ch->monster.unknown18 = 7;
 
   if (j > 0) {
     r = 0;

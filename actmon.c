@@ -104,7 +104,7 @@ int activate_monsters(int type, int nm, int x, int y)
     pc->spell_units = p->spell_units;
 
     pc->command = ACTION_WAIT;
-    pc->unknown16[0] = 1;
+    pc->time_until_next_move = 1;
 
     pc->x = x;
     pc->y = y;
@@ -289,7 +289,7 @@ int activate_monsters(int type, int nm, int x, int y)
     }
 
     new_c->command = ACTION_WAIT;       /* installed with a wait */
-    new_c->unknown16[0] = 1;
+    new_c->time_until_next_move = 1;
     new_c->current_room = crum;
     new_c->unknown39 = i + 4;
 

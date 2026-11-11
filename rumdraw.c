@@ -547,8 +547,8 @@ void rumdraw(char *pan)
       c[39] = i;
 
       new_c->command = ACTION_WAIT;
-      new_c->unknown16[0] = 1;
-      new_c->unknown16[2] = 0;
+      new_c->time_until_next_move = 1;
+      new_c->unknown18 = 0;
       new_c->unknown39 = i; // i is just the monster array index
 
       zline[x1][y1].monster = i;

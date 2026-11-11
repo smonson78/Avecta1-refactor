@@ -52,7 +52,7 @@ int give_in(int pc)
   new_c->player.unknown8 = 0;
   new_c->player.unknown9 = 0;
   new_c->player.command = ACTION_GIVE;
-  new_c->player.unknown16[0] = new_c->player.unknown11;
+  new_c->player.time_until_next_move = new_c->player.unknown11;
 
   return 1;
 }

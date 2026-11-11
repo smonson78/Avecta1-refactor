@@ -47,7 +47,7 @@ int voice_in(int pc)
   c[16] = 1;
   new_c->player.target = tar;
   new_c->player.command = ACTION_VOICE;
-  new_c->player.unknown16[0] = 1;
+  new_c->player.time_until_next_move = 1;
 
   check_curmon("end of voice_in()");
 
@@ -82,11 +82,11 @@ int voice_out(int pc)
     NULL, NULL, NULL, NULL);
 
   // if (c[16] != 0) {
-  if (new_c->player.unknown16[0] != 0) {
+  if (new_c->player.time_until_next_move != 0) {
     c[15] = 8;
     c[16] = 1;
     new_c->player.command = ACTION_WAIT;
-    new_c->player.unknown16[0] = 1;    
+    new_c->player.time_until_next_move = 1;    
   }
 
   c[38] = 1;

@@ -60,12 +60,15 @@ int16_t animate()
          return 1;
       }
 
+      // Toggle between 1 and 0 meaning the currently-displayed sprite out of two possibilities
+      // (sprite number, and then sprite number plus 66)
       c[17] = c[17] == 1 ? 0 : 1;
-      new_c->unknown16[1] = new_c->unknown16[1] == 1 ? 0 : 1;
+      new_c->animation_step = new_c->animation_step == 1 ? 0 : 1;
 
       mouse_off();
       storsc(storbuf[j], 16 * x, 16 * y, 1, addr);
-      blt(&bitmap[c[4] + 66 * c[17]], x * 16, y * 16);
+      // blt(&bitmap[c[4] + 66 * c[17]], x * 16, y * 16);
+      blt(&bitmap[new_c->sprite_id + 66 * new_c->animation_step], x * 16, y * 16);
       // This is interesting because of the 66* part.
       // The first 80 sprites (0..79) are more like objects and furniture.
       // Player is sprite 81

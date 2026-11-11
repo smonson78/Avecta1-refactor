@@ -23,10 +23,10 @@ int move_in(int pc)
   c[23] = c[25];
   c[15] = 4;
   c[16] = c[11] > 0 ? c[11] : 1;
-  new_c->unknown16[6] = new_c->x;
-  new_c->unknown16[7] = new_c->y;
+  new_c->unknown22 = new_c->x;
+  new_c->unknown23 = new_c->y;
   new_c->command = ACTION_MOVE;
-  new_c->unknown16[0] = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
+  new_c->time_until_next_move = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
 
   // nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &x, &y);
   nextxy(new_c->x, new_c->y, 
@@ -36,7 +36,7 @@ int move_in(int pc)
   // if (x - c[24] != 0 && y - c[25] != 0) {
   if (x - new_c->x != 0 && y - new_c->y != 0) {
     c[16] += c[16] / 2;
-    new_c->unknown16[0] += new_c->unknown16[0] / 2;
+    new_c->time_until_next_move += new_c->time_until_next_move / 2;
   }
 
   c[28] = x;
@@ -104,7 +104,7 @@ int move_out(int pc)
     }
 
     c[18] = 4;
-    new_c->unknown16[2] = 4;
+    new_c->unknown18 = 4;
   }
 
   xroll = 2 * (x - xnow) / (1 + outside);
@@ -198,11 +198,12 @@ int move_out(int pc)
   nextxy(c[22], c[23], c[26], c[27], c[24], c[25], &x, &y);
 
   c[16] = c[11] > 0 ? c[11] : 1;
-  new_c->unknown16[0] = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
+  new_c->time_until_next_move = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
 
-  if (x - c[24] != 0 && y - c[25] != 0) {
+  // if (x - c[24] != 0 && y - c[25] != 0) {
+  if (x - new_c->x != 0 && y - new_c->y != 0) {
     c[16] += c[16] / 2;
-    new_c->unknown16[0] += new_c->unknown16[0] / 2;
+    new_c->time_until_next_move += new_c->time_until_next_move / 2;
   }
 
   c[28] = x;
@@ -210,7 +211,7 @@ int move_out(int pc)
   new_c->unknown28[0] = x;
   new_c->unknown28[1] = y;
 
-  check_curmon("o4");
+  check_curmon("move_out");
 
   return 0; /* the move is not complete otherwise */
 }

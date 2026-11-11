@@ -30,6 +30,7 @@ int switchrum() {
   room_data_t *new_r = &new_rumdata[crum];
 
   uint8_t *c;
+  curmon2_t *new_c;
   room_object_t *object;
 
   char pan[12];
@@ -58,9 +59,10 @@ int switchrum() {
     pursuit[2] = 0;
 
     for (i = 1; i < 12; i++) {
-      
       c = curmon[i];
+      new_c = &new_curmon2[i];
       c[35] = 0;
+      new_c->monster.stink_lines = 0;
 
       if (c[0] == 1 && c[30] == crum && (i < 4 || c[38] == 0) && 
         (i < 4 || c[39] < 4) && c[58] != 16 &&
@@ -77,6 +79,8 @@ int switchrum() {
     }
   }
 
+  check_curmon("switchrum after object loop");
+
   if (p[30] == 127) {
     stormon();
     pursuit[0] = 0;
@@ -84,6 +88,8 @@ int switchrum() {
     pursuit[2] = 0;
     return 2;
   }
+
+  check_curmon("switchrum after stormon");
 
   if (fromout == 1 && player->current_room != crum) {
     p[4] = SPRITE_PLAYER_SMALL;
@@ -100,13 +106,15 @@ int switchrum() {
   p[15] = 8;
   p[16] = 1;
   player->command = ACTION_WAIT;
-  player->unknown16[0] = 1;
+  player->time_until_next_move = 1;
 
   x = p[24];
   y = p[25];
 
+  check_curmon("switchrum pre-stink-lines");
   p[35] = 0;
   player->stink_lines = 0;
+  check_curmon("switchrum post-stink-lines");
 
   mode = 0;
 
@@ -150,6 +158,7 @@ int switchrum() {
   }
 
   // ROOM DRAW hopefully
+  check_curmon("switchrum before rumdraw");
   rumdraw(pan);
 
   // Seems like this just draws room furniture
@@ -424,7 +433,7 @@ int getmon(int room)
           mon->unknown39 = j + 4; // monster index in array? what's the good of that
           mon->damage = r[i + 2];
           mon->command = ACTION_WAIT;
-          mon->unknown16[0] = 1;
+          mon->time_until_next_move = 1;
 
           zline[x][y].monster = j + 4;
           count++;

@@ -122,7 +122,7 @@ int examine_in(int pc)
   c[16] = 6;
   c[34] = 0;
   new_c->command = ACTION_EXAMINE;
-  new_c->unknown16[0] = 6;
+  new_c->time_until_next_move = 6;
 
   return 1;
 }
@@ -310,7 +310,7 @@ int examine_out(int pc)
   }
 
   c[18] = 3;
-  new_c->unknown16[2] = 3;
+  new_c->unknown18 = 3;
   
   return 1;
 }

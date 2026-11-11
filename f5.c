@@ -79,7 +79,7 @@ int drag_eat_in(int pc)
       ch->player.unknown8 = self == 1 ? ch->player.good_hand : ch->player.other_hand;
       ch->player.spell_cast = 1;
       ch->player.command = ACTION_DRAG_EAT;
-      ch->player.unknown16[0] = 4;
+      ch->player.time_until_next_move = 4;
 
       return 1;
     }  /* now continue with drag */
@@ -145,7 +145,7 @@ int drag_eat_in(int pc)
     time = (time > 20 ? 20 : time); 
     c[16] = time;
     c[34] = 0;
-    ch->player.unknown16[0] = time;
+    ch->player.time_until_next_move = time;
     ch->player.unknown33[1] = 0;
 
     return 1;
@@ -158,7 +158,7 @@ int drag_eat_in(int pc)
     ch->player.unknown8 = scratch[ret];
     ch->player.spell_cast = 1;
     ch->player.command = ACTION_DRAG_EAT;
-    ch->player.unknown16[0] = 6;
+    ch->player.time_until_next_move = 6;
   }
 
   return 1;
@@ -269,12 +269,12 @@ int drag_eat_out(int pc)
         if (!flag) {
           if (k < 41) {
             c[16] += 4 - c[50] + weight[k];
-            ch->player.unknown16[0] += 4 - ch->player.physical_strength + weight[k];
+            ch->player.time_until_next_move += 4 - ch->player.physical_strength + weight[k];
           }
 
           c[16] = (c[16] < 0 ? 1 : c[16]);
           // FIXME this is uint8_t! not signed
-          ch->player.unknown16[0] = ch->player.unknown16[0] < 0 ? 1 : ch->player.unknown16[0];
+          ch->player.time_until_next_move = ch->player.time_until_next_move < 0 ? 1 : ch->player.time_until_next_move;
         }
       }
     }

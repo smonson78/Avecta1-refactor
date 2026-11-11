@@ -69,7 +69,7 @@ int i10(int pc)
   ch->player.unknown6 = y;
   ch->player.unknown9 = obj;
   ch->player.command = ACTION_ROOK_SNOOP;
-  ch->player.unknown16[0] = 6;
+  ch->player.time_until_next_move = 6;
   ch->player.unknown33[1] = 0;
 
   debug_printf("< i10()\n");
@@ -139,7 +139,7 @@ int o10(int pc)
   }
 
   c[18] = 10;
-  new_c->unknown16[2] = 10;
+  new_c->unknown18 = 10;
 
   debug_printf("< o10()\n");
   return 1;

@@ -33,7 +33,7 @@ int i9(int pc)
     c[16] = curmon[0][16] + 1;
 
     new_c->command = ACTION_WAIT;
-    new_c->unknown16[0] = player->unknown16[0] + 1;
+    new_c->time_until_next_move = player->time_until_next_move + 1;
 
     return 1;
   }
@@ -100,7 +100,7 @@ int i9(int pc)
             c[15] = 8;
             c[16] = 1;
             new_c->command = ACTION_WAIT;
-            new_c->unknown16[0] = 1;
+            new_c->time_until_next_move = 1;
 
             return 1;
           }
@@ -150,7 +150,7 @@ int i9(int pc)
   // ch->player.spell_cast = crumobj[z[1]][3];
   ch->player.spell_cast = crumobj[z->visible].target;
   ch->player.command = ACTION_EXIT;
-  ch->player.unknown16[0] = 6;
+  ch->player.time_until_next_move = 6;
 
   return 1;
 }
@@ -205,7 +205,7 @@ int o9(int pc)
     }
 
     c[18] = 8;
-    ch->player.unknown16[2] = 8;
+    ch->player.unknown18 = 8;
   }
 
   return -1;

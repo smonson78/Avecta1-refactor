@@ -56,13 +56,13 @@ int sell(int npc)
       "Guards!'", NULL, NULL, NULL, NULL, NULL, NULL);
     
     police = 1;
-    c[15] = 8;
+    c[15] = ACTION_WAIT;
     c[16] = 80;
     c[6] = c[8] = 1;
     c[5] = 2;
 
     ch->player.command = ACTION_WAIT;
-    ch->player.unknown16[0] = 80;
+    ch->player.time_until_next_move = 80;
     ch->player.unknown6 = 1;
     ch->player.unknown8 = 1;
     ch->player.unknown5 = 2;
@@ -86,7 +86,7 @@ int sell(int npc)
     c[15] = 8;
     c[16] = 75;
     ch->player.command = ACTION_WAIT;
-    ch->player.unknown16[0] = 75;
+    ch->player.time_until_next_move = 75;
 
     return 1;
   }
@@ -163,7 +163,7 @@ int sell(int npc)
     c[16] = 30;
 
     ch->player.command = ACTION_WAIT;
-    ch->player.unknown16[0] = 30;    
+    ch->player.time_until_next_move = 30;    
 
   } else {
     prnt("-> The merchant smiles and burbles `What excellent taste you have!  How many gold pieces "
@@ -292,7 +292,7 @@ int sell(int npc)
       c[9] = 0;
       c[10] = 0;
       ch->monster.command = ACTION_WAIT;
-      ch->monster.unknown16[0] = 100;
+      ch->monster.time_until_next_move = 100;
       ch->player.unknown6 = 0;
       ch->monster.spells[2] = 0;
       ch->player.unknown8 = 0;
@@ -355,7 +355,7 @@ int wander(int npc)
     c[9] = c[48];
 
     new_c->monster.command = ACTION_EXIT;
-    new_c->monster.unknown16[0] = 4;
+    new_c->monster.time_until_next_move = 4;
     new_c->monster.spell_cast = ex;
     new_c->monster.spells[4] = new_c->monster.unknown48;
 

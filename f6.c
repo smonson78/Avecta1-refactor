@@ -30,7 +30,7 @@ int search_in(int pc)
   c[7] = c[8] = c[9] = 0;      
 
   new_c->command = ACTION_SEARCH;
-  new_c->unknown16[0] = 6;
+  new_c->time_until_next_move = 6;
   new_c->target = 0;
   new_c->unknown8 = 0;
   new_c->unknown9 = 0;
@@ -96,7 +96,7 @@ int search_out(int pc)
           }
         
           c[18] = 0;
-          new_c->unknown16[2] = 0;
+          new_c->unknown18 = 0;
           
           num++;
 
@@ -159,7 +159,7 @@ int search_out(int pc)
           prnt("-> %s discovers a hidden %s!", w, obj[object->object_id], NULL, NULL, NULL, NULL);
           
           c[18] = 0;
-          new_c->unknown16[2] = 0;
+          new_c->unknown18 = 0;
 
           if (new_rumdata[crum].room_has_bg || zline[x + i][y + j].unknown5 > 0) {
             // blt(&bitmap[o[0]],16 * (x + i),16 * (y + j));
@@ -181,7 +181,7 @@ int search_out(int pc)
   if (num == 0 && c[18] != 6 && (pc != 3 || c[38] == 1)) {
     prnt("-> %s discovers nothing.", w, NULL, NULL, NULL, NULL, NULL);
     c[18] = 6;
-    new_c->unknown16[2] = 6;
+    new_c->unknown18 = 6;
   }
 
   check_curmon("search_out end");

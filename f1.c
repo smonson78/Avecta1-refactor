@@ -51,7 +51,7 @@ int attack_in(int pc)
   new_c->monster.command = ACTION_ATTACK;
 
   c[16] = c[11];
-  new_c->monster.unknown16[0] = new_c->monster.unknown11;
+  new_c->monster.time_until_next_move = new_c->monster.unknown11;
 
   c[9] = 0;
   new_c->monster.spells[4] = 0;

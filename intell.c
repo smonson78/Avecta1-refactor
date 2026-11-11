@@ -320,7 +320,7 @@ int setflee(int npc)
         c[27] = d->y;
 
         new_c->command = ACTION_EXIT;
-        new_c->unknown16[0] = 6;
+        new_c->time_until_next_move = 6;
         new_c->dest_x = d->x;
         new_c->dest_y = d->y;
 
@@ -335,8 +335,8 @@ int setflee(int npc)
       c[22] = c[24];
       c[23] = c[25];
 
-      new_c->unknown16[6] = new_c->x;
-      new_c->unknown16[7] = new_c->y;
+      new_c->unknown22 = new_c->x;
+      new_c->unknown23 = new_c->y;
 
 
       nextxy(c[22], c[23], c[26], c[27], c[24], c[25], &x, &y);
@@ -349,8 +349,8 @@ int setflee(int npc)
       c[18] = i;
       c[16] = (c[11] < 1 ? 1 : c[11]);
       new_c->command = ACTION_MOVE;
-      new_c->unknown16[2] = i;
-      new_c->unknown16[0] = (new_c->unknown11 < 1 ? 1 : new_c->unknown11);
+      new_c->unknown18 = i;
+      new_c->time_until_next_move = (new_c->unknown11 < 1 ? 1 : new_c->unknown11);
 
       return 1;
     }
@@ -452,9 +452,9 @@ int setmove(int npc, int flag)
     c[9] = crumobj[c[18]].target;
 
     new_c->command = ACTION_EXIT;
-    new_c->unknown16[0] = 6;
+    new_c->time_until_next_move = 6;
     // This is a bit of a concern because it doesn't seem to make sense
-    new_c->spells[4] = crumobj[new_c->unknown16[2]].target;
+    new_c->spells[4] = crumobj[new_c->unknown18].target;
 
     return 1;
   }
@@ -506,11 +506,11 @@ int setmove(int npc, int flag)
             new_c->unknown28[0] = new_c->x + (i * l);
             new_c->unknown28[1] = new_c->y + (j * m);
             new_c->command = ACTION_MOVE;
-            new_c->unknown16[0] = new_c->unknown11;
+            new_c->time_until_next_move = new_c->unknown11;
 
             if (i * l != 0 && j * m != 0) {
               c[16] += c[16] / 2;
-              new_c->unknown16[0] += new_c->unknown16[0] / 2;
+              new_c->time_until_next_move += new_c->time_until_next_move / 2;
             }
 
             return 1;
@@ -642,7 +642,7 @@ int pass(int npc)
   c[15] = 8;
   c[16] = 4;
   new_c->command = ACTION_WAIT;
-  new_c->unknown16[0] = 4;
+  new_c->time_until_next_move = 4;
 
   return 1;
 }
@@ -812,7 +812,7 @@ int matt(int npc)
     a[10] = sp;
 
     new_a->spell_units -= spelunit[sp];
-    new_a->unknown16[0] = spelinfo[sp - 1][2];
+    new_a->time_until_next_move = spelinfo[sp - 1][2];
     new_a->unknown40 = 4;
     new_a->command = ACTION_CAST;
     new_a->spell_units = new_a->spell_units < 5 ? -1 : new_a->spell_units;
@@ -830,11 +830,11 @@ int matt(int npc)
   }
 
   a[16] = a[11];
-  new_a->unknown16[0] = new_a->unknown11;
+  new_a->time_until_next_move = new_a->unknown11;
 
   if (a[15] == 11) {
     a[16] *= 2;
-    new_a->unknown16[0] *= 2;
+    new_a->time_until_next_move *= 2;
   }
 
   // Monsters only
@@ -905,7 +905,7 @@ int friend(int npc)
 
     new_c->spell_cast = 1;
     new_c->command = ACTION_BURN_SNUFF;
-    new_c->unknown16[0] = 6;
+    new_c->time_until_next_move = 6;
     return 1;
   }
 

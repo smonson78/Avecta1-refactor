@@ -12,7 +12,7 @@ int wait_in(int pc)
   c[7] = c[8] = c[9] = 0;      
 
   ch->player.command = ACTION_WAIT;
-  ch->player.unknown16[0] = 4;
+  ch->player.time_until_next_move = 4;
   ch->player.target = 0;
   ch->player.unknown8 = 0;
   ch->player.unknown9 = 0;
@@ -31,7 +31,7 @@ int wait_out(int pc)
   // Players only
   if (pc < 4) {
     c[18] = 8;
-    new_c->unknown16[2] = 8;
+    new_c->unknown18 = 8;
   }
 
   debug_printf("< wait_out()\n");

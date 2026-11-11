@@ -105,7 +105,7 @@ void trapres(int pc, int type, int x, int y)
     c[15] = 8;
     c[16] = 127;
     new_c->monster.command = ACTION_WAIT;
-    new_c->monster.unknown16[0] = 127;
+    new_c->monster.time_until_next_move = 127;
 
     for (i = 4; i < 12; i++) {
       c = curmon[i];
@@ -122,11 +122,11 @@ void trapres(int pc, int type, int x, int y)
 
         // Run for the door at the bottom of the room (7, 7)
         new_c->monster.flee = 1;
-        new_c->monster.unknown16[2] = 1;
+        new_c->monster.unknown18 = 1;
         new_c->monster.dest_x = 7;
         new_c->monster.dest_y = 7;
         new_c->monster.command = ACTION_WAIT;
-        new_c->monster.unknown16[0] = 1;
+        new_c->monster.time_until_next_move = 1;
       }
     }
     break;
@@ -403,7 +403,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       c[10] = 13;
       c[39] = j;
       new_c->monster.command = ACTION_CAST;
-      new_c->monster.unknown16[0] = 1;
+      new_c->monster.time_until_next_move = 1;
       new_c->monster.unknown48 = 1;
       new_c->monster.spell_cast = SPELL_BLINK;
       new_c->monster.unknown39 = j;
@@ -441,9 +441,9 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     c[21] = 40 - randomness;
     c[54] = 1;
     c[8] = 0;
-    new_c->monster.unknown16[3] = 54;
-    new_c->monster.unknown16[4] = 0;
-    new_c->monster.unknown16[5] = 40 - randomness;
+    new_c->monster.unknown19 = 54;
+    new_c->monster.unknown20 = 0;
+    new_c->monster.unknown21 = 40 - randomness;
     new_c->monster.magic_mode_2 = 0;
     break;
 
@@ -559,7 +559,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     c[15] = 8;
     c[16] = 1;
     new_c->monster.command = ACTION_WAIT;
-    new_c->monster.unknown16[0] = 1;
+    new_c->monster.time_until_next_move = 1;
 
     flash();
     make(20, 0, 0, 12, 0, 0, 6, 1, 1);
@@ -1060,10 +1060,10 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     c[20] = c[50];
     c[50] = 20;
     c[21] = 10;
-    new_c->monster.unknown16[3] = 50;
-    new_c->monster.unknown16[4] = new_c->monster.physical_strength;
+    new_c->monster.unknown19 = 50;
+    new_c->monster.unknown20 = new_c->monster.physical_strength;
     new_c->monster.physical_strength = 20;
-    new_c->monster.unknown16[5] = 10;
+    new_c->monster.unknown21 = 10;
     break;
 
   case 40:
@@ -1091,7 +1091,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     new_c->monster.dest_y = 2;
     new_c->monster.spell_cast = SPELL_BLINK;
     new_c->monster.command = ACTION_CAST;
-    new_c->monster.unknown16[0] = 1;
+    new_c->monster.time_until_next_move = 1;
     break;
 
   case 42:
@@ -1125,7 +1125,7 @@ the stuff!",
     c[15] = 8;
     c[16] = 254;
     new_c->monster.command = ACTION_WAIT;
-    new_c->monster.unknown16[0] = 254;
+    new_c->monster.time_until_next_move = 254;
 
     if (activate_monsters(5, 6, x, y) > 0) {
       prnt("-> And, of course, a pack of irate goblins, hearing the familiar \
@@ -1296,7 +1296,7 @@ Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
       curmon[0][26] = curmon[0][28] = 2;
       curmon[0][27] = curmon[0][29] = 4;
       player->command = ACTION_MOVE;
-      player->unknown16[0] = 1;
+      player->time_until_next_move = 1;
       player->dest_x = 2;
       player->dest_y = 4;
 
