@@ -402,8 +402,8 @@ int wander(int npc)
       // Set destination to a random new adjacent square
       c[26] = c[24] + i;
       c[27] = c[25] + j;
-      new_c->monster.old_x = new_c->monster.x + i;
-      new_c->monster.old_y = new_c->monster.y + j;
+      new_c->monster.dest_x = new_c->monster.x + i;
+      new_c->monster.dest_y = new_c->monster.y + j;
 
       // Now move there (if possible)
       if (!move_in(npc)) {
@@ -420,8 +420,8 @@ int wander(int npc)
   // Set new destination
   c[26] = x;
   c[27] = y;
-  new_c->monster.old_x = x;
-  new_c->monster.old_y = y;
+  new_c->monster.dest_x = x;
+  new_c->monster.dest_y = y;
 
   // Try to move there
   if (!move_in(npc)) {

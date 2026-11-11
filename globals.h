@@ -273,6 +273,9 @@ enum action_t {
 #define SPRITE_PLAYER_SMALL 125
 #define SPRITE_PLAYER_NORMAL 81
 
+#define ROOM_LEVETH_MONOLOGUE 30
+#define ROOM_LEVETH_BEDROOM 29
+
 extern char *errmsg[];
 
 extern char *com[];

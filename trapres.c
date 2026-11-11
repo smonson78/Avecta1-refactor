@@ -96,7 +96,7 @@ void trapres(int pc, int type, int x, int y)
          s2, NULL, NULL, NULL, NULL, NULL);
     untrap(1);
     untrap(2);
-    actmon(11, 3, 7, 2);
+    activate_monsters(11, 3, 7, 2);
     prnt("-> A strange moaning sounds accompanies the appearance of three spectral forms. "
       "%s is rooted to the spot with fear as the spirits go wailing down the hall!  Their last "
       "cry is `Melkthrop has drained our souls! Avenge us!' as they float out the front door.",
@@ -123,8 +123,8 @@ void trapres(int pc, int type, int x, int y)
         // Run for the door at the bottom of the room (7, 7)
         new_c->monster.flee = 1;
         new_c->monster.unknown16[2] = 1;
-        new_c->monster.old_x = 7;
-        new_c->monster.old_y = 7;
+        new_c->monster.dest_x = 7;
+        new_c->monster.dest_y = 7;
         new_c->monster.command = ACTION_WAIT;
         new_c->monster.unknown16[0] = 1;
       }
@@ -151,7 +151,7 @@ void trapres(int pc, int type, int x, int y)
     flash();
     prnt("-> A group of scimitar brandishing skeletons bursts through the door the instant "
       "%s takes the bone key!", s2, NULL, NULL, NULL, NULL, NULL);
-    actmon(2, 6, 8, 3);
+    activate_monsters(2, 6, 8, 3);
     untrap(2);
     pass(0);
     break;
@@ -255,7 +255,7 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
     if (c[8] == OBJECT_BONE_KEY) {
       destroy(1, 1);
       prnt("-> The door swings wide open!", NULL, NULL, NULL, NULL, NULL, NULL);
-      actmon(-1, 1, 12, 4);
+      activate_monsters(-1, 1, 12, 4);
       if (c[4] != 81) {
         prnt("-> Eirik glowers for an instant and then laughs, a rare \
 thing among barbarians `You have the appearance of an orc! But then you were \
@@ -419,8 +419,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
 
       c[26] = x;
       c[27] = y;
-      new_c->monster.old_x = x;
-      new_c->monster.old_y = y;
+      new_c->monster.dest_x = x;
+      new_c->monster.dest_y = y;
 
       prnt("-> `Melkthrop blinks!' rasps the demon! `You ugly humans not catch him now!'", 
         NULL, NULL, NULL, NULL, NULL, NULL);
@@ -573,7 +573,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     }
     lev = specbuf[28];
     if (lev == 0) {
-      actmon(19, 1, 7, 3);
+      activate_monsters(19, 1, 7, 3);
       grflist[0] = 2;
       grflist[1] = 0;
       grflist[2] = 4;
@@ -869,7 +869,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
 
     switch (specbuf[38]) {
       case 0:
-        actmon(25, 3, 6, 4);
+        activate_monsters(25, 3, 6, 4);
         prnt("-> The bartender smiles and says ` 'ello, guv'nor! If I ain't \
   mistaken yer name is %s. Me name is Red Jack. Yer room is ready! \
   Up the stairs and at the far left.  Sleep well!'",
@@ -1087,8 +1087,8 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     c[10] = 13;
     c[15] = 2;
     c[16] = 1;
-    new_c->monster.old_x = 7;
-    new_c->monster.old_y = 2;
+    new_c->monster.dest_x = 7;
+    new_c->monster.dest_y = 2;
     new_c->monster.spell_cast = SPELL_BLINK;
     new_c->monster.command = ACTION_CAST;
     new_c->monster.unknown16[0] = 1;
@@ -1127,7 +1127,7 @@ the stuff!",
     new_c->monster.command = ACTION_WAIT;
     new_c->monster.unknown16[0] = 254;
 
-    if (actmon(5, 6, x, y) > 0) {
+    if (activate_monsters(5, 6, x, y) > 0) {
       prnt("-> And, of course, a pack of irate goblins, hearing the familiar \
 guzzling sound of whiskey being drunk, appear, as if by magic, beside %s! \
 `The rotten human drank our whiskey!' one of them shrieks! `It's pain \
@@ -1216,7 +1216,7 @@ recites `Yog ... vradhe ... acka pranath ... ' A flame leaps from the page\
  and envelops the creature!", NULL, NULL, NULL, NULL, NULL, NULL);
       blowup(c[24], c[25]);
       permon[19].sprite_id = 121; // Red pants guy
-      actmon(19, 1, 5, 4);
+      activate_monsters(19, 1, 5, 4);
       prnt("-> Standing before %s is the real Leveth! `Well, well,' he chuckles\
 , `Now, to the business of finding this horrid creature Gondrath and expunging \
 it from the face of Avecta.  But first I must aid you.'",
@@ -1297,8 +1297,8 @@ Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
       curmon[0][27] = curmon[0][29] = 4;
       player->command = ACTION_MOVE;
       player->unknown16[0] = 1;
-      player->old_x = 2;
-      player->old_y = 4;
+      player->dest_x = 2;
+      player->dest_y = 4;
 
       break;
     }

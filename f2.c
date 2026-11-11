@@ -203,8 +203,8 @@ int cast_in(int pc)
 
     c[26] = x;
     c[27] = y;
-    new_c->old_x = x;
-    new_c->old_y = y;
+    new_c->dest_x = x;
+    new_c->dest_y = y;
   }
 
   c[10] = numb;
@@ -583,8 +583,8 @@ int cast_out(int pc)
 
       t[24] = c[26];
       t[25] = c[27];
-      new_t->x = new_c->old_x;
-      new_t->y = new_c->old_y;
+      new_t->x = new_c->dest_x;
+      new_t->y = new_c->dest_y;
 
       zline[t[24]][t[25]].monster = target;
       
@@ -738,7 +738,7 @@ int cast_out(int pc)
       }
 
       // Activate monsters
-      actmon(j, i, x, y);
+      activate_monsters(j, i, x, y);
       
       // Loop over the non-player monsters
       for (i = 4; i < 12; i++) {
@@ -798,7 +798,7 @@ int cast_out(int pc)
 
       destroy(1, target);
       explode(x, y, 0);
-      actmon(-k, 1, x, y);         
+      activate_monsters(-k, 1, x, y);         
       prnt("-> Eirik shakes his head and mutters `Crom, my eyes spin! But I still live! "
         "I do not wish to know the ensorcelment used to do this.'",
         NULL, NULL, NULL, NULL, NULL, NULL);

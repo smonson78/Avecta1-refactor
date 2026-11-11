@@ -60,7 +60,7 @@ typedef struct {
   //         (or the type that spawns when you're in there)
   uint8_t room_monster_type;
 
-  // - 23  = unknown flag to actmon
+  // - 23  = unknown flag to activate_monsters
   uint8_t room_monster_nm;
 
   // - 24  = monsters x

@@ -158,8 +158,8 @@ int tacmode() {
                 new_c->y = y;
                 new_c->unknown16[0] = 1;
                 new_c->command = ACTION_WAIT;
-                new_c->old_x = player->x;
-                new_c->old_y = player->y;
+                new_c->dest_x = player->x;
+                new_c->dest_y = player->y;
                 new_c->current_room = crum;                
 
                 drawman(i, x, y);
@@ -201,7 +201,7 @@ int tacmode() {
           }
         }
 
-        if (i < 17 && actmon(17, 4, object->x, object->y) > 0) {
+        if (i < 17 && activate_monsters(17, 4, object->x, object->y) > 0) {
           prnt("-> The guards are pursuing!", NULL, NULL, NULL, NULL, NULL, NULL);
           mode = 1;
         }
@@ -214,8 +214,8 @@ int tacmode() {
       if (mode == 0 && rnd(100) < new_o->room_monsters_chance) {
         check_curmon("before creating monsters");
 
-        //actmon(o[22], o[23], o[24], o[25]);
-        actmon(new_o->room_monster_type, new_o->room_monster_nm, new_o->room_monster_x, new_o->room_monster_y);
+        //activate_monsters(o[22], o[23], o[24], o[25]);
+        activate_monsters(new_o->room_monster_type, new_o->room_monster_nm, new_o->room_monster_x, new_o->room_monster_y);
 
         check_curmon("after creating monsters");
         

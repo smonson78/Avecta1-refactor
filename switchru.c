@@ -22,7 +22,6 @@ int switchrum() {
   int d, i, j, x = 0, y = 0, xn, yn, oldrum;
 
   uint8_t *p = curmon[0];
-  curmon_t *new_p = &new_curmon[0];
 
   debug_printf("> switchrum()\n");
   check_curmon("switchrum start");
@@ -80,14 +79,15 @@ int switchrum() {
 
   if (p[30] == 127) {
     stormon();
-    pursuit[0] = pursuit[1] = pursuit[2] = 0;
+    pursuit[0] = 0;
+    pursuit[1] = 0;
+    pursuit[2] = 0;
     return 2;
   }
 
-  if (fromout == 1 && p[30] != crum) {
-    // The big bird-looking thing
-    p[4] = 125;
-    new_p->sprite_id = 125;
+  if (fromout == 1 && player->current_room != crum) {
+    p[4] = SPRITE_PLAYER_SMALL;
+    player->sprite_id = SPRITE_PLAYER_SMALL;
 
     outside = 1;
     fromout = 0;
@@ -99,14 +99,14 @@ int switchrum() {
 
   p[15] = 8;
   p[16] = 1;
-  new_p->command = ACTION_WAIT;
-  new_p->unknown16[0] = 1;
+  player->command = ACTION_WAIT;
+  player->unknown16[0] = 1;
 
   x = p[24];
   y = p[25];
 
   p[35] = 0;
-  new_p->stink_lines = 0;
+  player->stink_lines = 0;
 
   mode = 0;
 
@@ -134,13 +134,20 @@ int switchrum() {
     pursuit[0] = 0;
   }
   
-  // Move to a new room?
+  // Move to the new room
   oldrum = crum;
   crum = p[30];
 
+#if defined SHOW_INTERNALS
+  char buffer[80];
+  sprintf(buffer, "Moved to room %d", crum);
+  prnt(buffer, NULL, NULL, NULL, NULL, NULL, NULL);
+#endif
+
   // Crum 70 might be the endgame room
-  if (crum == 70) 
-    return(1);
+  if (crum == 70) {
+    return 1;
+  }
 
   // ROOM DRAW hopefully
   rumdraw(pan);
@@ -164,8 +171,8 @@ int switchrum() {
 
         p[24] = x;
         p[25] = y;
-        new_p->x = x;
-        new_p->y = y;
+        player->x = x;
+        player->y = y;
 
         /* must reveal hidden door */
         // if (c[8] == 0) { 

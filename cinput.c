@@ -199,8 +199,8 @@ top:
     } else {
       c[26] = x;
       c[27] = y;
-      new_c->old_x = x;
-      new_c->old_y = y;
+      new_c->dest_x = x;
+      new_c->dest_y = y;
 
       debug_printf("< input() 4\n");
       return 4;

@@ -41,9 +41,9 @@ typedef struct {
   // 25
   uint8_t y;
   // 26
-  uint8_t old_x; // not 100% sure if these meanings are right
+  uint8_t dest_x;
   // 27
-  uint8_t old_y;
+  uint8_t dest_y;
   // 28-29
   uint8_t unknown28[2];
   // 30
@@ -137,9 +137,9 @@ typedef struct {
   // 25
   uint8_t y;
   // 26
-  uint8_t old_x; // not 100% sure if these meanings are right. Might be "destination_x/y"
+  uint8_t dest_x;
   // 27
-  uint8_t old_y;
+  uint8_t dest_y;
   // 28-29
   uint8_t unknown28[2];
   // 30

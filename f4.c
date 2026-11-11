@@ -10,12 +10,10 @@
 #include "debug.h"
 #include "tos_compat.h"
 
-// I think this is "move"
-
 int move_in(int pc)
 {
   debug_printf("> move_in()\n");
-  check_curmon("pre-i4");
+  check_curmon("pre-move_in");
   
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
@@ -30,9 +28,13 @@ int move_in(int pc)
   new_c->command = ACTION_MOVE;
   new_c->unknown16[0] = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
 
-  nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &x, &y);
+  // nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &x, &y);
+  nextxy(new_c->x, new_c->y, 
+    new_c->dest_x, new_c->dest_y, 
+    new_c->x, new_c->y, &x, &y);
 
-  if (x - c[24] != 0 && y - c[25] != 0) {
+  // if (x - c[24] != 0 && y - c[25] != 0) {
+  if (x - new_c->x != 0 && y - new_c->y != 0) {
     c[16] += c[16] / 2;
     new_c->unknown16[0] += new_c->unknown16[0] / 2;
   }

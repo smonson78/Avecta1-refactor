@@ -21,7 +21,7 @@
 
 // Type can be 1-8 (random), taken from rumdata.room_monster_type, or -3, -2, -1, 2, 5, 11, 19, 25 
 
-int actmon(int type, int nm, int x, int y)
+int activate_monsters(int type, int nm, int x, int y)
 {
   uint8_t *c;
   zline_t *z;
@@ -30,9 +30,9 @@ int actmon(int type, int nm, int x, int y)
   permon_t *p;
   int adder, i, j = 0, k, l;
 
-  debug_printf("> actmon(%d, %d, %d, %d)\n", type, nm, x, y);
+  debug_printf("> activate_monsters(%d, %d, %d, %d)\n", type, nm, x, y);
 
-  check_curmon("actmon start");
+  check_curmon("activate_monsters start");
 
   // Negative numbers seen in the code: -1, -2, -3
   // ...if "type" is negative it will resurrect a player character.
@@ -119,7 +119,7 @@ int actmon(int type, int nm, int x, int y)
 
     pc->physical_strength = p->physical_strength;
 
-    check_curmon("actmon 1");
+    check_curmon("activate_monsters 1");
 
     zline[x][y].monster = type;
     drawman(type, x, y);
@@ -301,13 +301,14 @@ int actmon(int type, int nm, int x, int y)
     // drawman(i + 4, c[24], c[25]);
     drawman(i + 4, new_c->x, new_c->y);
 
+    // Go toward the player
     // Old curmon
     c[26] = curmon[0][24];
     c[27] = curmon[0][25];
 
     // new_curmon
-    new_c->old_x = player->x;
-    new_c->old_y = player->y;
+    new_c->dest_x = player->x;
+    new_c->dest_y = player->y;
     
     if (j == nm) {
       break;
@@ -322,16 +323,16 @@ int actmon(int type, int nm, int x, int y)
     mode = 0;
   }
 
-  check_curmon("actmon 2");
+  check_curmon("activate_monsters 2");
 
   // If only one monster/player spawned:
   if (nm == 1) {
     if (i + 4 > 0) {
       // I don't think it's possible for i to be less than 4 here (or i + 4 in the new version)
-      debug_printf("< actmon() returning %d\n", i + 4);
+      debug_printf("< activate_monsters() returning %d\n", i + 4);
       return i + 4;
     } else {
-      debug_printf("< actmon() returning -1\n");
+      debug_printf("< activate_monsters() returning -1\n");
       return -1;
     }
   }

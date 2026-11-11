@@ -321,16 +321,16 @@ int setflee(int npc)
 
         new_c->command = ACTION_EXIT;
         new_c->unknown16[0] = 6;
-        new_c->old_x = d->x;
-        new_c->old_y = d->y;
+        new_c->dest_x = d->x;
+        new_c->dest_y = d->y;
 
         return 1;
       }
 
       c[26] = d->x;
       c[27] = d->y;
-      new_c->old_x = d->x; // FIXME this happens regardless of the conditional
-      new_c->old_y = d->y;
+      new_c->dest_x = d->x; // FIXME this happens regardless of the conditional
+      new_c->dest_y = d->y;
 
       c[22] = c[24];
       c[23] = c[25];
@@ -390,8 +390,8 @@ int setmove(int npc, int flag)
     if (los(npc, t[24], t[25])) {
       c[26] = t[24];
       c[27] = t[25];
-      new_c->old_x = new_t->x;
-      new_c->old_y = new_t->y;
+      new_c->dest_x = new_t->x;
+      new_c->dest_y = new_t->y;
     } else {
       if (c[26] == c[24] && c[27] == c[25]) {
         for (i = bot; i < top; i++) {
@@ -405,8 +405,8 @@ int setmove(int npc, int flag)
           if (los(npc, c1[24], c1[25]) && los(i, t[24], t[25]) ) {
             c[26] = *(c1+24);
             c[27] = *(c1+25);
-            new_c->old_x = new_c1->x;
-            new_c->old_y = new_c1->y;
+            new_c->dest_x = new_c1->x;
+            new_c->dest_y = new_c1->y;
             buddy = 1;
             break;
           }
@@ -417,8 +417,8 @@ int setmove(int npc, int flag)
           y = (t[25] - c[25] > 0 ? 1 : -1);
           c[26] = c[24] + x;
           c[27] = c[25] + y;
-          new_c->old_x = new_c->x + x;
-          new_c->old_y = new_c->y + y;          
+          new_c->dest_x = new_c->x + x;
+          new_c->dest_y = new_c->y + y;          
 
           if (zline[c[26]][c[27]].unknown0 != 1) {
             // A little random movement!
@@ -428,8 +428,8 @@ int setmove(int npc, int flag)
             c[26] = c[24] + 1 - rand_x;
             c[27] = c[24] + 1 - rand_y;
 
-            new_c->old_x = new_c->x + 1 - rand_x;
-            new_c->old_y = new_c->y + 1 - rand_y;          
+            new_c->dest_x = new_c->x + 1 - rand_x;
+            new_c->dest_y = new_c->y + 1 - rand_y;          
           }
         }
       }
@@ -588,8 +588,8 @@ int setmove(int npc, int flag)
         nextxy(t[24], t[25], c[24], c[25], t[24], t[25], &xdes, &ydes);
         c[26] = xdes;
         c[27] = ydes;
-        new_c->old_x = xdes;
-        new_c->old_y = ydes;
+        new_c->dest_x = xdes;
+        new_c->dest_y = ydes;
 
         nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &xdes, &ydes);
 
@@ -606,8 +606,8 @@ int setmove(int npc, int flag)
       nextxy(t[24], t[25], c[24], c[25], t[24], t[25], &xdes, &ydes);
       c[26] = xdes;
       c[27] = ydes;
-      new_c->old_x = xdes;
-      new_c->old_y = ydes;
+      new_c->dest_x = xdes;
+      new_c->dest_y = ydes;
 
       nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &xdes, &ydes);
       c[28] = xdes;
@@ -622,8 +622,8 @@ int setmove(int npc, int flag)
       //  c[27] = rumdata[crum][156];
       c[26] = new_rumdata[crum].room_unknown_3[7];
       c[27] = new_rumdata[crum].room_unknown_3[8];
-      new_c->old_x = new_rumdata[crum].room_unknown_3[7];
-      new_c->old_y = new_rumdata[crum].room_unknown_3[8];
+      new_c->dest_x = new_rumdata[crum].room_unknown_3[7];
+      new_c->dest_y = new_rumdata[crum].room_unknown_3[8];
 
       flag = 0;
 
@@ -748,8 +748,8 @@ int settarg(int npc)
   c[27] = curmon[c[39]][25];
 
   new_c->unknown39 = list[1 + j]; 
-  new_c->old_x = new_curmon[new_c->unknown39].x;
-  new_c->old_y = new_curmon[new_c->unknown39].y;
+  new_c->dest_x = new_curmon[new_c->unknown39].x;
+  new_c->dest_y = new_curmon[new_c->unknown39].y;
 
   return 1;
 }
@@ -767,8 +767,8 @@ int matt(int npc)
 
   a[26] = curmon[a[39]][24];
   a[27] = curmon[a[39]][25];
-  new_a->old_x = new_curmon[new_a->unknown39].x;
-  new_a->old_y = new_curmon[new_a->unknown39].y;
+  new_a->dest_x = new_curmon[new_a->unknown39].x;
+  new_a->dest_y = new_curmon[new_a->unknown39].y;
 
   if (a[14] != 0) {               /* indicates a magic using monster */
     if (a[47] > 3 && a[14] > 0) {
@@ -953,8 +953,8 @@ int friend(int npc)
       if (!adjac(npc,x,y)) {
         c[26] = x;
         c[27] = y;
-        new_c->old_x = x;
-        new_c->old_y = y;
+        new_c->dest_x = x;
+        new_c->dest_y = y;
 
         if (!setmove(npc,0)) {
           pass(npc);
@@ -1008,8 +1008,8 @@ int friend(int npc)
         if (!los(npc, x, y) && c[24] == c[26] && c[25] == c[27]) {
           c[26] = x;
           c[27] = y;
-          new_c->old_x = x;
-          new_c->old_y = y;
+          new_c->dest_x = x;
+          new_c->dest_y = y;
         }
 
         if (!setmove(npc, 1)) {
@@ -1036,8 +1036,8 @@ int friend(int npc)
 
           c[26] = xrnd;
           c[27] = yrnd;
-          new_c->old_x = xrnd;
-          new_c->old_y = yrnd;
+          new_c->dest_x = xrnd;
+          new_c->dest_y = yrnd;
 
         } while (!move_in(npc));
       }

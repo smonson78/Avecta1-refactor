@@ -221,7 +221,7 @@ end:
    return 0;
 }
 
-
+// Print up to 7 strings on the paper roll
 void prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
    int per = 0, i = 0, j, k = 0, l, len = 0, m, lines = 1;
    char buffer[30];
@@ -320,8 +320,6 @@ void prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) 
             // And then draw the bottom edge back in, blank.
             v_bar(handle, bxy);
 
-            // Cconin();
-
             // Because the PC is way faster
             Vsync();            
          }
@@ -330,7 +328,7 @@ void prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) 
          
          if ((usedline + lines > 7 
             && hold == 1 
-            && l-i > 40) 
+            && l - i > 40) 
             || usedline + lines > 8) {
 
             textsix(1, 204, 8 * 24, 6, "[More]");

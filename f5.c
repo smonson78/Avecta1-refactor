@@ -250,8 +250,8 @@ int drag_eat_out(int pc)
       } else {
         c[26] = c[5];
         c[27] = c[6];
-        ch->player.old_x = ch->player.unknown5;
-        ch->player.old_y = ch->player.unknown6;
+        ch->player.dest_x = ch->player.unknown5;
+        ch->player.dest_y = ch->player.unknown6;
 
         flag = 1;  
         
