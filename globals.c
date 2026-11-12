@@ -82,10 +82,12 @@ weapon_t weapon[] = {
 
 char *wepname[] = {"", "Broadsword", "Scimitar", "Mace", "Dagger", "Bow"};
 
-char wepmatx[4][4] = { {0,-40,-40,-40},
-                       {40,0,20,-20},
-                       {40,-20,0,20},
-                       {40,20,-20,0} };
+char wepmatx[4][4] = {
+  {0, -40, -40, -40},
+  {40, 0, 20, -20},
+  {40, -20, 0, 20},
+  {40, 20, -20, 0} 
+};
 
 char *statword[] = {"Points", "Spell", "Good Hand",
                     "Other Hand", " OPTIONS:", "Good Hand",

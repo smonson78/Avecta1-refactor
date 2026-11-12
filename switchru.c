@@ -146,11 +146,7 @@ int switchrum() {
   oldrum = crum;
   crum = player->current_room;
 
-#if defined SHOW_INTERNALS
-  char buffer[80];
-  sprintf(buffer, "Moved to room %d", crum);
-  prnt(buffer, NULL, NULL, NULL, NULL, NULL, NULL);
-#endif
+  debug_printf("Moved to room %d\n", crum);
 
   // Crum 70 might be the endgame room
   if (crum == 70) {

@@ -177,7 +177,7 @@ void trapres(int pc, int type, int x, int y)
       break;
     }
 
-    if (c[8] != 57) {
+    if (c[8] != OBJECT_WEIRD_DEVICE) {
       if (c[8] != c[45]) {
         putaway(pc, c[45]);
         c[45] = c[8];
@@ -197,7 +197,7 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
       blowup(crumobj[c[9]].x, crumobj[c[9]].y);
       flash();
       flash();
-      specbuf.unknown30 = 1;
+      specbuf.ectoplasmic_converter_exploded = 1;
       untrap(2);
     }
     break;
@@ -323,8 +323,8 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'",
       prnt("-> The rune explodes, ending %s's wretched life!", s2, NULL, NULL, NULL, NULL, NULL);
       blowup(x, y);
     } else {
-      prnt("-> The voice mutters `OK, %s, so you got lucky this time!  \
-Maybe I should get a better riddle writer.'",
+      prnt("-> The voice mutters `OK, %s, so you got lucky this time!  "
+        "Maybe I should get a better riddle writer.'",
            s2, NULL, NULL, NULL, NULL, NULL);
       untrap(3);
     }
@@ -340,7 +340,7 @@ Maybe I should get a better riddle writer.'",
       break;
     }
 
-    if (c[45] != 41 && curmon[j][52] == 0) {
+    if (c[45] != OBJECT_BROADSWORD && curmon[j][52] == 0) {
       prnt("-> Melkthrop laughs `You fool! You not harm Melkthrop without \
 bad sword! Now I wait! Silly spell ends soon! Then I kill!'", NULL, NULL, NULL, NULL, NULL, NULL);
       curmon[j][52] = 1;
@@ -348,7 +348,7 @@ bad sword! Now I wait! Silly spell ends soon! Then I kill!'", NULL, NULL, NULL, 
       break;
     }
 
-    if (specbuf.unknown30 == 0 && c[45] == 41 && curmon[j][49] == 0) {
+    if (specbuf.ectoplasmic_converter_exploded == 0 && c[45] == OBJECT_BROADSWORD && curmon[j][49] == 0) {
       prnt("-> Melkthrop rasps `You not be able to kill me! I have\
  special protection! Gondrath helps me! Your silly spell won't last forever! \
 Then I kill you and take bad sword!'", NULL, NULL, NULL, NULL, NULL, NULL);
@@ -360,7 +360,7 @@ Then I kill you and take bad sword!'", NULL, NULL, NULL, NULL, NULL, NULL);
     c = curmon[j];
     new_c = &new_curmon2[j];
 
-    if (curmon[pc][45] == 41 && specbuf.unknown30 == 1) {
+    if (curmon[pc][45] == OBJECT_BROADSWORD && specbuf.ectoplasmic_converter_exploded == 1) {
       curmon[pc][34] = 1;
       if (c[1] > c[2] / 2) {
         prnt("-> `Melkthrop is afraid! Melkthrop is afraid!' wails the demon! "
@@ -444,7 +444,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     new_c->monster.unknown19 = 54;
     new_c->monster.unknown20 = 0;
     new_c->monster.unknown21 = 40 - randomness;
-    new_c->monster.magic_mode_2 = 0;
+    new_c->monster.magic_mode_2 = 1;
+    new_c->monster.spells[3] = 0;
     break;
 
   case 16: /* the first duplicator trap */
@@ -471,7 +472,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       break;
     }
 
-    if (c[8] == 53) {
+    if (c[8] == OBJECT_BOURBON) {
       flash();
       prnt("-> A sandestin's voice is heard to say `Old Scratch Bourbon! Yummm! I wish I"
         " got more donations like that!', and the bottle disappears!", 
@@ -500,22 +501,22 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     break;
 
   case 14:
-    if ((c[8] == 41 || c[45] == 41) &&
+    if ((c[8] == OBJECT_BROADSWORD || c[45] == OBJECT_BROADSWORD) &&
         (c[50] < 20 || pc == 0)) {
       prnt("-> %s is unable to hold the immense broadsword, and it falls to the floor underneath "
         "%s with a loud clank!", s2, s2, NULL, NULL, NULL, NULL);
-      takeout(pc, 41);
-      if (c[45] == 41) {
+      takeout(pc, OBJECT_BROADSWORD);
+      if (c[45] == OBJECT_BROADSWORD) {
         c[45] = 0;
         new_c->monster.poison_mode_2 = 0;
       }
 
-      if (c[46] == 41) {
+      if (c[46] == OBJECT_BROADSWORD) {
         c[46] = 0;
         new_c->monster.magic_mode_1 = 0;
       }
 
-      make(41, 1, 0, 0, 41, -1, c[24], c[25], 1);
+      make(OBJECT_BROADSWORD, 1, 0, 0, OBJECT_BROADSWORD, -1, c[24], c[25], 1);
       drawsq(c[24], c[25]);
       break;
     }
@@ -526,9 +527,9 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
         "from this weapon!', and he looks at %s with a grim grin.",
            pname, NULL, NULL, NULL, NULL, NULL);
       c[48] = 1;
-      c[32] = 41;
+      c[32] = OBJECT_BROADSWORD;
       new_c->monster.unknown48 = 1;
-      new_c->monster.poison_mode_1 = 41;
+      new_c->monster.poison_mode_1 = OBJECT_BROADSWORD;
     }
     break;
 
@@ -571,7 +572,9 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     if (pc != 0) {
       break;
     }
-    lev = specbuf.unknown28;
+
+    lev = specbuf.lev;
+    
     if (lev == 0) {
       activate_monsters(19, 1, 7, 3);
       grflist[0] = 2;
@@ -618,10 +621,11 @@ He laughs and the room spins.",
 the time that I visited Lord Vindroble in Viridistan? That was when he was \
 attempting to alter the Fatelines, all part of that business with the \
 Master...' He slowly fades out.", NULL, NULL, NULL, NULL, NULL, NULL);
-      lev = specbuf.unknown28 = 1;
+      lev = 1;
+      specbuf.lev = 1;
       specbuf.current_room = 1;
-      specbuf.unknown22 = 8;
-      specbuf.unknown23 = 7;
+      specbuf.player_x = 8;
+      specbuf.player_y = 7;
       c[30] = 29;
       new_c->monster.current_room = ROOM_ID_LEVETHS_HOUSE;
       break;
@@ -1007,9 +1011,9 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
 
   // Sleeping at the Red Lion
   case 37:
-    if (specbuf.unknown1[19] == 1 || police || mode || monster > 0 || pc != 0) {
+    if (specbuf.already_slept == 1 || police || mode || monster > 0 || pc != 0) {
       debug_printf("Can't sleep because specbuf[20]=%d, mode=%d, monster=%d\n", 
-        specbuf.unknown1[19], mode, monster);
+        specbuf.already_slept, mode, monster);
       break;
     }
 
@@ -1116,7 +1120,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     break;
 
   case 46:
-    if (c[10] != 1 || c[8] != 53) {
+    if (c[10] != 1 || c[8] != OBJECT_BOURBON) {
       break;
     }
     prnt("-> %s is knocked flat by the Old Scratch Bourbon! Lying on the \
@@ -1135,10 +1139,10 @@ guzzling sound of whiskey being drunk, appear, as if by magic, beside %s! \
 time!'",
            s2, NULL, NULL, NULL, NULL, NULL);
     }
-    // No "break" here?
+    // No "break" here? Probably it falls through and gives you the bad breath message.
 
   case 45:
-    if (c[10] != 1 || (c[8] != 53 && c[8] != 56)) {
+    if (c[10] != 1 || (c[8] != OBJECT_BOURBON && c[8] != OBJECT_GARLIC_BUD)) {
       break;
     }
     prnt("-> %s has really bad breath now, but then the creatures in the \

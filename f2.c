@@ -405,10 +405,10 @@ int cast_out(int pc)
       }
 
       losespel(target);
-      t[16] = 50 + 5*(c[51]);
+      t[16] = 50 + 5 * c[51];
       t[19] = 0;
       t[20] = 1;
-      t[21] = (t[16])/5;
+      t[21] = t[16] / 5;
 
       // Crash here:
       printf("--> t is %p, new_t is %p\n", t, new_t);

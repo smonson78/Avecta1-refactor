@@ -98,33 +98,48 @@ extern int16_t crudbuf[65];
 extern uint8_t putbuf[320];
 
 typedef struct {
-  uint8_t unknown0;
-  uint8_t unknown1[19];
+  // 0
+  uint8_t unused0; // never used anywhere
+  // 1 - 19
+  uint8_t unknown1[19]; // copy of "invtrig" flags - this array overflows
+  // 20
   uint8_t already_slept; // Already slept since last leaving Kilkaney
-  uint8_t unknown21;
-  uint8_t unknown22;
-  uint8_t unknown23;
-  uint8_t unknown24;
+  // 21
+  uint8_t dismax; // Object number above which objects can't be destroyed or disarmed
+  // 22
+  uint8_t player_x;
+  // 23
+  uint8_t player_y;
+  // 24
+  uint8_t winroom;
   // 25
   uint8_t current_room;
-  uint8_t unknown26;
-  uint8_t unknown27;
-  uint8_t unknown28;
+  // 26
+  uint8_t outside;
+  // 27
+  uint8_t dungeon;
+  // 28
+  uint8_t lev; // "lev"
   // 29
-  uint8_t new;
-  uint8_t unknown30;
+  uint8_t new; // Never read anywhere
+  // 30
+  uint8_t ectoplasmic_converter_exploded;
   
   // 31-33
   // These are sometimes "dirty" flags for dungeons and sometimes object IDs for duplicator runes
   uint8_t dirty_dungeon[3];
 
-  uint8_t unknown34;
+  // 34
+  uint8_t unknown34; // police flag
   // 35
   uint8_t wallfire_turns;
   // 36
   uint8_t wallfire_xy;
-  uint8_t unknown37;
+  // 37
+  uint8_t fromout;
+  // 38
   uint8_t unknown38;
+  // 39
   uint8_t unknown39;
 } specbuf_t;
 
@@ -297,6 +312,11 @@ enum action_t {
 #define OBJECT_BOW 45
 #define OBJECT_BONE_KEY 46
 #define OBJECT_RUNE 49
+#define OBJECT_ROD 52
+#define OBJECT_BOURBON 53
+#define OBJECT_GARLIC_BUD 56
+#define OBJECT_WEIRD_DEVICE 57
+#define OBJECT_LARGE_BOOK 62
 #define OBJECT_MAGIC_TOME 64
 #define OBJECT_BLACK_BALL 66
 #define OBJECT_POWER_VIAL 69

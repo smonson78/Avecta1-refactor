@@ -105,8 +105,8 @@ typedef struct {
   uint8_t unknown55[3];
   // 58
   uint8_t monster_type;
-  // 59: dungeon number
-  uint8_t unknown59;
+  // 59
+  uint8_t dungeon;
 
 } player_t;
 

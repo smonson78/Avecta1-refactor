@@ -84,15 +84,6 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
 
   c = &crumobj[i];
 
-  // c[0] = id;
-  // c[1] = take;
-  // c[2] = trap;
-  // c[3] = con;
-  // c[4] = nmsg;
-  // c[5] = hide;
-  // c[6] = x;
-  // c[7] = y;
-  // c[8] = vis;
   c->object_id = id;
   c->movable = take;
   c->trap = trap;

@@ -24,8 +24,10 @@ void trigtrol(int pc)
   }
 
   // Coordinates of the character
-  x = c[24];
-  y = c[25];
+  // x = c[24];
+  // y = c[25];
+  x = new_c->x;
+  y = new_c->y;
 
   for (i = 1; i < 25; i++) {
     if (triglist[i] == 0) {

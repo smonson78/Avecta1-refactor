@@ -313,10 +313,13 @@ int take_drop_out(int pc)
 
   if (j > 0) {
     // This clearly overflows invtrig[20]! Let's reduce it.
+    // ...I'm reducing it to 19 because that's the size of invtrig in specbuf!
     // for (k = 0; k < 40; k++) {
-    for (k = 0; k < 20; k++) {
+    // for (k = 0; k < 20; k++) {
+    for (k = 0; k < 19; k++) {
       // if (c[8] == 0) {
       if (ch->player.unknown8 == 0) {
+        debug_printf("invtrig size was %d in take/drop command\n", k);
         break;
       }
       

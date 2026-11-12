@@ -305,7 +305,7 @@ int console() {
   form_alert(1,"[1][The blond man murmurs  |`Resurrection again... |My strength fails me..."
     "|Such a great distance...|So little time.' ][ Once more ]");
 
-  specbuf.unknown28 = 1;
+  specbuf.lev = 1;
   mouse_off();
   Setpalette(newpal);
   Vsync();
@@ -383,7 +383,7 @@ int loadnew() {
     player->unknown55[0] = 53;
     player->unknown55[1] = 3;
     player->unknown55[2] = 3;
-    player->unknown59 = 2;
+    player->dungeon = DUNGEON_KILKANEY;
 
     // All shopkeepers start with indifference to the player
     for (i = 0; i < 4; i++) {
@@ -404,7 +404,7 @@ int loadnew() {
     specbuf.dirty_dungeon[1] = 0;
     specbuf.dirty_dungeon[2] = 0;
 
-    specbuf.unknown27 = 2;
+    specbuf.dungeon = DUNGEON_KILKANEY;
 
     if (flag) {
       lev = 1;
@@ -452,7 +452,7 @@ int loadnew() {
   }
 
   // dungeon = c[59];
-  dungeon = player->unknown59;
+  dungeon = player->dungeon;
 
   // Load entirety of GRAFX.DAT into bitmap[]
   // This has 200 sprite and object images in it.
@@ -557,15 +557,15 @@ int loadnew() {
   }
 
   Fclose(fhandle);
-  dismax = specbuf.unknown21;
-  c[24] = specbuf.unknown22;
-  c[25] = specbuf.unknown23;
-  player->x = specbuf.unknown22;
-  player->y = specbuf.unknown23;
+  dismax = specbuf.dismax;
+  c[24] = specbuf.player_x;
+  c[25] = specbuf.player_y;
+  player->x = specbuf.player_x;
+  player->y = specbuf.player_y;
 
   check_curmon("after loading file");
 
-  winroom = specbuf.unknown24;
+  winroom = specbuf.winroom;
   c[30] = specbuf.current_room;
   player->current_room = specbuf.current_room;
 
@@ -584,7 +584,7 @@ int loadnew() {
     player->x = 6;
     player->y = 3;
 
-    lev = specbuf.unknown28 = 1;
+    lev = specbuf.lev = 1;
   }
 
   // Just the player characters
@@ -606,7 +606,8 @@ int loadnew() {
     memset(&new_curmon[i], 0, sizeof(curmon_t));
   }
 
-  for (i = 0; i < 20; i++) {
+  // for (i = 0; i < 20; i++) {
+  for (i = 0; i < 19; i++) {
     invtrig[i] = specbuf.unknown1[i];
   }
 

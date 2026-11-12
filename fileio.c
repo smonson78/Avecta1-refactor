@@ -167,12 +167,12 @@ int fileio(int flow) {
 
   // SAVE GAME
   if (flow == 1) {
-    specbuf.unknown26 = outside;
-    specbuf.unknown27 = player->unknown59;
-    specbuf.unknown28 = lev;
+    specbuf.outside = outside;
+    specbuf.dungeon = player->dungeon;
+    specbuf.lev = lev;
     specbuf.new = new;
     specbuf.unknown34 = police;
-    specbuf.unknown37 = fromout;
+    specbuf.fromout = fromout;
 
     // Copy all objects from current room into room data array
     for (i = 0; i < 13; i++) {
@@ -230,13 +230,25 @@ int fileio(int flow) {
       Fclose(filehandle);
       return -1;
     } else {
+
+      // FIXME for debug
+      curmon[0][14] = 60;
+      // player->spell_units = 60;
+
+
       memcpy(new_curmon, curmon, sizeof(curmon));
 
-      lev = specbuf.unknown28 = 1;
-      dungeon = specbuf.unknown27;
-      fromout = specbuf.unknown37;
+      debug_printf("Loaded specbuf, invtrig list is:\n");
+      for (int i = 0; i < 20; i++) {
+        debug_printf("  [%d] = %d\n", i, specbuf.unknown1[i]);
+      }
+
+      lev = 1;
+      specbuf.lev = 1;
+      dungeon = specbuf.dungeon;
+      fromout = specbuf.fromout;
       police = specbuf.unknown34;
-      outside = specbuf.unknown26;
+      outside = specbuf.outside;
       crum = player->current_room;
       
       for (i = 0; i < 20; i++) {

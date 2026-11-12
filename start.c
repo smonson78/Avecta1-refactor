@@ -157,7 +157,7 @@ int main()
                c[59] = 0;
                // Back up the player's sprite ID when going out into the world map
                player->original_sprite_id = player->sprite_id;
-               player->unknown59 = 0;
+               player->dungeon = DUNGEON_NONE;
             } else {
                police = 0;
 
