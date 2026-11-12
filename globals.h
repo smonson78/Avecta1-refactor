@@ -95,7 +95,40 @@ extern int16_t work_in[11], work_out[57];
 // buffers probably
 extern char monbuf[320], junk[20];
 extern int16_t crudbuf[65];
-extern uint8_t specbuf[40], putbuf[320];
+extern uint8_t putbuf[320];
+
+typedef struct {
+  uint8_t unknown0;
+  uint8_t unknown1[19];
+  uint8_t already_slept; // Already slept since last leaving Kilkaney
+  uint8_t unknown21;
+  uint8_t unknown22;
+  uint8_t unknown23;
+  uint8_t unknown24;
+  // 25
+  uint8_t current_room;
+  uint8_t unknown26;
+  uint8_t unknown27;
+  uint8_t unknown28;
+  // 29
+  uint8_t new;
+  uint8_t unknown30;
+  
+  // 31-33
+  // These are sometimes "dirty" flags for dungeons and sometimes object IDs for duplicator runes
+  uint8_t dirty_dungeon[3];
+
+  uint8_t unknown34;
+  // 35
+  uint8_t wallfire_turns;
+  // 36
+  uint8_t wallfire_xy;
+  uint8_t unknown37;
+  uint8_t unknown38;
+  uint8_t unknown39;
+} specbuf_t;
+
+extern specbuf_t specbuf;
 
 typedef struct {
   uint8_t unknown0;
@@ -273,6 +306,13 @@ enum action_t {
 #define SPRITE_PLAYER_SMALL 125
 #define SPRITE_PLAYER_NORMAL 81
 #define SPRITE_PLAYER_NORMAL_REVERSED 147
+
+enum {
+  DUNGEON_NONE = 0,
+  DUNGEON_MONASTERY,
+  DUNGEON_KILKANEY,
+  DUNGEON_CAVE
+};
 
 #define ROOM_LEVETH_MONOLOGUE 30
 #define ROOM_LEVETH_BEDROOM 29

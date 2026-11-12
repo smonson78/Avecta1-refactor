@@ -140,13 +140,13 @@ int timetrol()
 		}
 	}
 
-	if (specbuf[35] != 0) {
-		specbuf[35]--;
-		if (specbuf[35] == 0) {
+	if (specbuf.wallfire_turns != 0) {
+		specbuf.wallfire_turns--;
+		if (specbuf.wallfire_turns == 0) {
 			prnt("-> The Wallfire spell has expired!", NULL, NULL, NULL, NULL, NULL, NULL);
 			
-			x = specbuf[36] % 16;
-			y = specbuf[36] / 16;
+			x = specbuf.wallfire_xy % 16;
+			y = specbuf.wallfire_xy / 16;
 
 			for (i = x - 1; i <= x + 1; i++) {
 				for (j = y - 1; j <= y + 1; j++) {
@@ -172,6 +172,6 @@ int timetrol()
 	}
 
 	debug_printf("< timetrol\n");
-	return(1);
+	return 1;
 }
 

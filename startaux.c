@@ -144,7 +144,7 @@ int init(int flag) {
   
   // These are the correct player_t versions:
   // new_c->unlit_torches = 20;
-  // new_c->lit_torches = 0;
+  // new_c->lit_torch_turns = 0;
   // These are the curmon_t versions:
   new_c->base_chance_2_attack = 20;
   new_c->base_chance_1_attack = 0;
@@ -233,7 +233,7 @@ int ruminit()
     Vsync();
     form_alert(1, "[1][There are data files missing!][OK]");
     mouse_off();
-    return(1);
+    return 1;
   }
 
   debug_printf("< ruminit()\n");
@@ -305,7 +305,7 @@ int console() {
   form_alert(1,"[1][The blond man murmurs  |`Resurrection again... |My strength fails me..."
     "|Such a great distance...|So little time.' ][ Once more ]");
 
-  specbuf[28] = 1;
+  specbuf.unknown28 = 1;
   mouse_off();
   Setpalette(newpal);
   Vsync();
@@ -363,7 +363,6 @@ void congratulate() {
 int loadnew() {
   // The player
   uint8_t *c = curmon[0];
-  curmon_t *new_c = &new_curmon[0];
 
   check_curmon("at start of loadnew");
 
@@ -371,20 +370,20 @@ int loadnew() {
 
   old = dungeon;
   if (new == 0) {
-    if (specbuf[32]) {
+    if (specbuf.dirty_dungeon[DUNGEON_KILKANEY - 1]) {
       flag = 1;
     }
 
     police = 0;
+
     c[55] = 53;
     c[56] = 3;
     c[57] = 3;
     c[59] = 2;
-
-    new_c->unknown55[0] = 53;
-    new_c->unknown55[1] = 3;
-    new_c->unknown55[2] = 3;
-    new_c->unknown59 = 2;
+    player->unknown55[0] = 53;
+    player->unknown55[1] = 3;
+    player->unknown55[2] = 3;
+    player->unknown59 = 2;
 
     // All shopkeepers start with indifference to the player
     for (i = 0; i < 4; i++) {
@@ -401,8 +400,11 @@ int loadnew() {
       }
     }
 
-    specbuf[31] = specbuf[32] = specbuf[33] = 0;
-    specbuf[27] = 2;
+    specbuf.dirty_dungeon[0] = 0;
+    specbuf.dirty_dungeon[1] = 0;
+    specbuf.dirty_dungeon[2] = 0;
+
+    specbuf.unknown27 = 2;
 
     if (flag) {
       lev = 1;
@@ -413,14 +415,16 @@ int loadnew() {
     lev = 1;
   }
 
+  debug_printf("In loadnew, this is dungeon %d\n", dungeon);
+
   if (dungeon != 0 && new != 0) {
     /* gotta set the dirty flag on that dungeon */
-    specbuf[30 + dungeon] = 1;
+    specbuf.dirty_dungeon[dungeon - 1] = 1;
 
     // It wants us to save a bunch of data to a file here.
     // Because of the line above, and the fact that dungeon is only ever 0 or 2, this will always 
     // be savname[5] which is DTROND.DAT
-    char *filename = savname[dungeon + (3 * specbuf[30 + dungeon])];  
+    char *filename = savname[dungeon + (3 * specbuf.dirty_dungeon[dungeon - 1])];
 
     // fhandle = Fopen(savname[dungeon + (3 * specbuf[30 + dungeon])], 1);
     fhandle = Fopen(filename, 1);
@@ -438,7 +442,7 @@ int loadnew() {
       Fwrite(fhandle, (long)12403, &new_rumdata[1]) < 12403 ||
       Fwrite(fhandle, (long)320, putbuf) < 320 ||
       Fwrite(fhandle, (long)480, trigval) < 480 ||
-      Fwrite(fhandle, (long)40, specbuf) < 40 ||
+      Fwrite(fhandle, sizeof(specbuf), &specbuf) < sizeof(specbuf) ||
       Fwrite(fhandle, (long)320, monbuf) < 320) {
         Fclose(fhandle);
         return 0;
@@ -447,7 +451,8 @@ int loadnew() {
     Fclose(fhandle);
   }
 
-  dungeon = c[59];
+  // dungeon = c[59];
+  dungeon = player->unknown59;
 
   // Load entirety of GRAFX.DAT into bitmap[]
   // This has 200 sprite and object images in it.
@@ -462,14 +467,14 @@ int loadnew() {
   if (dungeon == 0) {
     // Small guy with red pants and grey shirt
     c[4] = 125;
-    new_c->sprite_id = 125;
+    player->sprite_id = 125;
 
     if (c[47] > 0 && c[14] > 0) {
       c[47] = 0;
-      new_c->poisoned = 0;
+      player->poisoned = 0;
     }
     c[41] = 0;
-    new_c->base_chance_1_attack = 0; // lit torches if it was player_t
+    player->lit_torch_turns = 0;
 
     if (load_outside_fill_tiles(40)) {
       return 0;
@@ -477,17 +482,17 @@ int loadnew() {
   } else {
     // Big size player sprite
     c[4] = 81;
-    new_c->sprite_id = SPRITE_PLAYER_NORMAL;
+    player->sprite_id = SPRITE_PLAYER_NORMAL;
   }
 
-  Fclose(fhandle);
+  // Fclose(fhandle);
 
   if (dungeon != 0) {
     debug_printf("dungeon == %d\n", dungeon);
-    debug_printf("specbuf[%d] == %d\n", 30 + dungeon, specbuf[30 + dungeon]);
+    debug_printf("specbuf.dirty_dungeon[%d] == %d\n", dungeon - 1, specbuf.dirty_dungeon[dungeon - 1]);
 
     // Now open TROND or DTROND.DAT (depending on specbuf[32]) for reading:
-    char *filename = savname[dungeon + (3 * specbuf[30 + dungeon])];
+    char *filename = savname[dungeon + (3 * specbuf.dirty_dungeon[dungeon - 1])];
     fhandle = Fopen(filename, 0);
   } else {
     // OUTSIDE.DAT
@@ -498,15 +503,14 @@ int loadnew() {
     return 0;
   }
 
-  d1 = specbuf[31];
-  d2 = specbuf[32];
-  d3 = specbuf[33];
+  d1 = specbuf.dirty_dungeon[DUNGEON_MONASTERY - 1];
+  d2 = specbuf.dirty_dungeon[DUNGEON_KILKANEY - 1];
+  d3 = specbuf.dirty_dungeon[DUNGEON_CAVE - 1];
 
   // Load initial rumdata into both arrays
   //Fread(fhandle,(long)12560, new_rumdata);
-  Fread(fhandle,(long)157, &room_zero);
-  Fread(fhandle,(long)12403, &new_rumdata[1]);
-
+  Fread(fhandle, sizeof(room_zero), &room_zero);
+  Fread(fhandle, (long)12403, &new_rumdata[1]);
 
   // Check room unknown_xy usage
   int max = 0;
@@ -525,7 +529,6 @@ int loadnew() {
   }
   debug_printf("--> maximum room_unknown_xy for room %d was %d\n", max_room, max);
 
-
   // Copy to legacy rumdata[]
   //memcpy(rumdata, new_rumdata, 12560);
   // Special room zero data
@@ -534,9 +537,9 @@ int loadnew() {
 
   Fread(fhandle, (long)320, putbuf);
   Fread(fhandle, (long)480, trigval);
-  Fread(fhandle, (long)40, specbuf);
+  Fread(fhandle, sizeof(specbuf), &specbuf);
   
-  if (dungeon != 0 && specbuf[30 + dungeon]) {
+  if (dungeon != 0 && specbuf.dirty_dungeon[dungeon - 1]) {
     Fread(fhandle, (long)320, monbuf);
   } else {
     if (new || dungeon == 0) {
@@ -554,34 +557,34 @@ int loadnew() {
   }
 
   Fclose(fhandle);
-  dismax = specbuf[21];
-  c[24] = specbuf[22];
-  c[25] = specbuf[23];
-  new_c->x = specbuf[22];
-  new_c->y = specbuf[23];
+  dismax = specbuf.unknown21;
+  c[24] = specbuf.unknown22;
+  c[25] = specbuf.unknown23;
+  player->x = specbuf.unknown22;
+  player->y = specbuf.unknown23;
 
   check_curmon("after loading file");
 
-  winroom = specbuf[24];
-  c[30] = specbuf[25];
-  new_c->current_room = specbuf[25];
+  winroom = specbuf.unknown24;
+  c[30] = specbuf.current_room;
+  player->current_room = specbuf.current_room;
 
-  police = specbuf[34];
-  specbuf[31] = d1;
-  specbuf[32] = d2;
-  specbuf[33] = d3;
+  police = specbuf.unknown34;
+  specbuf.dirty_dungeon[0] = d1;
+  specbuf.dirty_dungeon[1] = d2;
+  specbuf.dirty_dungeon[2] = d3;
 
   if (old != 0 && new == 1) {
-    specbuf[30 + old] = 1;  /* inform this dungeon the old one is dirty */
+    specbuf.dirty_dungeon[old - 1] = 1;  /* inform this dungeon the old one is dirty */
   }
 
   if (new == 0 && lev != 0 ) {
     c[24] = 6;
     c[25] = 3;
-    new_c->x = 6;
-    new_c->y = 3;
+    player->x = 6;
+    player->y = 3;
 
-    lev = specbuf[28] = 1;
+    lev = specbuf.unknown28 = 1;
   }
 
   // Just the player characters
@@ -604,7 +607,7 @@ int loadnew() {
   }
 
   for (i = 0; i < 20; i++) {
-    invtrig[i] = specbuf[i + 1];
+    invtrig[i] = specbuf.unknown1[i];
   }
 
   crum = -1;

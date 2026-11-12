@@ -23,9 +23,9 @@ int16_t animate()
       return 1;
    }
 
-   if (specbuf[35] > 0 && time % 3 == 0) {
-      x = specbuf[36]%16;
-      y = specbuf[36]/16;
+   if (specbuf.wallfire_turns > 0 && time % 3 == 0) {
+      x = specbuf.wallfire_xy % 16;
+      y = specbuf.wallfire_xy / 16;
       x += rnd(3) - 1;
       y += rnd(3) - 1;
       z = &zline[x][y];
@@ -75,14 +75,13 @@ int16_t animate()
       // Then monsters from there onwards
       //blt(bitmap[new_c->unknown4[0] + 66 * (new_c->unknown15[2])], x * 16, y * 16);
 
-      if (c[35] > 0) {
-      //if (new_c->stink_lines > 0) {
+      //if (c[35] > 0) {
+      if (new_c->stink_lines > 0) {
          // Sprint 128 is "stink lines" (spell target indicator)
          blt(&bitmap[128], 16 * x, 16 * y);
 
          // Clearly the number of stink lines left
          c[35] -= 1;
-
          new_c->stink_lines -= 1;
       } 
       

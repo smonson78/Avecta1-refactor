@@ -19,7 +19,7 @@ int i12(int pc)
   }
 
   // if (c[41] > 60) {
-  if (ch->player.lit_torches > 60) {
+  if (ch->player.lit_torch_turns > 60) {
     c[10] = 0;
     ch->player.spell_cast = 0;
   }

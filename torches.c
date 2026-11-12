@@ -25,7 +25,7 @@ int setlite(int pc, int dx, int dy)
   vbl_animation_off();
   drawsq(x, y);
 
-  if (p->lit_torches == 0) {
+  if (p->lit_torch_turns == 0) {
     drawsq(x - dx, y - dy);
     return 0;
   }
@@ -196,7 +196,7 @@ void drawman(int pc, int x, int y)
 {
   debug_printf("> drawman(%d, %d, %d)\n", pc, x, y);
   if (pc < 4) {
-    if (players[pc].lit_torches > 0) {
+    if (players[pc].lit_torch_turns > 0) {
       litetrol(x, y, 1);
     }
   }

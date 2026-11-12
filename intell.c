@@ -895,7 +895,7 @@ int friend(int npc)
 
   // Characters only:
   // if (npc < 4 && new_rumdata[crum].room_has_bg == 0 && c[41] < 3 && c[42] > 0) {
-  if (npc < 4 && new_rumdata[crum].room_has_bg == 0 && p->lit_torches < 3 && p->unlit_torches > 0) {
+  if (npc < 4 && new_rumdata[crum].room_has_bg == 0 && p->lit_torch_turns < 3 && p->unlit_torches > 0) {
     // If room is dark and character has less than three turns of torchlight left, 
     // and still has unlit torches: light a torch
 

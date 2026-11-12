@@ -81,7 +81,7 @@ int damage(int pc, int level)
   }
 
   if (level == 0) {
-    return(1);
+    return 1;
   }
 
   if (pc > 3 && (c[31] > 3  || (c[38] && curmon[0][39] == pc)) && crum != 31) {
@@ -101,11 +101,11 @@ int damage(int pc, int level)
       dorep();
     }
 
-    if (dungeon == 2 && c[31] > 3 && crum != 31 && !c[38] ) {
+    if (dungeon == DUNGEON_KILKANEY && c[31] > 3 && crum != 31 && !c[38] ) {
       police = 1;
     }
 
-    if (dungeon == 2 && c[31] > 3 && specbuf[35] != 0) {
+    if (dungeon == DUNGEON_KILKANEY && c[31] > 3 && specbuf.wallfire_turns != 0) {
       police = 1;
     }
   }

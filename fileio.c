@@ -62,7 +62,7 @@ int load_outside_fill_tiles(int total) {
 // 70       = terrain graphics
 // 71 - 198 = empty
 // 199      = a plus sign on a black background
-int load_inside_fill_tiles(int ) {
+int load_inside_fill_tiles() {
   int h = Fopen("FILL.DAT", 0);
   if (h < 0) {
     return 1;
@@ -77,6 +77,7 @@ int load_inside_fill_tiles(int ) {
 }
 
 int load_inside_sprites(int total) {
+  debug_printf("...loading %d inside sprites\n", total);
   int h = Fopen("GRAFX.DAT", 0);
   if (h < 0) {
     return 1;
@@ -166,12 +167,12 @@ int fileio(int flow) {
 
   // SAVE GAME
   if (flow == 1) {
-    specbuf[26] = outside;
-    specbuf[27] = curmon[0][59];
-    specbuf[28] = lev;
-    specbuf[29] = new;
-    specbuf[34] = police;
-    specbuf[37] = fromout;
+    specbuf.unknown26 = outside;
+    specbuf.unknown27 = player->unknown59;
+    specbuf.unknown28 = lev;
+    specbuf.new = new;
+    specbuf.unknown34 = police;
+    specbuf.unknown37 = fromout;
 
     // Copy all objects from current room into room data array
     for (i = 0; i < 13; i++) {
@@ -190,7 +191,7 @@ int fileio(int flow) {
       Fwrite(filehandle, (long)12403, &new_rumdata[1]) < 12403 || 
       Fwrite(filehandle, (long)320, putbuf) < 320 ||
       Fwrite(filehandle, (long)480, trigval) < 480 ||
-      Fwrite(filehandle, (long)40, specbuf) < 40 ||
+      Fwrite(filehandle, sizeof(specbuf), &specbuf) < 40 ||
       Fwrite(filehandle, (long)720, curmon) < 720 ||
       Fwrite(filehandle, (long)6, pursuit) < 6  ||
       Fwrite(filehandle, (long)20, pname) < 20 ||
@@ -220,7 +221,7 @@ int fileio(int flow) {
       Fread(filehandle, (long)12403, &new_rumdata[1]) < 12403 ||
       Fread(filehandle, (long)320, putbuf) < 320 ||
       Fread(filehandle, (long)480, trigval) < 480 ||
-      Fread(filehandle, (long)40, specbuf) < 40 ||
+      Fread(filehandle, sizeof(specbuf), &specbuf) < 40 ||
       Fread(filehandle, (long)720, curmon) < 720 ||
       Fread(filehandle, (long)6, pursuit) < 6  ||
       Fread(filehandle, (long)20, pname) < 20 ||
@@ -231,21 +232,22 @@ int fileio(int flow) {
     } else {
       memcpy(new_curmon, curmon, sizeof(curmon));
 
-      lev = specbuf[28] = 1;
-      dungeon = specbuf[27];
-      fromout = specbuf[37];
-      police = specbuf[34];
-      outside = specbuf[26];
-      crum = curmon[0][30];
+      lev = specbuf.unknown28 = 1;
+      dungeon = specbuf.unknown27;
+      fromout = specbuf.unknown37;
+      police = specbuf.unknown34;
+      outside = specbuf.unknown26;
+      crum = player->current_room;
       
       for (i = 0; i < 20; i++) {
-        invtrig[i] = specbuf[i + 1];
+        invtrig[i] = specbuf.unknown1[i];
       }
 
       Fclose(filehandle);
 
       if (outside || fromout) {
-        specbuf[32] = 1;
+        // specbuf.unknown32 = 1;
+        specbuf.dirty_dungeon[DUNGEON_MONASTERY - 1] = 1;
         if (load_outside_fill_tiles(30)) {
           return 0;
         }

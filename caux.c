@@ -1020,7 +1020,7 @@ int status(int pc)
     case 2:
       if (ret == 2) {
         // if (c[41] > 0) {
-        if (p->lit_torches > 0) {
+        if (p->lit_torch_turns > 0) {
           c[46] = 0;
           p->other_hand = 0;
 
@@ -1029,15 +1029,15 @@ int status(int pc)
         }
 
         // if (c[41] > 64) {
-        if (p->lit_torches > 64) {
+        if (p->lit_torch_turns > 64) {
           c[42] += 1;
           p->unlit_torches++;
         }
 
         // if (c[41] > 0) {
-        if (p->lit_torches > 0) {
+        if (p->lit_torch_turns > 0) {
           c[41] = 0;
-          p->lit_torches = 0;
+          p->lit_torch_turns = 0;
         }
       }
 

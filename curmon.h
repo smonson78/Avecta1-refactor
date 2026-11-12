@@ -74,7 +74,7 @@ typedef struct {
   // 40
   uint8_t unknown40;
   // 41
-  uint8_t lit_torches; // actually "turns left on current torch"
+  uint8_t lit_torch_turns; // actually "turns left on current torch"
   // 42
   uint8_t unlit_torches;
   // 43
@@ -105,7 +105,7 @@ typedef struct {
   uint8_t unknown55[3];
   // 58
   uint8_t monster_type;
-  // 59
+  // 59: dungeon number
   uint8_t unknown59;
 
 } player_t;

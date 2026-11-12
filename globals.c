@@ -65,7 +65,8 @@ int winker = 0, winktime = 0, combat = 0;
 char *posture[] = {"All Out", "Standard", "Defensive", "Fall Back"};
 char *wordmod[] = {"None", "Low", "Medium", "Severe", "Dead", "Panicked"};
 
-uint8_t putbuf[320], specbuf[40];
+uint8_t putbuf[320];
+specbuf_t specbuf;
 char monbuf[320];
 char junk[20];
 

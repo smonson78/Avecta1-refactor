@@ -355,5 +355,5 @@ int handman(int pc, int inv, int rum, int flag)
       }
     }
   }
-  return(1);
+  return 1;
 }

@@ -471,9 +471,9 @@ void rumdraw(char *pan)
     }
   }
 
-  if (specbuf[35] != 0) {
-    x = specbuf[36] % 16;
-    y = specbuf[36] / 16;
+  if (specbuf.wallfire_turns != 0) {
+    x = specbuf.wallfire_xy % 16;
+    y = specbuf.wallfire_xy / 16;
 
     // This is indicating an area of one space around whatever's at (x, y)
     for(i = x - 1; i < x + 2; i++) {

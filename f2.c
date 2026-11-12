@@ -689,13 +689,13 @@ int cast_out(int pc)
       break;
 
     case 19: /* firewall */
-      if (specbuf[35] != 0) {
+      if (specbuf.wallfire_turns != 0) {
         prnt("-> The existing wall of fire prevents a second spell!", NULL, NULL, NULL, NULL, NULL, NULL);
         break;
       }
 
-      specbuf[35] = c[51] / 3;
-      specbuf[36] = c[5] + 16 * c[6];
+      specbuf.wallfire_turns = c[51] / 3;
+      specbuf.wallfire_xy = c[5] + 16 * c[6];
       for (i = -1; i < 2; i++) {
         for (j = -1; j < 2; j++) {
           z = &zline[c[5] + i][c[6] +j];

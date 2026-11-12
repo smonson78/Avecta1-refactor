@@ -21,8 +21,6 @@ int getmon(int room);
 int switchrum() {
   int d, i, j, x = 0, y = 0, xn, yn, oldrum;
 
-  uint8_t *p = curmon[0];
-
   debug_printf("> switchrum()\n");
   check_curmon("switchrum start");
 
@@ -32,10 +30,11 @@ int switchrum() {
   uint8_t *c;
   curmon2_t *new_c;
   room_object_t *object;
+  uint8_t *p = curmon[0];
 
   char pan[12];
 
-  if (crum != p[30] && crum != -1 && !outside) {
+  if (crum != player->current_room && crum != -1 && !outside) {
     for (i = 0; i < 13; i++) {
       
       object = &crumobj[i + 1];
@@ -81,7 +80,7 @@ int switchrum() {
 
   check_curmon("switchrum after object loop");
 
-  if (p[30] == 127) {
+  if (player->current_room == 127) {
     stormon();
     pursuit[0] = 0;
     pursuit[1] = 0;
@@ -130,7 +129,8 @@ int switchrum() {
   }
 
   if (crum != p[30] && crum != -1) {
-    specbuf[35] = specbuf[36] = 0;
+    specbuf.wallfire_turns = 0;
+    specbuf.wallfire_xy = 0;
     stormon();
   }
 
@@ -144,7 +144,7 @@ int switchrum() {
   
   // Move to the new room
   oldrum = crum;
-  crum = p[30];
+  crum = player->current_room;
 
 #if defined SHOW_INTERNALS
   char buffer[80];
@@ -201,8 +201,8 @@ int switchrum() {
 
   /* got into the room through a trap */
   if (oldrum == crum || i == 14) {
-    x = p[24];
-    y = p[25];
+    x = player->x;
+    y = player->y;
 
     if (i == 14) {
       pursuit[0] = 0;

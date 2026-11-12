@@ -197,7 +197,7 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
       blowup(crumobj[c[9]].x, crumobj[c[9]].y);
       flash();
       flash();
-      specbuf[30] = 1;
+      specbuf.unknown30 = 1;
       untrap(2);
     }
     break;
@@ -348,7 +348,7 @@ bad sword! Now I wait! Silly spell ends soon! Then I kill!'", NULL, NULL, NULL, 
       break;
     }
 
-    if (specbuf[30] == 0 && c[45] == 41 && curmon[j][49] == 0) {
+    if (specbuf.unknown30 == 0 && c[45] == 41 && curmon[j][49] == 0) {
       prnt("-> Melkthrop rasps `You not be able to kill me! I have\
  special protection! Gondrath helps me! Your silly spell won't last forever! \
 Then I kill you and take bad sword!'", NULL, NULL, NULL, NULL, NULL, NULL);
@@ -360,7 +360,7 @@ Then I kill you and take bad sword!'", NULL, NULL, NULL, NULL, NULL, NULL);
     c = curmon[j];
     new_c = &new_curmon2[j];
 
-    if (curmon[pc][45] == 41 && specbuf[30] == 1) {
+    if (curmon[pc][45] == 41 && specbuf.unknown30 == 1) {
       curmon[pc][34] = 1;
       if (c[1] > c[2] / 2) {
         prnt("-> `Melkthrop is afraid! Melkthrop is afraid!' wails the demon! "
@@ -453,16 +453,16 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       break;
     }
 
-    if (specbuf[31] != 0) {
+    if (specbuf.dirty_dungeon[0] != 0) {
       flash();
-      if (remove_object(1, specbuf[31])) {
+      if (remove_object(1, specbuf.dirty_dungeon[0])) {
         prnt("-> The %s originally on the left rune disappears! A sandestin is heard to "
           "say `Oh boy! Just what I always wanted! A free %s! I don't think this idiot "
           "knows how to operate a duplicator rune. Melkthrop is going to be angry!'",
-             obj[specbuf[31]], obj[specbuf[31]], NULL, NULL, NULL, NULL);
+             obj[specbuf.dirty_dungeon[0]], obj[specbuf.dirty_dungeon[0]], NULL, NULL, NULL, NULL);
       }
     }
-    specbuf[31] = c[8];
+    specbuf.dirty_dungeon[0] = c[8];
     break;
 
   case 17: /* the second duplicator trap */
@@ -477,18 +477,18 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
         " got more donations like that!', and the bottle disappears!", 
         NULL, NULL, NULL, NULL, NULL, NULL);
       remove_object(2, c[8]);
-      if (!remove_object(1, specbuf[31])) {
-        specbuf[31] = 0;
+      if (!remove_object(1, specbuf.dirty_dungeon[0])) {
+        specbuf.dirty_dungeon[0] = 0;
       }
 
-      if (specbuf[31] != 0) {
-        putinto(1, specbuf[31]);
+      if (specbuf.dirty_dungeon[0] != 0) {
+        putinto(1, specbuf.dirty_dungeon[0]);
         prnt("-> A copy of the %s appears on the other rune while the original %s is still "
           "on this rune! The sandestin's voice can be heard to say, `Just search the rune "
-          "for the other %s, idiot!'", obj[specbuf[31]], obj[specbuf[31]], obj[specbuf[31]], 
+          "for the other %s, idiot!'", obj[specbuf.dirty_dungeon[0]], obj[specbuf.dirty_dungeon[0]], obj[specbuf.dirty_dungeon[0]], 
           NULL, NULL, NULL);
-        putinto(2, specbuf[31]);
-        specbuf[31] = 0;
+        putinto(2, specbuf.dirty_dungeon[0]);
+        specbuf.dirty_dungeon[0] = 0;
       } else {
         prnt("-> The voice mutters `I wonder why the idiot didn't put anything on the other "
           "rune?'", NULL, NULL, NULL, NULL, NULL, NULL);
@@ -571,7 +571,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     if (pc != 0) {
       break;
     }
-    lev = specbuf[28];
+    lev = specbuf.unknown28;
     if (lev == 0) {
       activate_monsters(19, 1, 7, 3);
       grflist[0] = 2;
@@ -618,10 +618,10 @@ He laughs and the room spins.",
 the time that I visited Lord Vindroble in Viridistan? That was when he was \
 attempting to alter the Fatelines, all part of that business with the \
 Master...' He slowly fades out.", NULL, NULL, NULL, NULL, NULL, NULL);
-      lev = specbuf[28] = 1;
-      specbuf[25] = 1;
-      specbuf[22] = 8;
-      specbuf[23] = 7;
+      lev = specbuf.unknown28 = 1;
+      specbuf.current_room = 1;
+      specbuf.unknown22 = 8;
+      specbuf.unknown23 = 7;
       c[30] = 29;
       new_c->monster.current_room = ROOM_ID_LEVETHS_HOUSE;
       break;
@@ -849,12 +849,12 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
       break;
     }
 
-    if (specbuf[39] == 1) {
+    if (specbuf.unknown39 == 1) {
       break;
     }
 
-    specbuf[39] = 1;
-    if (curmon[0][4] != 81 && !police) {
+    specbuf.unknown39 = 1;
+    if (player->sprite_id != SPRITE_PLAYER_NORMAL && !police) {
       prnt("-> The bartender shrieks `I'll not be servin' no bloody orc! Guards! Guards!'", 
         NULL, NULL, NULL, NULL, NULL, NULL);
       police = 1;
@@ -867,14 +867,14 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
       break;
     }
 
-    switch (specbuf[38]) {
+    switch (specbuf.unknown38) {
       case 0:
         activate_monsters(25, 3, 6, 4);
         prnt("-> The bartender smiles and says ` 'ello, guv'nor! If I ain't \
   mistaken yer name is %s. Me name is Red Jack. Yer room is ready! \
   Up the stairs and at the far left.  Sleep well!'",
             s2, NULL, NULL, NULL, NULL, NULL);
-        specbuf[38] = 1;
+        specbuf.unknown38 = 1;
         break;
 
       case 1:
@@ -919,7 +919,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
             j = 0;
             break;
           }
-          specbuf[38] = 3;
+          specbuf.unknown38 = 3;
           break;
         }
 
@@ -934,7 +934,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
 
         prnt("-> The bartender is greatly pleased with %s's generosity!",
             s2, NULL, NULL, NULL, NULL, NULL);
-        specbuf[38] = 2;
+        specbuf.unknown38 = 2;
         break;
 
     case 2:
@@ -951,7 +951,7 @@ will eat 'im.'", NULL, NULL, NULL, NULL, NULL, NULL);
 you was 'ere or what room you 'ad.  But you best be on yer toes! I \
 don't want to lose a fine customer such as yerself! Top o' the day!'", 
         NULL, NULL, NULL, NULL, NULL, NULL);
-      specbuf[38] = 3;
+      specbuf.unknown38 = 3;
       break;
 
     case 3:
@@ -966,7 +966,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     break;
 
   case 34:
-    specbuf[39] = 0;
+    specbuf.unknown39 = 0;
     break;
 
   case 35:
@@ -1007,8 +1007,9 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
 
   // Sleeping at the Red Lion
   case 37:
-    if (specbuf[20] == 1 || police || mode || monster > 0 || pc != 0) {
-      debug_printf("Can't sleep because specbuf[20]=%d, mode=%d, monster=%d\n", specbuf[20], mode, monster);
+    if (specbuf.unknown1[19] == 1 || police || mode || monster > 0 || pc != 0) {
+      debug_printf("Can't sleep because specbuf[20]=%d, mode=%d, monster=%d\n", 
+        specbuf.unknown1[19], mode, monster);
       break;
     }
 
@@ -1024,7 +1025,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     putaway(pc, c[46]);
     c[46] = 0;
     new_c->monster.magic_mode_1 = 0;
-    specbuf[20] = 1;
+    specbuf.unknown1[19] = 1;
     prnt("-> %s is overcome with drowsiness, falling into the bed to sleep.  "
       "Upon awakening, magically, %s feels completely refreshed.",
          s2, s2, NULL, NULL, NULL, NULL);
@@ -1040,7 +1041,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     if (c[30] != 127) {
       break;
     }
-    specbuf[20] = 0;
+    specbuf.unknown1[19] = 0;
     break;
 
   case 39: /* Mr. Demento's magic potion has struck */

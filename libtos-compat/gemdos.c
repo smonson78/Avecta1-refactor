@@ -89,6 +89,8 @@ void Fclose(const compat_FILE index)
   if (handle) {
     fclose(handle);
     globals.file_handles[index] = NULL;
+  } else {
+    fprintf(stderr, "ERROR: Attempt to close non-existent file handle %d\n", index);
   }
   GLOBAL_UNLOCK();
 }
