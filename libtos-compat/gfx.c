@@ -491,6 +491,7 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
 
   // Do once per line in the character cell
   for (int line = 0; line < height; line++) {
+  // for (int line = 3; line < 4; line++) {
 
     // How many pixels into that word is the first pixel of the character
     int dst_offset = dstx % 16;
@@ -505,6 +506,7 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
 
     int font_word = (srcx / 16) + (line * fontwidth);
     int font_off = srcx % 16;
+    // printf("  Font data: start word %d, offset %d\n", font_word, font_off);
 
     // How many pixels do we actually need for drawing this current word
     int pixels_this_word = dst_offset + width;
@@ -540,8 +542,8 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
 
         // Adjust count. Doesn't matter if this is higher than the actual number.
         font_pixels += 16;
-        // printf("    ...getting more pixels.\n");
-        // printf("    Start pixels 0x%08x (%d)", pixels, font_pixels);
+        // printf("    ...getting more font pixels.\n");
+        // printf("    Now font pixels 0x%08x (%d)", pixels, font_pixels);
       }
 
       // Build the character cell mask for the current word
@@ -552,8 +554,8 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
       mask >>= dst_offset; // Now move to the correct position
 
       // printf("    Mask: 0x%04x\n", mask);
-      
       // printf("    Font raw data: %08x\n", pixels);
+
       // Get a copy and shift the pixels we want to line up with the left edge of the low word
       uint32_t copy_pixels = pixels >> (16 - font_off);
       // printf("    Preshift:      %08x\n", copy_pixels);
@@ -602,11 +604,12 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
       if (font_off > 16) {
         font_off -= 16;
         pixels <<= 16;
-        font_pixels -= pixels_this_word;
         // printf("    ...moved font data back up to high word: %08x\n", pixels);
         // printf("    ...new font_off is %d\n", font_off);
         // printf("    ...now %d font pixels\n", font_pixels);
       }
+
+      font_pixels -= pixels_this_word;
 
       // Set up number of pixels for next word, which will be the number left to draw up to 
       // the maximum of the word size (16).
