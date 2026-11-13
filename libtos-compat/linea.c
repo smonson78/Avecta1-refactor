@@ -111,21 +111,31 @@ void linea_init(LINEA **parameter_block, FONT_HDR ***sysfont_pointers) {
 }
 
 void linea_textblock_transfer() {
-  // printf("linea_textblock_transfer()\n");
-  // printf("font: %d %p\n", linea_parameter_block.fwidth, linea_parameter_block.fbase);
+  
+  // Source width times scale factor
+  int dest_width = linea_parameter_block.delx;
+  int factor = ((uint16_t)linea_parameter_block.dda_inc) + 1;
+  dest_width *= factor;
+  dest_width /= 0x8000;
+
+  printf("linea_textblock_transfer()\n");
+  printf("font: %d %p\n", linea_parameter_block.fwidth, linea_parameter_block.fbase);
+  printf("DDA_INC=0x%04x\n", (uint16_t)linea_parameter_block.dda_inc);
+  printf("factor: 0x%08x\n", factor);
+  printf("dest width: %d\n", dest_width);
 
   //linea_debug();
 
   GLOBAL_LOCK();
-  render_text_char(
+  render_scaled_text_char(
     linea_parameter_block.text_fg,
     linea_parameter_block.text_bg,
     linea_parameter_block.fbase,
     linea_parameter_block.sourcex,
-    linea_parameter_block.sourcey,
+    linea_parameter_block.delx,
     linea_parameter_block.destx, 
     linea_parameter_block.desty, 
-    linea_parameter_block.delx, 
+    dest_width,
     linea_parameter_block.dely,
     linea_parameter_block.fwidth / 2,
     linea_parameter_block.wrt_mode);

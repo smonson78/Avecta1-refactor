@@ -475,6 +475,200 @@ void blit_surface_to_st_video(int fg_colour, int bg_colour, int x, int y, int wi
   }
 }
 
+uint32_t bresenham_stretch(uint16_t input, int src_len, int dest_len) {
+  int extra = dest_len - src_len; // How many duplicate pixels we need to insert (0 to src_len)
+  int err = src_len / 2;         // Start halfway for centered rounding
+  int dst_idx = 0;
+  uint32_t output = 0;
+
+  for (int src_idx = 0; src_idx < src_len; src_idx++) {
+    uint32_t pixel = (input >> src_idx) & 1;
+    
+    // 1. Always write the original pixel once
+    output |= pixel << dst_idx++;
+    
+    // 2. Check if this pixel needs to be duplicated
+    err += extra;
+    if (err >= src_len) {
+      err -= src_len;
+      // Write the extra duplicate pixel
+      output |= pixel << dst_idx++;
+    }
+  }
+  return output;
+}
+
+void render_scaled_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, int src_w, int dstx, int dsty, 
+  int width, int height, int fontwidth, int wrt_mode) {
+
+  printf("render_scaled_text_char at %d,%d size %dx%d:\n", dstx, dsty, width, height);
+  printf("  Cell source coords %d,0 and width %d\n", srcx, src_w);
+
+  // Which word contains the first pixel of the character
+  int x = dstx / 16;
+
+  // printf("  Destination offset is %d\n", dstx % 16);
+
+  // Screen line on which the character begins
+  uint16_t *start_line = globals.video.st_logbase + (dsty * 80);
+
+  // Do once per line in the character cell
+  for (int line = 0; line < height; line++) {
+  // for (int line = 3; line < 4; line++) {
+
+    // How many pixels into that word is the first pixel of the character
+    int dst_offset = dstx % 16;
+
+    // printf("  Line %d\n", line);
+
+    // Word in that line in which we must start
+    uint16_t *dst = start_line + (line * 80) + (x * 4);
+
+    // How many words will we need to do? Either 1 or 2.
+    int total_words = (dst_offset + width - 1 + 15) / 16;
+
+    int font_word = (srcx / 16) + (line * fontwidth);
+    int font_off = srcx % 16;
+    // printf("  Font data: start word %d, offset %d\n", font_word, font_off);
+    
+    // How many pixels do we actually need for drawing this current word
+    int pixels_this_word = dst_offset + width;
+    if (pixels_this_word > 16) {
+      // Limit to maximum 16
+      pixels_this_word = 16;
+    }
+    // Then remove the offset again
+    pixels_this_word -= dst_offset;
+
+    // Get the first font pixels into the accumulator
+    uint32_t pixels = base[font_word++] << 16;
+    // Then the following word to ensure that we got at least 16 pixels
+    pixels |= base[font_word];
+
+    printf("    Unaligned font pixels: 0x%08x (with offset %d)\n", pixels, font_off);
+
+
+    // Now right-align the character word
+    pixels >>= 32 - src_w - font_off;
+
+    printf("    Unscaled font pixels: 0x%08x\n", pixels);
+
+    // Now scale the word
+    if (width > src_w) {
+      pixels = bresenham_stretch(pixels, src_w, width);
+    }
+
+    // Align with right end of word
+    pixels <<= 32 - width;
+    printf("    Scaled font pixels: 0x%08x\n", pixels);
+
+    // Number of font pixels in the accumulator
+    //int font_pixels = 16 - font_off;
+
+    // printf("    Start pixels 0x%08x (%d)", pixels, font_pixels);
+    // printf("    Font offs %d\n", font_off);
+
+    int pixels_left = width;
+
+    // Which word are we calculating among the different words that we need to update
+    for (int word = 0; word < total_words; word++) {
+
+      printf("    --- Word number %d\n", word);
+      printf("    Pixels left: %d\n", pixels_left);
+      printf("    This word we need %d font pixels\n", pixels_this_word);
+      // printf("    This word we have %d font pixels\n", font_pixels);
+
+      // if (font_pixels < pixels_this_word) {
+      //   // Get more font pixels into the low word
+      //   pixels |= base[font_word++];
+
+      //   // Adjust count. Doesn't matter if this is higher than the actual number.
+      //   font_pixels += 16;
+      //   // printf("    ...getting more font pixels.\n");
+      //   // printf("    Now font pixels 0x%08x (%d)", pixels, font_pixels);
+      // }
+
+      // Build the character cell mask for the current word
+      // Start with the correct number of bits, lined up on the left edge of the high word
+      uint32_t mask = 0xffff0000 << (16 - pixels_this_word);
+       
+      // Keep the high word of the mask (that's got the number of pixels we need)
+      //mask &= 0xffff;
+      mask >>= dst_offset; // Now move to the correct position
+
+      printf("    Mask: 0x%04x\n", mask);
+      // printf("    Font raw data: %08x\n", pixels);
+
+      // Get a copy and shift the pixels we want to line up with the left edge of the low word
+      uint32_t copy_pixels = pixels;
+      printf("    Preshift:      %08x\n", copy_pixels);
+      // Shift right to target position
+      // TODO ...could do both shifts in one operation
+
+      // Mask it off to the character cell within this screen word
+      printf("    Font data:     %08x\n", copy_pixels);
+      copy_pixels &= mask;
+      printf("    Mask:          %08x\n", mask);
+      printf("    Font masked:   %08x\n", copy_pixels);
+
+      copy_pixels >>= 16 + dst_offset; // now it's lined up with the character cell onscreen in the LOW word
+
+      //printf("    Screen word:   %04x\n", dst[0]);
+
+      // Mask out the character cell in the current word
+      // printf("    Original:      %04x\n", dst[0]);
+
+      if (wrt_mode == 0) {
+        // REPLACE mode
+        dst[0] &= ~copy_pixels;
+        dst[1] &= ~copy_pixels;
+        dst[2] &= ~copy_pixels;
+        dst[3] &= ~copy_pixels;
+
+        dst[0] |= (fg_colour & 1) ? copy_pixels : 0;
+        dst[1] |= (fg_colour & 2) ? copy_pixels : 0;
+        dst[2] |= (fg_colour & 4) ? copy_pixels : 0;
+        dst[3] |= (fg_colour & 8) ? copy_pixels : 0;
+      } else if (wrt_mode == 2) {
+        // XOR mode
+        dst[0] ^= copy_pixels;
+        dst[1] ^= copy_pixels;
+        dst[2] ^= copy_pixels;
+        dst[3] ^= copy_pixels;
+      }
+      // Move to next word.
+      dst += 4;
+
+      pixels_left -= pixels_this_word;
+
+      // font offset goes up by the number of pixels drawn
+      // font_off += pixels_this_word;
+      // Move font data up to high word if it starts to fall off the end at the right
+      // if (font_off > 16) {
+      //   font_off -= 16;
+      //   pixels <<= 16;
+      //   // printf("    ...moved font data back up to high word: %08x\n", pixels);
+      //   // printf("    ...new font_off is %d\n", font_off);
+      //   // printf("    ...now %d font pixels\n", font_pixels);
+      // }
+
+      // font_pixels -= pixels_this_word;
+      // Move pixels along for next word, if any
+      pixels <<= pixels_this_word;
+
+      // Set up number of pixels for next word, which will be the number left to draw up to 
+      // the maximum of the word size (16).
+      pixels_this_word = 16;
+      if (pixels_this_word > pixels_left) {
+        pixels_this_word = pixels_left;
+      }
+
+      // dst_offset only applies to the first word in the line, so zero it out now
+      dst_offset = 0;
+    }
+  }
+}
+
 void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, int srcy, int dstx, int dsty, 
   int width, int height, int fontwidth, int wrt_mode) {
 
@@ -622,7 +816,6 @@ void render_text_char(int fg_colour, int bg_colour, uint16_t *base, int srcx, in
       dst_offset = 0;
     }
   }
-
 }
 
 void putpixel(int x, int y, int colour) {
@@ -651,7 +844,7 @@ void plotline(int x0, int y0, int x1, int y1, uint32_t colour)
 	int sy = y0 < y1 ? 1 : -1;
 	int err = dx + dy, e2; /* error value e_xy */
 
-	while(1) {
+	while (1) {
 		putpixel(x0, y0, colour);
 
     if (x0 == x1 && y0 == y1) {
