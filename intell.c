@@ -803,7 +803,14 @@ int matt(int npc)
     i = 5 + rnd(j);
     // [5..9] must therefore be possible spells that it knows
     sp = a[i];
-
+    
+    debug_printf("--> spell[0] = %d\n", a[5]);
+    debug_printf("--> spell[1] = %d\n", a[6]);
+    debug_printf("--> spell[2] = %d\n", a[7]);
+    debug_printf("--> spell[3] = %d\n", a[8]);
+    debug_printf("--> spell[4] = %d\n", a[9]);
+    debug_printf("--> sp is %d\n", sp);
+    // CRASH right here
     a[14] -= spelunit[sp];
     a[16] = spelinfo[sp-1][2];
     a[40] = 4;

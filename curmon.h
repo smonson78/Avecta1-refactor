@@ -38,9 +38,10 @@ typedef struct {
   uint8_t animation_step;
   uint8_t unknown18;
   // 19: the offset into the object of the last thing that was affected by magic
-  uint8_t unknown19;
+  uint8_t magic_effect;
   uint8_t unknown20;
-  uint8_t unknown21;
+  // 21
+  uint8_t magic_effect_time_remaining;
   uint8_t unknown22;
   uint8_t unknown23;
   // 24
@@ -140,10 +141,11 @@ typedef struct {
   uint8_t time_until_next_move;
   uint8_t animation_step;
   uint8_t unknown18;
-  // 19: the offset into the object of the last thing that was affected by magic
-  uint8_t unknown19;
+  // 19
+  uint8_t magic_effect;
   uint8_t unknown20;
-  uint8_t unknown21;
+  // 21
+  uint8_t magic_effect_time_remaining;
   uint8_t unknown22;
   uint8_t unknown23;
   // 24

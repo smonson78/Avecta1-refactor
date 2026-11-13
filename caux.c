@@ -942,11 +942,6 @@ int xobj(int thing, int room)
   return 1;
 }
 
-/****************************************************************************/
-/* INVENT() is a call to update the inventory of the hero.  It updates the  */
-/* status as well as which possessions are in the person's inventory.       */
-/****************************************************************************/
-
 int status(int pc)
 {
   int16_t i, j;
@@ -1105,6 +1100,10 @@ int status(int pc)
   return flag;
 }
 
+/****************************************************************************/
+/* INVENT() is a call to update the inventory of the hero.  It updates the  */
+/* status as well as which possessions are in the person's inventory.       */
+/****************************************************************************/
 int invent(int pc)
 {
   int16_t i, j;
@@ -1123,7 +1122,7 @@ int invent(int pc)
 
 int listinv(int pc, char *scratch)
 {
-  int j, bot = 0;
+  int j;
   // uint8_t *c = curmon[pc];
   uint8_t *o = invnpc[pc];
   player_t *p = &players[pc];
@@ -1143,6 +1142,7 @@ int listinv(int pc, char *scratch)
   scratch[1] = p->good_hand;
   scratch[2] = p->other_hand;
 
+  int bot = 0;
   for (j = 1; j < 14; j++) {
     if (o[j] != 0) {
       bot++;
@@ -1151,10 +1151,12 @@ int listinv(int pc, char *scratch)
     }
   }
   textsix(1, 260, 25 + bot * 8, 9, "No Choice");
+  
   textsix(1, 260, 33 + 8 * bot, 7, "Torches");
   //  sprintf(word, "%d", c[42]);
   sprintf(word, "%d", p->unlit_torches);
   textsix(1, 308, 33 + 8 * bot, strlen(word), word);
+
   textsix(1, 260, 41 + 8 * bot, 4, "Gold");
   // sprintf(word, "%d", c[49]);
   sprintf(word, "%d", p->gold_amount);

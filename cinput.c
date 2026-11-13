@@ -28,42 +28,56 @@ void clrinp() {
 int dotop(int pc)
 {
   uint8_t *c = curmon[pc];
-  //curmon_t *new_c = &new_curmon[pc];
+  player_t *new_c = &players[pc];
   char scratch[4], l = ' ';
 
-  vs_curaddress(handle,2,33);
+  vs_curaddress(handle, 2, 33);
   v_eeol(handle);
-  textsix(1,260,9,1,"H");
-  sprintf(scratch,"%d",c[2] - c[1]);
-  textsix(1,269,9,strlen(scratch),scratch);
+
+  // H for Hit Points
+  textsix(1, 260, 9, 1, "H");
+
+  // sprintf(scratch, "%d", c[2] - c[1]);
+  sprintf(scratch, "%d", new_c->max_health - new_c->damage);
+  textsix(1, 269, 9, strlen(scratch), scratch);
+
   if (c[47] > 0) {
+    // Poisoned
     sprintf(scratch, "%c", 'P');
   } else {
+    // Good health
     sprintf(scratch, "%c", 'G');
   }
-  textsix(1,281,9,1,scratch);
-  textsix(1,290,9,1,"S");
-  sprintf(scratch,"%d", c[14]);
-  textsix(1,299,9,strlen(scratch),scratch);
+  textsix(1, 281, 9, 1, scratch);
   
-  if (c[21] == 0) {
+  // S for Spell Units
+  textsix(1, 290, 9, 1, "S");
+
+  // sprintf(scratch,"%d", c[14]);
+  sprintf(scratch,"%d", new_c->spell_units);
+  textsix(1, 299, 9, strlen(scratch), scratch);
+  
+  // if (c[21] == 0) {
+  if (new_c->magic_effect_time_remaining == 0) {
     sprintf(scratch, "%c", ' ');
   } else {
-    if (c[19] == 12) {
+    // if (c[19] == 12) {
+    if (new_c->magic_effect == MAGIC_EFFECT_ARMOUR) {
       l = 'A';
     }
-    if (c[19] == 11) {
+    if (new_c->magic_effect == MAGIC_EFFECT_SPEED) {
       l = 'S';
     }
-    if (c[19] == 43) {
+    if (new_c->magic_effect == MAGIC_EFFECT_VORPAL_BLADE) {
       l = 'V';
     }
-    if (c[19] == 54) {
+    if (new_c->magic_effect == MAGIC_EFFECT_IMMUNITY) {
       l = 'I';
     }
   }
+
   sprintf(scratch, "%c", l);
-  textsix(1,315,9,1,scratch);
+  textsix(1, 315, 9, 1, scratch);
 
   return 1;
 }
@@ -133,7 +147,8 @@ top:
     }
 
     if (ret == 0 || ret == 14) {
-      if ((c[24] == x && c[25] == y) || ret == 14) {
+      // if ((c[24] == x && c[25] == y) || ret == 14) {
+      if ((new_c->x == x && new_c->y == y) || ret == 14) {
         i = status(pc); /* if status returns a 0 it fixed the action */
 
         if (!i) {

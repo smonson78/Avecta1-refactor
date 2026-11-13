@@ -116,7 +116,16 @@ char *spell[] = {
 
 // Spell magic points costs I think
 // Note this is not used in the menu display where it just divides by 4
-char spelunit[] = {0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
+// There are 21 values here, but there are 24 spells. Will adjust:
+// char spelunit[] = {0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
+char spelunit[] = {
+  0, 
+  1, 1, 1, 1, 1, 
+  2, 2, 2, 2, 2, 
+  3, 3, 3, 3, 3, 
+  4, 4, 4, 4, 4, 
+  5, 5, 5, 5
+};
 char *name[] = {
   "goblin", "skeleton", "spider", "firewolf", "ghost", "thrang", "ghoul", "snake", "vampire",
   "gork", "Melkthrop", "merchant", "bat", "Eirik", "guard", "pedestrian", "Mage Leveth",

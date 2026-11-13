@@ -144,7 +144,8 @@ int attack_out(int pc)
 
   if (base > roll && dam > 0) {
     // if (pc > 3 && a[40] == a[45] && t[47] == 0) {
-    if (pc > 3 && new_a->monster.unknown40 == new_a->monster.poison_mode_2 && new_t->monster.poisoned == 0) {
+    if (pc > 3 && new_a->monster.unknown40 == new_a->monster.poison_mode_2 
+        && new_t->monster.poisoned == 0) {
       
       // w = (a[39] == 0 ? pname : name[curmon[a[39]][3]]);
       w = (new_a->monster.unknown39 == 0 ? 

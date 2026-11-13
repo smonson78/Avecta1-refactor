@@ -22,7 +22,7 @@
 // This is something to do with passing through an exit into a different room or to/from the world map
 void trapres(int pc, int type, int x, int y)
 {
-  debug_printf("> trapres()\n");
+  debug_printf("> trapres(type=%d)\n", type);
   check_curmon("trapres start");
   uint8_t *c = curmon[pc];
   curmon2_t *new_c = &new_curmon2[pc];
@@ -362,6 +362,9 @@ Then I kill you and take bad sword!'", NULL, NULL, NULL, NULL, NULL, NULL);
 
     if (curmon[pc][45] == OBJECT_BROADSWORD && specbuf.ectoplasmic_converter_exploded == 1) {
       curmon[pc][34] = 1;
+      new_curmon2[pc].monster.unknown33[1] = 1;
+
+
       if (c[1] > c[2] / 2) {
         prnt("-> `Melkthrop is afraid! Melkthrop is afraid!' wails the demon! "
           "`Melkthrop not want to die!'", NULL, NULL, NULL, NULL, NULL, NULL);
@@ -428,7 +431,8 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     break;
 
   case 13: /* drank the potion */
-    if (c[54] == 1 || c[8] != 55) {
+    // if (c[54] == 1 || c[8] != 55) {
+    if (new_c->player.original_sprite_id == 1 || new_c->player.unknown8 != 55) {
       break;
     }
 
@@ -441,9 +445,9 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     c[21] = 40 - randomness;
     c[54] = 1;
     c[8] = 0;
-    new_c->monster.unknown19 = 54;
+    new_c->monster.magic_effect = MAGIC_EFFECT_IMMUNITY;
     new_c->monster.unknown20 = 0;
-    new_c->monster.unknown21 = 40 - randomness;
+    new_c->monster.magic_effect_time_remaining = 40 - randomness;
     new_c->monster.magic_mode_2 = 1;
     new_c->monster.spells[3] = 0;
     break;
@@ -1065,10 +1069,10 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     c[20] = c[50];
     c[50] = 20;
     c[21] = 10;
-    new_c->monster.unknown19 = 50;
+    new_c->monster.magic_effect = MAGIC_EFFECT_STRENGTH;
     new_c->monster.unknown20 = new_c->monster.physical_strength;
     new_c->monster.physical_strength = 20;
-    new_c->monster.unknown21 = 10;
+    new_c->monster.magic_effect_time_remaining = 10;
     break;
 
   case 40:

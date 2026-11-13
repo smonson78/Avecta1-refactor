@@ -89,9 +89,10 @@ int timetrol()
 
     if (c[21] > 0) { /* checks for expiration of spells */
 			c[21] -= 1;
-			new_c->unknown21--;
+			new_c->magic_effect_time_remaining--;
 
-			if (c[21] == 0) {
+			// if (c[21] == 0) {
+			if (new_c->magic_effect_time_remaining == 0) {
 				// FIXME how can I implement that?!?
 				c[c[19]] = c[20];
 				debug_printf("!!!!!!! weird logic in timetrol()\n");
@@ -101,7 +102,7 @@ int timetrol()
 				// 43 - base_chance_3_attack
 				// 54 - magic_mode_2
 				// 50 (trapres.c) (that's physical strength)
-				switch (new_c->unknown19) {
+				switch (new_c->magic_effect) {
 					case 11:
 						new_c->unknown11 = new_c->unknown20;
 						break;
@@ -118,7 +119,8 @@ int timetrol()
 						new_c->physical_strength = new_c->unknown20;
 						break;
 					default:
-						debug_printf("!!!!!!! weird logic in timetrol() %d\n", new_c->unknown19);
+						debug_printf("!!!!!!! weird logic in timetrol() %d\n", new_c->magic_effect);
+						Cconin();
 				}
 
 				if (i == 0) {

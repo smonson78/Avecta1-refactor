@@ -60,8 +60,10 @@ int drag_eat_in(int pc)
   clrinp();
 
   if ((type == 1 && ret == 0) || type == 0) { /* this is a drag option */
-    if (x == c[24] && y == c[25]) { /* going for an eat in hand */
-      if (c[45] == 0 && (c[46] == 0 || c[46] == OBJECT_TORCH)) {
+    // if (x == c[24] && y == c[25]) { /* going for an eat in hand */
+    if (x == ch->player.x && y == ch->player.y) { /* going for an eat in hand */
+      // if (c[45] == 0 && (c[46] == 0 || c[46] == OBJECT_TORCH)) {
+      if (ch->player.good_hand == 0 && (ch->player.other_hand == 0 || ch->player.other_hand == OBJECT_TORCH)) {
         error(ERROR_NOTHING_IN_HAND);
         return 0;
       }
@@ -69,7 +71,8 @@ int drag_eat_in(int pc)
       if (c[45] != 0 && c[46] != 0 && c[46] != OBJECT_TORCH) {
         self = error(ERROR_WHICH_HANDS_OBJECT);
       } else {
-        self = c[45] == 0 ? 2 : 1;
+        // self = c[45] == 0 ? 2 : 1;
+        self = ch->player.good_hand == 0 ? 2 : 1;
       }
 
       c[8] = c[44 + self];
