@@ -24,7 +24,7 @@ void textsix(int16_t flag, int16_t x, int16_t y, int16_t length, const char *tex
   parameter_block->delx = font->max_cell_width;
   parameter_block->dely = font->form_height;
   parameter_block->desty = y;
-  parameter_block->scale = 1;
+  parameter_block->scale = 0;
   parameter_block->t_sclsts = 1;
   parameter_block->xacc_dda = 0x8000;
   // Always use colour 1, i.e. red

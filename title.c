@@ -41,8 +41,9 @@ int title() {
 
   Vsync();
 
-  prntbig("AVECTA I", 5, 1);
-  prntbig("-EBORA-", 5, 5);
+  prntbig("AVECTA I", 6, 1);
+  prntbig("-EBORA-", 6, 5);
+  // prntbig("W", 5, 5);
   
   vst_color(handle, 2);
 

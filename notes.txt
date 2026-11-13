@@ -11,3 +11,11 @@ The maximum number of room_unknown_xy uses is
     1: Monastery (msg 81 - 160)
     2: Kilkaney (161 - 320)
     3: Cave (321 - 480)
+
+
+Melkthrop's spells:
+  --> spell[0] = 22 (death)
+  --> spell[1] = 16 (prism)
+  --> spell[2] = 12 (fireball)
+  --> spell[3] = 0
+  --> spell[4] = 0
