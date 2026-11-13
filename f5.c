@@ -290,39 +290,46 @@ int drag_eat_out(int pc)
 void header(char *string)
 {
   int i = strlen(string);
+  
   v_rvon(handle);
-  vs_curaddress(handle,1,33);
+  vs_curaddress(handle, 1, 33);
   printf("        ");
   v_rvoff(handle);
-  vsf_interior(handle,0);
-  vsf_style(handle,0);
-  vsf_color(handle,0);
+
+  vsf_interior(handle, 0);
+  vsf_style(handle, 0);
+  vsf_color(handle, 0);
   i = (11 - i) / 2;
   textsix(1, 260 + 6 * i, 1, strlen(string), string);
 }
 
-int prhand(int pc)
+// Display the contents of one hand in the top right of the screen
+void print_one_hand(uint16_t object_id, uint16_t y) {
+  char scratch[12];  
+
+  if (object_id != 0) {
+    sprintf(scratch, "%s", obj[object_id]);
+  } else {
+    sprintf(scratch, "%s", "Empty");
+  }
+  textsix(1, 260, 9 + 8 * y, strlen(scratch), scratch);
+}
+
+// Display the contents of both hands in the top right of the screen
+void prhand(int pc)
 {
-  char scratch[12];
-  uint8_t *c = curmon[pc];
+  player_t *p = &players[pc];
   int i;
+
   v_rvon(handle);
   for (i = 2; i <= 3; i++) {
-    vs_curaddress(handle,i,33);
+    vs_curaddress(handle, i, 33);
     printf("        ");
   }
   v_rvoff(handle);
 
-  for (i = 0; i < 2; i++) {
-    if (c[45+i] != 0) {
-      sprintf(scratch, "%s", obj[c[45+i]]);
-    } else {
-      sprintf(scratch, "%s", "Empty");
-    }
-    textsix(1, 260, 9 + 8 * i, strlen(scratch), scratch);
-  }
-
-  return 1;
+  print_one_hand(p->good_hand, 0);
+  print_one_hand(p->other_hand, 1);
 }
 
 int handman(int pc, int inv, int rum, int flag)

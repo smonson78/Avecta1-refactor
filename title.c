@@ -47,8 +47,8 @@ int title() {
   vst_color(handle, 2);
 
   vs_curaddress(handle, 18, 1);
-  printf("Copyright Mark Swanson\n");
-  printf("Select option: (Q)uit,(N)ew,(R)estore\n");
+  printf(" Copyright Mark Swanson\n");
+  printf(" Select option: (Q)uit,(N)ew,(R)estore\n");
   // These calls currently crash:
   // v_justified(handle, 60, 140, "Copyright Mark Swanson", 16, 0, 0);
   // v_justified(handle, 6, 180, "Select option: (Q)uit,(N)ew,(R)estore", 31, 0, 0);
