@@ -539,7 +539,7 @@ void render_scaled_text_scanline(int fg_colour, int bg_colour, int wrt_mode, int
       
     // Keep the high word of the mask (that's got the number of pixels we need)
     //mask &= 0xffff;
-    mask >>= dst_offset; // Now move to the correct position
+    // mask >>= dst_offset; // Now move to the correct position
 
     // printf("    Mask: 0x%04x\n", mask);
     // printf("    Font raw data: %08x\n", pixels);
@@ -551,10 +551,10 @@ void render_scaled_text_scanline(int fg_colour, int bg_colour, int wrt_mode, int
     // TODO ...could do both shifts in one operation
 
     // Mask it off to the character cell within this screen word
-    // printf("    Font data:     %08x\n", copy_pixels);
+    printf("    Font data:     %08x\n", copy_pixels);
     copy_pixels &= mask;
-    // printf("    Mask:          %08x\n", mask);
-    // printf("    Font masked:   %08x\n", copy_pixels);
+    printf("    Mask:          %08x\n", mask);
+    printf("    Font masked:   %08x\n", copy_pixels);
 
     copy_pixels >>= 16 + dst_offset; // now it's lined up with the character cell onscreen in the LOW word
 

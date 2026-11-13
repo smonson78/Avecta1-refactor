@@ -43,7 +43,7 @@ int title() {
 
   prntbig("AVECTA I", 6, 1);
   prntbig("-EBORA-", 6, 5);
-  // prntbig("W", 5, 5);
+  // textsix(0, 16, 16, 2, "ab");
   
   vst_color(handle, 2);
 
