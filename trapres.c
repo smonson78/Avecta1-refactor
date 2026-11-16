@@ -638,35 +638,40 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
         "the time that I visited Lord Vindroble in Viridistan? That was when "
         "he was attempting to alter the Fatelines, all part of that business "
         "with the Master...' He slowly fades out.");
+
       lev = 1;
       specbuf.lev = 1;
       specbuf.current_room = 1;
       specbuf.player_x = 8;
       specbuf.player_y = 7;
+      
       c[30] = 29;
       new_c->monster.current_room = ROOM_ID_LEVETHS_HOUSE;
+
       break;
     }
 
     if (lev == 1) {
-      prnt("-> The old man in the bed looks at %s, and his tongue plays \
-across his teeth, which %s suddenly realizes are very sharp!  A hideous laugh \
-bursts from him and he seizes the copy of Wethwicker's from %s's paralyzed \
-hands!",
-           s2, s2, s2, NULL, NULL, NULL);
-      prnt("-> `Perfect! Perfect! Now that old fool Leveth and Lord \
-Vindroble, that arrogant blond twit, haven't a hope!  As for your \
-friend Eirik, he is food for Melkthrop! All part of the arrangement!' he \
-hisses demonically!", NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The old man in the bed looks at %s, and his tongue plays "
+        "across his teeth, which %s suddenly realizes are very sharp!  "
+        "A hideous laugh bursts from him and he seizes the copy of "
+        "Wethwicker's from %s's paralyzed hands!", s2, s2, s2);
+
+      prnt("-> `Perfect! Perfect! Now that old fool Leveth and Lord "
+        "Vindroble, that arrogant blond twit, haven't a hope!  As for "
+        "your friend Eirik, he is food for Melkthrop! All part of the "
+        "arrangement!' he hisses demonically!");
+
       if (c[4] != 81)
-        prnt("-> `And masquerading as an orc won't save you either!' \
-a vicious laugh roars from his open mouth, exposing a lizard-like tongue.", NULL, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> `And masquerading as an orc won't save you either!' a "
+          "vicious laugh roars from his open mouth, exposing a "
+          "lizard-like tongue.");
+
       hold = 1;
       usedline = 8;
-      prnt("-> `And now you die!' the creature in the bed shrieks with \
-glee! %s realizes the creature is changing into a monster! `Gondrath is \
-victorious, Gondrath ...'",
-           s2, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> `And now you die!' the creature in the bed shrieks with "
+        "glee! %s realizes the creature is changing into a monster! "
+        "`Gondrath is victorious, Gondrath ...'", s2);
       blowup(c[24], c[25]);
     }
     break;
@@ -684,26 +689,25 @@ victorious, Gondrath ...'",
       }
     }
 
-    prnt("-> A eerie voice whispers inside %s's mind with the question `\
-I am the opposite of order, the child of disorder, and Melkthrop has sewn \
-my seed wherever he goes.  What am I?' %s tries to remember what Leveth \
-said the last time they met.",
-         s2, s2, NULL, NULL, NULL, NULL);
+    prnt("-> A eerie voice whispers inside %s's mind with the question "
+      "`I am the opposite of order, the child of disorder, and Melkthrop "
+      "has sewn my seed wherever he goes.  What am I?' %s tries to remember "
+      "what Leveth said the last time they met.", s2, s2);
+
     if (!getword("chaos") || i == 0) {
       if (i == 0) {
         prnt("-> The sandestin laughs evilly and says `Eirik Bloodaxe is not alive? "
-          "A little foul play? All rules are off.'", NULL, NULL, NULL, NULL, NULL, NULL);
+          "A little foul play? All rules are off.'");
       }
       flash();
       blowup(x, y);
-      prnt("-> %s is killed in a hideous explosion!  And after getting almost all the "
-        "way through the adventure!  What a pity.", s2, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s is killed in a hideous explosion!  And after getting almost all "
+        "the way through the adventure!  What a pity.", s2);
       break;
     }
     untrap(2);
     prnt("-> %s is right!  But what kind of adventure would it have been without "
-      "one last pitfall? But what's this? A note falls to the ground by %s",
-      s2, s2, NULL, NULL, NULL, NULL);
+      "one last pitfall? But what's this? A note falls to the ground by %s", s2, s2);
     make(68, 1, 0, 0, 68, -1, x, y + 1, 1);
     break;
 
@@ -739,10 +743,10 @@ said the last time they met.",
       }
       prnt("-> Suddenly, as if it had a life of its own, the mask leaps to %s's face "
         "and adheres to it, resulting in %s having an uncanny resemblance to an orc!",
-        s2, s2, NULL, NULL, NULL, NULL);
+        s2, s2);
       if (pc != 0) {
         prnt("-> %s mutters in disgust `You owe me a great favor, %s, for letting this "
-          "magick be worked upon me!'", s2, pname, NULL, NULL, NULL, NULL);
+          "magick be worked upon me!'", s2, pname);
       }
 
       c[4] = 102;
@@ -779,8 +783,7 @@ said the last time they met.",
       break;
     }
 
-    prnt("-> The black ball explodes in a blinding flash when dropped in the open!", 
-      NULL, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> The black ball explodes in a blinding flash when dropped in the open!");
     destroy(1, flag);
     flash();
     j = 0;
@@ -797,8 +800,8 @@ said the last time they met.",
 
     if (j) {
       dorep();
-      prnt("-> The flash sends a wave of temporary terror through the \
-creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The flash sends a wave of temporary terror through the "
+        "creatures in the room!");
     }
     break;
 
@@ -814,7 +817,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
     flash();
     prnt("-> The floor opens up underneath %s%s!  With a shriek %s%s plummets into the"
       " abyss below, never to be seen again!  The trapdoor swings shut again, ready for"
-      " the next unwary victim.", s1, s2, s1, s2, NULL, NULL);
+      " the next unwary victim.", s1, s2, s1, s2);
     break;
 
   case 31: /* the machine god of the orcs ! */
@@ -822,8 +825,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
       break;
     }
     prnt("-> The gigantic machine pivots swiftly and hurls a massive fireball at %s%s! "
-      "Its metallic voice roars `Death to all that is not orc!'",
-      s1, s2, NULL, NULL, NULL, NULL);
+      "Its metallic voice roars `Death to all that is not orc!'", s1, s2);
     fireball(7, 2, x, y, 0);
     blowup(x, y);
     break;
