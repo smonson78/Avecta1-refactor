@@ -7,7 +7,6 @@
 #include <xbios.h>
 
 #include "globals.h"
-#include "osbind.h"
 #include "gemdefs.h"
 
 #include "words.h"
@@ -294,8 +293,8 @@ int cast_out(int pc)
   uint8_t *p;
   zline_t *z;
   char *w, *wt;
-  uint8_t *t;
-  room_object_t *object;
+  uint8_t *t = NULL;
+  room_object_t *object = NULL;
   curmon_t *new_t = NULL;
   int k, m, flag = 0, dam, j, trap, num, target, i, x, y;
   w = (pc == 0 ? pname :  name[c[3]]);

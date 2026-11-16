@@ -30,38 +30,6 @@ int load_outside_fill_tiles(int total) {
   return 0;
 }
 
-
-// FILL.DAT
-// It's actually 26000 bytes long
-// Breakdown of FILL.DAT:
-// 0 -      = empty
-// 1 - 23   = floor/wall textures
-// 24       = garbage
-// 25 - 27  = rivers
-// 28 - 33  = empty
-// 34       = lake water
-// 35 - 40  = empty
-// ---------- this is the amount read initially as "fillpic"
-// 41 - 47  = rivers
-// 48       = lake water
-// 49 - 51  = empty
-// 52 - 59  = ocean water
-// 53       = empty
-// 54       = terrain graphic
-// 55 - 56  = castles
-// 57 - 58  = rivers
-// 59       = terrain graphics
-// 60       = cave entrance dot
-// ---------- up to here is the second set of 40 sprites ready into bitmap[21+]
-// 61 - 64  = terrain graphics
-// 65       = empty
-// 66       = terrain graphics
-// 67       = empty
-// 68       = terrain graphics
-// 69       = empty
-// 70       = terrain graphics
-// 71 - 198 = empty
-// 199      = a plus sign on a black background
 int load_inside_fill_tiles() {
   int h = Fopen("FILL.DAT", 0);
   if (h < 0) {
@@ -89,6 +57,15 @@ int load_inside_sprites(int total) {
   endianness_fix(bitmap, total * sizeof(sprite_t) / 2, 16);
 
   return 0;
+}
+
+// TODO: split fileio into 2 versions
+int save_game() {
+
+}
+
+int load_game() {
+
 }
 
 
@@ -177,10 +154,6 @@ int fileio(int flow) {
     // Copy all objects from current room into room data array
     for (i = 0; i < 13; i++) {
       c = &crumobj[i + 1];
-      // for (j = 0; j < 9; j++) {
-        // //r[31 + (9 * i) + j] = c[j];
-        // r->object[i].unknown[j] = c[j];
-      // }
       memcpy(&r->object[i], c, sizeof(room_object_t));
     }
 
@@ -233,8 +206,7 @@ int fileio(int flow) {
 
       // FIXME for debug
       curmon[0][14] = 60;
-      // player->spell_units = 60;
-
+      player->spell_units = 60;
 
       memcpy(new_curmon, curmon, sizeof(curmon));
 
@@ -250,10 +222,11 @@ int fileio(int flow) {
       police = specbuf.unknown34;
       outside = specbuf.outside;
       crum = player->current_room;
-      
-      for (i = 0; i < 20; i++) {
+
+      for (i = 0; i < 19; i++) {
         invtrig[i] = specbuf.unknown1[i];
       }
+      invtrig[19] = specbuf.already_slept;
 
       Fclose(filehandle);
 

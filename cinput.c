@@ -1,7 +1,6 @@
 #include "tos_compat.h"
 
 #include "globals.h"
-#include "osbind.h"
 #include "gemdefs.h"
 #include "caux.h"
 #include "text.h"

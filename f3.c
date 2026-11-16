@@ -193,7 +193,7 @@ int examine_out(int pc)
 
   // This isn't great for structures...
   // t = (type == 1 ? crumobj[object] : curmon[object]);
-  room_object_t *obj_t;
+  room_object_t *obj_t = NULL;
   t = curmon[object];
 
   if (type != 1) {

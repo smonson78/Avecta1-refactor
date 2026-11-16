@@ -1,7 +1,6 @@
 #include "tos_compat.h"
 
 #include "globals.h"
-#include "osbind.h"
 #include "gemdefs.h"
 #include "textbig.h"
 #include "text.h"
@@ -69,7 +68,7 @@ int title() {
     i = i < 97 ? i + 32 : i;
   } while (i != 'r' && i != 'n' && i != 'q');
 
-  vs_curaddress(handle,1,1);
+  vs_curaddress(handle, 1, 1);
   v_eeos(handle);
 
   // Go to game palette

@@ -1,6 +1,5 @@
 #include "globals.h"
 
-#include "f0.h"
 #include "f1.h"
 #include "f2.h"
 #include "f3.h"
@@ -15,8 +14,6 @@
 #include "f12.h"
 #include "f13.h"
 #include "f14.h"
-#include "f15.h"
-#include "f16.h"
 
 // Screen VDI handle
 int16_t handle;
@@ -52,12 +49,12 @@ int winroom;
 
 // These functions are called when selecting an action to perform
 int (*inverb[])(int pc)  = {
-  i0, attack_in, cast_in, examine_in, move_in, drag_eat_in, search_in, take_drop_in, 
+  attack_in, cast_in, examine_in, move_in, drag_eat_in, search_in, take_drop_in, 
   wait_in, i9, i10, i11, i12, give_in, voice_in
 };
 
 int (*outverb[])(int pc) = {
-  o0, attack_out, cast_out, examine_out, move_out, drag_eat_out, search_out, take_drop_out, 
+  attack_out, cast_out, examine_out, move_out, drag_eat_out, search_out, take_drop_out, 
   wait_out, o9, o10, o11, o12, give_out, voice_out
 };
 

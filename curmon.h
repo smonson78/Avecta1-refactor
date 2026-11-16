@@ -30,11 +30,12 @@ typedef struct {
   uint8_t unknown13;
   // 14
   uint8_t spell_units;
-  // 18: the command that's just starting and is in progress. This is numbered the same as the 
+  // 15: the command that's just starting and is in progress. This is numbered the same as the 
   // original "iX.c" verb number.
   uint8_t command;
-  // 17
+  // 16
   uint8_t time_until_next_move;
+  // 17
   uint8_t animation_step;
   uint8_t unknown18;
   // 19: the offset into the object of the last thing that was affected by magic
@@ -137,8 +138,9 @@ typedef struct {
   // 15: the command that's just starting and is in progress. This is numbered the same as the 
   // original "iX.c" verb number.
   uint8_t command;
-  // 17
+  // 16
   uint8_t time_until_next_move;
+  // 17
   uint8_t animation_step;
   uint8_t unknown18;
   // 19

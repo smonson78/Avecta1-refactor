@@ -10,8 +10,6 @@
 /* Flag disables capitalization if it is set.                                 */
 /******************************************************************************/
 
-#include "osbind.h"
-
 int instring(int x, int y, char *string, int max, int flag)
 {
    int k, i = 0;

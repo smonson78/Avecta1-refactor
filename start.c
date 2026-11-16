@@ -4,9 +4,7 @@
 #include <gemdos.h>
 #include <xbios.h>
 
-//#include "osbind.h"
 #include "gemdefs.h"
-//#include "words.h"
 #include "globals.h"
 
 #include "startaux.h"

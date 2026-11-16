@@ -1033,7 +1033,8 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     putaway(pc, c[46]);
     c[46] = 0;
     new_c->monster.magic_mode_1 = 0;
-    specbuf.unknown1[19] = 1;
+    specbuf.already_slept = 1;
+    
     prnt("-> %s is overcome with drowsiness, falling into the bed to sleep.  "
       "Upon awakening, magically, %s feels completely refreshed.",
          s2, s2, NULL, NULL, NULL, NULL);
@@ -1049,7 +1050,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     if (c[30] != 127) {
       break;
     }
-    specbuf.unknown1[19] = 0;
+    specbuf.already_slept = 0;
     break;
 
   case 39: /* Mr. Demento's magic potion has struck */

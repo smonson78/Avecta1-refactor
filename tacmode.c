@@ -2,7 +2,6 @@
 
 #include "globals.h"
 #include "startaux.h"
-#include "osbind.h"
 #include "cinput.h"
 #include "intell.h"
 #include "trigtrol.h"
@@ -69,7 +68,6 @@ int xmon(int room, int bit, int x, int y)
   
   return 1;
 }
-
 
 int tacmode() {
   int flag, i, j = 0, k, l, n, p, timer = 0, x, y;
@@ -311,14 +309,16 @@ int tacmode() {
       // If character is in use and in the current room:
       //if (c[0] && c[30] == crum) {
       if (new_c->in_use && new_c->current_room == crum) {
-        debug_printf("...calling outverb %d\n", c[15]);
-        j = (*outverb[c[15]])(n);
+        debug_printf("...calling outverb %d\n", new_c->command);
+        // j = (*outverb[c[15]])(n);
+        j = (*outverb[new_c->command - 1])(n);
       }
 
       check_curmon("tacmode loop position 2.5");
 
       // Get a keyboard command from the keyboard and check if it's a space character
-      if ((n == 0 || (n == 1 && c[38])) && j == 0 && (p = Bconstat(2)) != 0) {
+      // if ((n == 0 || (n == 1 && c[38])) && j == 0 && (p = Bconstat(2)) != 0) {
+      if ((n == 0 || (n == 1 && new_c->controlled)) && j == 0 && (p = Bconstat(2)) != 0) {
         p = Bconin(2) & 0xff;
         if (p == ' ') {
           c[16] = 0;
@@ -329,18 +329,21 @@ int tacmode() {
 
       check_curmon("tacmode loop position 2.6");
 
-      if (c[15] != 8 || !outside) {
+      // if (c[15] != 8 || !outside) {
+      if (new_c->command != ACTION_WAIT || !outside) {
         trigtrol(n);
       }
 
       check_curmon("tacmode loop position 3");
 
-      if (curmon[0][0] == 0) {
+      // if (curmon[0][0] == 0) {
+      if (!player->in_use) {
         debug_printf("...player is dead, leaving tacmode()\n");
         return -1;
       }
 
-      if (curmon[0][30] != crum) {
+      // if (curmon[0][30] != crum) {
+      if (player->current_room != crum) {
         debug_printf("...player has left current room, leaving tacmode()\n");
         return 0;
       }
@@ -396,8 +399,8 @@ int tacmode() {
               }
 
               if (l == 1) {
-                debug_printf("...calling inverb %d\n", k);
-                l = (*inverb[k])(n);
+                debug_printf("...calling inverb %d\n", k - 1);
+                l = (*inverb[k - 1])(n);
               }
 
               if (l == -1) {
