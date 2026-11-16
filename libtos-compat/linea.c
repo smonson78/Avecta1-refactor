@@ -126,11 +126,11 @@ void linea_textblock_transfer() {
     dest_height /= 0x8000;
   }
 
-  printf("linea_textblock_transfer()\n");
-  printf("font: %d %p\n", linea_parameter_block.fwidth, linea_parameter_block.fbase);
-  printf("DDA_INC=0x%04x\n", (uint16_t)linea_parameter_block.dda_inc);
-  printf("factor: 0x%08x\n", factor);
-  printf("dest width: %d\n", dest_width);
+  // printf("linea_textblock_transfer()\n");
+  // printf("font: %d %p\n", linea_parameter_block.fwidth, linea_parameter_block.fbase);
+  // printf("DDA_INC=0x%04x\n", (uint16_t)linea_parameter_block.dda_inc);
+  // printf("factor: 0x%08x\n", factor);
+  // printf("dest width: %d\n", dest_width);
 
   //linea_debug();
 

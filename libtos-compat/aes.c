@@ -372,7 +372,7 @@ int16_t vswr_mode(int16_t handle, int16_t mode)
 void vs_color(int16_t handle, int16_t color_index, int16_t *rgb_in)
 {
   GLOBAL_LOCK();   
-  globals.video.palette[color_index] = *rgb_in;
+  globals.video.palette[get_vdi_colour(color_index)] = *rgb_in;
   GLOBAL_UNLOCK();
 }
 
