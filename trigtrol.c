@@ -46,26 +46,32 @@ void trigtrol(int pc)
     // Flag indicating consqeuences will happen for triggering the trap
     flag = 1;
 
-    for (j = 1; j < 32; j *= 2) {
+    // This is a 5-bit bitfield
+    for (j = 1; j < 32; j <<= 1) {
 
       if (j & type) {
-        switch (j) { 
+        switch (j) {
+
+          // Bit 0 set: trap is only set off if victim is on the same square
           case 1:
-            if (c[24] != x1 || c[25] != y1) {
+            // if (c[24] != x1 || c[25] != y1) {
+            if (new_c->x != x1 || new_c->y != y1) {
               flag = 0;
             }
             break;
 
+          // Bit 1 set: trap is only set off if on an adjacent square to the victim 
           case 2:
             if (!adjac(pc, x1, y1)) {
               flag = 0;
             }
             break;
 
+          // Bits 2 or 3 set: monsters don't set the trap off and some other logic here
           case 4:
           case 8:
 
-            // Monsters:
+            // Monsters don't set off traps
             if (pc > 3) {
               flag = 0;
               break;
@@ -89,6 +95,7 @@ void trigtrol(int pc)
             }
             break;
 
+          // Bit 4 set:
           case 16:
             if (c[15] != t[3]) {
               flag = 0;

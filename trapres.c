@@ -19,7 +19,7 @@
 
 #include "debug.h"
 
-// This is something to do with passing through an exit into a different room or to/from the world map
+// Set off a trap by pc (victim), type (type of trap), at location.
 void trapres(int pc, int type, int x, int y)
 {
   debug_printf("> trapres(type=%d)\n", type);
@@ -43,29 +43,29 @@ void trapres(int pc, int type, int x, int y)
   }
 
   switch (type) {
-    case 0:
+  case TRAP_NONE:
+    break;
+
+  case TRAP_LOCK_DOOR_BEHIND_PLAYER:
+    flag = 0;
+
+    // For each playable character:
+    for (i = 0; i < 4; i++) {
+      c = curmon[i];
+      new_c = &new_curmon2[i];
+
+      if (i == pc) {
+        continue;
+      }
+
+      if (c[0] == 1 && c[30] != crum) {
+        flag = 1;
+      }
+    }
+
+    if (flag) {
       break;
-
-    case 1: /* generic lock door behind player subroutine */
-      flag = 0;
-
-      // For each playable character:
-      for (i = 0; i < 4; i++) {
-        c = curmon[i];
-        new_c = &new_curmon2[i];
-
-        if (i == pc) {
-          continue;
-        }
-
-        if (c[0] == 1 && c[30] != crum) {
-          flag = 1;
-        }
-      }
-
-      if (flag) {
-        break;
-      }
+    }
 
     untrap(zline[x][y].visible);
     destroy(1, zline[x][y].visible);
@@ -79,8 +79,7 @@ void trapres(int pc, int type, int x, int y)
         new_c = &new_curmon2[i];
 
         if (c[52] != 0) {
-          prnt("-> The seekshard is heard to discharge its stored spacetime impression matrix!", 
-            NULL, NULL, NULL, NULL, NULL, NULL);
+          prnt("-> The seekshard is heard to discharge its stored spacetime impression matrix!");
         }
 
         c[52] = c[53] = 0;
@@ -90,17 +89,15 @@ void trapres(int pc, int type, int x, int y)
     }
     break;
 
-  case 2:
+  case TRAP_ESCAPING_GHOSTS:
     flash();
-    prnt("-> %s hears faraway goblin cries.  One goblin is heard to roar `Melkthrop feeds again!'",
-         s2, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s hears faraway goblin cries.  One goblin is heard to roar `Melkthrop feeds again!'", s2);
     untrap(1);
     untrap(2);
     activate_monsters(11, 3, 7, 2);
     prnt("-> A strange moaning sounds accompanies the appearance of three spectral forms. "
       "%s is rooted to the spot with fear as the spirits go wailing down the hall!  Their last "
-      "cry is `Melkthrop has drained our souls! Avenge us!' as they float out the front door.",
-         s2, NULL, NULL, NULL, NULL, NULL);
+      "cry is `Melkthrop has drained our souls! Avenge us!' as they float out the front door.", s2);
 
     c[15] = 8;
     c[16] = 127;
@@ -131,7 +128,7 @@ void trapres(int pc, int type, int x, int y)
     }
     break;
 
-  case 3: /* go into melkthrop dungeon */
+  case TRAP_ENTER_MONASTERY: /* go into melkthrop dungeon */
     prnt("-> %s enters the crumbling monastery!", s2);
     c[30] = 127;
     c[59] = 1;
@@ -139,7 +136,7 @@ void trapres(int pc, int type, int x, int y)
     new_c->monster.unknown59 = 1;
     break;
 
-  case 23: /* go into kilkaney */
+  case TRAP_ENTER_KILKANEY: /* go into kilkaney */
     prnt("-> %s enters the ancient walled city of Kilkaney!", s2);
     c[30] = 127;
     c[59] = 2;
@@ -147,26 +144,28 @@ void trapres(int pc, int type, int x, int y)
     new_c->monster.unknown59 = 2;
     break;
 
-  case 5: /* took the  bone key */
+  case TRAP_TAKE_BONE_KEY: /* took the bone key */
     flash();
     prnt("-> A group of scimitar brandishing skeletons bursts through the door the instant "
-      "%s takes the bone key!", s2, NULL, NULL, NULL, NULL, NULL);
+      "%s takes the bone key!", s2);
     activate_monsters(2, 6, 8, 3);
     untrap(2);
     pass(0);
     break;
 
-  case 15: /* in the forge room */
-    if (pc > 3)
+  case TRAP_FORGE_ROOM_DAMAGE: /* in the forge room */
+    if (pc > 3) {
       break;
-    if ((5 * (c[1])) % (c[2]) == 0)
+    }
+
+    if ((5 * (c[1])) % (c[2]) == 0) {
       prnt("-> %s is being seared by the intense heat from the forges!", s2);
+    }
     damage(pc, c[12] + 1);
     break;
 
-  case 4: /* fondling the tongs */
-    prnt("-> The foolish act of taking the tongs causes %s to burst into flames!",
-         s2, NULL, NULL, NULL, NULL, NULL);
+  case TRAP_PICKUP_TONGS: /* fondling the tongs */
+    prnt("-> The foolish act of taking the tongs causes %s to burst into flames!", s2);
     flash();
     blowup(x, y);
     break;
@@ -185,14 +184,13 @@ void trapres(int pc, int type, int x, int y)
       }
 
       remove_object(4, c[8]);
-      prnt("-> The %s doesn't fit into the ectoplasmic converter's slot!",
-           obj[c[8]], NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The %s doesn't fit into the ectoplasmic converter's slot!", obj[c[8]]);
       break;
     } else {
       flash();
       prnt("-> The ectoplasmic converter explodes, releasing a bewildering \
 flood of strange energy!  Ethereal shrieks, moans, and laughter can be heard \
-as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NULL, NULL, NULL);
+as the imprisoned souls are freed from the iesis chamber!");
       // blowup(crumobj[c[9]][6], crumobj[c[9]][7]);
       blowup(crumobj[c[9]].x, crumobj[c[9]].y);
       flash();
@@ -220,13 +218,13 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
       break;
     } else {
       prnt("-> The black key turns and the door unlocks!  "
-        "The black key pops back into %s's hand!", s2, NULL, NULL, NULL, NULL, NULL);
+        "The black key pops back into %s's hand!", s2);
       // crumobj[1][3] = 8;
       crumobj[1].target = 8;
     }
     break;
 
-  case 6: /* let Bab loose */
+  case TRAP_RELEASE_EIRIK: /* let Bab loose */
     // if (c[10] == 0 || c[8] == 0 || crumobj[c[9]][0] != 1) {
     if (c[10] == 0 || c[8] == 0 || crumobj[c[9]].object_id != OBJECT_DOOR) {
       break;
@@ -247,8 +245,7 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
     
     if (mode) {
       prnt("-> The battle in progress distracts %s and prevents %s from "
-        "inserting the key into the door's keyhole.",
-        s2, s2, NULL, NULL, NULL, NULL);
+        "inserting the key into the door's keyhole.", s2, s2);
       break;
     }
 
@@ -259,19 +256,20 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
       if (c[4] != 81) {
         prnt("-> Eirik glowers for an instant and then laughs, a rare \
 thing among barbarians `You have the appearance of an orc! But then you were \
-never known for your beauty.'", NULL, NULL, NULL, NULL, NULL, NULL);
+never known for your beauty.'");
       }
 
       prnt("-> Eirik smiles at %s in his enigmatic way.  `By the Gods! It is \
 good to see you, my old friend.  I was next on these foul creatures' dining \
-list.'  He waves his massive arm in disgust toward the remains of the ghouls.",
-           s2, NULL, NULL, NULL, NULL, NULL);
+list.'  He waves his massive arm in disgust toward the remains of the ghouls.", s2);
+
       prnt("-> `Like a yearling deer I fell into Melkthrop's trap.  After the\
  thrall of his spell wore off I fashioned torches from the furniture, but I hav\
-e need of one of your weapons, a blade.  I seek revenge for my humiliation.'", NULL, NULL, NULL, NULL, NULL, NULL);
+e need of one of your weapons, a blade.  I seek revenge for my humiliation.'");
+
       prnt("-> Eirik's gaze turns as cold as the dark northern winters which \
 sired him, `Together, you and I, we can defeat this hellish creature Melkthrop \
-and escape this pit of evil.'  A wolfish grin spreads across his face.", NULL, NULL, NULL, NULL, NULL, NULL);
+and escape this pit of evil.'  A wolfish grin spreads across his face.");
     }
     break;
 
@@ -283,9 +281,8 @@ and escape this pit of evil.'  A wolfish grin spreads across his face.", NULL, N
 
     if (c[41] > 0) {
       if (pc == 0 || (pc > 0 && c[38])) {
-        prnt("-> The darkness seems to retreat for a moment, but then the \
-torch %s is holding goes out, as if the darkness was an evil presence!",
-             s2, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> The darkness seems to retreat for a moment, but then the torch %s is holding"
+          " goes out, as if the darkness was an evil presence!", s2);
       }
 
       litetrol(x, y, 0);
@@ -297,8 +294,7 @@ torch %s is holding goes out, as if the darkness was an evil presence!",
     }
 
     if ((10 * (c[1])) % (c[2]) == 0) {
-      prnt("-> The darkness seems to be crushing the will to live out of %s!",
-           s2, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The darkness seems to be crushing the will to live out of %s!", s2);
     }
 
     damage(pc, c[12] + rnd(10));
@@ -307,8 +303,7 @@ torch %s is holding goes out, as if the darkness was an evil presence!",
   case 8:
     flash();
     prnt("-> A pile of useless goblin junk, primarily memorabilia from "
-      "Goblin High's class of -234 BM, falls on top of %s!",
-         s2, NULL, NULL, NULL, NULL, NULL);
+      "Goblin High's class of -234 BM, falls on top of %s!", s2);
     make(11, 0, 0, 0, 0, 0, x, y, 1);
     damage(pc, 8);
     untrap(1);
@@ -317,15 +312,13 @@ torch %s is holding goes out, as if the darkness was an evil presence!",
   case 12: /* melkthrop's riddle guarding the black key */
     prnt("-> An arrogant voice roars inside %s's head `You must answer the \
 following riddle! In the Dark I begin, Earth is my next, through the Abyss I \
-travel, to become Thanatos, in Hell I end without life.  What am I?'",
-         s2, NULL, NULL, NULL, NULL, NULL);
+travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
     if (pc > 3 || !getword("death")) {
       prnt("-> The rune explodes, ending %s's wretched life!", s2);
       blowup(x, y);
     } else {
       prnt("-> The voice mutters `OK, %s, so you got lucky this time!  "
-        "Maybe I should get a better riddle writer.'",
-           s2, NULL, NULL, NULL, NULL, NULL);
+        "Maybe I should get a better riddle writer.'", s2);
       untrap(3);
     }
     break;
@@ -341,17 +334,17 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'",
     }
 
     if (c[45] != OBJECT_BROADSWORD && curmon[j][52] == 0) {
-      prnt("-> Melkthrop laughs `You fool! You not harm Melkthrop without \
-bad sword! Now I wait! Silly spell ends soon! Then I kill!'", NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> Melkthrop laughs `You fool! You not harm Melkthrop without "
+        "bad sword! Now I wait! Silly spell ends soon! Then I kill!'");
       curmon[j][52] = 1;
       new_curmon[j].seekshard_imprinted_room = 1;
       break;
     }
 
     if (specbuf.ectoplasmic_converter_exploded == 0 && c[45] == OBJECT_BROADSWORD && curmon[j][49] == 0) {
-      prnt("-> Melkthrop rasps `You not be able to kill me! I have\
- special protection! Gondrath helps me! Your silly spell won't last forever! \
-Then I kill you and take bad sword!'", NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> Melkthrop rasps `You not be able to kill me! I have special "
+        "protection! Gondrath helps me! Your silly spell won't last forever! "
+        "Then I kill you and take bad sword!'");
       curmon[j][49] = 1;
       new_curmon[j].gold_amount = 1;
       break;
@@ -367,39 +360,46 @@ Then I kill you and take bad sword!'", NULL, NULL, NULL, NULL, NULL, NULL);
 
       if (c[1] > c[2] / 2) {
         prnt("-> `Melkthrop is afraid! Melkthrop is afraid!' wails the demon! "
-          "`Melkthrop not want to die!'", NULL, NULL, NULL, NULL, NULL, NULL);
+          "`Melkthrop not want to die!'");
       }
+
       x = c[24];
       y = c[25];
       damage(j, c[2] / 2 + 1 + c[12]);
       
       if (c[0] == 0) {
         blowup(x, y);
-        prnt("-> An ethereal shriek of rage is heard as Melkthrop dies, follow\
-ed by the curse `Melkthrop returns for revenge on you and Leveth!'. The \
-sound of the gates of Hell swinging shut can be heard, causing a shudder of \
-fear in %s and Eirik! Melkthrop's body turns to vapor and vanishes!",
-             pname, NULL, NULL, NULL, NULL, NULL);
-        prnt("-> Eirik stands over the burned spot on the floor, waving the \
-Onesword through the vanishing vapor, a satisfied glint in his eyes. `So be \
-it to all creatures of darkness,' he growls, `I hope Crom on his high \
-mountain is pleased.'", NULL, NULL, NULL, NULL, NULL, NULL);
-        prnt("-> A strange hissing noise comes from the corner of the room, \
-as if a door lock were being released.", NULL, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> An ethereal shriek of rage is heard as Melkthrop dies, "
+          "followed by the curse `Melkthrop returns for revenge on you and "
+          "Leveth!'. The sound of the gates of Hell swinging shut can be "
+          "heard, causing a shudder of fear in %s and Eirik! Melkthrop's "
+          "body turns to vapor and vanishes!", pname);
+
+        prnt("-> Eirik stands over the burned spot on the floor, waving the "
+          "Onesword through the vanishing vapor, a satisfied glint in his "
+          "eyes. `So be it to all creatures of darkness,' he growls, `I "
+          "hope Crom on his high mountain is pleased.'");
+
+        prnt("-> A strange hissing noise comes from the corner of the room, "
+          "as if a door lock were being released.");
         make(12, 0, 0, 23, 0, -1, 1, 7, 1);
         break;
       }
 
-      prnt("-> Melkthrop shrieks in agony and disbelief as the Onesword Eirik\
- is wielding slashes the demon!  Eirik roars `How does it feel to die, spawn \
-of Hell?' with savage glee as he prepares for another crushing swing.", NULL, NULL, NULL, NULL, NULL, NULL);
-      prnt("-> Melkthrop rasps `Gondrath lies! He says I would be \
-invincible if I do what he says! But wait! I know that \
-old meddler Leveth must cause all this! Gondrath says Leveth wants to hurt \
-Melkthrop! Leveth dies next!'", NULL, NULL, NULL, NULL, NULL, NULL);
-      prnt("-> Terror shows through Melkthrop's beady eyes! `Melkthrop \
-gets away from you yet! Melkthrop is smart, Melkthrop is smart!' the demon \
-rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> Melkthrop shrieks in agony and disbelief as the Onesword Eirik"
+        " is wielding slashes the demon!  Eirik roars `How does it feel to die, "
+        "spawn of Hell?' with savage glee as he prepares for another crushing "
+        "swing.");
+
+      prnt("-> Melkthrop rasps `Gondrath lies! He says I would be invincible "
+        "if I do what he says! But wait! I know that old meddler Leveth must "
+        "cause all this! Gondrath says Leveth wants to hurt Melkthrop! "
+        "Leveth dies next!'");
+
+      prnt("-> Terror shows through Melkthrop's beady eyes! `Melkthrop gets "
+        "away from you yet! Melkthrop is smart, Melkthrop is smart!' the demon "
+        "rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'");
+
       c[15] = 2;
       c[16] = 1;
       c[48] = 1;
@@ -425,8 +425,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       new_c->monster.dest_x = x;
       new_c->monster.dest_y = y;
 
-      prnt("-> `Melkthrop blinks!' rasps the demon! `You ugly humans not catch him now!'", 
-        NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> `Melkthrop blinks!' rasps the demon! `You ugly humans not catch him now!'");
     }
     break;
 
@@ -464,7 +463,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
         prnt("-> The %s originally on the left rune disappears! A sandestin is heard to "
           "say `Oh boy! Just what I always wanted! A free %s! I don't think this idiot "
           "knows how to operate a duplicator rune. Melkthrop is going to be angry!'",
-             obj[specbuf.dirty_dungeon[0]], obj[specbuf.dirty_dungeon[0]], NULL, NULL, NULL, NULL);
+             obj[specbuf.dirty_dungeon[0]], obj[specbuf.dirty_dungeon[0]]);
       }
     }
     specbuf.dirty_dungeon[0] = c[8];
@@ -479,8 +478,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     if (c[8] == OBJECT_BOURBON) {
       flash();
       prnt("-> A sandestin's voice is heard to say `Old Scratch Bourbon! Yummm! I wish I"
-        " got more donations like that!', and the bottle disappears!", 
-        NULL, NULL, NULL, NULL, NULL, NULL);
+        " got more donations like that!', and the bottle disappears!");
       remove_object(2, c[8]);
       if (!remove_object(1, specbuf.dirty_dungeon[0])) {
         specbuf.dirty_dungeon[0] = 0;
@@ -490,17 +488,21 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
         putinto(1, specbuf.dirty_dungeon[0]);
         prnt("-> A copy of the %s appears on the other rune while the original %s is still "
           "on this rune! The sandestin's voice can be heard to say, `Just search the rune "
-          "for the other %s, idiot!'", obj[specbuf.dirty_dungeon[0]], obj[specbuf.dirty_dungeon[0]], obj[specbuf.dirty_dungeon[0]], 
-          NULL, NULL, NULL);
+          "for the other %s, idiot!'", 
+          obj[specbuf.dirty_dungeon[0]], 
+          obj[specbuf.dirty_dungeon[0]], 
+          obj[specbuf.dirty_dungeon[0]]);
+
         putinto(2, specbuf.dirty_dungeon[0]);
+
         specbuf.dirty_dungeon[0] = 0;
       } else {
         prnt("-> The voice mutters `I wonder why the idiot didn't put anything on the other "
-          "rune?'", NULL, NULL, NULL, NULL, NULL, NULL);
+          "rune?'");
       }
     } else {
       prnt("-> An ethereal voice is heard to say `Yuck!!  Why does this idiot think I like %ss?'",
-        obj[c[8]], NULL, NULL, NULL, NULL, NULL);
+        obj[c[8]]);
     }
     break;
 
@@ -508,7 +510,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     if ((c[8] == OBJECT_BROADSWORD || c[45] == OBJECT_BROADSWORD) &&
         (c[50] < 20 || pc == 0)) {
       prnt("-> %s is unable to hold the immense broadsword, and it falls to the floor underneath "
-        "%s with a loud clank!", s2, s2, NULL, NULL, NULL, NULL);
+        "%s with a loud clank!", s2, s2);
       takeout(pc, OBJECT_BROADSWORD);
       if (c[45] == OBJECT_BROADSWORD) {
         c[45] = 0;
@@ -529,7 +531,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       prnt("-> Eirik smiles with pleasure, `Crom! Such a blade!' He spins it through the air "
         "with ease as his muscles ripple. `Melkthrop will learn the painful truth of steel "
         "from this weapon!', and he looks at %s with a grim grin.",
-           pname, NULL, NULL, NULL, NULL, NULL);
+           pname);
       c[48] = 1;
       c[32] = OBJECT_BROADSWORD;
       new_c->monster.unknown48 = 1;
@@ -540,12 +542,12 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
   case 10: /* pass word rune */
     flash();
     prnt("-> A voice thunders inside %s%s's head with the command `Speak the Name of the "
-      "Master of All!'", s1, s2, NULL, NULL, NULL, NULL);
+      "Master of All!'", s1, s2);
     
       if (pc > 3 || !getword("melkthrop\0")) {
       prnt("-> %s%s's sorry career is ended by a blowtorch-like flame from the rune as a "
         "result of the incorrect answer.  The sandestin in charge of the puzzle is heard "
-        "to chuckle viciously.", s1, s2, NULL, NULL, NULL, NULL);
+        "to chuckle viciously.", s1, s2);
       blowup(x, y);
       c[0] = 0;
       new_c->monster.in_use = 0;
@@ -584,47 +586,58 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
       grflist[0] = 2;
       grflist[1] = 0;
       grflist[2] = 4;
-      prnt("-> The great mage Leveth looks up at the person by his bed \
-and says in a weary voice `Finally, you've arrived. I'd begun to wonder if my\
- understanding of Cuspers was failing.  Well... Hmmm! I seem to have \
-forgotten. What is your name again?'", NULL, NULL, NULL, NULL, NULL, NULL);
+
+      prnt("-> The great mage Leveth looks up at the person by his bed "
+        "and says in a weary voice `Finally, you've arrived. I'd begun to "
+        "wonder if my understanding of Cuspers was failing.  Well... Hmmm! "
+        "I seem to have forgotten. What is your name again?'");
+
       prnt("-> [Type Name]: ");
+
       instring(row, col, pname, 9, 0);
       usedline = hold = 0;
-      prnt("-> The old man continues, `Oh, yes! %s! I see your magical \
-abilities have grown considerably since we last spoke.  And you, no doubt, see \
-that my difficulties have increased.'  He gestures to his feet, which appear to\
- be turning to stone.",
-           pname, NULL, NULL, NULL, NULL, NULL);
-      prnt("-> He adds `The work of my old enemy Lord Vindroble, I susp\
-ect. But anyway, let us make a bargain. I shall help you find your comrade \
-Eirik, but you must help me break this spell which is slowly killing me. I'm\
- sure you agree.' He pauses for a moment.", NULL, NULL, NULL, NULL, NULL, NULL);
+
+      prnt("-> The old man continues, `Oh, yes! %s! I see your magical "
+        "abilities have grown considerably since we last spoke.  And you, "
+        "no doubt, see that my difficulties have increased.'  He gestures "
+        "to his feet, which appear to be turning to stone.", pname);
+
+      prnt("-> He adds `The work of my old enemy Lord Vindroble, I "
+        "suspect. But anyway, let us make a bargain. I shall help you find "
+        "your comrade Eirik, but you must help me break this spell which "
+        "is slowly killing me. I'm sure you agree.' He pauses for a moment.");
+
       hold = 1;
       usedline = 8;
+
       prnt("-> As if in a trance %s nods affirmatively.", s2);
-      prnt("-> `Good! I knew I could count on you. Go northeast of Kilkaney\
-.  Search by the Bay of Wen.  There you'll find a cavern inhabited\
- by a group of vicious orcs. They have my copy of Wethwicker's All the World's\
- Spells. I need it back.'", NULL, NULL, NULL, NULL, NULL, NULL);
-      prnt("-> `Lord Vindroble gave them the tome as a reward for \
-performing some evil deed in his latest scheme. It alone contains the correct \
-spell to halt this slow petrification of my extremities.' He gestures again \
-at his feet.", NULL, NULL, NULL, NULL, NULL, NULL);
+
+      prnt("-> `Good! I knew I could count on you. Go northeast of Kilkaney.  "
+        "Search by the Bay of Wen.  There you'll find a cavern inhabited "
+        "by a group of vicious orcs. They have my copy of Wethwicker's All "
+        "the World's Spells. I need it back.'");
+
+      prnt("-> `Lord Vindroble gave them the tome as a reward for "
+        "performing some evil deed in his latest scheme. It alone contains "
+        "the correct spell to halt this slow petrification of my "
+        "extremities.' He gestures again at his feet.");
+
       new = 1;
-      prnt("-> `And, before I forget, I took the liberty of reserving a room for \
-you at the Red Lion Inn. The accommodations are bad, but the food is worse! \
-I gave you Leveth's room.' A sudden look of fear crosses his \
-face, then he quickly chuckles.", NULL, NULL, NULL, NULL, NULL, NULL);
-      prnt("-> He waves `Good luck, %s! But then you never seem to need \
-luck. Come back when you have the book. Only then will this room \
-reappear. And by the way, remember that machines can only see skin deep!' \
-He laughs and the room spins.",
-           pname, NULL, NULL, NULL, NULL, NULL);
-      prnt("-> As the room spins he says `But wait, did I ever tell you of \
-the time that I visited Lord Vindroble in Viridistan? That was when he was \
-attempting to alter the Fatelines, all part of that business with the \
-Master...' He slowly fades out.", NULL, NULL, NULL, NULL, NULL, NULL);
+
+      prnt("-> `And, before I forget, I took the liberty of reserving a room "
+        "for you at the Red Lion Inn. The accommodations are bad, but the "
+        "food is worse! I gave you Leveth's room.' A sudden look of fear "
+        "crosses his face, then he quickly chuckles.");
+
+      prnt("-> He waves `Good luck, %s! But then you never seem to need "
+        "luck. Come back when you have the book. Only then will this room "
+        "reappear. And by the way, remember that machines can only see skin "
+        "deep!' He laughs and the room spins.", pname);
+
+      prnt("-> As the room spins he says `But wait, did I ever tell you of "
+        "the time that I visited Lord Vindroble in Viridistan? That was when "
+        "he was attempting to alter the Fatelines, all part of that business "
+        "with the Master...' He slowly fades out.");
       lev = 1;
       specbuf.lev = 1;
       specbuf.current_room = 1;
@@ -1209,8 +1222,8 @@ abbey don't notice subtleties such as that.",
     take:
       prnt("-> `Please ... forgive me ... %s ... I must take ... the \
 book.' The ghastly vision waves its skeletal hands and Wethwicker's All the \
-World's Spells sails across the room to him in a ball of flame!",
-           s2, NULL, NULL, NULL, NULL, NULL);
+World's Spells sails across the room to him in a ball of flame!", s2);
+
       fireball(x, y, 5, 4, 0);
       if (player->good_hand == OBJECT_MAGIC_TOME) {
         curmon[0][45] = 0;
@@ -1229,8 +1242,7 @@ recites `Yog ... vradhe ... acka pranath ... ' A flame leaps from the page\
       activate_monsters(19, 1, 5, 4);
       prnt("-> Standing before %s is the real Leveth! `Well, well,' he chuckles\
 , `Now, to the business of finding this horrid creature Gondrath and expunging \
-it from the face of Avecta.  But first I must aid you.'",
-           s2, NULL, NULL, NULL, NULL, NULL);
+it from the face of Avecta.  But first I must aid you.'", s2);
 
       if (curmon[0][4] != 81) {
         prnt("-> Leveth adds, `And do get rid of that silly mask! "
@@ -1242,39 +1254,49 @@ it from the face of Avecta.  But first I must aid you.'",
       prnt("-> `Now take this key!  It will open the way to the \
 dreaded lair of Melkthrop, which is in the ruins of the ancient abbey southeast\
  of Kilkaney.' He drops an odd colored key on the floor.", NULL, NULL, NULL, NULL, NULL, NULL);
-      make(63, 1, 0, 0, 63, -1, 4, 3, 1);
+
+ make(63, 1, 0, 0, 63, -1, 4, 3, 1);
+
       prnt("-> `After it took my body, Gondrath taunted me by telling me how \
 Melkthrop had lured Eirik to the abbey with Eventhal's Psychic Lure. And that \
 Melkthrop was in league with him and higher forces.' Leveth shudders, `I fear \
 for us all.'", NULL, NULL, NULL, NULL, NULL, NULL);
-      prnt("-> `Eirik may still be alive, so hurry. The key, which I purchased \
+
+prnt("-> `Eirik may still be alive, so hurry. The key, which I purchased \
 from a renegade goblin for such an emergency, will get you in, but it will not \
 get you out! What Melkthrop has done to the Abbey since inhabiting it I know \
 not.'", NULL, NULL, NULL, NULL, NULL, NULL);
-      prnt("-> `Beware, Melkthrop is a tricky demon!  He has great \
+
+prnt("-> `Beware, Melkthrop is a tricky demon!  He has great \
 plans and, so Gondrath said, a strange device called an ectoplasmic converter. \
 I have an idea that Melkthrop is storing energy of horrible form in it.'", 
 NULL, NULL, NULL, NULL, NULL, NULL);
-      prnt("-> Leveth chuckles, `Demons! They're so full of plots and \
+
+prnt("-> Leveth chuckles, `Demons! They're so full of plots and \
 schemes that they very often confuse themselves into disaster. You do remem\
 ber my little escapade with that conceited demon Markrotog at the cavern called\
  the Gates of Hell? No? Oh, well.'", NULL, NULL, NULL, NULL, NULL, NULL);
+
       prnt("-> `But, here, take this handy little device. It's gotten me out\
  of many a dangerous situation. I call it a seekshard.' He places a \
 strange-looking object on the floor beside him.", NULL, NULL, NULL, NULL, NULL, NULL);
+
       make(80, 1, 0, 0, 80, -1, 4, 4, 1);
+
       prnt("-> `Melkthrop has been kidnapping the locals, and, it's important\
  to remember, spreading chaos. I'm afraid the appearance of this demon \
 Melkthrop is all part of the pattern of trouble afflicting the entire \
-continent of Avecta, in which I include Ebora.'", NULL, NULL, NULL, NULL, NULL, NULL);
+continent of Avecta, in which I include Ebora.'");
+
       prnt("-> He continues `I hope you succeed in getting rid of this demon.\
   I'm sure we'll meet again!  But now I must go and attend to Gondrath! \
-Lord Vindroble awaits me in Viridistan, and he is ever full of surprises!'", NULL, NULL, NULL, NULL, NULL, NULL);
+Lord Vindroble awaits me in Viridistan, and he is ever full of surprises!'");
+
       prnt("-> As the old man disappears he says `Oh, by the way! Did I \
 ever tell you about the time that Lady Andernith and I were travelling through \
 Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
-%s grumbles `Leveth, always a windbag.'",
-           s2, NULL, NULL, NULL, NULL, NULL);
+%s grumbles `Leveth, always a windbag.'", s2);
+
       curmon[zline[5][4].monster][0] = 0;
       new_curmon[zline[5][4].monster].in_use = 0;
       zline[5][4].monster = 0;
@@ -1288,8 +1310,7 @@ Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
       //if (rumdata[50][0] == 0)
       if (new_rumdata[50].room_oldxy == 0) {
         prnt("-> The terrifying vision of life in death stirs slowly. Inexplicably, "
-          "%s decides not to strike out at the horror immediately!",
-          s2, NULL, NULL, NULL, NULL, NULL);
+          "%s decides not to strike out at the horror immediately!", s2);
         flag3 = 1;
         
         new_rumdata[50].room_oldxy = 1;
@@ -1300,7 +1321,7 @@ Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
     moan:
       prnt("-> `Wethwicker's' the creature moans, `you must ... find it"
         " ... please. I ... must conserve ... my strength.' And it slumps "
-        "forward, as if in a coma.", NULL, NULL, NULL, NULL, NULL, NULL);
+        "forward, as if in a coma.");
       curmon[0][15] = 4;
       curmon[0][16] = 1;
       curmon[0][26] = curmon[0][28] = 2;
@@ -1314,32 +1335,34 @@ Ebora, looking for a particular gem? It was...' Mercifully, he fades out. \
     }
     
   prolog:
-    prnt("-> The horrid creature's mouth works, and it utters words in a slow"
-      " and tortured manner, `Please ... believe me ... %s ... I am not a "
+    prnt("-> The horrid creature's mouth works, and it utters words in a slow "
+      "and tortured manner, `Please ... believe me ... %s ... I am not a "
       "thrang ... I am Leveth ... your old friend ... trapped in body ... of "
-      "thrang.'",
-    s2, NULL, NULL, NULL, NULL, NULL);
+      "thrang.'", s2);
 
-    prnt("-> It continues `I am fighting ... a hideous monster from Hell ...\
- It is Gondrath ... took my body ... lured you to its room ... used Eventhal's \
-Psychic Lure ... made you think ... it was me ...'", NULL, NULL, NULL, NULL, NULL, NULL);
-    prnt("-> `Gondrath wants ... Wethwicker's ... do not give it ... \
-the book. You must ... believe me ... %s, ask yourself ... why did not ... the \
-creature ... in the room ... know your name?'",
-         s2, NULL, NULL, NULL, NULL, NULL);
-    prnt("-> `It mimics me ... used Eventhal's Psychic Lure ... to draw you \
-... like Eirik ... was drawn away ... It wants you to find ... Wethwicker's \
-... for it.' %s stands transfixed by the horror of the image and the story.",
-         s2, NULL, NULL, NULL, NULL, NULL);
-    prnt("-> `Lord Vindroble ... tried to hide ... Wethwicker's ... from \
-Gondrath ... but orcs ... stole it from caravan ... took it to cavern ... \
-Lord Vindroble is ... not my enemy ... at least ... not at the moment.'", NULL, NULL, NULL, NULL, NULL, NULL);
-    prnt("-> `I came .. to inn ... you were not there ... too weak ... \
-to come back ... rats chewed me ... I had to stay hidden ... conserve my \
-strength.' The vile creature pauses, drawing painful breaths through ravaged \
-lips.", NULL, NULL, NULL, NULL, NULL, NULL);
-    prnt("-> `My only hope ... you would find me ... bring Wethwicker's \
-... book has spell ... to restore my body.'", NULL, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> It continues `I am fighting ... a hideous monster from Hell ... "
+      "It is Gondrath ... took my body ... lured you to its room ... used Eventhal's "
+      "Psychic Lure ... made you think ... it was me ...'");
+
+    prnt("-> `Gondrath wants ... Wethwicker's ... do not give it ... "
+      "the book. You must ... believe me ... %s, ask yourself ... why did not ... the "
+      "creature ... in the room ... know your name?'", s2);
+
+    prnt("-> `It mimics me ... used Eventhal's Psychic Lure ... to draw you "
+      "... like Eirik ... was drawn away ... It wants you to find ... Wethwicker's "
+      "... for it.' %s stands transfixed by the horror of the image and the story.", s2);
+
+    prnt("-> `Lord Vindroble ... tried to hide ... Wethwicker's ... from "
+      "Gondrath ... but orcs ... stole it from caravan ... took it to cavern ... "
+      "Lord Vindroble is ... not my enemy ... at least ... not at the moment.'");
+
+    prnt("-> `I came .. to inn ... you were not there ... too weak ... "
+      "to come back ... rats chewed me ... I had to stay hidden ... conserve my "
+      "strength.' The vile creature pauses, drawing painful breaths through ravaged "
+      "lips.");
+
+    prnt("-> `My only hope ... you would find me ... bring Wethwicker's "
+      "... book has spell ... to restore my body.'");
     
     if (flag2) {
       goto take;

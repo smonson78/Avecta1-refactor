@@ -19,3 +19,36 @@ Melkthrop's spells:
   --> spell[2] = 12 (fireball)
   --> spell[3] = 0
   --> spell[4] = 0
+
+
+// FILL.DAT
+// It's actually 26000 bytes long
+// Breakdown of FILL.DAT:
+// 0 -      = empty
+// 1 - 23   = floor/wall textures
+// 24       = garbage
+// 25 - 27  = rivers
+// 28 - 33  = empty
+// 34       = lake water
+// 35 - 40  = empty
+// ---------- this is the amount read initially as "fillpic"
+// 41 - 47  = rivers
+// 48       = lake water
+// 49 - 51  = empty
+// 52 - 59  = ocean water
+// 53       = empty
+// 54       = terrain graphic
+// 55 - 56  = castles
+// 57 - 58  = rivers
+// 59       = terrain graphics
+// 60       = cave entrance dot
+// ---------- up to here is the second set of 40 sprites ready into bitmap[21+]
+// 61 - 64  = terrain graphics
+// 65       = empty
+// 66       = terrain graphics
+// 67       = empty
+// 68       = terrain graphics
+// 69       = empty
+// 70       = terrain graphics
+// 71 - 198 = empty
+// 199      = a plus sign on a black background

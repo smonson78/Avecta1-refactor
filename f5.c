@@ -188,7 +188,7 @@ int drag_eat_out(int pc)
 
     if (eats[c[8] - 40] == 0) {
       prnt("-> %s attempts to consume the %s, but such a thing is clearly impossible!  "
-        "It is apparent that %s is becoming a little strange.", w1, w, w1, NULL, NULL, NULL);
+        "It is apparent that %s is becoming a little strange.", w1, w, w1);
       c[8] = 0;
       ch->player.unknown8 = 0;
 
@@ -248,8 +248,7 @@ int drag_eat_out(int pc)
         (player->x == x2 && player->y == y2 && pc != 0) ) {
         flag = 1;
         // prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j][0]], w1);
-        prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j].object_id], 
-          w1, NULL, NULL, NULL, NULL);
+        prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j].object_id], w1);
       } else {
         c[26] = c[5];
         c[27] = c[6];
@@ -351,7 +350,7 @@ int handman(int pc, int inv, int rum, int flag)
 
       if (inv != 0 && pc != 3) {
         prnt("-> %s puts away the %s in order to handle the %s.",
-          w1, obj[c[45+l]], obj[inv], NULL, NULL, NULL);
+          w1, obj[c[45+l]], obj[inv]);
       }
       if (rum != 0 && pc != 3) {
         prnt("-> %s puts away the %s to free a hand.", w1, obj[c[45+l]]);

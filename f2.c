@@ -175,8 +175,7 @@ int cast_in(int pc)
     }
 
     if (k == 0) {
-      prnt("-> %s does not have a seekshard to trigger the teleport spell!",
-            w, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s does not have a seekshard to trigger the teleport spell!", w);
       return 0;
     }
   }
@@ -820,8 +819,7 @@ int cast_out(int pc)
       explode(x, y, 0);
       activate_monsters(-k, 1, x, y);         
       prnt("-> Eirik shakes his head and mutters `Crom, my eyes spin! But I still live! "
-        "I do not wish to know the ensorcelment used to do this.'",
-        NULL, NULL, NULL, NULL, NULL, NULL);
+        "I do not wish to know the ensorcelment used to do this.'");
       break;
 
     case 24:  /* time to teleport */

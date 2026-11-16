@@ -53,7 +53,7 @@ int sell(int npc)
 
   if (num == 1 && (selllist[i].attitude == -1 || police) )  {
     prnt("-> The merchant shrieks `Is there no end to this lunatic! Help! "
-      "Guards!'", NULL, NULL, NULL, NULL, NULL, NULL);
+      "Guards!'");
     
     police = 1;
     c[15] = ACTION_WAIT;
@@ -73,8 +73,7 @@ int sell(int npc)
   // if (selllist[i].attitude == 1 && adjac(npc, h[24], h[25])) {
   if (selllist[i].attitude == 1 && adjac(npc, player->x, player->y)) {
     prnt("-> The merchant gestures impatiently and says `Come now, you've "
-      "had plenty of time to make up your mind.  What do you say?  Yes or no?'",
-      NULL, NULL, NULL, NULL, NULL, NULL);
+      "had plenty of time to make up your mind.  What do you say?  Yes or no?'");
     c[8] = 0;
     c[6] = 1;
     ch->player.unknown8 = 0;
@@ -100,7 +99,7 @@ int sell(int npc)
 
   if (invnpc[0][0] > 9) {
     prnt("-> The merchant laughs `How can you carry anything more? Your bag is\
-  completely full! Why don't you drop something?'", NULL, NULL, NULL, NULL, NULL, NULL);
+  completely full! Why don't you drop something?'");
     pass(npc);
     return 1;
   }
@@ -109,7 +108,7 @@ int sell(int npc)
   if (!c[5] && !c[8] && player->gold_amount < selllist[i].min_price) {
     prnt("-> The merchant looks down his long nose at %s and sniffs `I believe "
       "the merchandise I handle is currently outside of your financial purview.  I "
-      "suggest you leave and go to a cheaper business.'", pname, NULL, NULL, NULL, NULL, NULL);
+      "suggest you leave and go to a cheaper business.'", pname);
     c[6] = 1;
     c[8] = 1;
     ch->player.unknown6 = 1;
@@ -121,7 +120,7 @@ int sell(int npc)
 
   if (selllist[i].attitude == 2) {
     prnt("-> The merchant smiles at %s warmly and coos `Ahhh! My good friend! "
-      "Evidently you wish to purchase something more!'", pname, NULL, NULL, NULL, NULL, NULL);
+      "Evidently you wish to purchase something more!'", pname);
   }
   
   if (c[6] == 0) {
@@ -129,7 +128,7 @@ int sell(int npc)
     player->command = ACTION_WAIT; 
     prnt("-> The merchant says `Are you interested in buying one of my "
       "exceptional %ss?  They are a mere %s goldpieces!  Yes or no?'",
-      obj[selllist[i].object], temp, NULL, NULL, NULL, NULL);
+      obj[selllist[i].object], temp);
   }
 
   if (c[8] || !getword("yes")) {
@@ -139,7 +138,7 @@ int sell(int npc)
     if (c[5] > 2) {
       prnt("-> The merchant howls `Guards! Guards! There's a thief in my store!'\
     A general clamor can be heard on the street as the cries for help are \
-  passed on by the local residents.", NULL, NULL, NULL, NULL, NULL, NULL);
+  passed on by the local residents.");
       selllist[i].attitude = -1;
       c[7] = 1;
       ch->monster.spells[2] = 1;
@@ -153,10 +152,9 @@ int sell(int npc)
       ch->player.unknown6 = 1;
 
       prnt("-> The merchant snarls `Get out of my store, you deadbeat, or I'll call the guards!'"
-        "  He stands glowering at %s.", &pname[0], NULL, NULL, NULL, NULL, NULL);
+        "  He stands glowering at %s.", &pname[0]);
     } else {
-      prnt("-> The merchant responds `Very well.  Browse for a while.  But I haven't got all day.'",
-        NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The merchant responds `Very well.  Browse for a while.  But I haven't got all day.'");
     }
     selllist[i].attitude = 1;
     c[15] = 8;
@@ -167,7 +165,7 @@ int sell(int npc)
 
   } else {
     prnt("-> The merchant smiles and burbles `What excellent taste you have!  How many gold pieces "
-      "do you offer for my %s?'", obj[selllist[i].object], NULL, NULL, NULL, NULL, NULL);
+      "do you offer for my %s?'", obj[selllist[i].object]);
 
     while (!done) {
       prnt("-> [Input your offer]: ");
@@ -181,7 +179,7 @@ int sell(int npc)
           prnt("-> The merchant snarls `You are deranged!'");
         } else {
           prnt("-> The merchant growls `From the look of your pouch I don't "
-            "think you have that many goldpieces!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            "think you have that many goldpieces!'");
         }
 
         c[6] = c[8] = 1;
@@ -198,7 +196,7 @@ int sell(int npc)
 
       if (amount < c[9]) {
           prnt("-> The merchant shrugs `I can see you are not interested in "
-            "bargaining in good faith!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            "bargaining in good faith!'");
           pass(npc);
           done = 1;
           selllist[i].attitude = 1;
@@ -215,7 +213,7 @@ int sell(int npc)
           sprintf(temp, "%d", selllist[i].unknown);
           prnt("-> The merchant shrieks `Such an insult!  How am I to feed my "
             "family with a pitiful pittance such as that!  How about %s goldpieces?'",
-            temp, NULL, NULL, NULL, NULL, NULL);
+            temp);
           c[9] = amount;
           ch->player.unknown9 = amount;
 
@@ -274,9 +272,7 @@ int sell(int npc)
 
       prnt("-> The merchant throws up his hands and wails `I must accept this "
         "offer!  It is done!'  He fetches the %s from the locked case and gives "
-        "it to %s.",
-            obj[selllist[i].object], 
-            pname, NULL, NULL, NULL, NULL);
+        "it to %s.", obj[selllist[i].object], pname);
       
       // Player gold
       h[49] -= amount;
@@ -303,7 +299,7 @@ int sell(int npc)
       if (selllist[i].object == OBJECT_BOW) {
         prnt("-> The merchant adds `Please accept these thirty fine arrows "
           "as well.' Of course, %s takes them gladly.",
-          pname, NULL, NULL, NULL, NULL, NULL);
+          pname);
         curmon[0][44] += 30;
         player->arrows += 30;
       }

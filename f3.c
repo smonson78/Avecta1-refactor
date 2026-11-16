@@ -182,8 +182,7 @@ int examine_out(int pc)
   }
 
   if (type == 2 && !los(object, c[24], c[25])) {
-    prnt("-> The object which %s was examining has moved out of sight.",
-         w1, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> The object which %s was examining has moved out of sight.", w1);
     return 1;
   }
 

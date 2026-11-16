@@ -129,8 +129,7 @@ int o10(int pc)
         //name[permon[r[22]].unknown3],
         name[permon[new_r->room_monster_type].monster_name_id],
         // obj[o[0]],
-        obj[o->object_id],
-        NULL, NULL, NULL);
+        obj[o->object_id]);
   }
 
   if (flag == 0 && c[18] != 10) {

@@ -206,7 +206,7 @@ int take_drop_out(int pc)
 
   if (j > 0 && (k = zline[x][y].visible) == 0 && slotnum() == 0) {
     prnt("-> Supernatural forces prevent %s from dropping the %s!", w1,
-        obj[c[8]], NULL, NULL, NULL, NULL);
+        obj[c[8]]);
     return 1;
   }
 

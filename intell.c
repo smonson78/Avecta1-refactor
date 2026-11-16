@@ -176,8 +176,7 @@ int intell(int npc)
           c[31] = 1;
           new_c->intelligence_routine = 1;
 
-          prnt("-> A general clamor can be heard `Get the guards! There's a lunatic about!'", 
-            NULL, NULL, NULL, NULL, NULL, NULL);
+          prnt("-> A general clamor can be heard `Get the guards! There's a lunatic about!'");
           police = 1;
           dorep();
           break;
@@ -230,7 +229,7 @@ int morale(int npc)
       if (new_d->good_hand == new_c->monster.bane || new_d->other_hand == new_c->monster.bane) {
         prnt("-> The %s is gripped by terror at the sight of the %s!",
               name[new_c->monster.monster_name_id], 
-              obj[new_c->monster.bane], NULL, NULL, NULL, NULL);
+              obj[new_c->monster.bane]);
         damage(npc, c[12]);
         return 0;
       }
@@ -945,7 +944,7 @@ int friend(int npc)
     if (npc < 4 && (c[45] > 45 || c[45] < 41)) {
       if (c[53] == 0) {
         prnt("-> %s yells, 'I don't have a weapon! Give me one quick!'",
-            name[c[3]], NULL, NULL, NULL, NULL, NULL);
+            name[c[3]]);
       }
       pass(npc);
       j = c[53];

@@ -1,7 +1,6 @@
 #include "tos_compat.h"
 
 #include "globals.h"
-#include "caux.h"
 #include "gemdefs.h"
 #include "instring.h"
 #include "start.h"
@@ -78,7 +77,7 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
   i = rumslot();
 
   if (i > 13) {
-    destroy(1,13);
+    destroy(1, 13);
     i = 13;
   }
 
@@ -103,21 +102,13 @@ int make(int id, int take, int trap, int con, int nmsg, int hide, int x, int y, 
   return i;
 }
 
-// Never called
-// void settrap(int num, int trap)
-// {
-//   crumobj[num][2] = trap;
-//   triglist[0]++;
-//   triglist[num] = trap;
-// }
-
 int invtrap(char obj)
 {
-  int i, j, t=0;
+  int i, j, t = 0;
 
   for (i = 0; i < 20; i++) {
     if (invtrig[i] == obj || obj == 69 || obj == 65 || obj == 63) {
-      t=1;
+      t = 1;
     }
   }
 
@@ -145,31 +136,14 @@ int invtrap(char obj)
   return 1;
 }
 
-int untrap(int num)
+
+// Remove a trap from an object
+void untrap(int num)
 {
-  // crumobj[num][2] = 0;
   crumobj[num].trap = 0;
   triglist[num] = 0;
   triglist[0]--;
-  return 1;
 }
-
-// These are never called
-// // Connect door object to room
-// int conn(int robj, int room)
-// {
-//   // crumobj[robj][3] = room;
-//   crumobj[robj].target = room;
-//   return 1;
-// }
-
-// // Disconnect door object from room
-// int discon(int robj)
-// {
-//   // crumobj[robj][3] = 0;
-//   crumobj[robj].target = 0;
-//   return 1;
-// }
 
 int blowup(int x, int y)
 {
@@ -248,20 +222,3 @@ int slotnum()
 
   return j;
 } 
-
-// Never called
-// int thief(int pc)
-// {
-//   // Monster
-//   if (pc > 3) {
-//     return 0;
-//   }
-
-//   // Player character: skill check
-//   if (curmon[pc][37] > rnd(100)) {
-//     return 1;
-//   }
-
-//   return 0;
-// }
-

@@ -212,7 +212,7 @@ int init(int flag) {
 
   return 0;
 }
-
+// Misleading name. This initialises monsters, not rooms
 int ruminit()
 {
   debug_printf("> ruminit()\n");
@@ -359,6 +359,7 @@ void congratulate() {
 }
 
 
+// Load data for a NEW game as opposed to from a save game
 int loadnew() {
   // The player
   uint8_t *c = curmon[0];
@@ -369,7 +370,7 @@ int loadnew() {
 
   old = dungeon;
   if (new == 0) {
-    if (specbuf.dirty_dungeon[DUNGEON_KILKANEY - 1]) {
+    if (specbuf.dirty_dungeon[DUNGEON_MONASTERY]) {
       flag = 1;
     }
 
@@ -399,6 +400,7 @@ int loadnew() {
       }
     }
 
+    // Clear "dirty" flags on the three dungeons
     specbuf.dirty_dungeon[0] = 0;
     specbuf.dirty_dungeon[1] = 0;
     specbuf.dirty_dungeon[2] = 0;
