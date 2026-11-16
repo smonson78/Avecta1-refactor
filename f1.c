@@ -153,9 +153,9 @@ int attack_out(int pc)
 
       // if (a[39] < 4) {
       if (new_a->monster.unknown39 < 4) {
-        prnt("-> %s is envenomed!", w, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> %s is envenomed!", w);
       } else {
-        prnt("-> The %s is envenomed!", w, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> The %s is envenomed!", w);
       }
 
       t[47] = 1;

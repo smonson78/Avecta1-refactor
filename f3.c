@@ -163,17 +163,17 @@ int examine_out(int pc)
 
       takeout(pc, c[8]);
       object = c[8];
-      prnt("-> %s takes out the %s to examine.", w1, obj[object], NULL, NULL, NULL, NULL);
+      prnt("-> %s takes out the %s to examine.", w1, obj[object]);
     }
 
-    prnt("-> %s examines the %s.", w1, obj[object], NULL, NULL, NULL, NULL);
+    prnt("-> %s examines the %s.", w1, obj[object]);
 
     if (!new_rumdata[crum].room_has_bg && !zline[x][y].unknown5) {
-      prnt("-> It is too dark for %s to see anything!", w1, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> It is too dark for %s to see anything!", w1);
       return 1;
     }
 
-    prnt(msg[object], NULL, NULL, NULL, NULL, NULL, NULL);
+    prnt(msg[object]);
     return 1;
   }
 
@@ -234,7 +234,7 @@ int examine_out(int pc)
   }
 
   if (!outside && !fromout && (type != 2 || c[7])) {
-    prnt("-> %s examines the %s.", w1, w, NULL, NULL, NULL, NULL);
+    prnt("-> %s examines the %s.", w1, w);
   }
 
   // Curmons:
@@ -261,7 +261,7 @@ int examine_out(int pc)
       }
     }
 
-    prnt(monmsg[t[3]], w1, NULL, NULL, NULL, NULL, NULL);
+    prnt(monmsg[t[3]], w1);
 
     return 1;
   }
@@ -272,7 +272,7 @@ int examine_out(int pc)
   // if (type == 1 && mess == 0 && t[5] == -1 && t[3] == 0 && (t[2] == 0 || rnd(100) > c[37])) {
   if (type == 1 && mess == 0 && obj_t->hide == -1 && obj_t->target == 0 
       && (obj_t->trap == 0 || rnd(100) > c[37])) {
-    prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s notices nothing unusual.", w1);
     return 1;
   }
 
@@ -280,11 +280,11 @@ int examine_out(int pc)
   // if (!outside && type == 1 && t[2] != 0 && c[37] > rnd(100)) {
   if (!outside && type == 1 && obj_t->trap != 0 && c[37] > rnd(100)) {
     flag = 1;
-    prnt("-> %s senses something strange about the %s.", w1, w, NULL, NULL, NULL, NULL);
+    prnt("-> %s senses something strange about the %s.", w1, w);
   }
 
   if (mess != 0) {
-    prnt(msg[mess], NULL, NULL, NULL, NULL, NULL, NULL);
+    prnt(msg[mess]);
     return 1;
   }
 
@@ -293,20 +293,20 @@ int examine_out(int pc)
   // FIXME mess is always 0 here as per above
   if (!outside && type == 1 && mess == 0 && obj_t->target != 0) {
     flag = 1;
-    prnt("-> %s notices an exit through the %s.", w1, w, NULL, NULL, NULL, NULL);
+    prnt("-> %s notices an exit through the %s.", w1, w);
   }
 
   // Crumobjs:
   // if (type == 1 && t[5] == -2) {
   if (type == 1 && obj_t->hide == -2) {
     flag = 1;
-    prnt("-> %s notices the %s is locked.", w1, w, NULL, NULL, NULL, NULL);
+    prnt("-> %s notices the %s is locked.", w1, w);
   }
 
   // Crumobjs:
   // FIXME mess is always 0 here as per above
   if ((type == 1 || mess == 0) && !flag) {
-    prnt("-> %s notices nothing unusual.", w1, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s notices nothing unusual.", w1);
   }
 
   c[18] = 3;

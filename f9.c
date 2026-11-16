@@ -23,7 +23,7 @@ int i9(int pc)
   int16_t x, y;
 
   if (pc > 0 && pc < 4 && curmon[0][15] != 9) {
-    prnt("-> %s says 'I cannot abandon you!  I will stay with you!'", w, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s says 'I cannot abandon you!  I will stay with you!'", w);
     return 0;
   }
 
@@ -57,7 +57,7 @@ int i9(int pc)
             new_c->x = 5;
             new_c->current_room--;
 
-            prnt("-> %s goes west...", w, NULL, NULL, NULL, NULL, NULL);
+            prnt("-> %s goes west...", w);
             quit = 1;
           }
 
@@ -69,7 +69,7 @@ int i9(int pc)
             new_c->current_room++;
 
 
-            prnt("-> %s goes east...", w, NULL, NULL, NULL, NULL, NULL);
+            prnt("-> %s goes east...", w);
             quit = 1;
           }
 
@@ -80,7 +80,7 @@ int i9(int pc)
             new_c->y = 5;
             new_c->current_room -= 5;
 
-            prnt("-> %s goes north...", w, NULL, NULL, NULL, NULL, NULL);
+            prnt("-> %s goes north...", w);
             quit = 1;
           }
 
@@ -91,7 +91,7 @@ int i9(int pc)
             new_c->y = 1;
             new_c->current_room += 5;
 
-            prnt("-> %s goes south...", w, NULL, NULL, NULL, NULL, NULL);
+            prnt("-> %s goes south...", w);
             quit = 1;
           }
 
@@ -166,7 +166,7 @@ int o9(int pc)
   // Player
   // if (pc == 0 && crumobj[c[9]][5] == -2) {
   if (pc == 0 && crumobj[c[9]].hide == -2) {
-    prnt("-> %s finds the exit is locked!", pname, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s finds the exit is locked!", pname);
     c[30] = crum;
     ch->player.current_room = crum;
     return 1;
@@ -201,7 +201,7 @@ int o9(int pc)
     ch->player.unknown33[1] = 0;
 
     if (mode) {
-      prnt("-> %s flees!", &pname[0], NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s flees!", &pname[0]);
     }
 
     c[18] = 8;

@@ -61,14 +61,14 @@ int o12(int pc)
     new_c->magic_mode_1 = 0;
 
     litetrol(c[24], c[25],0);
-    prnt("-> %s puts out and stores the torch.", w, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s puts out and stores the torch.", w);
     return 1;
   }
 
   c[42] -= 1;
   new_c->base_chance_2_attack--;
 
-  prnt("-> %s lights a torch.", w, NULL, NULL, NULL, NULL, NULL);
+  prnt("-> %s lights a torch.", w);
 
   if (c[41] > 0) {
     c[41] = 100;

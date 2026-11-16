@@ -213,8 +213,8 @@ int take_drop_out(int pc)
   // FIXME this hangs the game when putting the scimitar into the door. In the original 
   // executable, you get the error "The door is closed" instead
   if (j > 0 && k != 0) {
-    // prnt("-> %s puts the %s in the %s.", w1, obj[c[8]], obj[crumobj[k][0]], NULL, NULL, NULL);
-    prnt("-> %s puts the %s in the %s.", w1, obj[c[8]], obj[crumobj[k].object_id], NULL, NULL, NULL);
+    // prnt("-> %s puts the %s in the %s.", w1, obj[c[8]], obj[crumobj[k][0]]);
+    prnt("-> %s puts the %s in the %s.", w1, obj[c[8]], obj[crumobj[k].object_id]);
     // crumobj[k][5] = 1;
     crumobj[k].hide = 1;
     takeout(pc, c[8]);
@@ -242,8 +242,8 @@ int take_drop_out(int pc)
     }
 
     i = rumslot();
-    // prnt("-> %s puts the %s down.", w1, obj[c[8]], NULL, NULL, NULL, NULL);
-    prnt("-> %s puts the %s down.", w1, obj[ch->player.unknown8], NULL, NULL, NULL, NULL);
+    // prnt("-> %s puts the %s down.", w1, obj[c[8]]);
+    prnt("-> %s puts the %s down.", w1, obj[ch->player.unknown8]);
     // z = crumobj[i];
     z = &crumobj[i];
     
@@ -346,7 +346,7 @@ int take_drop_out(int pc)
     new_c->seekshard_imprinted_room = new_c->current_room;
     new_c->seekshard_imprinted_xy = x + (16 * y);
 
-    prnt("-> The seeking shard imprints the room!", NULL, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> The seeking shard imprints the room!");
   }
 
   if (j == 0) {
@@ -378,7 +378,7 @@ int take_drop_out(int pc)
     invtrap(k);
     w = obj[k];
 
-    prnt("-> %s takes the %s into hand.", w1, w, NULL, NULL, NULL, NULL); 
+    prnt("-> %s takes the %s into hand.", w1, w); 
     // for (j = 0; j < 9; j++) {
     //   // Zero out all of crumobj[id] because the object is no longer in the room
     //   crumobj[id][j] = 0;

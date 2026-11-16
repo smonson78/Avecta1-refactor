@@ -99,7 +99,7 @@ int o11(int pc)
   ch->player.target = pc > 0 ? ch->player.unknown39 : ch->player.target;
 
   if (t[30] != crum || !los(pc, t[24], t[25])) {
-    prnt("-> The %s is out of %s's sight!", wt, w, NULL, NULL, NULL, NULL);
+    prnt("-> The %s is out of %s's sight!", wt, w);
     return 1;
   }
 
@@ -168,12 +168,12 @@ int o11(int pc)
   explode(new_t->monster.x + i, new_t->monster.y + j, 3 + dir);
   
   if (!miss && (c[43] || (tar > 3 && !t[46]) || tar < 3) ) {
-    prnt("-> %s's arrow hits the %s!", w, wt, NULL, NULL, NULL, NULL);
+    prnt("-> %s's arrow hits the %s!", w, wt);
     miss = 5 + rnd(c[50]);
     damage(tar, miss);
     return 1;
   }
-  prnt("-> %s's arrow misses the %s!", w, wt, NULL, NULL, NULL, NULL);
+  prnt("-> %s's arrow misses the %s!", w, wt);
 
   debug_printf("< o11()\n");
   return 1;

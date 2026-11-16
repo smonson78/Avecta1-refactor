@@ -71,7 +71,7 @@ void trapres(int pc, int type, int x, int y)
     destroy(1, zline[x][y].visible);
     flash();
     drawsq(x, y);
-    prnt("-> The exit behind %s suddenly disappears!", s2, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> The exit behind %s suddenly disappears!", s2);
     
     if (dungeon != 1 || crum != 20) {
       for (i = 0; i < 4; i++) {
@@ -132,7 +132,7 @@ void trapres(int pc, int type, int x, int y)
     break;
 
   case 3: /* go into melkthrop dungeon */
-    prnt("-> %s enters the crumbling monastery!", s2, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s enters the crumbling monastery!", s2);
     c[30] = 127;
     c[59] = 1;
     new_c->monster.current_room = 127;
@@ -140,7 +140,7 @@ void trapres(int pc, int type, int x, int y)
     break;
 
   case 23: /* go into kilkaney */
-    prnt("-> %s enters the ancient walled city of Kilkaney!", s2, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s enters the ancient walled city of Kilkaney!", s2);
     c[30] = 127;
     c[59] = 2;
     new_c->monster.current_room = 127;
@@ -160,7 +160,7 @@ void trapres(int pc, int type, int x, int y)
     if (pc > 3)
       break;
     if ((5 * (c[1])) % (c[2]) == 0)
-      prnt("-> %s is being seared by the intense heat from the forges!", s2, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s is being seared by the intense heat from the forges!", s2);
     damage(pc, c[12] + 1);
     break;
 
@@ -216,7 +216,7 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
     }
 
     if (c[8] != 50) {
-      prnt("-> The %s doesn't fit in the door's keyhole!", obj[c[8]], NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The %s doesn't fit in the door's keyhole!", obj[c[8]]);
       break;
     } else {
       prnt("-> The black key turns and the door unlocks!  "
@@ -241,7 +241,7 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
     remove_object(1, c[8]);
     
     if (c[8] != OBJECT_BONE_KEY) {
-      prnt("-> The %s doesn't fit in the door's keyhole!", obj[c[8]], NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The %s doesn't fit in the door's keyhole!", obj[c[8]]);
       break;
     }
     
@@ -254,7 +254,7 @@ as the imprisoned souls are freed from the iesis chamber!", NULL, NULL, NULL, NU
 
     if (c[8] == OBJECT_BONE_KEY) {
       destroy(1, 1);
-      prnt("-> The door swings wide open!", NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The door swings wide open!");
       activate_monsters(-1, 1, 12, 4);
       if (c[4] != 81) {
         prnt("-> Eirik glowers for an instant and then laughs, a rare \
@@ -320,7 +320,7 @@ following riddle! In the Dark I begin, Earth is my next, through the Abyss I \
 travel, to become Thanatos, in Hell I end without life.  What am I?'",
          s2, NULL, NULL, NULL, NULL, NULL);
     if (pc > 3 || !getword("death")) {
-      prnt("-> The rune explodes, ending %s's wretched life!", s2, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The rune explodes, ending %s's wretched life!", s2);
       blowup(x, y);
     } else {
       prnt("-> The voice mutters `OK, %s, so you got lucky this time!  "
@@ -438,7 +438,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
 
     losespel(pc);
     flash();
-    prnt("-> Suddenly %s feels completely immune to any form of sorcery!", s2, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> Suddenly %s feels completely immune to any form of sorcery!", s2);
     c[19] = 54;
     c[20] = 0;
     uint16_t randomness = rnd(10);
@@ -553,7 +553,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
     }
 
     untrap(2);
-    prnt("-> The buzzing inside %s's head ceases with the answer!", s2, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> The buzzing inside %s's head ceases with the answer!", s2);
     break;
 
   case 21:
@@ -568,7 +568,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
 
     flash();
     make(20, 0, 0, 12, 0, 0, 6, 1, 1);
-    prnt("-> A hidden stairway appears where the stove was located!", NULL, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> A hidden stairway appears where the stove was located!");
     untrap(1);
     break;
 
@@ -588,7 +588,7 @@ rasps, `Your stupid spells run out soon! Then I kill you! Ha! Ha!'", NULL, NULL,
 and says in a weary voice `Finally, you've arrived. I'd begun to wonder if my\
  understanding of Cuspers was failing.  Well... Hmmm! I seem to have \
 forgotten. What is your name again?'", NULL, NULL, NULL, NULL, NULL, NULL);
-      prnt("-> [Type Name]: ", NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> [Type Name]: ");
       instring(row, col, pname, 9, 0);
       usedline = hold = 0;
       prnt("-> The old man continues, `Oh, yes! %s! I see your magical \
@@ -602,7 +602,7 @@ Eirik, but you must help me break this spell which is slowly killing me. I'm\
  sure you agree.' He pauses for a moment.", NULL, NULL, NULL, NULL, NULL, NULL);
       hold = 1;
       usedline = 8;
-      prnt("-> As if in a trance %s nods affirmatively.", s2, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> As if in a trance %s nods affirmatively.", s2);
       prnt("-> `Good! I knew I could count on you. Go northeast of Kilkaney\
 .  Search by the Bay of Wen.  There you'll find a cavern inhabited\
  by a group of vicious orcs. They have my copy of Wethwicker's All the World's\
@@ -753,7 +753,7 @@ said the last time they met.",
       if (c[8] != 65) {
         break;
       }
-      prnt("-> The mask drops, and %s's original appearance is restored!", s2, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The mask drops, and %s's original appearance is restored!", s2);
       c[4] = (pc == 0 ? 81 : 97);
       new_c->monster.sprite_id = (pc == 0 ? 81 : 97);
     }
@@ -893,7 +893,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
   drap, then?' and he pushes a large glass of potent ale toward %s.",
             s2, NULL, NULL, NULL, NULL, NULL);
         if (!getword("yes")) {
-          prnt("-> The bartender shrugs `Suit yerself, mate.'", NULL, NULL, NULL, NULL, NULL, NULL);
+          prnt("-> The bartender shrugs `Suit yerself, mate.'");
           break;
         }
 
@@ -904,7 +904,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
   it's time to pay for the ale.",
             s2, NULL, NULL, NULL, NULL, NULL);
       repeat:
-        prnt("-> [How much?] ", NULL, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> [How much?] ");
         instring(row, col, str, 3, 1);
         usedline = hold = 0;
         j = atoi(str);
@@ -918,7 +918,7 @@ creatures in the room!", NULL, NULL, NULL, NULL, NULL, NULL);
           if (j == 1) {
             c[49] -= 1;
             new_c->monster.gold_amount--;
-            prnt("-> The bartender sneers `Regular spendthrift, you are.'", NULL, NULL, NULL, NULL, NULL, NULL);
+            prnt("-> The bartender sneers `Regular spendthrift, you are.'");
           }
           if (j <= 0) {
             prnt("-> The bartender roars `Like 'ell! You can just talk to the guards about "
@@ -978,7 +978,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     break;
 
   case 35:
-    prnt("-> %s enters the foul-smelling cavern!", pname, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s enters the foul-smelling cavern!", pname);
     c[30] = 127;
     c[59] = 3;
     new_c->monster.current_room = 127;
@@ -1001,7 +1001,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
 
     // 63 must be the specific key
     if (c[8] != 63) {
-      prnt("-> The %s doesn't fit in the door's keyhole!", obj[c[8]], NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The %s doesn't fit in the door's keyhole!", obj[c[8]]);
       break;
     } else {
       c[45] = 0;
@@ -1058,13 +1058,13 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     }
 
     if (c[50] == 20) {
-      prnt("-> %s says `Funny, I don't feel any different.'", s2, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s says `Funny, I don't feel any different.'", s2);
       break;
     }
 
     losespel(pc);
     flash();
-    prnt("-> Suddenly %s feels a tremendous burst of strength!", s2, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> Suddenly %s feels a tremendous burst of strength!", s2);
     c[19] = 50;
     c[20] = c[50];
     c[50] = 20;

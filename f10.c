@@ -115,8 +115,8 @@ int o10(int pc)
         return 1;
       }
     }
-    // prnt("-> %s unlocks the %s!", w, obj[o[0]], NULL, NULL, NULL, NULL);
-    prnt("-> %s unlocks the %s!", w, obj[o->object_id], NULL, NULL, NULL, NULL);
+    // prnt("-> %s unlocks the %s!", w, obj[o[0]]);
+    prnt("-> %s unlocks the %s!", w, obj[o->object_id]);
     flag = 1;
   }
 
@@ -134,8 +134,8 @@ int o10(int pc)
   }
 
   if (flag == 0 && c[18] != 10) {
-    // prnt("-> %s has no success with the %s!", w, obj[o[0]], NULL, NULL, NULL, NULL);
-    prnt("-> %s has no success with the %s!", w, obj[o->object_id], NULL, NULL, NULL, NULL);
+    // prnt("-> %s has no success with the %s!", w, obj[o[0]]);
+    prnt("-> %s has no success with the %s!", w, obj[o->object_id]);
   }
 
   c[18] = 10;

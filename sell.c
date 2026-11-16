@@ -82,7 +82,7 @@ int sell(int npc)
   }
 
   if (num > 1) {
-    prnt("-> The merchant shouts `Kill the ruffian!'", NULL, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> The merchant shouts `Kill the ruffian!'");
     c[15] = 8;
     c[16] = 75;
     ch->player.command = ACTION_WAIT;
@@ -170,7 +170,7 @@ int sell(int npc)
       "do you offer for my %s?'", obj[selllist[i].object], NULL, NULL, NULL, NULL, NULL);
 
     while (!done) {
-      prnt("-> [Input your offer]: ", NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> [Input your offer]: ");
       instring(row, col, str, 4, 0);
       hold = usedline = 0;
       amount = atoi(str);
@@ -178,7 +178,7 @@ int sell(int npc)
       // if (amount <= 0 || amount > h[49]) {
       if (amount <= 0 || amount > player->gold_amount) {
         if (amount <= 0) {
-          prnt("-> The merchant snarls `You are deranged!'", NULL, NULL, NULL, NULL, NULL, NULL);
+          prnt("-> The merchant snarls `You are deranged!'");
         } else {
           prnt("-> The merchant growls `From the look of your pouch I don't "
             "think you have that many goldpieces!'", NULL, NULL, NULL, NULL, NULL, NULL);
@@ -223,7 +223,7 @@ int sell(int npc)
       }  
       if (amount < selllist[i].unknown - c[10] &&
         amount < selllist[i].min_price + selllist[i].unknown - amount ) {
-        prnt("-> The merchant moans woefully ", NULL, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> The merchant moans woefully ");
         j = rnd(8);
         while (j == c[32]) {
           j = rnd(8);
@@ -234,28 +234,28 @@ int sell(int npc)
 
         switch (j) {
           case 0:
-            prnt("`Ahh! By the gods! Such a hard trader!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            prnt("`Ahh! By the gods! Such a hard trader!'");
             break;
           case 1:
-            prnt("`Are you heartless? I'm old and ill!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            prnt("`Are you heartless? I'm old and ill!'");
             break;
           case 2:
-            prnt("`Think of my poor wife and children!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            prnt("`Think of my poor wife and children!'");
             break;
           case 3:
-            prnt("`Mercy! My family lives in a hovel!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            prnt("`Mercy! My family lives in a hovel!'");
             break;
           case 4:
-            prnt("'Upon my poor sweet mother's grave!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            prnt("'Upon my poor sweet mother's grave!'");
             break;
           case 5:
-            prnt("`Aiiee!! For all the love of Zandru!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            prnt("`Aiiee!! For all the love of Zandru!'");
             break;
           case 6:
-            prnt("`A demon would be easier to sell to!'", NULL, NULL, NULL, NULL, NULL, NULL);
+            prnt("`A demon would be easier to sell to!'");
             break;
           case 7:
-            prnt("`Did Fat Oskar send you to ruin me?'", NULL, NULL, NULL, NULL, NULL, NULL);
+            prnt("`Did Fat Oskar send you to ruin me?'");
             break;
         }
 
@@ -264,7 +264,7 @@ int sell(int npc)
 
         j = selllist[i].unknown - amount + selllist[i].min_price;
         sprintf(temp, "%d", j);
-        prnt("and keens `%s goldpieces and no lower!'", temp, NULL, NULL, NULL, NULL, NULL);
+        prnt("and keens `%s goldpieces and no lower!'", temp);
         
         c[10] = selllist[i].unknown - j;
         ch->player.spell_cast = selllist[i].unknown - j;

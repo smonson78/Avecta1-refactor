@@ -59,7 +59,7 @@ int search_out(int pc)
   check_curmon("search_out start");
 
   if (pc == 0 && c[18] != 6) {
-    prnt("-> %s searches nearby...", w, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s searches nearby...", w);
   }
 
   for (i = -1; i < 2; i++) {
@@ -91,8 +91,8 @@ int search_out(int pc)
           // Who is 3?
           // if (pc != 3 || c[38] == 1) {
           if (pc != 3 || new_c->controlled == 1) {
-            // prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[o[0]], NULL, NULL, NULL);
-            prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[object->object_id], NULL, NULL, NULL);
+            // prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[o[0]]);
+            prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[object->object_id]);
           }
         
           c[18] = 0;
@@ -127,7 +127,7 @@ int search_out(int pc)
             new_c->unknown8 = k;
             new_c->spell_cast = 0;
             
-            prnt("-> %s breaks off the search to take the %s.", w, obj[k], NULL, NULL, NULL, NULL);
+            prnt("-> %s breaks off the search to take the %s.", w, obj[k]);
 
             return 1;
           }
@@ -143,8 +143,8 @@ int search_out(int pc)
 
       // if (z[1] != 0 && crumobj[z[1]][5] == -2 && c[18] != 6) {
       if (z->visible != 0 && crumobj[z->visible].hide == -2 && c[18] != 6) {
-        // prnt("-> %s notices the %s is locked!", w, obj[crumobj[z[1]][0]], NULL, NULL, NULL, NULL);
-        prnt("-> %s notices the %s is locked!", w, obj[crumobj[z->visible].object_id], NULL, NULL, NULL, NULL);
+        // prnt("-> %s notices the %s is locked!", w, obj[crumobj[z[1]][0]]);
+        prnt("-> %s notices the %s is locked!", w, obj[crumobj[z->visible].object_id]);
       }
 
       for (k = 1; k < 17; k++) {
@@ -155,8 +155,8 @@ int search_out(int pc)
             && object->x == x + i && object->y == y + j) {
           // o[8] = 1;
           object->visible = 1;
-          // prnt("-> %s discovers a hidden %s!", w, obj[*o], NULL, NULL, NULL, NULL);
-          prnt("-> %s discovers a hidden %s!", w, obj[object->object_id], NULL, NULL, NULL, NULL);
+          // prnt("-> %s discovers a hidden %s!", w, obj[*o]);
+          prnt("-> %s discovers a hidden %s!", w, obj[object->object_id]);
           
           c[18] = 0;
           new_c->unknown18 = 0;
@@ -179,7 +179,7 @@ int search_out(int pc)
   }    
 
   if (num == 0 && c[18] != 6 && (pc != 3 || c[38] == 1)) {
-    prnt("-> %s discovers nothing.", w, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s discovers nothing.", w);
     c[18] = 6;
     new_c->unknown18 = 6;
   }

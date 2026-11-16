@@ -44,11 +44,11 @@ int timetrol()
 					w = name[c[3]];
 				}
 
-				prnt("-> %s's torch flickers...", w, NULL, NULL, NULL, NULL, NULL);
+				prnt("-> %s's torch flickers...", w);
 				litetrol(c[24], c[25],0);
 				litetrol(c[24], c[25],1);
 				if (c[41] == 0) {
-					prnt("-> ... and goes out!", NULL, NULL, NULL, NULL, NULL, NULL);
+					prnt("-> ... and goes out!");
 					if (new_rumdata[crum].room_has_bg == 0)
 						litetrol(c[24], c[25],0);
 				}
@@ -71,9 +71,9 @@ int timetrol()
 				j = (4 * c[47]) / c[2];
 				if (j > 0) {
 					if (i < 4 || c[58] == 16) {
-						prnt("-> %s's level of poisoning is %s!", w, wordmod[j], NULL, NULL, NULL, NULL);
+						prnt("-> %s's level of poisoning is %s!", w, wordmod[j]);
 					} else {
-						prnt("-> The %s's level of poisoning is %s!", w, wordmod[j], NULL, NULL, NULL, NULL);
+						prnt("-> The %s's level of poisoning is %s!", w, wordmod[j]);
 					}
 					
 					if (c[47] >= c[2]) {
@@ -130,9 +130,9 @@ int timetrol()
 				}
 
 				if (i < 4) {
-					prnt("-> %s's spell has expired!",w, NULL, NULL, NULL, NULL, NULL);
+					prnt("-> %s's spell has expired!",w);
 				} else {
-					prnt("-> The spell on the %s has worn off!",w, NULL, NULL, NULL, NULL, NULL);
+					prnt("-> The spell on the %s has worn off!",w);
 				}
 			}
 		}
@@ -145,7 +145,7 @@ int timetrol()
 	if (specbuf.wallfire_turns != 0) {
 		specbuf.wallfire_turns--;
 		if (specbuf.wallfire_turns == 0) {
-			prnt("-> The Wallfire spell has expired!", NULL, NULL, NULL, NULL, NULL, NULL);
+			prnt("-> The Wallfire spell has expired!");
 			
 			x = specbuf.wallfire_xy % 16;
 			y = specbuf.wallfire_xy / 16;

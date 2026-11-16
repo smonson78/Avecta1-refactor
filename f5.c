@@ -194,7 +194,7 @@ int drag_eat_out(int pc)
 
       return 1;
     } else {
-      prnt("-> %s swallows the %s!", w1, w, NULL, NULL, NULL, NULL);
+      prnt("-> %s swallows the %s!", w1, w);
 
       if (c[8] != c[45] && c[8] != c[46]) {
         takeout(pc, c[8]);
@@ -226,13 +226,13 @@ int drag_eat_out(int pc)
     k = crumobj[j].object_id;
 
     if (k < 41 && weight[k] < 0) {
-      prnt("-> %s attempts to drag the %s, but that is impossible!", w1, obj[k], NULL, NULL, NULL, NULL);
+      prnt("-> %s attempts to drag the %s, but that is impossible!", w1, obj[k]);
       return 1;
     }
 
     if (k < 41 && c[50] + rnd(3) < weight[k]) {
       flag = 1; 
-      prnt("-> %s is unable to budge the %s.", w1, obj[k], NULL, NULL, NULL, NULL);
+      prnt("-> %s is unable to budge the %s.", w1, obj[k]);
     } else {  
       if (c[24] == c[5] && c[25] == c[6]) {
         return 1;
@@ -247,7 +247,7 @@ int drag_eat_out(int pc)
         // (curmon[0][24] == x2 && curmon[0][25] == y2 && pc != 0) ) {
         (player->x == x2 && player->y == y2 && pc != 0) ) {
         flag = 1;
-        // prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j][0]], w1, NULL, NULL, NULL, NULL);
+        // prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j][0]], w1);
         prnt("-> The %s which %s is moving is blocked!", obj[crumobj[j].object_id], 
           w1, NULL, NULL, NULL, NULL);
       } else {
@@ -354,7 +354,7 @@ int handman(int pc, int inv, int rum, int flag)
           w1, obj[c[45+l]], obj[inv], NULL, NULL, NULL);
       }
       if (rum != 0 && pc != 3) {
-        prnt("-> %s puts away the %s to free a hand.", w1, obj[c[45+l]], NULL, NULL, NULL, NULL);
+        prnt("-> %s puts away the %s to free a hand.", w1, obj[c[45+l]]);
       }
 
       c[45 + l] = 0;

@@ -201,7 +201,7 @@ int blowup(int x, int y)
 
 int getword(char *comp)
 {
-  prnt("-> [Type answer]: ", NULL, NULL, NULL, NULL, NULL, NULL);
+  prnt("-> [Type answer]: ");
   instring(row, col, junk, 18, 1);
   hold = 0;
   usedline = 0;

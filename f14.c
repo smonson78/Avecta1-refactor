@@ -70,14 +70,14 @@ int voice_out(int pc)
   if (new_c->monster.controlled) {
     c[38] = 0;
     new_c->monster.controlled = 0;
-    // prnt("-> %s allows %s to make decisions!", pname, name[c[3]], NULL, NULL, NULL, NULL);
+    // prnt("-> %s allows %s to make decisions!", pname, name[c[3]]);
     prnt("-> %s allows %s to make decisions!", pname, name[new_c->monster.monster_name_id], 
       NULL, NULL, NULL, NULL);
     return 1;
   }
 
   // Otherwise, put them under control
-  // prnt("-> %s issues orders to %s!", pname, name[c[3]], NULL, NULL, NULL, NULL);
+  // prnt("-> %s issues orders to %s!", pname, name[c[3]]);
   prnt("-> %s issues orders to %s!", pname, name[new_c->monster.monster_name_id], 
     NULL, NULL, NULL, NULL);
 

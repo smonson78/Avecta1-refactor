@@ -1,3 +1,4 @@
+#include <stdarg.h>
 #include "tos_compat.h"
 
 #include <gemdos.h>
@@ -223,25 +224,21 @@ end:
 }
 
 // Print up to 7 strings on the paper roll
-void prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
-   int per = 0, i = 0, j, k = 0, l, len = 0, m, lines = 1;
+void prnt(char *s1, ...) {
+   va_list va_args;
+   int per = 0, i = 0, j, l, len = 0, m, lines = 1;
    char buffer[30];
-   char *c[6];
 
    vsf_interior(handle, 1);
    vsf_color(handle, 0);
    v_bar(handle, lxy);
    vsf_interior(handle, 1);
    vsf_color(handle, 1);
-   c[0] = s2;
-   c[1] = s3;
-   c[2] = s4;
-   c[3] = s5;
-   c[4] = s6;
-   c[5] = s7;
+
    l = strlen(s1);
    col = 2;
    row++;
+
    mouse_off();
    Vsync();
    vbl_animation_off();
@@ -255,6 +252,9 @@ void prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) 
    // v_bar(handle, mark);
    // vsf_color(handle, 1);
 
+   char *p = NULL;
+
+   va_start(va_args, s1);
    while (l - i > 0) {
       j = 0;
       while (s1[i] != ' ' && s1[i] != '%' && l - i > 0) {
@@ -267,10 +267,11 @@ void prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) 
          len = strlen(buffer);
       }
 
+      // Handle a variadic parameter
       if (s1[i] == '%') {
          i++;
-         len = strlen(c[k]);
-         k++;
+         p = va_arg(va_args, char *);
+         len = strlen(p);
          if (s1[i + 1] != ' ') {
             per = 1;
          }
@@ -316,8 +317,6 @@ void prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) 
             // 3=S-ONLY mode which means replace destination with source
             vro_cpyfm(handle, 3, pxy, &psrc, &pdes);
 
-            // Cconin();
-
             // And then draw the bottom edge back in, blank.
             v_bar(handle, bxy);
 
@@ -349,13 +348,14 @@ void prnt(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) 
       if (s1[i] == ' ' || l - i == 0) {
          textsix(1, 6 * col, 8 * (row - 1), len, buffer);
       } else {
-         textsix(1, 6 * col, 8 * (row - 1), len, c[k - 1]);
+         textsix(1, 6 * col, 8 * (row - 1), len, p);
          col--;
       }
 
       col += len + 1;
       i++;
    }
+   va_end(va_args);
 
    // Back to normal colour
    v_rvoff(handle);

@@ -48,10 +48,10 @@
 //   curmon[pc][8] = curmon[pc][9] = 0;
 //   if(c[38]) {
 //     c[38] = 0;
-//     prnt("-> %s allows %s to make decisions!", pname, name[c[3]], NULL, NULL, NULL, NULL);
+//     prnt("-> %s allows %s to make decisions!", pname, name[c[3]]);
 //     return(1);
 //     }
-//   prnt("-> %s issues orders to %s!", pname, name[c[3]], NULL, NULL, NULL, NULL);
+//   prnt("-> %s issues orders to %s!", pname, name[c[3]]);
 //   if(c[16] != 0) {
 //     c[15] = 8;
 //     c[16] = 1;

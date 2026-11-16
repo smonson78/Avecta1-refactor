@@ -202,7 +202,7 @@ int tacmode() {
         }
 
         if (i < 17 && activate_monsters(17, 4, object->x, object->y) > 0) {
-          prnt("-> The guards are pursuing!", NULL, NULL, NULL, NULL, NULL, NULL);
+          prnt("-> The guards are pursuing!");
           mode = 1;
         }
       }
@@ -222,14 +222,14 @@ int tacmode() {
         //if (o[29] != 0) {
         if (new_o->room_unknown_5 != 0) {
           // Flavour text for room.
-          prnt(msg[new_o->room_unknown_5 + 80 * dungeon], NULL, NULL, NULL, NULL, NULL, NULL);
+          prnt(msg[new_o->room_unknown_5 + 80 * dungeon]);
         }
         
         //if (mode && permon[o[22]].intell_routine < 4 && (dungeon != 2 || crum != 31)) {
         if (mode 
           && permon[new_o->room_monster_type].intell_routine < 4 
           && (dungeon != 2 || crum != 31)) {
-          prnt("      ***  A MELEE BEGINS!  ***", NULL, NULL, NULL, NULL, NULL, NULL);
+          prnt("      ***  A MELEE BEGINS!  ***");
         }
         
         // Old

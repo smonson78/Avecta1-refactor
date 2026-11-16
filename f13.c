@@ -74,7 +74,7 @@ int give_out(int pc)
   wt = (tar == 0 ? pname : name[t[3]]);
 
   if (!los(pc, x, y)) {
-    prnt("-> %s cannot see %s to give the %s!", w, wt, obj[c[45]], NULL, NULL, NULL);
+    prnt("-> %s cannot see %s to give the %s!", w, wt, obj[c[45]]);
     return 1;
   }
 
@@ -95,11 +95,11 @@ int give_out(int pc)
     }
     
     if (k == 20) {
-      prnt("-> %s cannot spot a place to which to throw the %s!", w, obj[c[45]], NULL, NULL, NULL, NULL);
+      prnt("-> %s cannot spot a place to which to throw the %s!", w, obj[c[45]]);
       return 1;
     }
 
-    prnt("-> %s throws the %s to %s!", w, obj[c[45]], wt, NULL, NULL, NULL);
+    prnt("-> %s throws the %s to %s!", w, obj[c[45]], wt);
 
     k = rumslot();
     // k could be 1 to 18 here
@@ -144,8 +144,8 @@ int give_out(int pc)
     return 1;
   }
 
-  // prnt("-> %s gives the %s to %s.", w, obj[c[45]], wt, NULL, NULL, NULL);
-  prnt("-> %s gives the %s to %s.", w, obj[new_c->monster.poison_mode_2], wt, NULL, NULL, NULL);
+  // prnt("-> %s gives the %s to %s.", w, obj[c[45]], wt);
+  prnt("-> %s gives the %s to %s.", w, obj[new_c->monster.poison_mode_2], wt);
 
   if (t[45] != 0) {
     putaway(tar, t[45]);

@@ -161,7 +161,7 @@ int intell(int npc)
           new_c = &new_curmon[npc];
 
           if (crum == 31) {
-            prnt("-> The forlorn creature sobs `All is lost. I die now.'", NULL, NULL, NULL, NULL, NULL, NULL);
+            prnt("-> The forlorn creature sobs `All is lost. I die now.'");
             damage(npc, c[2] + c[12]);
             
             c[0] = 0;
@@ -1060,45 +1060,45 @@ void sillymsg(int npc)
   char *w = name[c[3]];
 
   if (c[47] > 0) {
-    prnt("-> %s says `The room spins.  I am poisoned.'",w, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s says `The room spins.  I am poisoned.'",w);
     return;
   }
 
   if (c[1] > (c[2])/2) {
-    prnt("-> %s says `By Zandru, my body aches.  Perhaps a clerical spell...'",w, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s says `By Zandru, my body aches.  Perhaps a clerical spell...'",w);
     return;
   }
   
     // if(rumdata[crum][26] > 0) {
   if (new_rumdata[crum].room_monsters_chance > 0) {
-    prnt("-> %s says `I believe dangerous creatures lurk here!'",w, NULL, NULL, NULL, NULL, NULL);
+    prnt("-> %s says `I believe dangerous creatures lurk here!'",w);
     return;
   }
 
   switch (rnd(8)) {
     case 0:
-      prnt("-> %s growls, `Hurry up, %s!  Let us move on.'",w,pname, NULL, NULL, NULL, NULL);
+      prnt("-> %s growls, `Hurry up, %s!  Let us move on.'",w,pname);
       break;
     case 1:
-      prnt("-> %s says `Why are you wasting time, %s?  This place is dangerous!'",w,pname, NULL, NULL, NULL, NULL);
+      prnt("-> %s says `Why are you wasting time, %s?  This place is dangerous!'",w,pname);
       break;
     case 2:
-      prnt("-> %s says `My stomach growls like an Alarian varg. Something to eat would be good.'",w, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s says `My stomach growls like an Alarian varg. Something to eat would be good.'",w);
       break;
     case 3:
-      prnt("-> %s says `I favor a quick exit from here.'",w, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s says `I favor a quick exit from here.'",w);
       break;
     case 4:
-      prnt("-> %s grumbles `When I get my hands on Lord Vindroble... He bears the responsibility for our woe!'",w, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s grumbles `When I get my hands on Lord Vindroble... He bears the responsibility for our woe!'",w);
       break;
     case 5:
-      prnt("-> %s stares around the room in anger and mutters `An abomination such as this would never be tolerated in Nordheim.'",w, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s stares around the room in anger and mutters `An abomination such as this would never be tolerated in Nordheim.'",w);
       break;
     case 6:
-      prnt("-> %s searches his carrying pack and mumbles `By the gods! Those accursed fiends took my elven wafers.'",w, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s searches his carrying pack and mumbles `By the gods! Those accursed fiends took my elven wafers.'",w);
       break;
     case 7:
-      prnt("-> %s utters an unrepeatable oath of disgust over the general situation.",w, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s utters an unrepeatable oath of disgust over the general situation.",w);
       break;
     default:
       break;

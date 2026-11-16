@@ -90,7 +90,7 @@ int damage(int pc, int level)
       c[52] = 1;
       new_c->seekshard_imprinted_room = 1;
 
-      prnt("-> The %s shrieks in pain and fear!", w, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The %s shrieks in pain and fear!", w);
     }
 
     // if (curmon[0][39] == pc || (curmon[0][15] == 2 && curmon[0][7] == pc) ) {
@@ -144,16 +144,16 @@ int damage(int pc, int level)
 
     if (pc > 0) {
       if (pc > 3 && c[58] != 16) {
-         prnt("-> The %s has been slain!", w, NULL, NULL, NULL, NULL, NULL);
+         prnt("-> The %s has been slain!", w);
       }
 
       if (newpolice && police) {
         prnt("-> And an evil deed it was!  %s will pay for this heinous crime!",
-          pname, NULL, NULL, NULL, NULL, NULL);
+          pname);
       }
 
       if (pc > 3 && c[58] == 16) {
-        prnt("->  MELKTHROP IS SLAIN!!!", NULL, NULL, NULL, NULL, NULL, NULL);
+        prnt("->  MELKTHROP IS SLAIN!!!");
       }
 
       // Players:
@@ -161,7 +161,7 @@ int damage(int pc, int level)
         j = rumslot();
         z = &crumobj[j];
 
-        prnt("-> %s IS DEAD!", w, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> %s IS DEAD!", w);
 
         if (c[41] > 0) {
           litetrol(x, y, 0);
@@ -267,7 +267,7 @@ int damage(int pc, int level)
       return 1;
     } else {
       undorep();
-      prnt("   -- ! %s IS PASSING OUT ! --", w, NULL, NULL, NULL, NULL, NULL);
+      prnt("   -- ! %s IS PASSING OUT ! --", w);
       stormon();
       combat = 0;
       check_curmon("damage 1.1");
@@ -276,7 +276,7 @@ int damage(int pc, int level)
   }
 
   if (pc < 4 && (old * 4) / c[2] < (i = (c[1] * 4) / c[2])) {
-    prnt("-> %s's damage is now %s!", w, wordmod[i], NULL, NULL, NULL, NULL);
+    prnt("-> %s's damage is now %s!", w, wordmod[i]);
   }
   
   check_curmon("damage 2");

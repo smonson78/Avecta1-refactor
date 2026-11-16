@@ -231,7 +231,7 @@ void losespel(int pc)
 
   // if (c[21] != 0) {
   if (new_c->magic_effect_time_remaining != 0) {
-    prnt("-> The original spell on %s%s was lost!", n, w, NULL, NULL, NULL, NULL);  
+    prnt("-> The original spell on %s%s was lost!", n, w);
     // WTF
     //*(c + c[19]) = c[20];
     // FIXME This can't be easily ported to new_curmon. First we need to work what it does.
@@ -376,12 +376,12 @@ int cast_out(int pc)
   }
 
   if (flag) {
-    prnt("-> %s's %s Spell has no target!", w, spell[num - 1], NULL, NULL, NULL, NULL);
+    prnt("-> %s's %s Spell has no target!", w, spell[num - 1]);
     return 1;
   }
 
   if (num != 13) {
-    prnt("-> %s casts the %s Spell!", w, spell[num - 1], NULL, NULL, NULL, NULL);
+    prnt("-> %s casts the %s Spell!", w, spell[num - 1]);
   }
   flash();
 
@@ -421,7 +421,7 @@ int cast_out(int pc)
       }
 
       if (t[16] == 0) {
-        prnt("-> The spell fails!", NULL, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> The spell fails!");
         break;
       }
 
@@ -532,7 +532,7 @@ int cast_out(int pc)
       }
 
       if (!los(pc, t[24], t[25])) {
-        prnt("-> But the target is out of sight!", NULL, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> But the target is out of sight!");
         return 1;
       }
 
@@ -586,7 +586,7 @@ int cast_out(int pc)
     case 13:  /* blink spell */
       // t is a curmon    
       if (zline[c[26]][c[27]].monster != 0) {
-        prnt("-> %s's blink spell fails!", w, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> %s's blink spell fails!", w);
         break;
       }
 
@@ -596,7 +596,7 @@ int cast_out(int pc)
       t[35] = 0;
       new_t->stink_lines = 0;
 
-      prnt("-> %s blinks out of reality for an instant!", wt, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s blinks out of reality for an instant!", wt);
       explode(x, y, 0);
       Vsync();
       storsc(storbuf[target], 16 * x, 16 * y, 1, addr);
@@ -667,7 +667,7 @@ int cast_out(int pc)
       // Player and NPCs only
       for (i = 0; i < 4; i++) {
         if (curmon[i][0] && curmon[i][30] == pursuit[2]) {
-           prnt("-> %s holds the %s spell to wait for friends!", w, spell[num - 1], NULL, NULL, NULL, NULL);
+           prnt("-> %s holds the %s spell to wait for friends!", w, spell[num - 1]);
            flag = 1;
            break;
         }
@@ -711,7 +711,7 @@ int cast_out(int pc)
 
     case 19: /* firewall */
       if (specbuf.wallfire_turns != 0) {
-        prnt("-> The existing wall of fire prevents a second spell!", NULL, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> The existing wall of fire prevents a second spell!");
         break;
       }
 
@@ -734,7 +734,7 @@ int cast_out(int pc)
       // if (t[2] > dismax || t[3] > 0 || t[0] == 1) {
       if (object->trap > dismax || object->target > 0 || object->object_id == OBJECT_DOOR) {
         // I guess you can't destroy doors
-        prnt("-> The spell inexplicably fails!", NULL, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> The spell inexplicably fails!");
         break;
       }
 
@@ -789,7 +789,7 @@ int cast_out(int pc)
     case 23: /* bringin back the dead */
       // t is a crumobj here (a corpse)
       if (t[0] < 38 || t[0] > 40) {
-        prnt("-> The life spell does not work on %ss!", wt, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> The life spell does not work on %ss!", wt);
         break;
       }
 
@@ -829,7 +829,7 @@ int cast_out(int pc)
       // no target t for teleport
 
       if ((k = c[52]) == 0) {
-        prnt("-> The teleport invocator cannot find the inline mana thread!", NULL, NULL, NULL, NULL, NULL, NULL);
+        prnt("-> The teleport invocator cannot find the inline mana thread!");
         break;
       }
 
@@ -866,9 +866,9 @@ int savthrow(int npc, int mag)
 
   if (rnd(100) < (c[51] - mag)*8 || c[54] > 0) {
     if (npc < 4 || curmon[npc][3] == 10) {
-      prnt("-> %s resists the spell!", w, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s resists the spell!", w);
     } else {
-      prnt("-> The %s resists the spell!", w, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The %s resists the spell!", w);
     }
 
     return 1;

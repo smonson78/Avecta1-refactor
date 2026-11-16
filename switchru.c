@@ -226,9 +226,9 @@ int switchrum() {
 
   if (!outside) {
     if (fromout != 0) {  
-      prnt(msg[crum], NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt(msg[crum]);
     } else {
-      prnt(rummsg[crum + 80 * (dungeon - 1)], NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt(rummsg[crum + 80 * (dungeon - 1)]);
     }
 
     trigtrol(0);
@@ -260,7 +260,7 @@ int switchrum() {
 
     // Player was holding a lit torch when moving into a lit room
     if (i) {
-      prnt("-> The lit torch is snuffed and put away.", NULL, NULL, NULL, NULL, NULL, NULL);
+      prnt("-> The lit torch is snuffed and put away.");
     }
   }
 

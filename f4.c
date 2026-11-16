@@ -84,9 +84,9 @@ int move_out(int pc)
 
     if (pc < 4 && z->monster != 0 && pc != z->monster) {
       if (z->monster > 3 && i != 10) {
-        prnt("-> The %s blocks %s!", name[i], w, NULL, NULL, NULL, NULL);
+        prnt("-> The %s blocks %s!", name[i], w);
       } else {
-        prnt("-> %s blocks %s!", name[i], w, NULL, NULL, NULL, NULL);
+        prnt("-> %s blocks %s!", name[i], w);
       }
     }
 
@@ -100,7 +100,7 @@ int move_out(int pc)
 
   if (pc == 0) {
     if (c[18] != 4) {
-      prnt("-> %s moves...", &pname[0], NULL, NULL, NULL, NULL, NULL);
+      prnt("-> %s moves...", &pname[0]);
     }
 
     c[18] = 4;
