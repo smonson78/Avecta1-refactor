@@ -50,14 +50,8 @@ int main()
    debug_printf("Title returned code %d\n", i);
    check_curmon("after title screen");
 
-   // if (i == 1) {
-   //    // 'n' for New Games was pressed
-   //    new = 0;
-   // } else {
-   //    new = 1;
-   // }
-   // specbuf.unknown29 = new;
-   specbuf.new = i == 1 ? 0 : 1;
+   new = i == 1 ? 0 : 1;
+   specbuf.new = new;
 
    crum = -1;
 

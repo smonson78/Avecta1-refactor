@@ -92,11 +92,11 @@ int activate_monsters(int type, int nm, int x, int y)
     pc->max_health = p->max_health;
     pc->monster_name_id = p->monster_name_id;
     pc->sprite_id = p->sprite_id;
-    pc->unknown5 = p->unknown5;
-    pc->unknown6 = p->unknown6;
+    pc->action_dest_x = p->unknown5;
+    pc->action_dest_y = p->unknown6;
     pc->target = p->unknown7;
     pc->unknown8 = p->unknown8;
-    pc->unknown9 = p->unknown9;
+    pc->target_object = p->unknown9;
     pc->spell_cast = p->unknown10;
     pc->unknown11 = p->unknown11;
     pc->unknown12 = p->unknown12;

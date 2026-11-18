@@ -1,7 +1,7 @@
 #ifndef __F10_H
 #define __F10_H
 
-int i10(int pc);
-int o10(int pc);
+int rob_listen_in(int pc);
+int rob_listen_out(int pc);
 
 #endif

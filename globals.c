@@ -50,12 +50,12 @@ int winroom;
 // These functions are called when selecting an action to perform
 int (*inverb[])(int pc)  = {
   attack_in, cast_in, examine_in, move_in, drag_eat_in, search_in, take_drop_in, 
-  wait_in, i9, i10, i11, i12, give_in, voice_in
+  wait_in, exit_in, rob_listen_in, fire_arrow_in, burn_snuff_in, give_in, voice_in
 };
 
 int (*outverb[])(int pc) = {
   attack_out, cast_out, examine_out, move_out, drag_eat_out, search_out, take_drop_out, 
-  wait_out, o9, o10, o11, o12, give_out, voice_out
+  wait_out, exit_out, rob_listen_out, fire_arrow_out, burn_snuff_out, give_out, voice_out
 };
 
 int winker = 0, winktime = 0, combat = 0;

@@ -87,11 +87,11 @@ int take_drop_in(int pc)
   c[7] = c[8] = c[9] = 0;      
   new_c->target = 0;
   new_c->unknown8 = 0;
-  new_c->unknown9 = 0;
+  new_c->target_object = 0;
   
   if (ret == 0 && !self) {
     c[9] = zline[x][y].visible;
-    new_c->unknown9 = zline[x][y].visible;
+    new_c->target_object = zline[x][y].visible;
     c[10] = 0;
     c[15] = 7;  
     c[16] = 6;
@@ -110,7 +110,7 @@ int take_drop_in(int pc)
       if (c[45] > 0 && c[46] > 0 && c[46] != 81) {
         l = error(ERROR_WHICH_HANDS_OBJECT);
       } else {
-        l = ( c[46] == 0 || c[46] == 81 ? 1 : 2);
+        l = c[46] == 0 || c[46] == 81 ? 1 : 2;
       }
       ret = l;
     }
@@ -122,7 +122,7 @@ int take_drop_in(int pc)
     winker = 0;
     undomsg();
 
-    if (!adjac(pc,x,y)) {
+    if (!adjac(pc, x, y)) {
       error(ERROR_LOCATION_NOT_ADJACENT);
       return 0;
     } 
@@ -139,17 +139,17 @@ int take_drop_in(int pc)
     new_c->unknown8 = scratch[ret];
     c[7] = c[9] = 0;
     new_c->target = 0;
-    new_c->unknown9 = 0;
+    new_c->target_object = 0;
 
     if (k != 0) {
       c[9] = k;
-      new_c->unknown9 = k;
+      new_c->target_object = k;
     }
 
     c[5] = x;
-    new_c->unknown5 = x;
+    new_c->action_dest_x = x;
     c[6] = y;
-    new_c->unknown6 = y;
+    new_c->action_dest_y = y;
 
     c[10] = 1;
     new_c->spell_cast = 1;
@@ -188,8 +188,8 @@ int take_drop_out(int pc)
   // Interesting these seem to apply only to player characters. But further down,
   // there a conditional to check whether pc < 4.
   //int i, k, l, inv = c[8], r = c[9],x = c[5],y = c[6],j = c[10], id;
-  int i, k, l, inv = p->unknown8, r = p->unknown9;
-  int x = p->unknown5, y = p->unknown6, j = p->spell_cast, id;
+  int i, k, l, inv = p->unknown8, r = p->target_object;
+  int x = p->action_dest_x, y = p->action_dest_y, j = p->spell_cast, id;
 
   debug_printf("> o7\n");
 
@@ -236,7 +236,7 @@ int take_drop_out(int pc)
   if (j > 0 && k == 0) {
     c[9] = 0;
     if (pc < 4) {
-      ch->player.unknown9 = 0;
+      ch->player.target_object = 0;
     } else {
       ch->monster.spells[4] = 0;
     }
@@ -354,7 +354,7 @@ int take_drop_out(int pc)
     // y = crumobj[c[9]][7];
     x = crumobj[c[9]].x;
     y = crumobj[c[9]].y;
-    if (!adjac(pc,x,y)) {
+    if (!adjac(pc, x, y)) {
       return 1;
     }
 

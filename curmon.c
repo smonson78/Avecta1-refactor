@@ -26,12 +26,16 @@ void init_curmon() {
   player->in_use = 1;
 
   // Why?
-  //player->damage = 4;
+  player->damage = 4;
   player->max_health = 50;
   player->sprite_id = SPRITE_PLAYER_NORMAL;
-  player->unknown5 = 5;
-  player->unknown6 = 60;
+  
+  // Seems pointless?
+  player->action_dest_x = 5;
+  player->action_dest_y = 60;
+
   player->target = 8;
+
   //player->unknown1[7] = 0;
   //player->unknown1[8] = 0;
   //player->unknown1[9] = 0;
@@ -39,6 +43,6 @@ void init_curmon() {
   player->unknown12 = 3;
   player->unknown13 = 90;
 
-  // This becomes 60 later on
+  // This becomes 60 later on, in init()
   player->spell_units = 10;
 }

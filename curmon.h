@@ -14,15 +14,15 @@ typedef struct {
   uint8_t monster_name_id;
   // 4
   uint8_t sprite_id;
-  // 5-13
-  //         8: will be 80 if you used a seekshard
-  //        10: the spell number that was cast
-  uint8_t unknown5;
-  uint8_t unknown6;
+  // 5 - the target location for a drag action, a spell cast
+  uint8_t action_dest_x;
+  // 6
+  uint8_t action_dest_y;
   // 7
   uint8_t target;   // Target voice, attack
   uint8_t unknown8; // Thing that is being dropped
-  uint8_t unknown9;
+  // 9 - an object that is being dragged, examined, or cast upon
+  uint8_t target_object;
   // 10: I think this is actually going to be more like a "target of the thing being done"
   uint8_t spell_cast; // This is also sometimes an object number, sometimes a room number
   uint8_t unknown11;
@@ -43,8 +43,10 @@ typedef struct {
   uint8_t unknown20;
   // 21
   uint8_t magic_effect_time_remaining;
-  uint8_t unknown22;
-  uint8_t unknown23;
+  // 22 - set by MOVE command
+  uint8_t last_position_x;
+  // 23 - set by MOVE command
+  uint8_t last_position_y;
   // 24
   uint8_t x;
   // 25
@@ -53,8 +55,10 @@ typedef struct {
   uint8_t dest_x;
   // 27
   uint8_t dest_y;
-  // 28-29
-  uint8_t unknown28[2];
+  // 28
+  uint8_t unknown28; // set by MOVE action (x)
+  // 29
+  uint8_t unknown29; // set by MOVE action (y)
   // 30
   uint8_t current_room;
   // 31
@@ -125,6 +129,8 @@ typedef struct {
   uint8_t sprite_id;
   // 5-9
   uint8_t spells[5];
+  // But also:
+  // 9 = target_object same as player. Spells array must be reused for monster spells at times
   // 10
   uint8_t spell_cast;
   // 11

@@ -19,28 +19,16 @@
 void domsg(int i) {
   int x = 256, y = 8, w = 64, h = 40;
   char scratch[10];
+
   top(2);
 
-  int16_t pxy[10];
-  // Top corner of rectangle
-  pxy[0] = 256;
-  pxy[1] = 8;
-
-  // Horizontal line to the top right corner
-  pxy[2] = 319;
-  pxy[3] = 8;
-
-  // Vertical line down to bottom right
-  pxy[4] = 319;
-  pxy[5] = 48;
-
-  // Horizontal line back to the bottom left
-  pxy[6] = 256;
-  pxy[7] = 48;
-
-  // Back up to the original point
-  pxy[8] = 256;
-  pxy[9] = 8;
+  int16_t pxy[10] = {
+    256, 8,  // Top corner of rectangle
+    319, 8,  // Horizontal line to the top right corner
+    319, 48, // Vertical line down to bottom right
+    256, 48, // Horizontal line back to the bottom left
+    256, 8   // Back up to the original point
+  };
 
   Vsync();
   vbl_animation_off();
@@ -57,6 +45,7 @@ void domsg(int i) {
 
 void undomsg() {
   int x = 255, y = 0, w = 64, h = 40;
+
   Vsync();
   vbl_animation_off();
   form_dial(2, 0, 0, 0, 0, x, y, w, h);
@@ -114,23 +103,23 @@ int init(int flag) {
   pursuit[2] = 0;
 
   c = curmon[0];
-  curmon_t *new_c = &new_curmon[0];
+  //curmon_t *new_c = &new_curmon[0];
 
   crum = -1;
 
   c[0] = 1;
-  new_c->in_use = 1;
+  player->in_use = 1;
 
   // Maybe starting stats on the player.
   c[46] = c[45] = c[31] = c[32] = c[33] = c[34] = c[35] = c[1] = 0;
-  new_c->magic_mode_1 = 0;
-  new_c->poison_mode_2 = 0;
-  new_c->intelligence_routine = 0;
+  player->other_hand = 0;
+  player->good_hand = 0;
+  player->intelligence_routine = 0;
   // new_c->poison_mode_1 - 0; // We're setting it again in a sec
   //new_c->unknown33[0] = 0; // We're setting it again in a sec
-  new_c->unknown33[1] = 0;
-  new_c->stink_lines = 0;
-  new_c->damage = 0;
+  player->unknown33[1] = 0;
+  player->stink_lines = 0;
+  player->damage = 0;
 
   // "dungeon" number
   c[59] = 2;
@@ -139,21 +128,21 @@ int init(int flag) {
   c[41] = 0;
   c[32] = 2;
   c[33] = 4;
-  new_c->unknown59 = 2;
+  player->dungeon = DUNGEON_KILKANEY;
   
   // These are the correct player_t versions:
   // new_c->unlit_torches = 20;
   // new_c->lit_torch_turns = 0;
   // These are the curmon_t versions:
-  new_c->base_chance_2_attack = 20;
-  new_c->base_chance_1_attack = 0;
+  player->unlit_torches = 20;
+  player->lit_torch_turns = 0;
 
-  new_c->poison_mode_1 = 2;  
-  new_c->unknown33[0] = 4;
+  player->poison_mode_1 = 2;  
+  player->unknown33[0] = 4;
 
   // Big version of player character
   c[4] = 81;
-  new_c->sprite_id = 81;
+  player->sprite_id = 81;
 
   check_curmon("init after setting some things in curmon");
 
@@ -169,17 +158,17 @@ int init(int flag) {
   invnpc[0][2] = 42;
 
   c[44] = 50;
-  new_c->bane = 50;
+  player->arrows = 50;
   c[47] = 0;
-  new_c->poisoned = 0;
+  player->poisoned = 0;
 
   // Starting gold
   c[49] = 50;
-  new_c->gold_amount = 50;
+  player->gold_amount = 50;
 
   if (flag == 2) {
     c[14] = 6 * c[51];
-    new_c->spell_units = 6 * new_c->magic_level;
+    player->spell_units = 6 * player->magic_level;
     texwin();
     return 1;
   }
@@ -194,12 +183,12 @@ int init(int flag) {
   c[51] = val[0];
   c[2] = 50;
   c[11] = 4;
-  new_c->perception = 5 + (20 * val[2]);
-  new_c->physical_strength = 3 + (2 * val[1]);
-  new_c->spell_units = 6 * val[0];
-  new_c->magic_level = val[0];
-  new_c->max_health = 50;
-  new_c->unknown11 = 4;
+  player->perception = 5 + (20 * val[2]);
+  player->physical_strength = 3 + (2 * val[1]);
+  player->spell_units = 6 * val[0];
+  player->magic_level = val[0];
+  player->max_health = 50;
+  player->unknown11 = 4;
 
   check_curmon("init near end");
 
@@ -250,24 +239,19 @@ int error(int i) {
   return i;
 }
 
+// This must return int32_t as it's a parameter to xbios_supexec()
 int32_t savpal() {
-  volatile uint16_t *j;
-  int i;
-
-  j = SHIFTER_PALETTE;
-  for (i = 0; i < 16; i++) {
-    oldpal[i] = j[i];
+  for (int i = 0; i < 16; i++) {
+    oldpal[i] = SHIFTER_PALETTE[i];
   }
-
   return 0;
 }
 
 // Player died and is coming back to life
 int console() {
-  debug_printf("> console()\n");
   int i;
   uint8_t *c = curmon[0];
-  curmon_t *new_c = &new_curmon[0];
+  // curmon_t *new_c = &new_curmon[0];
 
   for (i = 1; i < 17; i++) {
     vs_curaddress(handle, i, 1);
@@ -299,7 +283,7 @@ int console() {
   loadnew();
   new = 1;
   c[30] = 29;
-  new_c->current_room = ROOM_ID_LEVETHS_HOUSE;
+  player->current_room = ROOM_ID_LEVETHS_HOUSE;
 
   form_alert(1,"[1][The blond man murmurs  |`Resurrection again... |My strength fails me..."
     "|Such a great distance...|So little time.' ][ Once more ]");
@@ -309,8 +293,6 @@ int console() {
   Setpalette(newpal);
   Vsync();
   init(2);
-
-  debug_printf("< console()\n");
 
   return 3;
 }
@@ -345,6 +327,8 @@ void congratulate() {
   prntbig(" MELKTHROP!",4,5);
 
   // Flash some colours
+  // This looks like stripes on an Atari because of the colour changing during the frame generation, 
+  // but plain flashing under SDL.
   do {
     rgb[0] = Random();
     rgb[1] = Random();
@@ -470,10 +454,14 @@ int loadnew() {
     c[4] = 125;
     player->sprite_id = 125;
 
-    if (c[47] > 0 && c[14] > 0) {
+    // if (c[47] > 0 && c[14] > 0) {
+    // If you leave a dungeon poisoned, and you have some magic power left, automatically cure the poison
+    if (player->poisoned && player->spell_units) {
       c[47] = 0;
       player->poisoned = 0;
     }
+
+    // Lose your current burning torch if you have one
     c[41] = 0;
     player->lit_torch_turns = 0;
 
@@ -536,17 +524,19 @@ int loadnew() {
   //memcpy(rumdata, &room_zero, 157);
   // check_rumdata(); 
 
-  Fread(fhandle, (long)320, putbuf);
-  Fread(fhandle, (long)480, trigval);
+  Fread(fhandle, sizeof(putbuf), putbuf);
+  Fread(fhandle, sizeof(trigval), trigval);
   Fread(fhandle, sizeof(specbuf), &specbuf);
   
-  if (dungeon != 0 && specbuf.dirty_dungeon[dungeon - 1]) {
-    Fread(fhandle, (long)320, monbuf);
+  if (dungeon != DUNGEON_NONE && specbuf.dirty_dungeon[dungeon - 1]) {
+    Fread(fhandle, sizeof(monbuf), monbuf);
   } else {
-    if (new || dungeon == 0) {
-      for (i = 0; i < 320; i++) {
-        monbuf[i] = 0;
-      }
+    if (new || dungeon == DUNGEON_NONE) {
+
+      // for (i = 0; i < 320; i++) {
+      //   monbuf[i] = 0;
+      // }
+      memset(monbuf, 0, sizeof(monbuf));
     }
   }
 
@@ -588,25 +578,26 @@ int loadnew() {
     lev = specbuf.lev = 1;
   }
 
-  // Just the player characters
-  for (i = 1;i < 4; i++) {
+  // Just the player characters (but not the player)
+  for (i = 1; i < 4; i++) {
     // If character is "in use"
     if (curmon[i][0] == 1) {
       curmon[i][30] = -2;
-      new_curmon[i].current_room = -2;
+      players[i].current_room = -2;
     }
   }
 
   // Now blank out all the data for just the monsters
   for (i = 4; i < 12; i++) {
-    c = curmon[i];
-    for (j = 0; j < 60; j++) {
-      c[j] = 0;
-    }
-
+    //c = curmon[i];
+    // for (j = 0; j < 60; j++) {
+    //   c[j] = 0;
+    // }
+    memset(&curmon[i], 0, sizeof(curmon_t));
     memset(&new_curmon[i], 0, sizeof(curmon_t));
   }
 
+  // Reduced because of overflowing the array
   // for (i = 0; i < 20; i++) {
   for (i = 0; i < 19; i++) {
     invtrig[i] = specbuf.unknown1[i];

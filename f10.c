@@ -14,7 +14,7 @@
 /* the object is assumed to be jimmied.                                       */
 /******************************************************************************/
 
-int i10(int pc)
+int rob_listen_in(int pc)
 {
   debug_printf("> i10()\n");
   int16_t x, y;
@@ -65,9 +65,9 @@ int i10(int pc)
   ch->player.unknown8 = 0;
   //new_c->unknown9 = 0; // set done again a few lines down
 
-  ch->player.unknown5 = x;
-  ch->player.unknown6 = y;
-  ch->player.unknown9 = obj;
+  ch->player.action_dest_x = x;
+  ch->player.action_dest_y = y;
+  ch->player.target_object = obj;
   ch->player.command = ACTION_ROOK_SNOOP;
   ch->player.time_until_next_move = 6;
   ch->player.unknown33[1] = 0;
@@ -76,7 +76,7 @@ int i10(int pc)
   return 1;
 }
 
-int o10(int pc)
+int rob_listen_out(int pc)
 {
   debug_printf("> o10()\n");
   int x, y, object, flag=0;

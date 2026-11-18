@@ -33,7 +33,7 @@ int search_in(int pc)
   new_c->time_until_next_move = 6;
   new_c->target = 0;
   new_c->unknown8 = 0;
-  new_c->unknown9 = 0;
+  new_c->target_object = 0;
 
   return 1;
 }
@@ -54,7 +54,7 @@ int search_out(int pc)
   c[7] = c[8] = c[9] = 0;
   new_c->target = 0;
   new_c->unknown8 = 0;
-  new_c->unknown9 = 0;
+  new_c->target_object = 0;
 
   check_curmon("search_out start");
 

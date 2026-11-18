@@ -8,7 +8,7 @@
 /* It's torch time!!                                                         */
 /*****************************************************************************/
 
-int i12(int pc)
+int burn_snuff_in(int pc)
 {
   uint8_t *c = curmon[pc];
   curmon2_t *ch = &new_curmon2[pc];
@@ -36,7 +36,7 @@ int i12(int pc)
   c[7] = c[8] = c[9] = 0;
   ch->player.target = 0;
   ch->player.unknown8 = 0;
-  ch->player.unknown9 = 0;
+  ch->player.target_object = 0;
 
   c[15] = 12;
   c[16] = 6;
@@ -46,7 +46,7 @@ int i12(int pc)
   return 1;
 }
 
-int o12(int pc)
+int burn_snuff_out(int pc)
 {
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];

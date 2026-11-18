@@ -12,7 +12,7 @@
 
 // Exit action
 
-int i9(int pc)
+int exit_in(int pc)
 {
   uint8_t *c = curmon[pc];
   curmon_t *new_c = &new_curmon[pc];
@@ -146,7 +146,7 @@ int i9(int pc)
 
   ch->player.target = 0;
   ch->player.unknown8 = 0;
-  ch->player.unknown9 = z->visible;
+  ch->player.target_object = z->visible;
   // ch->player.spell_cast = crumobj[z[1]][3];
   ch->player.spell_cast = crumobj[z->visible].target;
   ch->player.command = ACTION_EXIT;
@@ -155,7 +155,7 @@ int i9(int pc)
   return 1;
 }
 
-int o9(int pc)
+int exit_out(int pc)
 {
   uint8_t *c = curmon[pc];
   curmon2_t *ch = &new_curmon2[pc];

@@ -1,7 +1,7 @@
 #ifndef __F12_H
 #define __F12_H
 
-int i12(int pc);
-int o12(int pc);
+int burn_snuff_in(int pc);
+int burn_snuff_out(int pc);
 
 #endif

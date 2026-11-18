@@ -13,7 +13,7 @@
 
 // Fire arrow
 
-int i11(int pc)
+int fire_arrow_in(int pc)
 {
   debug_printf("> i11()\n");
   uint8_t *c = curmon[pc];
@@ -66,7 +66,7 @@ int i11(int pc)
 
   c[8] = c[9] = 0;
   ch->player.unknown8 = 0;
-  ch->player.unknown9 = 0;
+  ch->player.target_object = 0;
 
   c[15] = 11;
   ch->player.command = ACTION_FIRE_ARROW;
@@ -77,7 +77,7 @@ int i11(int pc)
   return 1;
 }
 
-int o11(int pc)
+int fire_arrow_out(int pc)
 {
   debug_printf("> o11()\n");
   uint8_t *c = curmon[pc];

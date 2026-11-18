@@ -61,10 +61,11 @@ int load_inside_sprites(int total) {
 
 // TODO: split fileio into 2 versions
 int save_game() {
-
+  return 0;
 }
 
 int load_game() {
+  return 0;
 
 }
 

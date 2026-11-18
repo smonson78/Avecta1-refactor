@@ -63,9 +63,12 @@ int sell(int npc)
 
     ch->player.command = ACTION_WAIT;
     ch->player.time_until_next_move = 80;
-    ch->player.unknown6 = 1;
+    
+    // Unknown what this does
+    ch->player.action_dest_x = 2;
+    ch->player.action_dest_y = 1;
+
     ch->player.unknown8 = 1;
-    ch->player.unknown5 = 2;
 
     return 1;
   }
@@ -77,7 +80,7 @@ int sell(int npc)
     c[8] = 0;
     c[6] = 1;
     ch->player.unknown8 = 0;
-    ch->player.unknown6 = 1;
+    ch->player.action_dest_y = 1;
   }
 
   if (num > 1) {
@@ -111,7 +114,7 @@ int sell(int npc)
       "suggest you leave and go to a cheaper business.'", pname);
     c[6] = 1;
     c[8] = 1;
-    ch->player.unknown6 = 1;
+    ch->player.action_dest_y = 1;
     ch->player.unknown8 = 1;
 
     pass(npc);
@@ -133,7 +136,7 @@ int sell(int npc)
 
   if (c[8] || !getword("yes")) {
     c[5] += 1;
-    ch->player.unknown5 += 1;
+    ch->player.action_dest_x += 1;
 
     if (c[5] > 2) {
       prnt("-> The merchant howls `Guards! Guards! There's a thief in my store!'\
@@ -149,7 +152,7 @@ int sell(int npc)
 
     if (c[5] > 1) {
       c[6] = 1; 
-      ch->player.unknown6 = 1;
+      ch->player.action_dest_y = 1;
 
       prnt("-> The merchant snarls `Get out of my store, you deadbeat, or I'll call the guards!'"
         "  He stands glowering at %s.", &pname[0]);
@@ -184,9 +187,9 @@ int sell(int npc)
 
         c[6] = c[8] = 1;
         c[5] = 1;
-        ch->player.unknown6 = 1;
+        ch->player.action_dest_x = 1;
+        ch->player.action_dest_y = 1;
         ch->player.unknown8 = 1;
-        ch->player.unknown5 = 1;
 
         done = 1;
         selllist[i].attitude = 1;
@@ -204,7 +207,7 @@ int sell(int npc)
           c[8] = 1;
           c[6] = 1;
           ch->player.unknown8 = 1;
-          ch->player.unknown6 = 1;
+          ch->player.action_dest_y = 1;
 
           continue;
       }
@@ -215,10 +218,11 @@ int sell(int npc)
             "family with a pitiful pittance such as that!  How about %s goldpieces?'",
             temp);
           c[9] = amount;
-          ch->player.unknown9 = amount;
+          ch->player.target_object = amount;
 
           continue;
-      }  
+      }
+
       if (amount < selllist[i].unknown - c[10] &&
         amount < selllist[i].min_price + selllist[i].unknown - amount ) {
         prnt("-> The merchant moans woefully ");
@@ -258,7 +262,7 @@ int sell(int npc)
         }
 
         c[9] = amount;
-        ch->player.unknown9 = amount;
+        ch->player.target_object = amount;
 
         j = selllist[i].unknown - amount + selllist[i].min_price;
         sprintf(temp, "%d", j);
@@ -289,10 +293,10 @@ int sell(int npc)
       c[10] = 0;
       ch->monster.command = ACTION_WAIT;
       ch->monster.time_until_next_move = 100;
-      ch->player.unknown6 = 0;
+      ch->player.action_dest_y = 0;
       ch->monster.spells[2] = 0;
       ch->player.unknown8 = 0;
-      ch->player.unknown9 = 0;
+      ch->player.target_object = 0;
       ch->monster.spell_cast = 0;
 
       // If item is a bow, get 30 free arrows
@@ -311,18 +315,22 @@ int sell(int npc)
       if (selllist[i].object != OBJECT_TORCH) {
         putaway(0, selllist[i].object);
       } else {
-        for (j = 0; j < 4; j++) {
-          c = curmon[i];
-          c[42] = (c[42] + 30 > 40 ? 40 : c[42] + 30);
+        // NOTE there was an apparent bug here. curmon[i] was being modified, which is the storekeeper, rather than the player.
+        // It also did this needlessly 4 times. Since it adds time to the currently burning torch, it seems a bit pointless.
+        // No storekeepers operate in the dark. The number 30 is the same as the free arrows count. Perhaps this was meant 
+        // to be something to do with giving 30 arrows to the other player characters
+        //for (j = 0; j < 4; j++) {
+        // c = curmon[i];
+        // c[42] = (c[42] + 30 > 40 ? 40 : c[42] + 30);
 
-          // Just limit it to 40 torches basically
-          // new_curmon2[i].player.unlit_torches = new_curmon2[i].player.unlit_torches + 30 > 40 ? 
-          //   40 : new_curmon2[i].player.unlit_torches + 30;
-          new_curmon2[i].player.unlit_torches += 30;
-          if (new_curmon2[i].player.unlit_torches > 40) {
-            new_curmon2[i].player.unlit_torches = 40;
-          }
-        }
+        // Just limit it to 40 torches basically
+        // new_curmon2[i].player.unlit_torches = new_curmon2[i].player.unlit_torches + 30 > 40 ? 
+        //   40 : new_curmon2[i].player.unlit_torches + 30;
+        // new_curmon2[i].player.unlit_torches += 30;
+        // if (new_curmon2[i].player.unlit_torches > 40) {
+        //   new_curmon2[i].player.unlit_torches = 40;
+        // }
+        //}
       }
     }
   }

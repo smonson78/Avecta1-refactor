@@ -91,7 +91,7 @@ int examine_in(int pc)
     //new_c->unknown9 = 0;
     new_c->spell_cast = (!z1 ? 2 : 1);
     new_c->target = z2;
-    new_c->unknown9 = z1;
+    new_c->target_object = z1;
 
     if (c[24] == x && c[25] == y) {
       c[10] = 3;
@@ -109,7 +109,7 @@ int examine_in(int pc)
 
       c[7] = c[9] = 0;
       new_c->target = 0;
-      new_c->unknown9 = 0;
+      new_c->target_object = 0;
     }
   } else {
     c[10] = 3;

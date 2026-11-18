@@ -147,11 +147,11 @@ int cast_in(int pc)
     c[5] = x;
     c[6] = y;
 
-    new_c->unknown9 = z->visible;
+    new_c->target_object = z->visible;
     new_c->unknown8 = 0;
     new_c->target = z->monster;
-    new_c->unknown5 = x;
-    new_c->unknown6 = y;
+    new_c->action_dest_x = x;
+    new_c->action_dest_y = y;
   }
 
   // 1-based index
@@ -554,7 +554,7 @@ int cast_out(int pc)
       new_c->perception = 120;
 
       // Rook/snoop probably
-      o10(pc);
+      rob_listen_out(pc);
       
       // Return it to the original value
       c[37] = num;

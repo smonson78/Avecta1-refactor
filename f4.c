@@ -50,7 +50,7 @@ int move_in(int pc)
     player_t *p = &players[pc];
     p->target = 0;
     p->unknown8 = 0;
-    p->unknown9 = 0;
+    p->target_object = 0;
   } else {
     // Maybe this is limited to characters only
     new_c->spells[2] = 0;

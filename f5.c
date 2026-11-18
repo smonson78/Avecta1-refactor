@@ -28,6 +28,7 @@ int drag_eat_in(int pc)
   char scratch[18];
   char *w = (pc == 0 ? pname : name[c[3]]);
 
+  // Only works indoors
   if (outside) {
     return 0;
   }
@@ -60,6 +61,8 @@ int drag_eat_in(int pc)
   clrinp();
 
   if ((type == 1 && ret == 0) || type == 0) { /* this is a drag option */
+
+    // Check to see if the player clicked on themselves:
     // if (x == c[24] && y == c[25]) { /* going for an eat in hand */
     if (x == ch->player.x && y == ch->player.y) { /* going for an eat in hand */
       // if (c[45] == 0 && (c[46] == 0 || c[46] == OBJECT_TORCH)) {
@@ -87,6 +90,7 @@ int drag_eat_in(int pc)
       return 1;
     }  /* now continue with drag */
 
+    // What is on that square?
     object = zline[x][y].visible;
     if (object == 0) {
       error(ERROR_NO_OBJECT);
@@ -104,7 +108,8 @@ int drag_eat_in(int pc)
       return 0;
     }
 
-    if (c[45] > 0 && c[46] > 0) {
+    // if (c[45] > 0 && c[46] > 0) {
+    if (ch->player.good_hand > 0 && ch->player.other_hand > 0) {
       error(ERROR_HANDS_FULL);
       return 0;
     }
@@ -114,7 +119,7 @@ int drag_eat_in(int pc)
     ch->player.target = 0;
     ch->player.unknown8 = 0;
     ch->player.spell_cast = 0;
-    ch->player.unknown9 = object;
+    ch->player.target_object = object;
 
     // Let the user select the location on the map
     header(w);
@@ -132,20 +137,23 @@ int drag_eat_in(int pc)
     c[5] = x;
     c[6] = y;
     c[15] = 5;
-    ch->player.unknown5 = x;
-    ch->player.unknown6 = y;
+    ch->player.action_dest_x = x;
+    ch->player.action_dest_y = y;
     ch->player.command = ACTION_DRAG_EAT;
 
     // if (object > 0 && crumobj[object][0] < 41) {
-    if (object > 0 && crumobj[object].object_id < OBJECT_BROADSWORD) {
+    // if (object > 0 && crumobj[object].object_id < OBJECT_BROADSWORD) {
+    // object is always non-zero
+    // object IDs below the broadsword are large enough to block your movement
+    if (crumobj[object].object_id < OBJECT_BROADSWORD) {
       // time = 3 * (c[50] - weight[crumobj[object][0]]);
       time = 3 * (ch->player.physical_strength - weight[crumobj[object].object_id]);
     } else {
       time = 5;
     }
 
-    time = (time < 1 ? 4 : time);
-    time = (time > 20 ? 20 : time); 
+    time = time < 1 ? 4 : time;
+    time = time > 20 ? 20 : time;
     c[16] = time;
     c[34] = 0;
     ch->player.time_until_next_move = time;
@@ -176,19 +184,28 @@ int drag_eat_out(int pc)
   uint8_t *c = curmon[pc];
   zline_t *z;
   curmon2_t *ch = &new_curmon2[pc];
-  char *w, *w1 = (pc == 0 ? &pname[0] : name[c[3]]);
-  int flag = 1, x1, y1, x2, y2, j = c[10], x = c[5], y = c[6], k;
+  // char *w, *w1 = (pc == 0 ? &pname[0] : name[c[3]]);
+  char *w, *w1 = (pc == 0 ? &pname[0] : name[ch->monster.monster_name_id]);
+  // int flag = 1, x1, y1, x2, y2, j = c[10], x = c[5], y = c[6], k;
+  int flag = 1, x1, y1, x2, y2;
+  int j = ch->player.spell_cast;
+  int x = ch->player.action_dest_x;
+  int y = ch->player.action_dest_y;
+  int k;
 
-  if (!handman(pc,c[8],c[9],!j)) {
+  if (!handman(pc, c[8], c[9], !j)) {
     return 1;
   }
 
   if (j == 1) {
-    w = obj[c[8]];
+    // w = obj[c[8]];
+    w = obj[ch->player.unknown8];
 
-    if (eats[c[8] - 40] == 0) {
+    // if (eats[c[8] - 40] == 0) {
+    if (eats[ch->player.unknown8 - 40] == 0) {
       prnt("-> %s attempts to consume the %s, but such a thing is clearly impossible!  "
         "It is apparent that %s is becoming a little strange.", w1, w, w1);
+
       c[8] = 0;
       ch->player.unknown8 = 0;
 
@@ -196,8 +213,10 @@ int drag_eat_out(int pc)
     } else {
       prnt("-> %s swallows the %s!", w1, w);
 
-      if (c[8] != c[45] && c[8] != c[46]) {
-        takeout(pc, c[8]);
+      // if (c[8] != c[45] && c[8] != c[46]) {
+      if (ch->player.unknown8 != ch->player.good_hand && ch->player.unknown8 != ch->player.other_hand) {
+        // takeout(pc, c[8]);
+        takeout(pc, ch->player.unknown8);
       }
       
       if (c[8] == c[45]) {
@@ -252,15 +271,15 @@ int drag_eat_out(int pc)
       } else {
         c[26] = c[5];
         c[27] = c[6];
-        ch->player.dest_x = ch->player.unknown5;
-        ch->player.dest_y = ch->player.unknown6;
+        ch->player.dest_x = ch->player.action_dest_x;
+        ch->player.dest_y = ch->player.action_dest_y;
 
         flag = 1;  
         
         if (move_in(pc)) {
           flag = move_out(pc);
           c[9] = j;
-          ch->player.unknown9 = j;
+          ch->player.target_object = j;
 
           move(j, 0, x2, y2);
         }

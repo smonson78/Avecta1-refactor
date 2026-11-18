@@ -29,7 +29,7 @@
 #else
   // On a real Atari
   #define endianness_fix(buf, words, length) {}
-  #define SHIFTER_PALETTE ((uint16_t *)0xFF8240)
+  #define SHIFTER_PALETTE ((volatile uint16_t *)0xFF8240)
 
   #define debug_printf(...) do{}while(0)
 #endif
