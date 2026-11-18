@@ -180,7 +180,7 @@ void trapres(int pc, int type, int x, int y)
       if (c[8] != c[45]) {
         putaway(pc, c[45]);
         c[45] = c[8];
-        new_c->player.good_hand = new_c->player.unknown8;
+        new_c->player.good_hand = new_c->player.target_inventory;
       }
 
       remove_object(4, c[8]);
@@ -210,7 +210,7 @@ as the imprisoned souls are freed from the iesis chamber!");
       putaway(pc, c[45]);
       remove_object(1, c[8]);
       c[45] = c[8];
-      new_c->player.good_hand = new_c->player.unknown8;
+      new_c->player.good_hand = new_c->player.target_inventory;
     }
 
     if (c[8] != 50) {
@@ -233,7 +233,7 @@ as the imprisoned souls are freed from the iesis chamber!");
     if (c[8] != c[45]) {
       putaway(pc, c[45]);
       c[45] = c[8];
-      new_c->player.good_hand = new_c->player.unknown8;
+      new_c->player.good_hand = new_c->player.target_inventory;
     }
 
     remove_object(1, c[8]);
@@ -431,7 +431,7 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
 
   case 13: /* drank the potion */
     // if (c[54] == 1 || c[8] != 55) {
-    if (new_c->player.original_sprite_id == 1 || new_c->player.unknown8 != 55) {
+    if (new_c->player.original_sprite_id == 1 || new_c->player.target_inventory != 55) {
       break;
     }
 

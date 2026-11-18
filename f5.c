@@ -82,7 +82,7 @@ int drag_eat_in(int pc)
       c[10] = 1;
       c[15] = 5;
       c[16] = 4;
-      ch->player.unknown8 = self == 1 ? ch->player.good_hand : ch->player.other_hand;
+      ch->player.target_inventory = self == 1 ? ch->player.good_hand : ch->player.other_hand;
       ch->player.spell_cast = 1;
       ch->player.command = ACTION_DRAG_EAT;
       ch->player.time_until_next_move = 4;
@@ -117,7 +117,7 @@ int drag_eat_in(int pc)
     c[7] = c[8] = c[10] = 0;
     c[9] = object;
     ch->player.target = 0;
-    ch->player.unknown8 = 0;
+    ch->player.target_inventory = 0;
     ch->player.spell_cast = 0;
     ch->player.target_object = object;
 
@@ -166,7 +166,7 @@ int drag_eat_in(int pc)
     c[15] = 5;
     c[16] = 6;
 
-    ch->player.unknown8 = scratch[ret];
+    ch->player.target_inventory = scratch[ret];
     ch->player.spell_cast = 1;
     ch->player.command = ACTION_DRAG_EAT;
     ch->player.time_until_next_move = 6;
@@ -199,24 +199,24 @@ int drag_eat_out(int pc)
 
   if (j == 1) {
     // w = obj[c[8]];
-    w = obj[ch->player.unknown8];
+    w = obj[ch->player.target_inventory];
 
     // if (eats[c[8] - 40] == 0) {
-    if (eats[ch->player.unknown8 - 40] == 0) {
+    if (eats[ch->player.target_inventory - 40] == 0) {
       prnt("-> %s attempts to consume the %s, but such a thing is clearly impossible!  "
         "It is apparent that %s is becoming a little strange.", w1, w, w1);
 
       c[8] = 0;
-      ch->player.unknown8 = 0;
+      ch->player.target_inventory = 0;
 
       return 1;
     } else {
       prnt("-> %s swallows the %s!", w1, w);
 
       // if (c[8] != c[45] && c[8] != c[46]) {
-      if (ch->player.unknown8 != ch->player.good_hand && ch->player.unknown8 != ch->player.other_hand) {
+      if (ch->player.target_inventory != ch->player.good_hand && ch->player.target_inventory != ch->player.other_hand) {
         // takeout(pc, c[8]);
-        takeout(pc, ch->player.unknown8);
+        takeout(pc, ch->player.target_inventory);
       }
       
       if (c[8] == c[45]) {

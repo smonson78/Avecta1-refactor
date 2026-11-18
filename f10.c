@@ -62,7 +62,7 @@ int rob_listen_in(int pc)
   c[34] = 0;
 
   ch->player.target = 0;
-  ch->player.unknown8 = 0;
+  ch->player.target_inventory = 0;
   //new_c->unknown9 = 0; // set done again a few lines down
 
   ch->player.action_dest_x = x;

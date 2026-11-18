@@ -68,7 +68,7 @@ int sell(int npc)
     ch->player.action_dest_x = 2;
     ch->player.action_dest_y = 1;
 
-    ch->player.unknown8 = 1;
+    ch->player.target_inventory = 1;
 
     return 1;
   }
@@ -79,7 +79,7 @@ int sell(int npc)
       "had plenty of time to make up your mind.  What do you say?  Yes or no?'");
     c[8] = 0;
     c[6] = 1;
-    ch->player.unknown8 = 0;
+    ch->player.target_inventory = 0;
     ch->player.action_dest_y = 1;
   }
 
@@ -115,7 +115,7 @@ int sell(int npc)
     c[6] = 1;
     c[8] = 1;
     ch->player.action_dest_y = 1;
-    ch->player.unknown8 = 1;
+    ch->player.target_inventory = 1;
 
     pass(npc);
     return 1;
@@ -189,7 +189,7 @@ int sell(int npc)
         c[5] = 1;
         ch->player.action_dest_x = 1;
         ch->player.action_dest_y = 1;
-        ch->player.unknown8 = 1;
+        ch->player.target_inventory = 1;
 
         done = 1;
         selllist[i].attitude = 1;
@@ -206,7 +206,7 @@ int sell(int npc)
 
           c[8] = 1;
           c[6] = 1;
-          ch->player.unknown8 = 1;
+          ch->player.target_inventory = 1;
           ch->player.action_dest_y = 1;
 
           continue;
@@ -295,7 +295,7 @@ int sell(int npc)
       ch->monster.time_until_next_move = 100;
       ch->player.action_dest_y = 0;
       ch->monster.spells[2] = 0;
-      ch->player.unknown8 = 0;
+      ch->player.target_inventory = 0;
       ch->player.target_object = 0;
       ch->monster.spell_cast = 0;
 

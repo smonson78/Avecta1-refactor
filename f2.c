@@ -148,7 +148,7 @@ int cast_in(int pc)
     c[6] = y;
 
     new_c->target_object = z->visible;
-    new_c->unknown8 = 0;
+    new_c->target_inventory = 0;
     new_c->target = z->monster;
     new_c->action_dest_x = x;
     new_c->action_dest_y = y;

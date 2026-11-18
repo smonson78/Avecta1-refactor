@@ -87,7 +87,7 @@ int examine_in(int pc)
     *(c + 7) = z2;
     *(c + 9) = z1;
     //new_c->unknown7 = 0;
-    new_c->unknown8 = 0;
+    new_c->target_inventory = 0;
     //new_c->unknown9 = 0;
     new_c->spell_cast = (!z1 ? 2 : 1);
     new_c->target = z2;
@@ -97,14 +97,14 @@ int examine_in(int pc)
       c[10] = 3;
       c[8] = (c[45] == 0 ? c[46] : c[45]);
       new_c->spell_cast = 3;
-      new_c->unknown8 = (new_c->good_hand == 0 ? new_c->other_hand : new_c->good_hand);
+      new_c->target_inventory = (new_c->good_hand == 0 ? new_c->other_hand : new_c->good_hand);
       
       if (c[45] != 0 && c[46] != 0 && c[46] != 81) {
         // Get the number of the button clicked by the user on modal 31, which is
         // "Which hand's object? 1=Good, 2=Other"
         i = error(ERROR_WHICH_HANDS_OBJECT);
         c[8] = c[44 + i];
-        new_c->unknown8 = i == 1 ? new_c->good_hand : new_c->other_hand;
+        new_c->target_inventory = i == 1 ? new_c->good_hand : new_c->other_hand;
       }
 
       c[7] = c[9] = 0;
@@ -115,7 +115,7 @@ int examine_in(int pc)
     c[10] = 3;
     c[8] = scratch[ret];
     new_c->spell_cast = 3;
-    new_c->unknown8 = scratch[ret];
+    new_c->target_inventory = scratch[ret];
   }
 
   c[15] = 3;
@@ -155,10 +155,10 @@ int examine_out(int pc)
 
       if (c[46] == 0) {
         c[46] = c[8];
-        new_c->other_hand = new_c->unknown8;
+        new_c->other_hand = new_c->target_inventory;
       } else {
         c[45] = c[8];
-        new_c->good_hand = new_c->unknown8;
+        new_c->good_hand = new_c->target_inventory;
       }
 
       takeout(pc, c[8]);

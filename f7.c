@@ -86,7 +86,7 @@ int take_drop_in(int pc)
 
   c[7] = c[8] = c[9] = 0;      
   new_c->target = 0;
-  new_c->unknown8 = 0;
+  new_c->target_inventory = 0;
   new_c->target_object = 0;
   
   if (ret == 0 && !self) {
@@ -136,7 +136,7 @@ int take_drop_in(int pc)
     }
 
     c[8] = scratch[ret];
-    new_c->unknown8 = scratch[ret];
+    new_c->target_inventory = scratch[ret];
     c[7] = c[9] = 0;
     new_c->target = 0;
     new_c->target_object = 0;
@@ -159,7 +159,7 @@ int take_drop_in(int pc)
     new_c->time_until_next_move = 2;
 
     //if (c[8] != c[45]) {
-    if (new_c->unknown8 != new_c->good_hand) {
+    if (new_c->target_inventory != new_c->good_hand) {
       c[16] += 4;
       new_c->time_until_next_move += 4;
     }
@@ -188,7 +188,7 @@ int take_drop_out(int pc)
   // Interesting these seem to apply only to player characters. But further down,
   // there a conditional to check whether pc < 4.
   //int i, k, l, inv = c[8], r = c[9],x = c[5],y = c[6],j = c[10], id;
-  int i, k, l, inv = p->unknown8, r = p->target_object;
+  int i, k, l, inv = p->target_inventory, r = p->target_object;
   int x = p->action_dest_x, y = p->action_dest_y, j = p->spell_cast, id;
 
   debug_printf("> o7\n");
@@ -224,7 +224,7 @@ int take_drop_out(int pc)
       ch->player.good_hand = 0;
     } else {
       //if (c[46] != OBJECT_TORCH && c[45] != 0 && c[46] == c[8]) {
-      if (p->other_hand != OBJECT_TORCH && p->good_hand != 0 && p->other_hand == p->unknown8) {
+      if (p->other_hand != OBJECT_TORCH && p->good_hand != 0 && p->other_hand == p->target_inventory) {
         c[46] = 0;
         ch->player.other_hand = 0;
       }
@@ -243,7 +243,7 @@ int take_drop_out(int pc)
 
     i = rumslot();
     // prnt("-> %s puts the %s down.", w1, obj[c[8]]);
-    prnt("-> %s puts the %s down.", w1, obj[ch->player.unknown8]);
+    prnt("-> %s puts the %s down.", w1, obj[ch->player.target_inventory]);
     // z = crumobj[i];
     z = &crumobj[i];
     
@@ -261,13 +261,13 @@ int take_drop_out(int pc)
     takeout(pc, new_c->spells[3]);
 
     //if (c[45] == c[8]) {
-    if (ch->player.good_hand == ch->player.unknown8) {
+    if (ch->player.good_hand == ch->player.target_inventory) {
       c[45] = 0;
       ch->player.good_hand = 0;
     }
 
     //if (c[46] == c[8]) {
-    if (ch->player.other_hand == ch->player.unknown8) {
+    if (ch->player.other_hand == ch->player.target_inventory) {
       c[46] = 0;
       ch->player.other_hand = 0;
     }
@@ -289,16 +289,16 @@ int take_drop_out(int pc)
     // z[1] = 1;
     // z[6] = x;
     // z[7] = y;
-    // z[4] = ch->player.unknown8;
+    // z[4] = ch->player.target_inventory;
     // z[5] = -1;
     // z[8] = 1;
     // z[2] = z[3] = 0;
 
-    z->object_id = ch->player.unknown8;
+    z->object_id = ch->player.target_inventory;
     z->movable = 1;
     z->x = x;
     z->y = y;
-    z->nmsg = ch->player.unknown8;
+    z->nmsg = ch->player.target_inventory;
     z->hide = -1;
     z->visible = 1;
     z->trap = 0;
@@ -318,7 +318,7 @@ int take_drop_out(int pc)
     // for (k = 0; k < 20; k++) {
     for (k = 0; k < 19; k++) {
       // if (c[8] == 0) {
-      if (ch->player.unknown8 == 0) {
+      if (ch->player.target_inventory == 0) {
         debug_printf("invtrig size was %d in take/drop command\n", k);
         break;
       }

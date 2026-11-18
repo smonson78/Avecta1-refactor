@@ -65,7 +65,7 @@ int fire_arrow_in(int pc)
   }
 
   c[8] = c[9] = 0;
-  ch->player.unknown8 = 0;
+  ch->player.target_inventory = 0;
   ch->player.target_object = 0;
 
   c[15] = 11;

@@ -62,7 +62,7 @@ int voice_out(int pc)
 
   curmon[pc][8] = 0;
   curmon[pc][9] = 0;
-  new_curmon2[pc].player.unknown8 = 0;
+  new_curmon2[pc].player.target_inventory = 0;
   new_curmon2[pc].player.target_object = 0;
 
   // If already controlled, release them from control

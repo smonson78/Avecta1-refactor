@@ -95,7 +95,7 @@ int activate_monsters(int type, int nm, int x, int y)
     pc->action_dest_x = p->unknown5;
     pc->action_dest_y = p->unknown6;
     pc->target = p->unknown7;
-    pc->unknown8 = p->unknown8;
+    pc->target_inventory = p->unknown8;
     pc->target_object = p->unknown9;
     pc->spell_cast = p->unknown10;
     pc->unknown11 = p->unknown11;

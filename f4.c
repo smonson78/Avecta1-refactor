@@ -49,7 +49,7 @@ int move_in(int pc)
   if (pc < 4) {
     player_t *p = &players[pc];
     p->target = 0;
-    p->unknown8 = 0;
+    p->target_inventory = 0;
     p->target_object = 0;
   } else {
     // Maybe this is limited to characters only

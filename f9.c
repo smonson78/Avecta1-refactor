@@ -145,7 +145,7 @@ int exit_in(int pc)
   c[16] = 6;
 
   ch->player.target = 0;
-  ch->player.unknown8 = 0;
+  ch->player.target_inventory = 0;
   ch->player.target_object = z->visible;
   // ch->player.spell_cast = crumobj[z[1]][3];
   ch->player.spell_cast = crumobj[z->visible].target;

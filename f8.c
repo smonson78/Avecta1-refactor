@@ -14,7 +14,7 @@ int wait_in(int pc)
   ch->player.command = ACTION_WAIT;
   ch->player.time_until_next_move = 4;
   ch->player.target = 0;
-  ch->player.unknown8 = 0;
+  ch->player.target_inventory = 0;
   ch->player.target_object = 0;
 
   debug_printf("< wait_in()\n");

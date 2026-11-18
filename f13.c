@@ -49,7 +49,7 @@ int give_in(int pc)
   c[16] = c[11];
 
   new_c->player.target = tar;
-  new_c->player.unknown8 = 0;
+  new_c->player.target_inventory = 0;
   new_c->player.target_object = 0;
   new_c->player.command = ACTION_GIVE;
   new_c->player.time_until_next_move = new_c->player.unknown11;

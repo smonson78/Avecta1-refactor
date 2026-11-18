@@ -139,7 +139,7 @@ int attack_out(int pc)
 
   if (pc < 4) {
     a[8] = a[45];
-    new_a->player.unknown8 = new_a->player.good_hand;
+    new_a->player.target_inventory = new_a->player.good_hand;
   }
 
   if (base > roll && dam > 0) {

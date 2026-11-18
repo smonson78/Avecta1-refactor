@@ -32,7 +32,7 @@ int search_in(int pc)
   new_c->command = ACTION_SEARCH;
   new_c->time_until_next_move = 6;
   new_c->target = 0;
-  new_c->unknown8 = 0;
+  new_c->target_inventory = 0;
   new_c->target_object = 0;
 
   return 1;
@@ -53,7 +53,7 @@ int search_out(int pc)
 
   c[7] = c[8] = c[9] = 0;
   new_c->target = 0;
-  new_c->unknown8 = 0;
+  new_c->target_inventory = 0;
   new_c->target_object = 0;
 
   check_curmon("search_out start");
@@ -124,7 +124,7 @@ int search_out(int pc)
             c[8] = k;
             c[10] = 0;
             new_c->command = ACTION_TAKE_DROP;
-            new_c->unknown8 = k;
+            new_c->target_inventory = k;
             new_c->spell_cast = 0;
             
             prnt("-> %s breaks off the search to take the %s.", w, obj[k]);

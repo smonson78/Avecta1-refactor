@@ -20,7 +20,14 @@ typedef struct {
   uint8_t action_dest_y;
   // 7
   uint8_t target;   // Target voice, attack
-  uint8_t unknown8; // Thing that is being dropped
+  // 8
+  // During attack_out(), this is what was held in your good hand
+  // During cast_in, and others that don't use it, this is set to 0
+  // During Examine IN, this is whatever is in either hand
+  // Then in Examine OUT, whatever is in here goes into your hand with the message that you "take it out" for examination
+  // During Eat, this is the object from your hands that you're about to eat
+  // When using an object - in trapres - it's the object you were holding
+  uint8_t target_inventory;
   // 9 - an object that is being dragged, examined, or cast upon
   uint8_t target_object;
   // 10: I think this is actually going to be more like a "target of the thing being done"
