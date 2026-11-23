@@ -34,8 +34,10 @@ typedef struct {
   uint8_t spell_cast; // This is also sometimes an object number, sometimes a room number
   // 11: time it takes to perform a movement or an attack. 1 is the fastest.
   int8_t speed;
-  uint8_t unknown12;
-  uint8_t unknown13;
+  // 12: armour level, not used
+  uint8_t armour;
+  // 13: intelligence level, only used in testing for panic
+  uint8_t intelligence;
   // 14
   uint8_t spell_units;
   // 15: the command that's just starting and is in progress. This is numbered the same as the 
@@ -145,9 +147,9 @@ typedef struct {
   // 11
   int8_t speed;
   // 12
-  uint8_t unknown12;
+  uint8_t armour;
   // 13
-  uint8_t unknown13;
+  uint8_t intelligence;
   // 14
   uint8_t spell_units;
   // 15: the command that's just starting and is in progress. This is numbered the same as the 

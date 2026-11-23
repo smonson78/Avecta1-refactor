@@ -366,8 +366,8 @@ int getmon(int room)
           c[9] = p->unknown9;
           c[10] = p->unknown10;
           c[11] = p->speed;
-          c[12] = p->unknown12;
-          c[13] = p->unknown13;
+          c[12] = p->armour;
+          c[13] = p->intelligence;
           c[14] = p->spell_units;
           
           mon->in_use = p->in_use;
@@ -382,8 +382,8 @@ int getmon(int room)
           mon->spells[4] = p->unknown9;
           mon->spell_cast = p->unknown10;
           mon->speed = p->speed;
-          mon->unknown12 = p->unknown12;
-          mon->unknown13 = p->unknown13;
+          mon->armour = p->armour;
+          mon->intelligence = p->intelligence;
           mon->spell_units = p->spell_units;
 
           c[50] = p->physical_strength;

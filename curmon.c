@@ -40,8 +40,8 @@ void init_curmon() {
   //player->unknown1[8] = 0;
   //player->unknown1[9] = 0;
   player->speed = 4;
-  player->unknown12 = 3;
-  player->unknown13 = 90;
+  player->armour = 3;
+  player->intelligence = 90;
 
   // This becomes 60 later on, in init()
   player->spell_units = 10;

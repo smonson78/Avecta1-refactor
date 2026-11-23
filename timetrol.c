@@ -104,7 +104,7 @@ int timetrol()
 						new_c->speed = new_c->original_stat;
 						break;
 					case MAGIC_EFFECT_ARMOUR:
-						new_c->unknown12 = new_c->original_stat;
+						new_c->armour = new_c->original_stat;
 						break;
 					case MAGIC_EFFECT_VORPAL_BLADE:
 						new_c->base_chance_3_attack = new_c->original_stat;

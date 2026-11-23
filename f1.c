@@ -59,6 +59,7 @@ int attack_in(int pc)
   return 1;
 }
 
+// FIXME: At no point does armour stat do anything.
 int attack_out(int pc) 
 {
   debug_printf("> attack_out()\n");

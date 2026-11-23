@@ -241,7 +241,7 @@ void losespel(int pc)
         new_c->speed = new_c->original_stat;
         break;
       case MAGIC_EFFECT_ARMOUR:
-        new_c->unknown12 = new_c->original_stat;
+        new_c->armour = new_c->original_stat;
         break;
       case MAGIC_EFFECT_VORPAL_BLADE:
         new_c->base_chance_3_attack = new_c->original_stat;
@@ -487,8 +487,8 @@ int cast_out(int pc)
       t[12] += c[51];
       t[19] = 12;
       t[21] = 20 + 2*(c[51]);
-      new_t->original_stat = new_t->unknown12;
-      new_t->unknown12 += new_c->magic_level;
+      new_t->original_stat = new_t->armour;
+      new_t->armour += new_c->magic_level;
       new_t->magic_effect = MAGIC_EFFECT_ARMOUR;
       new_t->magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
 

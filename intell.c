@@ -237,8 +237,8 @@ int morale(int npc)
   }
 
   // if (c[13] > 100 || c[1] < (c[2])/2 ) { /* not intelligent creature */
-  if (new_c->monster.unknown13 > 100 || new_c->monster.damage < (new_c->monster.max_health) / 2) { 
-    /* not intelligent creature */
+  if (new_c->monster.intelligence > 100 || new_c->monster.damage < (new_c->monster.max_health) / 2) { 
+    /* not intelligent creature - so will never panic */
     return 1;
   }
 
@@ -264,7 +264,7 @@ int morale(int npc)
   }
 
   // level = 5 * (c[2] / 5) + c[13];
-  level = 5 * (new_c->monster.max_health / 5) + new_c->monster.unknown13;
+  level = 5 * (new_c->monster.max_health / 5) + new_c->monster.intelligence;
   // dam = c[2] - c[1];
   // Done in two steps in order to force signed maths
   dam = new_c->monster.max_health;

@@ -58,9 +58,11 @@ typedef struct {
   uint8_t unknown8;
   uint8_t unknown9;
   uint8_t unknown10;
+  // 11
   uint8_t speed;
-  uint8_t unknown12;
-  uint8_t unknown13;
+  // 12
+  uint8_t armour;
+  uint8_t intelligence;
   uint8_t spell_units;
   // 15
   uint8_t physical_strength;

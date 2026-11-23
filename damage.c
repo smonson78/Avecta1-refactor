@@ -17,7 +17,7 @@
 #include "debug.h"
 
 // pc = monster/character index
-// level = 
+// level = damage level
 int damage(int pc, int level)
 {
   uint8_t *c = curmon[pc];
