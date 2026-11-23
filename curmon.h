@@ -32,7 +32,8 @@ typedef struct {
   uint8_t target_object;
   // 10: I think this is actually going to be more like a "target of the thing being done"
   uint8_t spell_cast; // This is also sometimes an object number, sometimes a room number
-  uint8_t unknown11;
+  // 11: time it takes to perform a movement or an attack. 1 is the fastest.
+  int8_t speed;
   uint8_t unknown12;
   uint8_t unknown13;
   // 14
@@ -47,7 +48,8 @@ typedef struct {
   uint8_t unknown18;
   // 19: the offset into the object of the last thing that was affected by magic
   uint8_t magic_effect;
-  uint8_t unknown20;
+  // 20: Original stat before a spell affected the creature. This might speed, strength etc
+  uint8_t original_stat;
   // 21
   uint8_t magic_effect_time_remaining;
   // 22 - set by MOVE command
@@ -141,7 +143,7 @@ typedef struct {
   // 10
   uint8_t spell_cast;
   // 11
-  uint8_t unknown11;
+  int8_t speed;
   // 12
   uint8_t unknown12;
   // 13
@@ -158,7 +160,8 @@ typedef struct {
   uint8_t unknown18;
   // 19
   uint8_t magic_effect;
-  uint8_t unknown20;
+  // 20
+  uint8_t original_stat;
   // 21
   uint8_t magic_effect_time_remaining;
   uint8_t unknown22;

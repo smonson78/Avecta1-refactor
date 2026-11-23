@@ -26,7 +26,7 @@ int move_in(int pc)
   new_c->unknown22 = new_c->x;
   new_c->unknown23 = new_c->y;
   new_c->command = ACTION_MOVE;
-  new_c->time_until_next_move = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
+  new_c->time_until_next_move = new_c->speed > 0 ? new_c->speed : 1;
 
   // nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &x, &y);
   nextxy(new_c->x, new_c->y, 
@@ -198,7 +198,7 @@ int move_out(int pc)
   nextxy(c[22], c[23], c[26], c[27], c[24], c[25], &x, &y);
 
   c[16] = c[11] > 0 ? c[11] : 1;
-  new_c->time_until_next_move = new_c->unknown11 > 0 ? new_c->unknown11 : 1;
+  new_c->time_until_next_move = new_c->speed > 0 ? new_c->speed : 1;
 
   // if (x - c[24] != 0 && y - c[25] != 0) {
   if (x - new_c->x != 0 && y - new_c->y != 0) {

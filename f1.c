@@ -51,7 +51,7 @@ int attack_in(int pc)
   new_c->monster.command = ACTION_ATTACK;
 
   c[16] = c[11];
-  new_c->monster.time_until_next_move = new_c->monster.unknown11;
+  new_c->monster.time_until_next_move = new_c->monster.speed;
 
   c[9] = 0;
   new_c->monster.spells[4] = 0;
@@ -114,7 +114,7 @@ int attack_out(int pc)
   roll = rnd(100);
   // base = weapon_chance + 3 * (a[50] - 10 + a[11] - t[11]);
   base = weapon_chance + 3 * (new_a->monster.physical_strength - 
-    10 + new_a->monster.unknown11 - new_t->monster.unknown11);
+    10 + new_a->monster.speed - new_t->monster.speed);
 
   if (pc < 4) {
     // dam = weapon[a[45] - 40][1];

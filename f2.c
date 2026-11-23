@@ -235,21 +235,22 @@ void losespel(int pc)
     // FIXME This can't be easily ported to new_curmon. First we need to work what it does.
     c[c[19]] = c[20];
 
+    // FIXME: this code is duplicated in timetrol and appears to be identical.
     switch (new_c->magic_effect) {
-      case 11:
-        new_c->unknown11 = new_c->unknown20;
+      case MAGIC_EFFECT_SPEED:
+        new_c->speed = new_c->original_stat;
         break;
-      case 12:
-        new_c->unknown12 = new_c->unknown20;
+      case MAGIC_EFFECT_ARMOUR:
+        new_c->unknown12 = new_c->original_stat;
         break;
-      case 43:
-        new_c->base_chance_3_attack = new_c->unknown20;
+      case MAGIC_EFFECT_VORPAL_BLADE:
+        new_c->base_chance_3_attack = new_c->original_stat;
         break;
-      case 54:
-        new_c->original_sprite_id = new_c->unknown20;
+      case MAGIC_EFFECT_IMMUNITY:
+        new_c->original_sprite_id = new_c->original_stat;
         break;
-      case 50:
-        new_c->physical_strength = new_c->unknown20;
+      case MAGIC_EFFECT_STRENGTH:
+        new_c->physical_strength = new_c->original_stat;
         break;
       default:
         debug_printf("!!!!!!! weird logic in losespel() %d\n", new_c->magic_effect);
@@ -433,7 +434,7 @@ int cast_out(int pc)
       printf("--> t is %p, new_t is %p\n", t, new_t);
       new_t->time_until_next_move = 50 + (5 * new_c->magic_level);
       new_t->magic_effect = MAGIC_EFFECT_NONE;
-      new_t->unknown20 = 1;
+      new_t->original_stat = 1;
       new_t->magic_effect_time_remaining = new_t->time_until_next_move / 5; // Note we just set this value earlier
 
       break;
@@ -456,7 +457,7 @@ int cast_out(int pc)
       t[43] = 1;
       t[19] = 43;
       t[21] = 20 + 2 * c[51];
-      new_t->unknown20 = new_t->base_chance_3_attack; // this was a crash
+      new_t->original_stat = new_t->base_chance_3_attack; // this was a crash
       new_t->base_chance_3_attack = 1;
       new_t->magic_effect = MAGIC_EFFECT_VORPAL_BLADE;
       new_t->magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
@@ -471,8 +472,8 @@ int cast_out(int pc)
       t[11] = 1;
       t[19] = 11;
       t[21] = 20 + 2 * c[51];
-      new_t->unknown20 = new_t->unknown11;
-      new_t->unknown11 = 1;
+      new_t->original_stat = new_t->speed;
+      new_t->speed = 1;
       new_t->magic_effect = MAGIC_EFFECT_SPEED;
       new_t->magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
 
@@ -486,7 +487,7 @@ int cast_out(int pc)
       t[12] += c[51];
       t[19] = 12;
       t[21] = 20 + 2*(c[51]);
-      new_t->unknown20 = new_t->unknown12;
+      new_t->original_stat = new_t->unknown12;
       new_t->unknown12 += new_c->magic_level;
       new_t->magic_effect = MAGIC_EFFECT_ARMOUR;
       new_t->magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
@@ -573,7 +574,7 @@ int cast_out(int pc)
       t[36] = 1;
       t[19] = 36;
       t[21] = 40 + 2*(c[51]);
-      new_t->unknown20 = new_t->flee;
+      new_t->original_stat = new_t->flee;
       new_t->flee = 1;
       new_t->magic_effect = MAGIC_EFFECT_FEAR;
       new_t->magic_effect_time_remaining = 40 + (2 * new_c->magic_level);
@@ -699,7 +700,7 @@ int cast_out(int pc)
       t[19] = 38;
       t[21] = 20 + 2 * c[51];
       new_t->controlled = 1;
-      new_t->unknown20 = 0;
+      new_t->original_stat = 0;
       new_t->magic_effect = MAGIC_EFFECT_CHARM;
       new_t->magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
 

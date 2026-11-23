@@ -39,7 +39,7 @@ void init_curmon() {
   //player->unknown1[7] = 0;
   //player->unknown1[8] = 0;
   //player->unknown1[9] = 0;
-  player->unknown11 = 4;
+  player->speed = 4;
   player->unknown12 = 3;
   player->unknown13 = 90;
 

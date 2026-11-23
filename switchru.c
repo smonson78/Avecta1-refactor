@@ -365,7 +365,7 @@ int getmon(int room)
           c[8] = p->unknown8;
           c[9] = p->unknown9;
           c[10] = p->unknown10;
-          c[11] = p->unknown11;
+          c[11] = p->speed;
           c[12] = p->unknown12;
           c[13] = p->unknown13;
           c[14] = p->spell_units;
@@ -381,7 +381,7 @@ int getmon(int room)
           mon->spells[3] = p->unknown8;
           mon->spells[4] = p->unknown9;
           mon->spell_cast = p->unknown10;
-          mon->unknown11 = p->unknown11;
+          mon->speed = p->speed;
           mon->unknown12 = p->unknown12;
           mon->unknown13 = p->unknown13;
           mon->spell_units = p->spell_units;
@@ -396,7 +396,7 @@ int getmon(int room)
           c[46] = p->magic_mode;
           c[37] = p->magic_mode;
           c[58] = type;
-          c[51] = (c[14]) / 3;
+          c[51] = c[14] / 3;
 
           mon->physical_strength = p->physical_strength;
           mon->poison_mode_2 = p->poison_mode;

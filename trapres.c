@@ -445,7 +445,7 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
     c[54] = 1;
     c[8] = 0;
     new_c->monster.magic_effect = MAGIC_EFFECT_IMMUNITY;
-    new_c->monster.unknown20 = 0;
+    new_c->monster.original_stat = 0;
     new_c->monster.magic_effect_time_remaining = 40 - randomness;
     new_c->monster.magic_mode_2 = 1;
     new_c->monster.spells[3] = 0;
@@ -1086,7 +1086,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     c[50] = 20;
     c[21] = 10;
     new_c->monster.magic_effect = MAGIC_EFFECT_STRENGTH;
-    new_c->monster.unknown20 = new_c->monster.physical_strength;
+    new_c->monster.original_stat = new_c->monster.physical_strength;
     new_c->monster.physical_strength = 20;
     new_c->monster.magic_effect_time_remaining = 10;
     break;

@@ -71,7 +71,7 @@ int fire_arrow_in(int pc)
   c[15] = 11;
   ch->player.command = ACTION_FIRE_ARROW;
   c[16] = 2 + c[11];
-  ch->player.time_until_next_move = 2 + ch->player.unknown11;
+  ch->player.time_until_next_move = 2 + ch->player.speed;
 
   debug_printf("< i11()\n");
   return 1;

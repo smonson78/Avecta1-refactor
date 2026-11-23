@@ -87,7 +87,9 @@ int timetrol()
 			}
 		}          
 
-    if (c[21] > 0) { /* checks for expiration of spells */
+    if (c[21] > 0) {
+			/* checks for expiration of spells */
+			
 			c[21] -= 1;
 			new_c->magic_effect_time_remaining--;
 
@@ -95,28 +97,23 @@ int timetrol()
 			if (new_c->magic_effect_time_remaining == 0) {
 				// FIXME how can I implement that?!?
 				c[c[19]] = c[20];
-				debug_printf("!!!!!!! weird logic in timetrol()\n");
-				// could be 11, 12, 43, 54 (cinput.c)
-				// 11 - unknown
-				// 12 - unknown
-				// 43 - base_chance_3_attack
-				// 54 - magic_mode_2
-				// 50 (trapres.c) (that's physical strength)
+
+				// Return affected stats to their original value
 				switch (new_c->magic_effect) {
-					case 11:
-						new_c->unknown11 = new_c->unknown20;
+					case MAGIC_EFFECT_SPEED:
+						new_c->speed = new_c->original_stat;
 						break;
-					case 12:
-						new_c->unknown12 = new_c->unknown20;
+					case MAGIC_EFFECT_ARMOUR:
+						new_c->unknown12 = new_c->original_stat;
 						break;
-					case 43:
-						new_c->base_chance_3_attack = new_c->unknown20;
+					case MAGIC_EFFECT_VORPAL_BLADE:
+						new_c->base_chance_3_attack = new_c->original_stat;
 						break;
-					case 54:
-						new_c->magic_mode_2 = new_c->unknown20;
+					case MAGIC_EFFECT_IMMUNITY:
+						new_c->magic_mode_2 = new_c->original_stat;
 						break;
-					case 50:
-						new_c->physical_strength = new_c->unknown20;
+					case MAGIC_EFFECT_STRENGTH:
+						new_c->physical_strength = new_c->original_stat;
 						break;
 					default:
 						debug_printf("!!!!!!! weird logic in timetrol() %d\n", new_c->magic_effect);

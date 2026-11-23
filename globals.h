@@ -58,7 +58,7 @@ typedef struct {
   uint8_t unknown8;
   uint8_t unknown9;
   uint8_t unknown10;
-  uint8_t unknown11;
+  uint8_t speed;
   uint8_t unknown12;
   uint8_t unknown13;
   uint8_t spell_units;
@@ -346,8 +346,6 @@ enum action_t {
 #define TRAP_TAKE_BONE_KEY 5
 #define TRAP_FORGE_ROOM_DAMAGE 15
 
-
-
 enum {
   DUNGEON_NONE = 0,
   DUNGEON_MONASTERY,
@@ -357,6 +355,10 @@ enum {
 
 #define ROOM_LEVETH_MONOLOGUE 30
 #define ROOM_LEVETH_BEDROOM 29
+
+// Around the wrong way by modern standards
+#define ERR_SUCCESS 1
+#define ERR_FAILURE 0
 
 extern char *errmsg[];
 

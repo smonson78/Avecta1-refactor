@@ -349,7 +349,7 @@ int setflee(int npc)
       c[16] = (c[11] < 1 ? 1 : c[11]);
       new_c->command = ACTION_MOVE;
       new_c->unknown18 = i;
-      new_c->time_until_next_move = (new_c->unknown11 < 1 ? 1 : new_c->unknown11);
+      new_c->time_until_next_move = new_c->speed < 1 ? 1 : new_c->speed;
 
       return 1;
     }
@@ -505,7 +505,7 @@ int setmove(int npc, int flag)
             new_c->unknown28[0] = new_c->x + (i * l);
             new_c->unknown28[1] = new_c->y + (j * m);
             new_c->command = ACTION_MOVE;
-            new_c->time_until_next_move = new_c->unknown11;
+            new_c->time_until_next_move = new_c->speed;
 
             if (i * l != 0 && j * m != 0) {
               c[16] += c[16] / 2;
@@ -836,7 +836,7 @@ int matt(int npc)
   }
 
   a[16] = a[11];
-  new_a->time_until_next_move = new_a->unknown11;
+  new_a->time_until_next_move = new_a->speed;
 
   if (a[15] == 11) {
     a[16] *= 2;

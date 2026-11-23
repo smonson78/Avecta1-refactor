@@ -61,13 +61,11 @@ int init(int flag) {
   char val[3];
   uint8_t *c;
 
-  debug_printf("init() running\n");
+  debug_printf("> init()\n");
 
-  // Move cursor to position (1, 1)
+  // Move cursor to position (1, 1), then clear screen to end
   vs_curaddress(handle, 1, 1);
-  // Clear screen to end
   v_eeos(handle);
-  debug_printf("init() cleared screen\n");
 
   check_curmon("init after clearing screen");
   row = 17;
@@ -77,10 +75,11 @@ int init(int flag) {
     return 1;
   }
 
-  dungeon = 2;
+  dungeon = DUNGEON_KILKANEY;
   outside = 0;
 
   debug_printf("init() setting curmon\n");
+  // Clear out all the monsters, but not the four player character slots 0-3
   for (i = 4; i < 12; i++) {
     // From 4 to 11 ( in a [0 .. 11] block)
     // c = curmon[i];
@@ -177,18 +176,20 @@ int init(int flag) {
   val[1] = 3;
   val[2] = 1;
 
-  c[37] = 5 + 20 * val[2];
-  c[50] = 3 + 2 * val[1];
-  c[14] = 6 * val[0];
-  c[51] = val[0];
+  c[37] = 5 + 20 * val[2]; // always 25
+  c[50] = 3 + 2 * val[1];  // always 9
+  c[14] = 6 * val[0];      // always 60
+  c[51] = val[0];          // always 10
   c[2] = 50;
   c[11] = 4;
-  player->perception = 5 + (20 * val[2]);
-  player->physical_strength = 3 + (2 * val[1]);
-  player->spell_units = 6 * val[0];
-  player->magic_level = val[0];
+
+  // Base stats!
+  player->perception = 25;
+  player->physical_strength = 9;
+  player->spell_units = 60;
+  player->magic_level = 10;
   player->max_health = 50;
-  player->unknown11 = 4;
+  player->speed = 4;
 
   check_curmon("init near end");
 

@@ -5,6 +5,7 @@
 #include "textbig.h"
 #include "text.h"
 
+// Really big letters (16x32) for the title screen
 void prntbig(char *s, int x, int y)
 {
   int i = 0;
@@ -25,6 +26,8 @@ void prntbig(char *s, int x, int y)
   }
 }
 
+// Draw the flashing title screen.
+// Returns 0 for 'Q', 1 for 'N', 2 for 'R'
 int title() {
   int i;
   int16_t rgb[3];
@@ -42,7 +45,6 @@ int title() {
 
   prntbig("AVECTA I", 6, 1);
   prntbig("-EBORA-", 6, 5);
-  // textsix(0, 16, 16, 2, "ab");
   
   vst_color(handle, 2);
 
@@ -53,6 +55,7 @@ int title() {
   // v_justified(handle, 60, 140, "Copyright Mark Swanson", 16, 0, 0);
   // v_justified(handle, 6, 180, "Select option: (Q)uit,(N)ew,(R)estore", 31, 0, 0);
 
+  // Flash the title colours in a loop until R, N, or Q is pressed
   do {
     do {
       rgb[0] = Random();
@@ -65,7 +68,7 @@ int title() {
     i = Bconin(2) & 0xff;
     
     // Make lowercase
-    i = i < 97 ? i + 32 : i;
+    i = i < 'a' ? i + 32 : i;
   } while (i != 'r' && i != 'n' && i != 'q');
 
   vs_curaddress(handle, 1, 1);

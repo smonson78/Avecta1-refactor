@@ -65,7 +65,7 @@ int activate_monsters(int type, int nm, int x, int y)
     c[8] = p->unknown8;
     c[9] = p->unknown9;
     c[10] = p->unknown10;
-    c[11] = p->unknown11;
+    c[11] = p->speed;
     c[12] = p->unknown12;
     c[13] = p->unknown13;
     c[14] = p->spell_units;
@@ -98,7 +98,7 @@ int activate_monsters(int type, int nm, int x, int y)
     pc->target_inventory = p->unknown8;
     pc->target_object = p->unknown9;
     pc->spell_cast = p->unknown10;
-    pc->unknown11 = p->unknown11;
+    pc->speed = p->speed;
     pc->unknown12 = p->unknown12;
     pc->unknown13 = p->unknown13;
     pc->spell_units = p->spell_units;
@@ -221,7 +221,7 @@ int activate_monsters(int type, int nm, int x, int y)
     c[8] = p->unknown8;
     c[9] = p->unknown9;
     c[10] = p->unknown10;
-    c[11] = p->unknown11;
+    c[11] = p->speed;
     c[12] = p->unknown12;
     c[13] = p->unknown13;
     c[14] = p->spell_units;    
@@ -264,7 +264,7 @@ int activate_monsters(int type, int nm, int x, int y)
     new_c->spells[3] = p->unknown8;
     new_c->spells[4] = p->unknown9;
     new_c->spell_cast = p->unknown10;
-    new_c->unknown11 = p->unknown11;
+    new_c->speed = p->speed;
     new_c->unknown12 = p->unknown12;
     new_c->unknown13 = p->unknown13;
     new_c->spell_units = p->spell_units;    

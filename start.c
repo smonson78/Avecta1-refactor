@@ -42,12 +42,7 @@ int main()
 
    graf_mouse(0, (MFORM *)intin);
 
-   // j = Random();
-   // Seed the random number generator maybe? No other references to srand in here
-   // srand(j); 
-
    i = title();
-   debug_printf("Title returned code %d\n", i);
    check_curmon("after title screen");
 
    new = i == 1 ? 0 : 1;
@@ -58,7 +53,7 @@ int main()
    while (i != 0) {
       j = 1;
 
-      switch(i) {
+      switch (i) {
          
       case 1:
          // New Game
@@ -79,12 +74,13 @@ int main()
          break;
 
       default:
-         // 0 - Quit
+         // Everything other than i == 1 or 2 becomes 0 here. i cannot be 0 at the start of the loop, though.
+         // 0 means "quit"
          i = 0;
          break;
       }
 
-      // This is the main loop 
+      // This is the main loop
       while (i == 0 && j > 0) {
          debug_printf("> in main, the while loop with tacmode in it\n");
          // does this once before Leveth speaks, then again after changing rooms before he speaks the second time.
