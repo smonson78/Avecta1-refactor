@@ -12,7 +12,7 @@ int attack_in(int pc)
   uint8_t *c = curmon[pc];
   curmon2_t *new_c = &new_curmon2[pc];
   // uint8_t *t = curmon[c[39]];
-  curmon2_t *new_t = &new_curmon2[new_c->monster.unknown39];
+  curmon2_t *new_t = &new_curmon2[new_c->monster.target];
 
   // int x = t[24], y = t[25];
   int x = new_t->monster.x, y = new_t->monster.y;
@@ -66,7 +66,7 @@ int attack_out(int pc)
   uint8_t *a = curmon[pc];
   uint8_t *t = curmon[a[39]];
   curmon2_t *new_a = &new_curmon2[pc];
-  curmon2_t *new_t = &new_curmon2[new_a->monster.unknown39];
+  curmon2_t *new_t = &new_curmon2[new_a->monster.target];
 
   char *w;
   int base, roll, dam, weapon_chance;
@@ -105,7 +105,7 @@ int attack_out(int pc)
   }
   
   // if (t[39] == pc) {
-  if (new_t->monster.unknown39 == pc) {
+  if (new_t->monster.target == pc) {
     // weapon_chance += wepmatx[a[40]][t[40]];
     weapon_chance += wepmatx[new_a->monster.unknown40][new_t->monster.unknown40];
   } else {
@@ -149,11 +149,11 @@ int attack_out(int pc)
         && new_t->monster.poisoned == 0) {
       
       // w = (a[39] == 0 ? pname : name[curmon[a[39]][3]]);
-      w = (new_a->monster.unknown39 == 0 ? 
-        pname : name[new_curmon2[new_a->monster.unknown39].monster.monster_name_id]);
+      w = (new_a->monster.target == 0 ? 
+        pname : name[new_curmon2[new_a->monster.target].monster.monster_name_id]);
 
       // if (a[39] < 4) {
-      if (new_a->monster.unknown39 < 4) {
+      if (new_a->monster.target < 4) {
         prnt("-> %s is envenomed!", w);
       } else {
         prnt("-> The %s is envenomed!", w);
@@ -169,7 +169,7 @@ int attack_out(int pc)
     }
 
     // return damage(a[39], dam);
-    return damage(new_a->monster.unknown39, dam);
+    return damage(new_a->monster.target, dam);
   } else {
     if (pc < 4) {
       a[34] = -1;

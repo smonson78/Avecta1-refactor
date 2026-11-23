@@ -426,7 +426,7 @@ int getmon(int room)
           mon->x = x;
           mon->y = y;
           mon->current_room = room;
-          mon->unknown39 = j + 4; // monster index in array? what's the good of that
+          mon->target = j + 4; // monster index in array? what's the good of that
           mon->damage = r[i + 2];
           mon->command = ACTION_WAIT;
           mon->time_until_next_move = 1;

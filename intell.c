@@ -667,7 +667,7 @@ int target(int npc)
 
     if (c[39] == npc && c[0] && c[30] == crum) {
       curmon[npc][39] = i;
-      new_curmon[npc].unknown39 = i;
+      new_curmon2[npc].monster.target = i;
       return 1;
     }
   }
@@ -679,12 +679,13 @@ int target(int npc)
   return 1;
 }
 
+// Set target
 int settarg(int npc)
 {
   uint8_t *c = curmon[npc];
-  curmon_t *new_c = &new_curmon[npc];
+  curmon2_t *new_c = &new_curmon2[npc];
   uint8_t *t;
-  int j,list[12];
+  int j, list[12];
   int top,bot;
   list[0] = 0;
 
@@ -699,7 +700,7 @@ int settarg(int npc)
   // Players only
   if (npc < 4 && player->unknown39 == npc) {
     c[39] = 0;
-    new_c->unknown39 = 0;
+    new_c->player.unknown39 = 0;
     return 1;
   }
 
@@ -711,7 +712,7 @@ int settarg(int npc)
         continue;
       }
 
-      if (t[4] != c[4] && *t == 1 && t[30] == crum && (c[38] == 1 || 
+      if (t[4] != c[4] && t[0] == 1 && t[30] == crum && (c[38] == 1 || 
         ((c[58] != 20 || t[58] != 4) && t[58] != 24))
         && los(npc, t[24], t[25]) ) {
         list[0]++;
@@ -728,7 +729,7 @@ int settarg(int npc)
 
       t = curmon[j];
 
-      if (t[0] != 0 && t[30] == crum && (npc < 4 || los(npc,t[24],t[25])) &&
+      if (t[0] != 0 && t[30] == crum && (npc < 4 || los(npc, t[24], t[25])) &&
           (npc > 3 || t[38] == 0) && t[31] < 4) {
         list[0]++;
         list[list[0]] = j;  
@@ -742,13 +743,13 @@ int settarg(int npc)
 
   j = rnd(list[0] - 1);
   
-  c[39] = list[1+j]; 
+  c[39] = list[1 + j]; 
   c[26] = curmon[c[39]][24];
   c[27] = curmon[c[39]][25];
 
-  new_c->unknown39 = list[1 + j]; 
-  new_c->dest_x = new_curmon[new_c->unknown39].x;
-  new_c->dest_y = new_curmon[new_c->unknown39].y;
+  new_c->monster.target = list[1 + j]; 
+  new_c->monster.dest_x = new_curmon[new_c->monster.target].x;
+  new_c->monster.dest_y = new_curmon[new_c->monster.target].y;
 
   return 1;
 }
@@ -761,26 +762,27 @@ int settarg(int npc)
 int matt(int npc)
 {
   uint8_t *a = curmon[npc];
-  curmon_t *new_a = &new_curmon[npc];
+  curmon2_t *new_a = &new_curmon2[npc];
   int i, j, sp;
 
   a[26] = curmon[a[39]][24];
   a[27] = curmon[a[39]][25];
-  new_a->dest_x = new_curmon[new_a->unknown39].x;
-  new_a->dest_y = new_curmon[new_a->unknown39].y;
+  new_a->monster.dest_x = new_curmon[new_a->monster.target].x;
+  new_a->monster.dest_y = new_curmon[new_a->monster.target].y;
 
-  if (a[14] != 0) {               /* indicates a magic using monster */
+  /* indicates a magic using monster */
+  if (a[14] != 0) {
     if (a[47] > 3 && a[14] > 0) {
       a[47] = 0;
       a[14] = (a[14] == 0 ? 0 : a[14] - 1);
 
-      new_a->poisoned = 0;
-      new_a->spell_units = new_a->spell_units == 0 ? 0 : new_a->spell_units - 1;
+      new_a->monster.poisoned = 0;
+      new_a->monster.spell_units = new_a->monster.spell_units == 0 ? 0 : new_a->monster.spell_units - 1;
     }
 
-    if (new_a->spell_units < 3) {
+    if (new_a->monster.spell_units < 3) {
       a[36] = 1;                /* set flee since out of spell units */
-      new_a->flee = 1;
+      new_a->monster.flee = 1;
 
       pass(npc);
       return 0;
@@ -817,30 +819,30 @@ int matt(int npc)
     a[14] = (a[14] < 5 ? -1 : a[14] );
     a[10] = sp;
 
-    new_a->spell_units -= spelunit[sp];
-    new_a->time_until_next_move = spelinfo[sp - 1][2];
-    new_a->unknown40 = 4;
-    new_a->command = ACTION_CAST;
-    new_a->spell_units = new_a->spell_units < 5 ? -1 : new_a->spell_units;
-    new_a->spell_cast = sp;
+    new_a->monster.spell_units -= spelunit[sp];
+    new_a->monster.time_until_next_move = spelinfo[sp - 1][2];
+    new_a->monster.unknown40 = 4;
+    new_a->monster.command = ACTION_CAST;
+    new_a->monster.spell_units = new_a->monster.spell_units < 5 ? -1 : new_a->monster.spell_units;
+    new_a->monster.spell_cast = sp;
 
     return 1;
   }
 
   a[15] = 1;
-  new_a->command = ACTION_ATTACK;
+  new_a->monster.command = ACTION_ATTACK;
 
   if (a[45] == 45) {
     a[15] = 11;
-    new_a->command = ACTION_FIRE_ARROW;
+    new_a->monster.command = ACTION_FIRE_ARROW;
   }
 
   a[16] = a[11];
-  new_a->time_until_next_move = new_a->speed;
+  new_a->monster.time_until_next_move = new_a->monster.speed;
 
   if (a[15] == 11) {
     a[16] *= 2;
-    new_a->time_until_next_move *= 2;
+    new_a->monster.time_until_next_move *= 2;
   }
 
   // Monsters only
@@ -856,7 +858,7 @@ int matt(int npc)
   }
 
   a[40] = j+1;
-  new_a->unknown40 = j + 1;
+  new_a->monster.unknown40 = j + 1;
 
   return 1;
 }
@@ -895,7 +897,7 @@ int setatt(int npc)
 int friend(int npc)
 {
   uint8_t *c = curmon[npc];
-  curmon_t *new_c = &new_curmon[npc];
+  curmon2_t *new_c = &new_curmon2[npc];
   player_t *p = &players[npc];
   int i, j, x = player->x, y = player->y;
 
@@ -909,9 +911,9 @@ int friend(int npc)
     c[15] = 12;
     c[16] = 6;
 
-    new_c->spell_cast = 1;
-    new_c->command = ACTION_BURN_SNUFF;
-    new_c->time_until_next_move = 6;
+    new_c->player.spell_cast = 1;
+    new_c->player.command = ACTION_BURN_SNUFF;
+    new_c->player.time_until_next_move = 6;
     return 1;
   }
 
@@ -925,15 +927,15 @@ int friend(int npc)
       if (c[32] > 40 && c[32] < 46) {
         takeout(npc,c[32]);
         c[45] = c[32];
-        new_c->poison_mode_2 = new_c->poison_mode_1;
+        new_c->monster.poison_mode_2 = new_c->monster.poison_mode_1;
       } else {
         for (i = 0; i < invnpc[npc][0]; i++) {
           if ((j = invnpc[npc][i+1]) > 40 && j < 46) {
             takeout(npc, j);
             c[45] = j;
             c[32] = j;
-            new_c->poison_mode_2 = j;
-            new_c->poison_mode_1 = j;
+            new_c->monster.poison_mode_2 = j;
+            new_c->monster.poison_mode_1 = j;
             break;
           }
         }
@@ -950,7 +952,7 @@ int friend(int npc)
       j = c[53];
 
       c[53] = (j == 5 ? 0 : ++j);
-      new_c->seekshard_imprinted_xy = (j == 5 ? 0 : ++j);
+      new_c->player.seekshard_imprinted_xy = (j == 5 ? 0 : ++j);
 
       return 1;
     }
@@ -959,8 +961,8 @@ int friend(int npc)
       if (!adjac(npc,x,y)) {
         c[26] = x;
         c[27] = y;
-        new_c->dest_x = x;
-        new_c->dest_y = y;
+        new_c->monster.dest_x = x;
+        new_c->monster.dest_y = y;
 
         if (!setmove(npc,0)) {
           pass(npc);
@@ -969,13 +971,13 @@ int friend(int npc)
         return 1;
       } else {
         c[36] = 0;
-        new_c->flee = 0;
+        new_c->monster.flee = 0;
       }
     }
 
     if (!target(npc) && !settarg(npc)) {
       c[39] = 0;
-      new_c->unknown39 = 0;
+      new_c->monster.target = 0;
 
       if (!setmove(npc, 1)) {
         pass(npc);
@@ -989,7 +991,7 @@ int friend(int npc)
         matt(npc);
         break;
       case 1:
-        if (!setmove(npc,1)) {
+        if (!setmove(npc, 1)) {
           pass(npc);
         }
         break;
@@ -1000,12 +1002,12 @@ int friend(int npc)
 
   if (!mode) {
     c[36] = 0;
-    new_c->flee = 0;
+    new_c->monster.flee = 0;
 
     if (curmon[0][15] == 4 || npc > 3 || !los(npc,x,y) || 
       dist(c[24], c[25], x, y) > 3) {
       c[39] = 0;
-      new_c->unknown39 = 0;
+      new_c->monster.target = 0;
 
       if (dist(c[24], c[25], x, y) < 4 - rnd(2) && los(npc, x, y) ) {
         pass(npc);
@@ -1014,8 +1016,8 @@ int friend(int npc)
         if (!los(npc, x, y) && c[24] == c[26] && c[25] == c[27]) {
           c[26] = x;
           c[27] = y;
-          new_c->dest_x = x;
-          new_c->dest_y = y;
+          new_c->monster.dest_x = x;
+          new_c->monster.dest_y = y;
         }
 
         if (!setmove(npc, 1)) {
@@ -1042,8 +1044,8 @@ int friend(int npc)
 
           c[26] = xrnd;
           c[27] = yrnd;
-          new_c->dest_x = xrnd;
-          new_c->dest_y = yrnd;
+          new_c->monster.dest_x = xrnd;
+          new_c->monster.dest_y = yrnd;
 
         } while (!move_in(npc));
       }
@@ -1059,45 +1061,45 @@ void sillymsg(int npc)
   char *w = name[c[3]];
 
   if (c[47] > 0) {
-    prnt("-> %s says `The room spins.  I am poisoned.'",w);
+    prnt("-> %s says `The room spins.  I am poisoned.'", w);
     return;
   }
 
   if (c[1] > (c[2])/2) {
-    prnt("-> %s says `By Zandru, my body aches.  Perhaps a clerical spell...'",w);
+    prnt("-> %s says `By Zandru, my body aches.  Perhaps a clerical spell...'", w);
     return;
   }
   
     // if(rumdata[crum][26] > 0) {
   if (new_rumdata[crum].room_monsters_chance > 0) {
-    prnt("-> %s says `I believe dangerous creatures lurk here!'",w);
+    prnt("-> %s says `I believe dangerous creatures lurk here!'", w);
     return;
   }
 
   switch (rnd(8)) {
     case 0:
-      prnt("-> %s growls, `Hurry up, %s!  Let us move on.'",w,pname);
+      prnt("-> %s growls, `Hurry up, %s!  Let us move on.'", w, pname);
       break;
     case 1:
-      prnt("-> %s says `Why are you wasting time, %s?  This place is dangerous!'",w,pname);
+      prnt("-> %s says `Why are you wasting time, %s?  This place is dangerous!'", w, pname);
       break;
     case 2:
-      prnt("-> %s says `My stomach growls like an Alarian varg. Something to eat would be good.'",w);
+      prnt("-> %s says `My stomach growls like an Alarian varg. Something to eat would be good.'", w);
       break;
     case 3:
-      prnt("-> %s says `I favor a quick exit from here.'",w);
+      prnt("-> %s says `I favor a quick exit from here.'", w);
       break;
     case 4:
-      prnt("-> %s grumbles `When I get my hands on Lord Vindroble... He bears the responsibility for our woe!'",w);
+      prnt("-> %s grumbles `When I get my hands on Lord Vindroble... He bears the responsibility for our woe!'", w);
       break;
     case 5:
-      prnt("-> %s stares around the room in anger and mutters `An abomination such as this would never be tolerated in Nordheim.'",w);
+      prnt("-> %s stares around the room in anger and mutters `An abomination such as this would never be tolerated in Nordheim.'", w);
       break;
     case 6:
-      prnt("-> %s searches his carrying pack and mumbles `By the gods! Those accursed fiends took my elven wafers.'",w);
+      prnt("-> %s searches his carrying pack and mumbles `By the gods! Those accursed fiends took my elven wafers.'", w);
       break;
     case 7:
-      prnt("-> %s utters an unrepeatable oath of disgust over the general situation.",w);
+      prnt("-> %s utters an unrepeatable oath of disgust over the general situation.", w);
       break;
     default:
       break;

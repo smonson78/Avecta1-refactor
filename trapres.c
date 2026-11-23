@@ -409,7 +409,7 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
       new_c->monster.time_until_next_move = 1;
       new_c->monster.unknown48 = 1;
       new_c->monster.spell_cast = SPELL_BLINK;
-      new_c->monster.unknown39 = j;
+      new_c->monster.target = j;
 
       do {
         x = rnd(16);

@@ -87,7 +87,7 @@ typedef struct {
   // 38
   uint8_t controlled;
   // 39
-  uint8_t unknown39; // 39 may be "target"
+  uint8_t unknown39; // 39 is "target" for monsters, but not for players (probably)
   // 40
   uint8_t unknown40;
   // 41
@@ -194,8 +194,8 @@ typedef struct {
   uint8_t perception; // Chance out of 100 to find a hidden object
   // 38
   uint8_t controlled;
-  // 39
-  uint8_t unknown39;
+  // 39: Target of an attack - for monsters. It's [7] for playable characters.
+  uint8_t target;
   // 40
   uint8_t unknown40;
   // 41

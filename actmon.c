@@ -85,7 +85,7 @@ int activate_monsters(int type, int nm, int x, int y)
     c[15] = 8;
     c[16] = 1;
     c[30] = crum;
-    c[39] = i; // seems like this will always be 60
+    c[39] = i; // seems like this will always be 60 due to the loop above
 
     pc->in_use = p->in_use;
     pc->damage = p->damage;
@@ -110,7 +110,7 @@ int activate_monsters(int type, int nm, int x, int y)
     pc->y = y;
     pc->current_room = crum;
     pc->poison_mode_1 = p->poison_mode;
-    pc->unknown39 = i;
+    pc->unknown39 = i; // always 60 I think
     pc->unlit_torches = 10;
     pc->good_hand = p->poison_mode;
     pc->other_hand = p->base_chance_1_attack;
@@ -291,7 +291,7 @@ int activate_monsters(int type, int nm, int x, int y)
     new_c->command = ACTION_WAIT;       /* installed with a wait */
     new_c->time_until_next_move = 1;
     new_c->current_room = crum;
-    new_c->unknown39 = i + 4;
+    new_c->target = i + 4; // targets themselves I think. Probably doesn't do anything.
 
     // Pedestrian?
     if (type == 18) {
