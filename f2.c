@@ -41,7 +41,8 @@ int cast_in(int pc)
   uint8_t *c = curmon[pc];
   player_t *new_c = &players[pc];
   zline_t *z;
-  char scratch[3], *w = (pc == 0 ? pname : name[c[3]]);
+  char scratch[3];
+  char *w = get_name(pc);
 
   debug_printf("> cast (in)\n");
 
@@ -224,8 +225,8 @@ void losespel(int pc)
 {
   uint8_t *c = curmon[pc];
   player_t *new_c = &players[pc];
-  char *w = (pc == 0 ? pname : name[c[3]]);
-  char *n = (pc < 4 ? rummsg[0] : msg[0]);
+  char *w = get_name(pc);
+  char *n = (IS_CHARACTER(pc) ? rummsg[0] : msg[0]);
 
   // if (c[21] != 0) {
   if (new_c->magic_effect_time_remaining != 0) {
@@ -292,12 +293,12 @@ int cast_out(int pc)
   player_t *pt;
   uint8_t *p;
   zline_t *z;
-  char *w, *wt;
+  char *wt;
   uint8_t *t = NULL;
   room_object_t *object = NULL;
   curmon_t *new_t = NULL;
   int k, m, flag = 0, dam, j, trap, num, target, i, x, y;
-  w = (pc == 0 ? pname :  name[c[3]]);
+  char *w = get_name(pc);
 
   debug_printf("> cast (out)\n");
   
@@ -328,7 +329,7 @@ int cast_out(int pc)
       flag = 1; 
     }
 
-    wt = (target == 0 ? pname : name[t[3]]);
+    wt = get_name(target);
   }
 
   // Players only:
@@ -352,7 +353,7 @@ int cast_out(int pc)
       if (!t[0] || t[30] != crum || !los(pc, t[24], t[25]))  {
         flag = 1;
       }
-      wt = (target == 0 ? pname : name[t[3]]);
+      wt = get_name(target);
     } else {
       target = c[9]; // ...And this version is for objects!
       debug_printf("! The target is object %d\n", target);
@@ -860,17 +861,20 @@ int cast_out(int pc)
 int savthrow(int npc, int mag)
 {
   uint8_t *c = curmon[npc];
-  char *w = (npc == 0 ? pname : name[c[3]]);
+  char *w = get_name(npc);
 
-  if (rnd(100) < (c[51] - mag)*8 || c[54] > 0) {
-    if (npc < 4 || curmon[npc][3] == 10) {
+  if (rnd(100) < (c[51] - mag) * 8 || c[54] > 0) {
+
+    // Check to see if the prefix "the" will be applied
+    // if (npc < 4 || curmon[npc][3] == 10) {
+    if (IS_CHARACTER(npc) || new_curmon2[npc].monster.monster_name_id == MONSTER_NAME_MELKTHROP) {
       prnt("-> %s resists the spell!", w);
     } else {
       prnt("-> The %s resists the spell!", w);
     }
 
-    return 1;
+    return ERR_SUCCESS;
   }
 
-  return 0;
+  return ERR_FAILURE;
 }

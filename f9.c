@@ -205,7 +205,7 @@ int exit_out(int pc)
     }
 
     c[18] = 8;
-    ch->player.unknown18 = 8;
+    ch->player.unknown18 = ACTION_WAIT;
   }
 
   return -1;

@@ -27,7 +27,7 @@ int damage(int pc, int level)
 
   check_curmon("damage 0");
 
-  char *w = (pc == 0 ? pname : name[c[3]]);
+  char *w = get_name(pc);
   int newpolice = 1, old, i, j, k, l;
   int x = c[24], y = c[25];
   //int x = new_c->x, y = new_c->y;

@@ -138,7 +138,7 @@ int rob_listen_out(int pc)
   }
 
   c[18] = 10;
-  new_c->unknown18 = 10;
+  new_c->unknown18 = ACTION_ROOK_SNOOP;
 
   debug_printf("< o10()\n");
   return 1;

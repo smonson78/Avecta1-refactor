@@ -58,7 +58,8 @@ int search_out(int pc)
 
   check_curmon("search_out start");
 
-  if (pc == 0 && c[18] != 6) {
+  // if (pc == 0 && c[18] != 6) {
+  if (IS_PLAYER(pc) && new_c->unknown18 != ACTION_SEARCH) {
     prnt("-> %s searches nearby...", w);
   }
 
@@ -88,7 +89,7 @@ int search_out(int pc)
           flag++;          
           k = r[m + 1];
           
-          // Who is 3?
+          // Who is character 3?
           // if (pc != 3 || c[38] == 1) {
           if (pc != 3 || new_c->controlled == 1) {
             // prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[o[0]]);
@@ -96,7 +97,7 @@ int search_out(int pc)
           }
         
           c[18] = 0;
-          new_c->unknown18 = 0;
+          new_c->unknown18 = ACTION_NOOP;
           
           num++;
 
@@ -159,7 +160,7 @@ int search_out(int pc)
           prnt("-> %s discovers a hidden %s!", w, obj[object->object_id]);
           
           c[18] = 0;
-          new_c->unknown18 = 0;
+          new_c->unknown18 = ACTION_NOOP;
 
           if (new_rumdata[crum].room_has_bg || zline[x + i][y + j].unknown5 > 0) {
             // blt(&bitmap[o[0]],16 * (x + i),16 * (y + j));
@@ -181,7 +182,7 @@ int search_out(int pc)
   if (num == 0 && c[18] != 6 && (pc != 3 || c[38] == 1)) {
     prnt("-> %s discovers nothing.", w);
     c[18] = 6;
-    new_c->unknown18 = 6;
+    new_c->unknown18 = ACTION_SEARCH;
   }
 
   check_curmon("search_out end");

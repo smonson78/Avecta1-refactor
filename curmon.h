@@ -165,6 +165,7 @@ typedef struct {
   uint8_t time_until_next_move;
   // 17
   uint8_t animation_step;
+  // 18
   uint8_t unknown18;
   // 19
   uint8_t magic_effect;

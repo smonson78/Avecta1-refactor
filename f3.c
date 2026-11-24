@@ -26,7 +26,8 @@ int examine_in(int pc)
   char z1, z2, scratch[15];
   char *w = (pc == 0 ? pname : name[*(c + 3)]);
 
-  if (invnpc[pc][0] == 0 && c[45] == 0 && (c[46] == 0 || c[46] == 81)) {
+  // if (invnpc[pc][0] == 0 && c[45] == 0 && (c[46] == 0 || c[46] == 81)) {
+  if (invnpc[pc][0] == 0 && new_c->good_hand == 0 && (new_c->other_hand == 0 || new_c->other_hand == OBJECT_TORCH)) {
     type = 0;
   } else {
     top(1);
@@ -107,7 +108,8 @@ int examine_in(int pc)
         new_c->target_inventory = i == 1 ? new_c->good_hand : new_c->other_hand;
       }
 
-      c[7] = c[9] = 0;
+      c[7] = 0;
+      c[9] = 0;
       new_c->target = 0;
       new_c->target_object = 0;
     }
@@ -144,7 +146,8 @@ int examine_out(int pc)
   type = c[10];
 
   // Player name or monster name
-  w1 = (pc == 0 ? &pname[0] : name[new_c->monster_name_id]);
+  // w1 = (pc == 0 ? &pname[0] : name[new_c->monster_name_id]);
+  w1 = get_name(pc);
 
   if ((type == 3 && (object = c[8]) > 40) ||
       (!outside && type == 1 && (object = c[9]) > 40)) {
@@ -161,7 +164,8 @@ int examine_out(int pc)
         new_c->good_hand = new_c->target_inventory;
       }
 
-      takeout(pc, c[8]);
+      // takeout(pc, c[8]);
+      takeout(pc, new_c->target_inventory);
       object = c[8];
       prnt("-> %s takes out the %s to examine.", w1, obj[object]);
     }
@@ -309,7 +313,7 @@ int examine_out(int pc)
   }
 
   c[18] = 3;
-  new_c->unknown18 = 3;
+  new_c->unknown18 = ACTION_EXAMINE;
   
   return 1;
 }

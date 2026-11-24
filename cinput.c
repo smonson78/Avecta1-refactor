@@ -88,7 +88,7 @@ int input(int pc)
   uint8_t *c = curmon[pc];
   player_t *new_c = &players[pc];
   zline_t *z = NULL;
-  char *w = (pc == 0 ? pname : name[c[3]]);
+  char *w = get_name(pc);
 
   debug_printf("> input()\n");
   check_curmon("input()");
@@ -249,7 +249,7 @@ int comwind(int pc)
   // curmon_t *new_c1 = &new_curmon[new_c->unknown38[1]];
 
   char scratch[3];
-  char *w = (pc == 0 ? pname : name[c[3]]);
+  char *w = get_name(pc);
   int16_t x, y;
   int i, j, ret;
 

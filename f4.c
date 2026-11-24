@@ -104,7 +104,7 @@ int move_out(int pc)
     }
 
     c[18] = 4;
-    new_c->unknown18 = 4;
+    new_c->unknown18 = ACTION_MOVE;
   }
 
   xroll = 2 * (x - xnow) / (1 + outside);

@@ -526,3 +526,11 @@ char eats[] = {
 
 // Screen logical address
 uint16_t *addr;
+
+char *get_name(int creature) {
+  if (IS_PLAYER(creature)) {
+    return pname;
+  }
+
+  return name[new_curmon2[creature].monster.monster_name_id];
+}

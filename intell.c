@@ -21,7 +21,7 @@ int setatt(int npc);
 int target(int npc);
 int settarg(int npc);
 int setmove(int npc, int flag);
-int pass(int npc);
+void pass(int npc);
 int setflee(int npc);
 int morale(int npc);
 
@@ -33,7 +33,9 @@ int intell(int npc)
 
   uint8_t *t;
   int done = 0; /* this will give the ith step in the intelligence routine */
-  char type = c[31], step;
+  // char type = c[31];
+  char type = new_c->intelligence_routine;
+  char step;
   int j, flag;
 
   debug_printf("> intell()\n");
@@ -44,7 +46,8 @@ int intell(int npc)
     return 0;
   }
 
-  if (npc < 4 || (npc > 3 && new_c->controlled == 1)) {
+  // if (npc < 4 || (npc > 3 && new_c->controlled == 1)) {
+  if (IS_CHARACTER(npc) || (IS_MONSTER(npc) && new_c->controlled == 1)) {
     type = INTELLIGENCE_FRIEND;
   }
 
@@ -59,7 +62,7 @@ int intell(int npc)
       case 1: /* sets up the standard berserk attack sequence. */
         done = 1; /* always fall through after a berserk */
         if (!morale(npc)) {
-          if (!setflee(npc) || !setmove(npc,0)) {
+          if (!setflee(npc) || !setmove(npc, 0)) {
             pass(npc);
           }
           return 1;
@@ -92,7 +95,7 @@ int intell(int npc)
           }
 
           if (type != 3) {               /* don't want pickets to leave the room */
-            if (!setmove(npc,2)) {
+            if (!setmove(npc, 2)) {
               pass(npc);               /* else exit room */
             }
           } else{
@@ -377,7 +380,8 @@ int setmove(int npc, int flag)
   t = curmon[tar];
   new_t = &new_curmon[tar];
 
-  if (npc < 4 || (npc > 3 && c[38] ) ) {
+  // if (npc < 4 || (npc > 3 && c[38] ) ) {
+  if (IS_CHARACTER(npc) || (IS_MONSTER(npc) && new_c->controlled)) {
     top = 4;
     bot = 1;
   } else {
@@ -385,8 +389,10 @@ int setmove(int npc, int flag)
     bot = 4;
   }
 
-  if (c[36] == 0) {
-    if (los(npc, t[24], t[25])) {
+  // if (c[36] == 0) {
+  if (new_c->flee == 0) {
+    // if (los(npc, t[24], t[25])) {
+    if (los(npc, new_t->x, new_t->y)) {
       c[26] = t[24];
       c[27] = t[25];
       new_c->dest_x = new_t->x;
@@ -435,14 +441,16 @@ int setmove(int npc, int flag)
     }   
   }
 
-  if (c[36] == 1 && adjac(npc, c[26], c[27])) {
+  // Stop fleeing
+  // if (c[36] == 1 && adjac(npc, c[26], c[27])) {
+  if (new_c->flee == 1 && adjac(npc, new_c->dest_x, new_c->dest_y)) {
     // Characters
-    if (npc < 4) {
+    if (IS_CHARACTER(npc)) {
       c[36] = 0;
       new_c->flee = 0;
       pass(npc);
 
-      return 1;
+      return ERR_SUCCESS;
     }
 
     // Monsters
@@ -453,9 +461,11 @@ int setmove(int npc, int flag)
     new_c->command = ACTION_EXIT;
     new_c->time_until_next_move = 6;
     // This is a bit of a concern because it doesn't seem to make sense
+    // NOTE this is the only time unknown18 is read.
+    // Usually it is set to an action (verb) number.
     new_c->spells[4] = crumobj[new_c->unknown18].target;
 
-    return 1;
+    return ERR_SUCCESS;
   }
 
   if (!flag) {
@@ -633,7 +643,7 @@ int setmove(int npc, int flag)
   return 0;
 }
 
-int pass(int npc)
+void pass(int npc)
 {
   uint8_t *c = curmon[npc];
   curmon_t *new_c = &new_curmon[npc];
@@ -642,8 +652,6 @@ int pass(int npc)
   c[16] = 4;
   new_c->command = ACTION_WAIT;
   new_c->time_until_next_move = 4;
-
-  return 1;
 }
 
 int target(int npc)
@@ -943,7 +951,7 @@ int friend(int npc)
     }
 
     // Characters only:
-    if (npc < 4 && (c[45] > 45 || c[45] < 41)) {
+    if (IS_CHARACTER(npc) && (c[45] > 45 || c[45] < 41)) {
       if (c[53] == 0) {
         prnt("-> %s yells, 'I don't have a weapon! Give me one quick!'",
             name[c[3]]);

@@ -790,9 +790,9 @@ int putinto(int rumobj, int thing)
   }
 
   putbuf[i] = 1;
-  putbuf[i+1] = thing;
-  putbuf[i+2] = rumobj;
-  putbuf[i+3] = crum;
+  putbuf[i + 1] = thing;
+  putbuf[i + 2] = rumobj;
+  putbuf[i + 3] = crum;
 
   return 1;
 }
@@ -949,8 +949,7 @@ int status(int pc)
   uint8_t *c = curmon[pc];
   // curmon_t *new_c = &new_curmon[pc];
   char scratch[3];
-  char *w = (pc == 0 ? pname : name[c[3]]);
-  //char *w = (pc == 0 ? pname : name[new_c->monster_name_id]);
+  char *w = get_name(pc);
 
   // Player characters only
   if (pc > 3) {

@@ -310,6 +310,8 @@ enum action_t {
 #define TARGET_OBJECT 2
 #define TARGET_PLAYER 3
 
+#define MONSTER_NAME_MELKTHROP 10
+#define MONSTER_GHOST 11
 #define MONSTER_MELKTHROP 16
 
 #define INTELLIGENCE_FRIEND 4
@@ -384,5 +386,7 @@ extern char *monmsg[];
 extern char *obj[];
 
 extern char *mod[];
+
+char *get_name(int creature);
 
 #endif

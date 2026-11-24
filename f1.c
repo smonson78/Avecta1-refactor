@@ -90,13 +90,14 @@ int attack_out(int pc)
     return 1;
   }
 
-  if (pc < 4) {
+  // if (pc < 4) {
+  if (IS_CHARACTER(pc)) {
     // weapon_chance = weapon[a[45] - 40].chance + 20 * (a[43]);
     weapon_chance = weapon[new_a->player.good_hand - 40].chance + (20 * new_a->player.base_chance_3_attack);
   }
 
   // if (pc < 4 && a[51] > 5) {
-  if (pc < 4 && new_a->player.magic_level > 5) {
+  if (IS_CHARACTER(pc) && new_a->player.magic_level > 5) {
     // weapon_chance /= a[51] - 4;
     weapon_chance /= new_a->player.magic_level - 4;
   } else {
@@ -172,7 +173,7 @@ int attack_out(int pc)
     // return damage(a[39], dam);
     return damage(new_a->monster.target, dam);
   } else {
-    if (pc < 4) {
+    if (IS_CHARACTER(pc)) {
       a[34] = -1;
       new_a->player.unknown34 = -1;
     }

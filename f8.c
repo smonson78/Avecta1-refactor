@@ -29,9 +29,9 @@ int wait_out(int pc)
   curmon_t *new_c = &new_curmon[pc];
 
   // Players only
-  if (pc < 4) {
+  if (IS_CHARACTER(pc)) {
     c[18] = 8;
-    new_c->unknown18 = 8;
+    new_c->unknown18 = ACTION_WAIT;
   }
 
   debug_printf("< wait_out()\n");

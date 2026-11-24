@@ -104,12 +104,13 @@ void trapres(int pc, int type, int x, int y)
     new_c->monster.command = ACTION_WAIT;
     new_c->monster.time_until_next_move = 127;
 
+    // Check each active monster
     for (i = 4; i < 12; i++) {
       c = curmon[i];
       new_c = &new_curmon2[i];
 
       // if (c[58] == 11) {
-      if (new_c->monster.monster_type == 11) {
+      if (new_c->monster.monster_type == MONSTER_GHOST) {
         c[36] = 1;
         c[18] = 1;
         c[26] = 7;
@@ -119,7 +120,7 @@ void trapres(int pc, int type, int x, int y)
 
         // Run for the door at the bottom of the room (7, 7)
         new_c->monster.flee = 1;
-        new_c->monster.unknown18 = 1;
+        new_c->monster.unknown18 = ACTION_ATTACK;
         new_c->monster.dest_x = 7;
         new_c->monster.dest_y = 7;
         new_c->monster.command = ACTION_WAIT;

@@ -194,7 +194,7 @@ int take_drop_out(int pc)
   debug_printf("> o7\n");
 
   c[18] = 7;
-  ch->monster.unknown18 = 7;
+  ch->monster.unknown18 = ACTION_TAKE_DROP;
 
   if (j > 0) {
     r = 0;
