@@ -254,9 +254,11 @@ int comwind(int pc)
   int i, j, ret;
 
   if (!c[39] || c1[0] == 0 || c1[30] != crum || !adjac(pc, c1[24], c1[25])) {
-    c[34] = c[39] = c[7] = 0;
+    c[34] = 0;
+    c[39] = 0;
+    c[7] = 0;
 
-    new_c->unknown33[1] = 0;
+    new_c->unknown34 = 0;
     new_c->unknown39 = 0;
     new_c->target = 0;
 
@@ -293,15 +295,15 @@ int comwind(int pc)
   
   if (c[34] < -1 || c[34] > 1) {
     c[34] = 0;
-    new_c->unknown33[1] = 0;
+    new_c->unknown34 = 0;
   }
 
   if (c[34] == 1) {
-    textsix(1,260,25,3,"Hit");
+    textsix(1, 260, 25, 3, "Hit");
   }
 
   if (c[34] == -1) {
-    textsix(1,260,25,4,"Miss");
+    textsix(1, 260, 25, 4, "Miss");
   }
 
   if (c[34] == 0) {
@@ -365,7 +367,7 @@ int comwind(int pc)
 
     new_c->unknown40 = 0;
     new_c->unknown39 = 0;
-    new_c->unknown33[1] = 0;
+    new_c->unknown34 = 0;
 
     return 0;
   }
@@ -379,7 +381,7 @@ int comwind(int pc)
       c[34] = 0;
       c[39] = 0;
       c[40] = 0;
-      new_c->unknown33[1] = 0;
+      new_c->unknown34 = 0;
       new_c->unknown39 = 0;
       new_c->unknown40 = 0;
       return 0;

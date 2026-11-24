@@ -157,7 +157,7 @@ int drag_eat_in(int pc)
     c[16] = time;
     c[34] = 0;
     ch->player.time_until_next_move = time;
-    ch->player.unknown33[1] = 0;
+    ch->player.unknown34 = 0;
 
     return 1;
   } else {

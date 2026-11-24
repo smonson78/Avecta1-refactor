@@ -43,8 +43,8 @@ int move_in(int pc)
   c[29] = y;
   c[7] = c[8] = c[9] = 0;
 
-  new_c->unknown28[0] = x;
-  new_c->unknown28[1] = y;
+  new_c->unknown28 = x;
+  new_c->unknown29 = y;
   
   if (pc < 4) {
     player_t *p = &players[pc];
@@ -133,8 +133,8 @@ int move_out(int pc)
 
       c[24] = c[28];
       c[25] = c[29];
-      new_c->x = new_c->unknown28[0];
-      new_c->y = new_c->unknown28[1];
+      new_c->x = new_c->unknown28;
+      new_c->y = new_c->unknown29;
 
       zline[c[24]][c[25]].monster = pc;
 
@@ -168,8 +168,8 @@ int move_out(int pc)
   c[25] = c[29];
   new_c->unknown33[1] = 0;
   new_c->stink_lines = 0;
-  new_c->x = new_c->unknown28[0];
-  new_c->y = new_c->unknown28[1];
+  new_c->x = new_c->unknown28;
+  new_c->y = new_c->unknown29;
 
   z->monster = 0; /* reset the zline array to reflect move */
 
@@ -208,8 +208,8 @@ int move_out(int pc)
 
   c[28] = x;
   c[29] = y;
-  new_c->unknown28[0] = x;
-  new_c->unknown28[1] = y;
+  new_c->unknown28 = x;
+  new_c->unknown29 = y;
 
   check_curmon("move_out");
 

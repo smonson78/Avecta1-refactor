@@ -198,7 +198,7 @@ int exit_out(int pc)
   // Player
   if (pc == 0) {
     c[34] = 0;
-    ch->player.unknown33[1] = 0;
+    ch->player.unknown34 = 0;
 
     if (mode) {
       prnt("-> %s flees!", &pname[0]);

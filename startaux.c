@@ -116,7 +116,7 @@ int init(int flag) {
   player->intelligence_routine = 0;
   // new_c->poison_mode_1 - 0; // We're setting it again in a sec
   //new_c->unknown33[0] = 0; // We're setting it again in a sec
-  player->unknown33[1] = 0;
+  player->unknown34 = 0;
   player->stink_lines = 0;
   player->damage = 0;
 
@@ -137,7 +137,7 @@ int init(int flag) {
   player->lit_torch_turns = 0;
 
   player->poison_mode_1 = 2;  
-  player->unknown33[0] = 4;
+  player->unknown33 = 4;
 
   // Big version of player character
   c[4] = 81;
@@ -365,9 +365,9 @@ int loadnew() {
     c[56] = 3;
     c[57] = 3;
     c[59] = 2;
-    player->unknown55[0] = 53;
-    player->unknown55[1] = 3;
-    player->unknown55[2] = 3;
+    player->unknown55 = 53;
+    player->unknown56 = 3;
+    player->unknown57 = 3;
     player->dungeon = DUNGEON_KILKANEY;
 
     // All shopkeepers start with indifference to the player

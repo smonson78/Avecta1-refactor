@@ -161,9 +161,9 @@ int main()
                c[55] = crum;
                player->seekshard_imprinted_room = 0;
                player->seekshard_imprinted_xy = 0;
-               player->unknown55[1] = player->x;
-               player->unknown55[2] = player->y;
-               player->unknown55[0] = crum;
+               player->unknown56 = player->x;
+               player->unknown57 = player->y;
+               player->unknown55 = crum;
             }
 
             if (loadnew() == 0) {
@@ -179,10 +179,10 @@ int main()
                c[4] = 125;
                c[24] = c[56];
                c[25] = c[57];
-               player->current_room = player->unknown55[0];
+               player->current_room = player->unknown55;
                player->sprite_id = SPRITE_PLAYER_SMALL;
-               player->x = player->unknown55[1];
-               player->y = player->unknown55[2];
+               player->x = player->unknown56;
+               player->y = player->unknown57;
 
                outside = 1;
             } else {

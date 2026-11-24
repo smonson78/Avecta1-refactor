@@ -342,8 +342,8 @@ int setflee(int npc)
 
       c[28] = x;
       c[29] = y;
-      new_c->unknown28[0] = x;
-      new_c->unknown28[1] = y;
+      new_c->unknown28 = x;
+      new_c->unknown29 = y;
       c[15] = 4;
       c[18] = i;
       c[16] = (c[11] < 1 ? 1 : c[11]);
@@ -466,8 +466,8 @@ int setmove(int npc, int flag)
     nextxy(c[22], c[23], c[26], c[27], c[24], c[25], &xdes, &ydes);
     c[28] = xdes;
     c[29] = ydes;
-    new_c->unknown28[0] = xdes;
-    new_c->unknown28[1] = ydes;
+    new_c->unknown28 = xdes;
+    new_c->unknown29 = ydes;
   }
 
   do {
@@ -502,8 +502,8 @@ int setmove(int npc, int flag)
             c[15] = 4;
             c[16] = c[11];
 
-            new_c->unknown28[0] = new_c->x + (i * l);
-            new_c->unknown28[1] = new_c->y + (j * m);
+            new_c->unknown28 = new_c->x + (i * l);
+            new_c->unknown29 = new_c->y + (j * m);
             new_c->command = ACTION_MOVE;
             new_c->time_until_next_move = new_c->speed;
 
@@ -547,8 +547,8 @@ int setmove(int npc, int flag)
         nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &xdes, &ydes);
         c[28] = xdes;
         c[29] = ydes;
-        new_c->unknown28[0] = xdes;
-        new_c->unknown28[1] = ydes;
+        new_c->unknown28 = xdes;
+        new_c->unknown29 = ydes;
         break;
       }
 
@@ -576,8 +576,8 @@ int setmove(int npc, int flag)
 
         c[28] = xdes;
         c[29] = ydes;
-        new_c->unknown28[0] = xdes;
-        new_c->unknown28[1] = ydes;
+        new_c->unknown28 = xdes;
+        new_c->unknown29 = ydes;
 
         break;
       }
@@ -594,8 +594,8 @@ int setmove(int npc, int flag)
 
         c[28] = xdes;
         c[29] = ydes;
-        new_c->unknown28[0] = xdes;
-        new_c->unknown28[1] = ydes;
+        new_c->unknown28 = xdes;
+        new_c->unknown29 = ydes;
 
         if (zline[xdes][ydes].unknown0 != 0) {
           break;
@@ -611,8 +611,8 @@ int setmove(int npc, int flag)
       nextxy(c[24], c[25], c[26], c[27], c[24], c[25], &xdes, &ydes);
       c[28] = xdes;
       c[29] = ydes;
-      new_c->unknown28[0] = xdes;
-      new_c->unknown28[1] = ydes;      
+      new_c->unknown28 = xdes;
+      new_c->unknown29 = ydes;      
 
       break;
 

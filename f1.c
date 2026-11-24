@@ -29,20 +29,21 @@ int attack_in(int pc)
 
   // Characters (including the player) only:
   // if (pc < 4 && (c[45] > 45 || c[45] < 41) ) {
-  if (pc < 4 && (new_c->player.good_hand > OBJECT_BOW || new_c->player.good_hand < OBJECT_BROADSWORD) ) {
+  if (IS_CHARACTER(pc) && (new_c->player.good_hand > OBJECT_BOW || new_c->player.good_hand < OBJECT_BROADSWORD) ) {
     error(ERROR_NO_WEAPON_IN_HAND);
     return 0;
   }
 
   // The player only:
   // if (pc == 0 && c[45] == 45 && c[46] != 0) {
-  if (pc == 0 && new_c->player.good_hand == OBJECT_BOW && new_c->player.other_hand != 0) {
+  if (IS_PLAYER(pc) && new_c->player.good_hand == OBJECT_BOW && new_c->player.other_hand != 0) {
     error(ERROR_BOW_TWO_FREE_HANDS);
     return 0;
   }
 
   // Other player characters
-  if (pc < 4 && pc > 0) {
+  // if (pc < 4 && pc > 0) {
+  if (IS_CHARACTER(pc) && !IS_PLAYER(pc)) {
     c[7] = c[39];
     new_c->player.target = new_c->player.unknown39;
   }
@@ -59,7 +60,7 @@ int attack_in(int pc)
   return 1;
 }
 
-// FIXME: At no point does armour stat do anything.
+// FIXME: At no point does the armour stat do anything.
 int attack_out(int pc) 
 {
   debug_printf("> attack_out()\n");
@@ -84,7 +85,7 @@ int attack_out(int pc)
   //if (pc < 4 && t[46] && !a[43]) {
   if (pc < 4 && new_t->player.other_hand && !new_a->player.base_chance_3_attack) {
     a[34] = -1;
-    new_a->player.unknown33[1] = -1;
+    new_a->player.unknown34 = -1;
     
     return 1;
   }
@@ -165,7 +166,7 @@ int attack_out(int pc)
 
     if (pc < 4) {
       a[34] = 1;
-      new_a->player.unknown33[1] = 1;
+      new_a->player.unknown34 = 1;
     }
 
     // return damage(a[39], dam);
@@ -173,7 +174,7 @@ int attack_out(int pc)
   } else {
     if (pc < 4) {
       a[34] = -1;
-      new_a->player.unknown33[1] = -1;
+      new_a->player.unknown34 = -1;
     }
   }
 

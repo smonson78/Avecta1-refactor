@@ -358,9 +358,13 @@ enum {
 #define ROOM_LEVETH_MONOLOGUE 30
 #define ROOM_LEVETH_BEDROOM 29
 
-// Around the wrong way by modern standards
+// Function return values - around the wrong way by modern standards
 #define ERR_SUCCESS 1
 #define ERR_FAILURE 0
+
+#define IS_MONSTER(c) (c > 3)
+#define IS_CHARACTER(c) (c <= 3)
+#define IS_PLAYER(c) (c == 0)
 
 extern char *errmsg[];
 

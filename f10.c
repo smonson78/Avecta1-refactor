@@ -70,7 +70,7 @@ int rob_listen_in(int pc)
   ch->player.target_object = obj;
   ch->player.command = ACTION_ROOK_SNOOP;
   ch->player.time_until_next_move = 6;
-  ch->player.unknown33[1] = 0;
+  ch->player.unknown34 = 0;
 
   debug_printf("< i10()\n");
   return 1;

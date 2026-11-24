@@ -76,8 +76,10 @@ typedef struct {
   uint8_t intelligence_routine;
   // 32
   uint8_t poison_mode_1; // this one is assigned another value from a poison mode
-  // 33-34
-  uint8_t unknown33[2];
+  // 33
+  uint8_t unknown33;
+  // 34
+  int8_t unknown34;
   // 35
   uint8_t stink_lines;
   // 36
@@ -118,8 +120,12 @@ typedef struct {
   uint8_t seekshard_imprinted_xy;
   // 54
   uint8_t original_sprite_id;
-  // 55-57
-  uint8_t unknown55[3];
+  // 55
+  uint8_t unknown55;
+  // 56
+  uint8_t unknown56;
+  // 57
+  uint8_t unknown57;
   // 58
   uint8_t monster_type;
   // 59
@@ -176,8 +182,10 @@ typedef struct {
   uint8_t dest_x;
   // 27
   uint8_t dest_y;
-  // 28-29
-  uint8_t unknown28[2];
+  // 28
+  uint8_t unknown28;
+  // 29
+  uint8_t unknown29;
   // 30
   uint8_t current_room;
   // 31
@@ -226,8 +234,12 @@ typedef struct {
   uint8_t seekshard_imprinted_xy;
   // 54
   uint8_t magic_mode_2;
-  // 55-57
-  uint8_t unknown55[3];
+  // 55
+  uint8_t unknown55;
+  // 56
+  uint8_t unknown56;
+  // 57
+  uint8_t unknown57;
   // 58
   uint8_t monster_type;
   // 59
