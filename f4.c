@@ -43,8 +43,8 @@ int move_in(int pc)
   c[29] = y;
   c[7] = c[8] = c[9] = 0;
 
-  new_c->unknown28 = x;
-  new_c->unknown29 = y;
+  new_c->move_to_x = x;
+  new_c->move_to_y = y;
   
   if (pc < 4) {
     player_t *p = &players[pc];
@@ -71,19 +71,27 @@ int move_out(int pc)
   curmon_t *new_c = &new_curmon[pc];
   zline_t *z;
   char id, *w;
-  int flag, xroll, yroll, i, xnow = c[24], ynow = c[25], x = c[28], y = c[29];
+  int flag, xroll, yroll, i, xnow = c[24], ynow = c[25];
+  int x = new_c->move_to_x;
+  int y = new_c->move_to_y;
   int j;
   int light = new_rumdata[crum].room_has_bg;
 
+  // The target square:
   z = &zline[x][y];
+
   id = crumobj[z->visible].object_id;
   w = (pc == 0 ? &pname[0] : name[curmon[pc][3]]);
 
-  if (z->unknown0 != 1 || (id < 41 && id > 0) || z->monster != 0) {
-    i = curmon[z->monster][3];
+  // if (z->unknown0 != 1 || (id < 41 && id > 0) || z->monster != 0) {
+  if (z->unknown0 != 1 || (OBJECT_BLOCKS_MOVEMENT(id) && id > 0) || z->monster != 0) {
+    // i = curmon[z->monster][3];
+    i = new_curmon2[z->monster].monster.monster_name_id;
 
-    if (pc < 4 && z->monster != 0 && pc != z->monster) {
-      if (z->monster > 3 && i != 10) {
+    if (IS_CHARACTER(pc) && z->monster != 0 && pc != z->monster) {
+      // Check for "the" prefix
+      // if (z->monster > 3 && i != MONSTER_NAME_MELKTHROP) {
+      if (NEEDS_DEFINITE_ARTICLE(z->monster)) {
         prnt("-> The %s blocks %s!", name[i], w);
       } else {
         prnt("-> %s blocks %s!", name[i], w);
@@ -133,10 +141,11 @@ int move_out(int pc)
 
       c[24] = c[28];
       c[25] = c[29];
-      new_c->x = new_c->unknown28;
-      new_c->y = new_c->unknown29;
+      new_c->x = new_c->move_to_x;
+      new_c->y = new_c->move_to_y;
 
-      zline[c[24]][c[25]].monster = pc;
+      // zline[c[24]][c[25]].monster = pc;
+      zline[new_c->x][new_c->y].monster = pc;
 
       return 1;
     }
@@ -168,8 +177,8 @@ int move_out(int pc)
   c[25] = c[29];
   new_c->unknown33[1] = 0;
   new_c->stink_lines = 0;
-  new_c->x = new_c->unknown28;
-  new_c->y = new_c->unknown29;
+  new_c->x = new_c->move_to_x;
+  new_c->y = new_c->move_to_y;
 
   z->monster = 0; /* reset the zline array to reflect move */
 
@@ -208,8 +217,8 @@ int move_out(int pc)
 
   c[28] = x;
   c[29] = y;
-  new_c->unknown28 = x;
-  new_c->unknown29 = y;
+  new_c->move_to_x = x;
+  new_c->move_to_y = y;
 
   check_curmon("move_out");
 

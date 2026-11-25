@@ -867,10 +867,11 @@ int savthrow(int npc, int mag)
 
     // Check to see if the prefix "the" will be applied
     // if (npc < 4 || curmon[npc][3] == 10) {
-    if (IS_CHARACTER(npc) || new_curmon2[npc].monster.monster_name_id == MONSTER_NAME_MELKTHROP) {
-      prnt("-> %s resists the spell!", w);
-    } else {
+    // if (IS_CHARACTER(npc) || new_curmon2[npc].monster.monster_name_id == MONSTER_NAME_MELKTHROP) {
+    if (NEEDS_DEFINITE_ARTICLE(npc)) {
       prnt("-> The %s resists the spell!", w);
+    } else {
+      prnt("-> %s resists the spell!", w);
     }
 
     return ERR_SUCCESS;

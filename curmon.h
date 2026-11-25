@@ -66,10 +66,10 @@ typedef struct {
   uint8_t dest_x;
   // 27
   uint8_t dest_y;
-  // 28
-  uint8_t unknown28; // set by MOVE action (x)
-  // 29
-  uint8_t unknown29; // set by MOVE action (y)
+  // 28: destination X for current move
+  uint8_t move_to_x;
+  // 29: destination Y for current move
+  uint8_t move_to_y;
   // 30
   uint8_t current_room;
   // 31
@@ -184,9 +184,9 @@ typedef struct {
   // 27
   uint8_t dest_y;
   // 28
-  uint8_t unknown28;
+  uint8_t move_to_x;
   // 29
-  uint8_t unknown29;
+  uint8_t move_to_y;
   // 30
   uint8_t current_room;
   // 31

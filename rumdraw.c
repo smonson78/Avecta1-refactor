@@ -29,12 +29,6 @@ void trans(sprite_t *bit, int16_t *stor)
   }
 }
 
-// First fill calls:
-// colour 1, style 5, pattern 255
-// colour 1, style 21, pattern 255
-// (then the furniture gets drawn)
-
-
 void setfill(int k)
 {
   room_data_t *r = &new_rumdata[crum];
@@ -103,6 +97,8 @@ void rumdraw(char *pan)
   debug_printf("> rumdraw()\n");  
   check_curmon("rumdraw start");
 
+  debug_printf("Welcome to room %d\n", crum);
+
   // c must be uint8_t or else we'll crash
   uint8_t *c;
   room_object_t *object;
@@ -123,9 +119,17 @@ void rumdraw(char *pan)
     //   c[j] = new_r->object[i].unknown[j];
     // }
     memcpy(object, &new_r->object[i], sizeof(room_object_t));
+
+    if (object->object_id) {
+      debug_printf("  Room contains object: %s in position %d\n", obj[object->object_id], i);
+      debug_printf("    position: (%d, %d)\n", object->x, object->y);
+      if (!object->visible) {
+        debug_printf("    (invisible)\n");
+      }
+    }
   }
 
-  debug_printf("-- rumdraw did rumdata -> crumobj copies\n");
+  // debug_printf("-- rumdraw did rumdata -> crumobj copies\n");
 
   // 5 things, 14..18
   for (i = 14; i < 19; i++) {
@@ -140,7 +144,7 @@ void rumdraw(char *pan)
     memset(object, 0, sizeof(room_object_t));
   }
 
-  debug_printf("-- rumdraw blanked zline\n");
+  // debug_printf("-- rumdraw blanked zline\n");
 
   // This is blanking out the entire zline array
   // for (i = 0; i < 16; i++) {
@@ -173,7 +177,7 @@ void rumdraw(char *pan)
     }
   }
 
-  debug_printf("-- rumdraw did triglist setup\n");
+  // debug_printf("-- rumdraw did triglist setup\n");
 
   // Something about invisible traps
   for (i = 0; i < 4; i++) {
@@ -201,7 +205,7 @@ void rumdraw(char *pan)
     }
   }
 
-  debug_printf("-- rumdraw handled invisible traps\n");  
+  // debug_printf("-- rumdraw handled invisible traps\n");
 
   int x, y;
 

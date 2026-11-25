@@ -65,12 +65,19 @@ int search_out(int pc)
 
   for (i = -1; i < 2; i++) {
     for (j = -1; j < 2; j++) {
-      z = &zline[x+i][y+j];
+      int xi = x + i;
+      int yj = y + j;
 
       // Don't search squares outside the map, or under the player
       // if (x + i < 0 || x + i > 15 || y + j < 0 || y + j > 7 || z[0] == 0 || (x + i == c[24]
       //     && y + j == c[25])) {
-      if (x + i < 0 || x + i > 15 || y + j < 0 || y + j > 7 || z->unknown0 == 0 || (i == 0 && j == 0)) {            
+      if (xi < 0 || xi >= MAP_SIZE_X || yj < 0 || yj >= MAP_SIZE_Y || (i == 0 && j == 0)) {
+        continue;
+      }
+
+      z = &zline[xi][yj];
+
+      if (z->unknown0 == 0) {
         continue;
       }
 
@@ -89,7 +96,7 @@ int search_out(int pc)
           flag++;          
           k = r[m + 1];
           
-          // Who is character 3?
+          // Who is character 3? Eirik?
           // if (pc != 3 || c[38] == 1) {
           if (pc != 3 || new_c->controlled == 1) {
             // prnt("-> %s discovers a %s in the %s!", w, obj[k], obj[o[0]]);

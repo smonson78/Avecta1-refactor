@@ -9,6 +9,9 @@
 // This is my Atari LIBC, not a fancy one
 #include <libc.h>
 
+#define MAP_SIZE_X 16
+#define MAP_SIZE_Y 8
+
 // The iX() and oX() mechanism
 extern int (*inverb[])(int pc);
 extern int (*outverb[])(int pc);
@@ -160,7 +163,7 @@ typedef struct {
   uint8_t unknown6;
 } zline_t;
 
-extern zline_t zline[16][8];
+extern zline_t zline[MAP_SIZE_X][MAP_SIZE_Y];
 
 extern room_data_t new_rumdata[80];
 //extern uint8_t (*new_rumdata_as_array)[80][sizeof(room_data_t)];
@@ -367,6 +370,8 @@ enum {
 #define IS_MONSTER(c) (c > 3)
 #define IS_CHARACTER(c) (c <= 3)
 #define IS_PLAYER(c) (c == 0)
+#define NEEDS_DEFINITE_ARTICLE(c) (c >= 4 && new_curmon2[c].monster.monster_name_id != MONSTER_NAME_MELKTHROP)
+#define OBJECT_BLOCKS_MOVEMENT(id) (id < OBJECT_BROADSWORD)
 
 extern char *errmsg[];
 

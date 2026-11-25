@@ -716,9 +716,9 @@ int move(int obj, int flag, int x, int y)
         }
 
         z = &zline[x + i][y + j];
+        // if (*z == 1 && z[1] == 0 && z[2] == 0 &&
         if (z->unknown0 == 1 && z->visible == 0 && z->monster == 0 &&
           (curmon[0][24] != x + i || curmon[0][25] != y + j)) {
-          // if (*z == 1 && z[1] == 0 && z[2] == 0 &&
           //   (new_curmon[0].x != x+i || new_curmon[0].y != y+j)) {
           if (obj > 13) {
             xobj(c->object_id, crum);
