@@ -169,6 +169,7 @@ typedef struct {
   // 13
   uint8_t intelligence;
   // 14
+  // If this is positive, it means we will intepret [5] to [9] as spells that it knows. See matt()
   uint8_t spell_units;
   // 15: the command that's just starting and is in progress. This is numbered the same as the 
   // original "iX.c" verb number.

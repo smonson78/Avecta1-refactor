@@ -90,8 +90,13 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
 
         // Check whether the user pressed spacebar, the first letter in the string corresponding to i,
         // or a control character that corresponds to the letter in the string.
-        // Not sure why the -32 is there but it allows keyboard selection of the action.
-        if (letter == ' ' || string[0] == letter || string[0] == (letter - 32)) {
+        
+        // Convert to upper case
+        if (letter >= 'a') {
+          letter -= 32;
+        }
+
+        if (letter == ' ' || string[0] == letter) {
           
           // We selected a command on the keyboard.
 

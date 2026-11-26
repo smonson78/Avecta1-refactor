@@ -779,7 +779,9 @@ int matt(int npc)
   new_a->monster.dest_y = new_curmon[new_a->monster.attack_target].y;
 
   /* indicates a magic using monster */
-  if (a[14] != 0) {
+  // if (a[14] != 0) {
+  if (new_a->monster.spell_units != 0) {
+    
     if (a[47] > 3 && a[14] > 0) {
       a[47] = 0;
       a[14] = (a[14] == 0 ? 0 : a[14] - 1);
@@ -819,7 +821,7 @@ int matt(int npc)
     debug_printf("--> spell[3] = %d\n", a[8]);
     debug_printf("--> spell[4] = %d\n", a[9]);
     debug_printf("--> sp is %d\n", sp);
-    // CRASH right here
+
     a[14] -= spelunit[sp];
     a[16] = spelinfo[sp-1][2];
     a[40] = 4;
@@ -854,7 +856,8 @@ int matt(int npc)
   }
 
   // Monsters only
-  if (npc > 3) {
+  // if (npc > 3) {
+  if (IS_MONSTER(npc)) {
     i = rnd(100);
     j = 0;
     

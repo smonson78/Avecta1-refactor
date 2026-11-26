@@ -263,7 +263,7 @@ int comwind(int pc)
     new_c->target = 0;
 
     clrinp();
-    return 0;
+    return ERR_FAILURE;
   }
 
   clrinp();
@@ -395,6 +395,6 @@ int comwind(int pc)
 
   check_curmon("comwind");
 
-  return 1;
+  return ERR_SUCCESS;
 }
 
