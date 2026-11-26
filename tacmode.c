@@ -215,7 +215,7 @@ int tacmode() {
         //activate_monsters(o[22], o[23], o[24], o[25]);
         activate_monsters(new_o->room_monster_type, new_o->room_monster_nm, new_o->room_monster_x, new_o->room_monster_y);
 
-        check_curmon("after creating monsters");
+        // check_curmon("after creating monsters");
         
         //if (o[29] != 0) {
         if (new_o->room_unknown_5 != 0) {
@@ -273,20 +273,20 @@ int tacmode() {
       }
     }
 
-    check_curmon("tacmode loop position 1");
+    // check_curmon("tacmode loop position 1");
 
     if (mode == 1 && monster < 2 && curmon[0][0] == 1 && curmon[0][30] == crum) { 
       mode = 0;
       undorep();
     }
 
-    check_curmon("tacmode loop position 2");
+    // check_curmon("tacmode loop position 2");
 
     if (monster > 1 && curmon[0][0] == 1 && curmon[0][30] == crum) {
       mode = 1;
     }
 
-    check_curmon("tacmode loop position 2.1");
+    // check_curmon("tacmode loop position 2.1");
 
     timer++;
 
@@ -294,17 +294,17 @@ int tacmode() {
       continue;
     }
 
-    check_curmon("tacmode loop position 2.2");
+    // check_curmon("tacmode loop position 2.2");
 
     // Make everyone who is going to move this turn take their move
     for (i = 1; i <= actlist[0]; i++) {
-      check_curmon("tacmode loop position 2.3");
+      // check_curmon("tacmode loop position 2.3");
 
       n = actlist[i];
       c = curmon[n];
       new_c = &new_curmon[n];
 
-      check_curmon("tacmode loop position 2.4");
+      // check_curmon("tacmode loop position 2.4");
 
       // If character is in use and in the current room:
       //if (c[0] && c[30] == crum) {
@@ -314,7 +314,7 @@ int tacmode() {
         j = (*outverb[new_c->command - 1])(n);
       }
 
-      check_curmon("tacmode loop position 2.5");
+      // check_curmon("tacmode loop position 2.5");
 
       // Get a keyboard command from the keyboard and check if it's a space character
       // if ((n == 0 || (n == 1 && c[38])) && j == 0 && (p = Bconstat(2)) != 0) {
@@ -327,14 +327,14 @@ int tacmode() {
         }
       }
 
-      check_curmon("tacmode loop position 2.6");
+      // check_curmon("tacmode loop position 2.6");
 
       // if (c[15] != 8 || !outside) {
       if (new_c->command != ACTION_WAIT || !outside) {
         trigtrol(n);
       }
 
-      check_curmon("tacmode loop position 3");
+      // check_curmon("tacmode loop position 3");
 
       // if (curmon[0][0] == 0) {
       if (!player->in_use) {
@@ -358,12 +358,12 @@ int tacmode() {
       } else {
         if (c[16] == 0) {
           do {
-            check_curmon("tacmode c[16] do-loop");
+            // check_curmon("tacmode c[16] do-loop");
             l = 1;
             if (j == 1) {
               k = input(n); 
 
-              check_curmon("tacmode c[16] do-loop after input()");
+              // check_curmon("tacmode c[16] do-loop after input()");
               
               if (k == 1 && !combat) {
                 l = 0;

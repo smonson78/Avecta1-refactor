@@ -103,15 +103,22 @@ int attack_out(int pc)
     weapon_chance /= new_a->player.magic_level - 4;
   } else {
     // weapon_chance = *(a + 40 + a[40]);
-    // FIXME need to know what that value is
-    weapon_chance = a[40 + new_a->player.unknown40];
+    // This must somehow involve the base_X_attack values where X is 1-3
+    weapon_chance = a[40 + new_a->player.combat_stance];
+    debug_printf(">>> attack weapon chance was %d from unknown40=%d!\n", weapon_chance, new_a->player.combat_stance);
   }
   
   // This is testing whether the monster is also fighting the character attacking them
   // if (t[39] == pc) {
   if (new_t->monster.attack_target == pc) {
+    // If two creatures are fighting each other, the weapon chance of the attacker is affected by the
+    // combat stance of both individuals.
     // weapon_chance += wepmatx[a[40]][t[40]];
-    weapon_chance += wepmatx[new_a->monster.unknown40][new_t->monster.unknown40];
+    weapon_chance += wepmatx[new_a->monster.combat_stance][new_t->monster.combat_stance];
+    debug_printf(">>> in combat, attacker had stance %d and defender had stance %d, giving a chance of %d!\n",
+      new_a->monster.combat_stance,
+      new_t->monster.combat_stance,
+      wepmatx[new_a->monster.combat_stance][new_t->monster.combat_stance]);
   } else {
     weapon_chance += 40;   /* big bonus for blind side shots */         
   }
@@ -149,7 +156,7 @@ int attack_out(int pc)
 
   if (base > roll && dam > 0) {
     // if (pc > 3 && a[40] == a[45] && t[47] == 0) {
-    if (pc > 3 && new_a->monster.unknown40 == new_a->monster.poison_mode_2 
+    if (pc > 3 && new_a->monster.combat_stance == new_a->monster.poison_mode_2 
         && new_t->monster.poisoned == 0) {
       
       // w = (a[39] == 0 ? pname : name[curmon[a[39]][3]]);

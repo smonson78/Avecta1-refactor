@@ -91,7 +91,7 @@ typedef struct {
   // 39
   uint8_t unknown39; // 39 is "target" for monsters, but not for players (probably)
   // 40
-  uint8_t unknown40;
+  uint8_t combat_stance;
   // 41
   uint8_t lit_torch_turns; // actually "turns left on current torch"
   // 42
@@ -220,13 +220,13 @@ typedef struct {
   // Sometimes this is just the monster's own ID. Maybe it's a generic target of whatever they're doing.
   uint8_t attack_target;
   // 40
-  uint8_t unknown40;
+  uint8_t combat_stance;
   // 41
-  uint8_t base_chance_1_attack; // These 3 kinda conflict with 46, 37, and 46.
+  uint8_t base_chance_1_attack; // All Out
   // 42
-  uint8_t base_chance_2_attack;
+  uint8_t base_chance_2_attack; // Standard
   // 43
-  uint8_t base_chance_3_attack;
+  uint8_t base_chance_3_attack; // Defensive
   // 44
   uint8_t bane;
   // 45

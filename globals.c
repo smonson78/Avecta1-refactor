@@ -79,10 +79,16 @@ weapon_t weapon[] = {
 
 char *wepname[] = {"", "Broadsword", "Scimitar", "Mace", "Dagger", "Bow"};
 
-char wepmatx[4][4] = {
+// This modifies the weapon hit chance base on the attacker's combat stance vs the defender's.
+// Since you cannot actually see what the enemies are choosing, this is basically pointless.
+int8_t wepmatx[4][4] = {
+  // Attacker is not combat ready: low chance to hit anyone, but does it even matter???
   {0, -40, -40, -40},
+  // All-out attack: improved chance to hit against standard, worst against defensive
   {40, 0, 20, -20},
+  // Standard attack: improved chance against defensive, worst against all-out
   {40, -20, 0, 20},
+  // Defensive attack - improved chance against all-out, worst against standard
   {40, 20, -20, 0} 
 };
 

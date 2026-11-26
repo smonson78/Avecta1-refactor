@@ -360,22 +360,23 @@ int comwind(int pc)
   sgetxy(&x, &y, 1, 8, 11, &ret);
   clrinp();
 
+  // 11 is "Fall back", 12 is space bar
   if (ret == 11 || ret == 12) {
     c[40] = 0;
     c[39] = 0;
     c[34] = 0;
 
-    new_c->unknown40 = 0;
+    new_c->combat_stance = ATTACK_NONE;
     new_c->unknown39 = 0;
     new_c->unknown34 = 0;
 
-    return 0;
+    return ERR_FAILURE;
   }
 
   if (ret == 0) {
     if (zline[x][y].monster == c[39]) { 
       c[40] = 2;
-      new_c->unknown40 = 2;
+      new_c->combat_stance = ATTACK_STANDARD;
       return 1;
     } else {
       c[34] = 0;
@@ -383,15 +384,20 @@ int comwind(int pc)
       c[40] = 0;
       new_c->unknown34 = 0;
       new_c->unknown39 = 0;
-      new_c->unknown40 = 0;
-      return 0;
+      new_c->combat_stance = ATTACK_NONE;
+
+      return ERR_FAILURE;
     }
   } else {
     ret -= 7;
   }
 
+  debug_printf(">>> from comwind, unknown40 was set to %d!\n", ret);
+  // 1 = All out
+  // 2 = Standard
+  // 3 = defensive
   c[40] = ret;
-  new_c->unknown40 = ret;
+  new_c->combat_stance = ret;
 
   check_curmon("comwind");
 

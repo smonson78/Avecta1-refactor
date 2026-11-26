@@ -53,7 +53,7 @@ int intell(int npc)
 
   step = type;
   c[40] = 0;
-  new_c->unknown40 = 0;
+  new_c->combat_stance = ATTACK_NONE;
 
   while (!done) {
     debug_printf("intell step %d\n", step);
@@ -762,10 +762,13 @@ int settarg(int npc)
   return 1;
 }
 
+
 /******************************************************************************/
 /* ATT(NPC) sets up the attack mode of the monster.  There are only two       */
 /* possibilities: assail or magic.                                            */
 /******************************************************************************/
+
+// NOTE there is actually no such thing as att()
 
 int matt(int npc)
 {
@@ -781,7 +784,7 @@ int matt(int npc)
   /* indicates a magic using monster */
   // if (a[14] != 0) {
   if (new_a->monster.spell_units != 0) {
-    
+
     if (a[47] > 3 && a[14] > 0) {
       a[47] = 0;
       a[14] = (a[14] == 0 ? 0 : a[14] - 1);
@@ -831,12 +834,12 @@ int matt(int npc)
 
     new_a->monster.spell_units -= spelunit[sp];
     new_a->monster.time_until_next_move = spelinfo[sp - 1][2];
-    new_a->monster.unknown40 = 4;
+    new_a->monster.combat_stance = 4;
     new_a->monster.command = ACTION_CAST;
     new_a->monster.spell_units = new_a->monster.spell_units < 5 ? -1 : new_a->monster.spell_units;
     new_a->monster.spell_cast = sp;
 
-    return 1;
+    return ERR_SUCCESS;
   }
 
   a[15] = 1;
@@ -855,23 +858,23 @@ int matt(int npc)
     new_a->monster.time_until_next_move *= 2;
   }
 
-  // Monsters only
+  // Monsters only. This decides their combat stance
   // if (npc > 3) {
   if (IS_MONSTER(npc)) {
     i = rnd(100);
     j = 0;
     
-    while (j < 2 && a[6+2*j] < i) {
+    while (j < 2 && a[6 + (2 * j)] < i) {
       j++;
     }
   } else {
     j = rnd(3);
   }
 
-  a[40] = j+1;
-  new_a->monster.unknown40 = j + 1;
+  a[40] = j + 1;
+  new_a->monster.combat_stance = j + 1;
 
-  return 1;
+  return ERR_SUCCESS;
 }
 
 void alert(int npc)
@@ -894,7 +897,7 @@ int setatt(int npc)
   uint8_t *t = curmon[a[39]];
   int d = dist(a[24], a[25], t[24], t[25]);
 
-  if (!los(npc,t[24],t[25])) {
+  if (!los(npc, t[24], t[25])) {
     return 1;
   }
 

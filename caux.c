@@ -131,7 +131,7 @@ int sgetxy(int16_t *x, int16_t *y, int type, int top1, int bot, int *ret)
             }
           } else {
             if (letter == ' ') {
-              // Spacebar = not sure
+              // Spacebar pressed
               *ret = 12;
             } else {
               // 0 to 3 --> 8 to 11

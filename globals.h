@@ -38,7 +38,7 @@ typedef struct {
 } weapon_t;
 
 extern weapon_t weapon[];
-extern char wepmatx[4][4];
+extern int8_t wepmatx[4][4];
 extern char spelinfo[24][3];
 
 extern int16_t pxy[8];
@@ -358,6 +358,14 @@ enum {
   DUNGEON_MONASTERY,
   DUNGEON_KILKANEY,
   DUNGEON_CAVE
+};
+
+enum {
+  ATTACK_NONE = 0,
+  ATTACK_ALL_OUT,
+  ATTACK_STANDARD,
+  ATTACK_DEFENSIVE,
+  ATTACK_MAGIC,
 };
 
 #define ROOM_LEVETH_MONOLOGUE 30
