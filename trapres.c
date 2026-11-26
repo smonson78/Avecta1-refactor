@@ -324,13 +324,17 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
     }
     break;
 
-  case 9: /* melkthrop gets his */
-    j = (pc == 0 ? c[7] : c[39]);
+  /* melkthrop gets his */
+  case 9:
+    // NOTE: evidence of the difference between player.target and monster.attack_target
+    // j = (pc == 0 ? c[7] : c[39]);
+    j = IS_PLAYER(pc) ? new_c->player.target : new_c->monster.attack_target;
     if (!adjac(j, c[24], c[25])) {
       break;
     }
 
-    if (curmon[j][58] != 16) {
+    // if (curmon[j][58] != 16) {
+    if (new_curmon2[j].monster.monster_type != MONSTER_MELKTHROP) {
       break;
     }
 
@@ -410,7 +414,7 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
       new_c->monster.time_until_next_move = 1;
       new_c->monster.unknown48 = 1;
       new_c->monster.spell_cast = SPELL_BLINK;
-      new_c->monster.target = j;
+      new_c->monster.attack_target = j;
 
       do {
         x = rnd(16);
@@ -449,7 +453,7 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
     new_c->monster.original_stat = 0;
     new_c->monster.magic_effect_time_remaining = 40 - randomness;
     new_c->monster.magic_mode_2 = 1;
-    new_c->monster.spells[3] = 0;
+    new_c->monster.target_inventory = 0;
     break;
 
   case 16: /* the first duplicator trap */
@@ -721,7 +725,7 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
     fromout = 2;
     c[4] = c[7];
     // Seems wrong?
-    new_c->monster.sprite_id = new_c->monster.spells[2];
+    new_c->monster.sprite_id = new_c->monster.target2;
     break;
 
   case 26: /* open up the doorway to leverneckel's room */
@@ -1012,7 +1016,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
       remove_object(1, c[8]);
       c[45] = c[8];
       // Seems wrong
-      new_c->monster.poison_mode_2 = new_c->monster.spells[3];
+      new_c->monster.poison_mode_2 = new_c->monster.target_inventory;
     }
 
     // 63 must be the specific key

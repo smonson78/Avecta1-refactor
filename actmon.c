@@ -258,11 +258,11 @@ int activate_monsters(int type, int nm, int x, int y)
     new_c->max_health = p->max_health;
     new_c->monster_name_id = p->monster_name_id;
     new_c->sprite_id = p->sprite_id;
-    new_c->spells[0] = p->unknown5;
-    new_c->spells[1] = p->unknown6;
-    new_c->spells[2] = p->unknown7;
-    new_c->spells[3] = p->unknown8;
-    new_c->spells[4] = p->unknown9;
+    new_c->action_dest_x = p->unknown5;
+    new_c->action_dest_y = p->unknown6;
+    new_c->target2 = p->unknown7;
+    new_c->target_inventory = p->unknown8;
+    new_c->target_object = p->unknown9;
     new_c->spell_cast = p->unknown10;
     new_c->speed = p->speed;
     new_c->armour = p->armour;
@@ -291,7 +291,7 @@ int activate_monsters(int type, int nm, int x, int y)
     new_c->command = ACTION_WAIT;       /* installed with a wait */
     new_c->time_until_next_move = 1;
     new_c->current_room = crum;
-    new_c->target = i + 4; // targets themselves I think. Probably doesn't do anything.
+    new_c->attack_target = i + 4; // targets themselves I think. Probably doesn't do anything.
 
     // Pedestrian?
     if (type == 18) {

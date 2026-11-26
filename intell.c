@@ -463,7 +463,7 @@ int setmove(int npc, int flag)
     // This is a bit of a concern because it doesn't seem to make sense
     // NOTE this is the only time unknown18 is read.
     // Usually it is set to an action (verb) number.
-    new_c->spells[4] = crumobj[new_c->unknown18].target;
+    new_c->target_object = crumobj[new_c->unknown18].target;
 
     return ERR_SUCCESS;
   }
@@ -675,7 +675,7 @@ int target(int npc)
 
     if (c[39] == npc && c[0] && c[30] == crum) {
       curmon[npc][39] = i;
-      new_curmon2[npc].monster.target = i;
+      new_curmon2[npc].monster.attack_target = i;
       return 1;
     }
   }
@@ -751,13 +751,13 @@ int settarg(int npc)
 
   j = rnd(list[0] - 1);
   
-  c[39] = list[1 + j]; 
+  c[39] = list[1 + j];
   c[26] = curmon[c[39]][24];
   c[27] = curmon[c[39]][25];
 
-  new_c->monster.target = list[1 + j]; 
-  new_c->monster.dest_x = new_curmon[new_c->monster.target].x;
-  new_c->monster.dest_y = new_curmon[new_c->monster.target].y;
+  new_c->monster.attack_target = list[1 + j]; 
+  new_c->monster.dest_x = new_curmon[new_c->monster.attack_target].x;
+  new_c->monster.dest_y = new_curmon[new_c->monster.attack_target].y;
 
   return 1;
 }
@@ -775,8 +775,8 @@ int matt(int npc)
 
   a[26] = curmon[a[39]][24];
   a[27] = curmon[a[39]][25];
-  new_a->monster.dest_x = new_curmon[new_a->monster.target].x;
-  new_a->monster.dest_y = new_curmon[new_a->monster.target].y;
+  new_a->monster.dest_x = new_curmon[new_a->monster.attack_target].x;
+  new_a->monster.dest_y = new_curmon[new_a->monster.attack_target].y;
 
   /* indicates a magic using monster */
   if (a[14] != 0) {
@@ -985,7 +985,7 @@ int friend(int npc)
 
     if (!target(npc) && !settarg(npc)) {
       c[39] = 0;
-      new_c->monster.target = 0;
+      new_c->monster.attack_target = 0;
 
       if (!setmove(npc, 1)) {
         pass(npc);
@@ -1015,7 +1015,7 @@ int friend(int npc)
     if (curmon[0][15] == 4 || npc > 3 || !los(npc,x,y) || 
       dist(c[24], c[25], x, y) > 3) {
       c[39] = 0;
-      new_c->monster.target = 0;
+      new_c->monster.attack_target = 0;
 
       if (dist(c[24], c[25], x, y) < 4 - rnd(2) && los(npc, x, y) ) {
         pass(npc);

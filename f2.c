@@ -320,7 +320,7 @@ int cast_out(int pc)
     // num = c[10];
     num = new_c->spell_cast;
     //target = c[39];
-    target = new_c->target;
+    target = new_c->attack_target;
     
     t = curmon[target];
     new_t = &new_curmon[target];

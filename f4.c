@@ -53,9 +53,9 @@ int move_in(int pc)
     p->target_object = 0;
   } else {
     // Maybe this is limited to characters only
-    new_c->spells[2] = 0;
-    new_c->spells[3] = 0;
-    new_c->spells[4] = 0;
+    new_c->target2 = 0;
+    new_c->target_inventory = 0;
+    new_c->target_object = 0;
   }
 
   check_curmon("i4");

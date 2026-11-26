@@ -210,10 +210,7 @@ int take_drop_out(int pc)
     return 1;
   }
 
-  // FIXME this hangs the game when putting the scimitar into the door. In the original 
-  // executable, you get the error "The door is closed" instead
   if (j > 0 && k != 0) {
-    // prnt("-> %s puts the %s in the %s.", w1, obj[c[8]], obj[crumobj[k][0]]);
     prnt("-> %s puts the %s in the %s.", w1, obj[c[8]], obj[crumobj[k].object_id]);
     // crumobj[k][5] = 1;
     crumobj[k].hide = 1;
@@ -235,11 +232,7 @@ int take_drop_out(int pc)
 
   if (j > 0 && k == 0) {
     c[9] = 0;
-    if (pc < 4) {
-      ch->player.target_object = 0;
-    } else {
-      ch->monster.spells[4] = 0;
-    }
+    ch->monster.target_object = 0;
 
     i = rumslot();
     // prnt("-> %s puts the %s down.", w1, obj[c[8]]);
@@ -258,7 +251,7 @@ int take_drop_out(int pc)
     }
 
     //takeout(pc, c[8]);
-    takeout(pc, new_c->spells[3]);
+    takeout(pc, ch->monster.target_inventory);
 
     //if (c[45] == c[8]) {
     if (ch->player.good_hand == ch->player.target_inventory) {
@@ -403,9 +396,9 @@ int take_drop_out(int pc)
     c[5] = x;
     c[6] = y;
     c[8] = k;
-    new_c->spells[0] = x;
-    new_c->spells[1] = y;
-    new_c->spells[3] = k;
+    ch->monster.action_dest_x = x;
+    ch->monster.action_dest_y = y;
+    ch->monster.target_inventory = k;
 
     if (k < 46 && k > 40 && c[32] == 0) {
       c[32] = k;
@@ -415,7 +408,7 @@ int take_drop_out(int pc)
     attack(pc, x, y);
 
     if (new_rumdata[crum].room_has_bg || zline[x][y].unknown5 > 0) {
-      drawsq(x,y);
+      drawsq(x, y);
     }
   }
 

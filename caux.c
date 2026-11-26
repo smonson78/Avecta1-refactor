@@ -575,6 +575,8 @@ int los(int pc, int x, int y)
 /* west,8=Samesquare.                                              12/12/85  */
 /*****************************************************************************/
 
+// NOTE: it does not return the direction, and never did.
+
 void nextxy(int xlo, int ylo, int xhi, int yhi, int xnow, int ynow, int *xnext, int *ynext)
 {
   int i, j, k = 1, rollx, rolly, signx = 0, signy = 0;
@@ -586,11 +588,11 @@ void nextxy(int xlo, int ylo, int xhi, int yhi, int xnow, int ynow, int *xnext, 
   rolly = abs(j);
 
   if (i != 0) {
-    signx = i/rollx;
+    signx = i / rollx;
   }
 
   if (j != 0) {
-    signy = j/rolly;
+    signy = j / rolly;
   }
 
   do {
@@ -601,7 +603,7 @@ void nextxy(int xlo, int ylo, int xhi, int yhi, int xnow, int ynow, int *xnext, 
       break;
     }
 
-    if (line(xlo,ylo,xhi,yhi,xnow+signx,ynow)) {
+    if (line(xlo, ylo, xhi, yhi, xnow + signx, ynow)) {
       *xnext = xnow + signx;
       *ynext = ynow;
       signy = 0;

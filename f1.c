@@ -12,33 +12,34 @@ int attack_in(int pc)
   uint8_t *c = curmon[pc];
   curmon2_t *new_c = &new_curmon2[pc];
   // uint8_t *t = curmon[c[39]];
-  curmon2_t *new_t = &new_curmon2[new_c->monster.target];
+  curmon2_t *new_t = &new_curmon2[new_c->monster.attack_target];
 
   // int x = t[24], y = t[25];
-  int x = new_t->monster.x, y = new_t->monster.y;
+  int x = new_t->monster.x;
+  int y = new_t->monster.y;
 
   if (outside) {
-    return 0;
+    return ERR_FAILURE;
   }
 
   combat = 0;
   if (!adjac(pc, x, y)) {
     error(ERROR_TARGET_NOT_ADJACENT);
-    return 0;
+    return ERR_FAILURE;
   }
 
   // Characters (including the player) only:
   // if (pc < 4 && (c[45] > 45 || c[45] < 41) ) {
   if (IS_CHARACTER(pc) && (new_c->player.good_hand > OBJECT_BOW || new_c->player.good_hand < OBJECT_BROADSWORD) ) {
     error(ERROR_NO_WEAPON_IN_HAND);
-    return 0;
+    return ERR_FAILURE;
   }
 
   // The player only:
   // if (pc == 0 && c[45] == 45 && c[46] != 0) {
   if (IS_PLAYER(pc) && new_c->player.good_hand == OBJECT_BOW && new_c->player.other_hand != 0) {
     error(ERROR_BOW_TWO_FREE_HANDS);
-    return 0;
+    return ERR_FAILURE;
   }
 
   // Other player characters
@@ -55,9 +56,9 @@ int attack_in(int pc)
   new_c->monster.time_until_next_move = new_c->monster.speed;
 
   c[9] = 0;
-  new_c->monster.spells[4] = 0;
+  new_c->monster.target_object = 0;
 
-  return 1;
+  return ERR_SUCCESS;
 }
 
 // FIXME: At no point does the armour stat do anything.
@@ -67,7 +68,7 @@ int attack_out(int pc)
   uint8_t *a = curmon[pc];
   uint8_t *t = curmon[a[39]];
   curmon2_t *new_a = &new_curmon2[pc];
-  curmon2_t *new_t = &new_curmon2[new_a->monster.target];
+  curmon2_t *new_t = &new_curmon2[new_a->monster.attack_target];
 
   char *w;
   int base, roll, dam, weapon_chance;
@@ -106,8 +107,9 @@ int attack_out(int pc)
     weapon_chance = a[40 + new_a->player.unknown40];
   }
   
+  // This is testing whether the monster is also fighting the character attacking them
   // if (t[39] == pc) {
-  if (new_t->monster.target == pc) {
+  if (new_t->monster.attack_target == pc) {
     // weapon_chance += wepmatx[a[40]][t[40]];
     weapon_chance += wepmatx[new_a->monster.unknown40][new_t->monster.unknown40];
   } else {
@@ -151,11 +153,11 @@ int attack_out(int pc)
         && new_t->monster.poisoned == 0) {
       
       // w = (a[39] == 0 ? pname : name[curmon[a[39]][3]]);
-      w = (new_a->monster.target == 0 ? 
-        pname : name[new_curmon2[new_a->monster.target].monster.monster_name_id]);
+      w = (new_a->monster.attack_target == 0 ? 
+        pname : name[new_curmon2[new_a->monster.attack_target].monster.monster_name_id]);
 
       // if (a[39] < 4) {
-      if (new_a->monster.target < 4) {
+      if (new_a->monster.attack_target < 4) {
         prnt("-> %s is envenomed!", w);
       } else {
         prnt("-> The %s is envenomed!", w);
@@ -171,7 +173,7 @@ int attack_out(int pc)
     }
 
     // return damage(a[39], dam);
-    return damage(new_a->monster.target, dam);
+    return damage(new_a->monster.attack_target, dam);
   } else {
     if (IS_CHARACTER(pc)) {
       a[34] = -1;

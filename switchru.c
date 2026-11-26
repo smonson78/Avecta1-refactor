@@ -375,11 +375,11 @@ int getmon(int room)
           mon->max_health = p->max_health;
           mon->monster_name_id = p->monster_name_id;
           mon->sprite_id = p->sprite_id;
-          mon->spells[0] = p->unknown5;
-          mon->spells[1] = p->unknown6;
-          mon->spells[2] = p->unknown7;
-          mon->spells[3] = p->unknown8;
-          mon->spells[4] = p->unknown9;
+          mon->action_dest_x = p->unknown5;
+          mon->action_dest_y = p->unknown6;
+          mon->target2 = p->unknown7;
+          mon->target_inventory = p->unknown8;
+          mon->target_object = p->unknown9;
           mon->spell_cast = p->unknown10;
           mon->speed = p->speed;
           mon->armour = p->armour;
@@ -426,7 +426,7 @@ int getmon(int room)
           mon->x = x;
           mon->y = y;
           mon->current_room = room;
-          mon->target = j + 4; // monster index in array? what's the good of that
+          mon->attack_target = j + 4; // monster index in array? what's the good of that
           mon->damage = r[i + 2];
           mon->command = ACTION_WAIT;
           mon->time_until_next_move = 1;

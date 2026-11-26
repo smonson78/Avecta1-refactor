@@ -144,10 +144,22 @@ typedef struct {
   uint8_t monster_name_id;
   // 4
   uint8_t sprite_id;
-  // 5-9
-  uint8_t spells[5];
-  // But also:
-  // 9 = target_object same as player. Spells array must be reused for monster spells at times
+  // 5 - the target location for a drag action, a spell cast
+  uint8_t action_dest_x;
+  // 6
+  uint8_t action_dest_y;
+  // 7: target of voice, attack. For sellers - this is used differently: 1=angry, 0=sold you something
+  uint8_t target2;
+  // 8
+  // During attack_out(), this is what was held in your good hand
+  // During cast_in, and others that don't use it, this is set to 0
+  // During Examine IN, this is whatever is in either hand
+  // Then in Examine OUT, whatever is in here goes into your hand with the message that you "take it out" for examination
+  // During Eat, this is the object from your hands that you're about to eat
+  // When using an object - in trapres - it's the object you were holding
+  uint8_t target_inventory;
+  // 9 - an object that is being dragged, examined, or cast upon
+  uint8_t target_object;
   // 10
   uint8_t spell_cast;
   // 11
@@ -204,7 +216,8 @@ typedef struct {
   // 38
   uint8_t controlled;
   // 39: Target of an attack - for monsters. It's [7] for playable characters.
-  uint8_t target;
+  // Sometimes this is just the monster's own ID. Maybe it's a generic target of whatever they're doing.
+  uint8_t attack_target;
   // 40
   uint8_t unknown40;
   // 41
@@ -221,7 +234,7 @@ typedef struct {
   uint8_t magic_mode_1;
   // 47
   uint8_t poisoned;
-  // 48
+  // 48: an exit (object ID) that a creature is heading for
   uint8_t unknown48;
   // 49
   uint8_t gold_amount;

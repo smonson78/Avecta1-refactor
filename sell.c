@@ -144,7 +144,7 @@ int sell(int npc)
   passed on by the local residents.");
       selllist[i].attitude = -1;
       c[7] = 1;
-      ch->monster.spells[2] = 1;
+      ch->monster.target2 = 1;
 
       police = 1;
       return 1;
@@ -294,7 +294,7 @@ int sell(int npc)
       ch->monster.command = ACTION_WAIT;
       ch->monster.time_until_next_move = 100;
       ch->player.action_dest_y = 0;
-      ch->monster.spells[2] = 0;
+      ch->monster.target2 = 0;
       ch->player.target_inventory = 0;
       ch->player.target_object = 0;
       ch->monster.spell_cast = 0;
@@ -361,7 +361,7 @@ int wander(int npc)
     new_c->monster.command = ACTION_EXIT;
     new_c->monster.time_until_next_move = 4;
     new_c->monster.spell_cast = ex;
-    new_c->monster.spells[4] = new_c->monster.unknown48;
+    new_c->monster.target_object = new_c->monster.unknown48;
 
     return 1;
   }

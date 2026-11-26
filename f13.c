@@ -152,7 +152,7 @@ int give_out(int pc)
   }
 
   c[8] = c[45];
-  new_c->monster.spells[3] = new_c->monster.poison_mode_2;
+  new_c->monster.target_inventory = new_c->monster.poison_mode_2;
   // t[45] = c[45];
   t[45] = new_c->monster.poison_mode_2;
   new_t->monster.poison_mode_2 = new_c->monster.poison_mode_2;

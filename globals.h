@@ -370,7 +370,11 @@ enum {
 #define IS_MONSTER(c) (c > 3)
 #define IS_CHARACTER(c) (c <= 3)
 #define IS_PLAYER(c) (c == 0)
+
+// Creature's name needs "the" prefix e.g. "the orc"
 #define NEEDS_DEFINITE_ARTICLE(c) (c >= 4 && new_curmon2[c].monster.monster_name_id != MONSTER_NAME_MELKTHROP)
+
+// All the objects with IDs lower than broadsword are big and block your movement.
 #define OBJECT_BLOCKS_MOVEMENT(id) (id < OBJECT_BROADSWORD)
 
 extern char *errmsg[];
