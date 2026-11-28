@@ -276,7 +276,8 @@ and escape this pit of evil.'  A wolfish grin spreads across his face.");
 
   case 7:
     // Player characters only
-    if (pc > 3) {
+    // if (pc > 3) {
+    if (IS_MONSTER(pc)) {
       break;
     }
 
@@ -289,8 +290,8 @@ and escape this pit of evil.'  A wolfish grin spreads across his face.");
       litetrol(x, y, 0);
       c[41] = 0;
       c[42] += 1;
-      new_c->monster.base_chance_1_attack = 0;
-      new_c->monster.base_chance_2_attack++;
+      new_c->player.lit_torch_turns = 0;
+      new_c->player.unlit_torches++;
       break;
     }
 
@@ -512,19 +513,26 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
     break;
 
   case 14:
-    if ((c[8] == OBJECT_BROADSWORD || c[45] == OBJECT_BROADSWORD) &&
-        (c[50] < 20 || pc == 0)) {
+    // if ((c[8] == OBJECT_BROADSWORD || c[45] == OBJECT_BROADSWORD) &&
+    //     (c[50] < 20 || pc == 0)) {
+    if ((new_c->player.target_inventory == OBJECT_BROADSWORD || new_c->player.good_hand == OBJECT_BROADSWORD) &&
+        (new_c->player.physical_strength < 20 || IS_PLAYER(pc))) {
+
       prnt("-> %s is unable to hold the immense broadsword, and it falls to the floor underneath "
         "%s with a loud clank!", s2, s2);
+
       takeout(pc, OBJECT_BROADSWORD);
-      if (c[45] == OBJECT_BROADSWORD) {
+      
+      // if (c[45] == OBJECT_BROADSWORD) {
+      if (new_c->player.good_hand == OBJECT_BROADSWORD) {
         c[45] = 0;
-        new_c->monster.poison_mode_2 = 0;
+        new_c->player.good_hand = 0;
       }
 
-      if (c[46] == OBJECT_BROADSWORD) {
+      // if (c[46] == OBJECT_BROADSWORD) {
+      if (new_c->player.other_hand == OBJECT_BROADSWORD) {
         c[46] = 0;
-        new_c->monster.magic_mode_1 = 0;
+        new_c->player.other_hand = 0;
       }
 
       make(OBJECT_BROADSWORD, 1, 0, 0, OBJECT_BROADSWORD, -1, c[24], c[25], 1);
@@ -532,15 +540,17 @@ travel, to become Thanatos, in Hell I end without life.  What am I?'", s2);
       break;
     }
 
-    if (c[48] == 0) {
+    // Now it must be an NPC - namely Eirik - who is picking up the sword
+
+    // if (c[48] == 0) {
+    if (new_c->player.unknown48 == 0) {
       prnt("-> Eirik smiles with pleasure, `Crom! Such a blade!' He spins it through the air "
         "with ease as his muscles ripple. `Melkthrop will learn the painful truth of steel "
-        "from this weapon!', and he looks at %s with a grim grin.",
-           pname);
+        "from this weapon!', and he looks at %s with a grim grin.", pname);
       c[48] = 1;
       c[32] = OBJECT_BROADSWORD;
-      new_c->monster.unknown48 = 1;
-      new_c->monster.poison_mode_1 = OBJECT_BROADSWORD;
+      new_c->player.unknown48 = 1;
+      new_c->player.poison_mode_1 = OBJECT_BROADSWORD;
     }
     break;
 
@@ -1061,13 +1071,14 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     flash();
     c[1] = c[41] = 0;
     new_c->monster.damage = 0;
-    new_c->monster.base_chance_1_attack = 0;
+    new_c->player.lit_torch_turns = 0;
     c[14] = 6 * c[51];
-    new_c->monster.spell_units = 6 * new_c->monster.magic_level;
+    new_c->player.spell_units = 6 * new_c->player.magic_level;
     break;
 
   case 38: /* reset sleep by leaving Kilkaney */
-    if (c[30] != 127) {
+    // if (c[30] != 127) {
+    if (new_c->monster.current_room != ROOM_UNKNOWN1) {
       break;
     }
     specbuf.already_slept = 0;
@@ -1109,9 +1120,11 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
 
   case 41:
     c[41] = 0;
-    new_c->monster.base_chance_1_attack = 0;
+    new_c->player.lit_torch_turns = 0;
+
     prnt("-> The old man in the bed waves his hand and %s is pulled through the space "
       "between by a powerful blink spell!", s2, NULL, NULL, NULL, NULL, NULL);
+
     c[26] = 7;
     c[27] = 2;
     c[10] = 13;
@@ -1122,6 +1135,7 @@ racked up 'ere.  Don't be walkin' out on me.", NULL, NULL, NULL, NULL, NULL, NUL
     new_c->monster.spell_cast = SPELL_BLINK;
     new_c->monster.command = ACTION_CAST;
     new_c->monster.time_until_next_move = 1;
+
     break;
 
   case 42:

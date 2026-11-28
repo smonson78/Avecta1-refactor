@@ -241,7 +241,7 @@ int switchrum() {
     i = 0;
     for (j = 0; j < 4; j++) {
       c = curmon[j];
-      curmon_t *new_c = &new_curmon[j];
+      curmon2_t *new_c = &new_curmon2[j];
       
       // Some odd calculations in here
       if (c[41] > 0) { 
@@ -252,9 +252,9 @@ int switchrum() {
         c[41] = 0; // Now it's not a lit torch
         c[46] = 0;
 
-        new_c->base_chance_2_attack++;
-        new_c->base_chance_1_attack = 0;
-        new_c->magic_mode_1 = 0;
+        new_c->player.unlit_torches++;
+        new_c->player.lit_torch_turns = 0;
+        new_c->player.other_hand = 0;
       }
     }
 
@@ -388,9 +388,9 @@ int getmon(int room)
 
           c[50] = p->physical_strength;
           c[45] = p->poison_mode;
-          c[41] = p->base_chance_1_attack;
-          c[42] = p->base_chance_2_attack;
-          c[43] = p->base_chance_3_attack;
+          c[41] = p->attack_chance_all_out;
+          c[42] = p->attack_chance_standard;
+          c[43] = p->attack_chance_defensive;
           c[31] = p->intell_routine;
           c[44] = p->bane;
           c[46] = p->magic_mode;
@@ -400,9 +400,9 @@ int getmon(int room)
 
           mon->physical_strength = p->physical_strength;
           mon->poison_mode_2 = p->poison_mode;
-          mon->base_chance_1_attack = p->base_chance_1_attack;
-          mon->base_chance_2_attack = p->base_chance_2_attack;
-          mon->base_chance_3_attack = p->base_chance_3_attack;
+          mon->attack_chance_all_out = p->attack_chance_all_out;
+          mon->attack_chance_standard = p->attack_chance_standard;
+          mon->attack_chance_defensive = p->attack_chance_defensive;
           mon->intelligence_routine = p->intell_routine;
           mon->bane = p->bane;
           mon->magic_mode_1 = p->magic_mode;

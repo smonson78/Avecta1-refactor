@@ -73,13 +73,13 @@ int activate_monsters(int type, int nm, int x, int y)
 
     c[50] = p->physical_strength;
     c[42] = 10;
-    c[32] = p->poison_mode;
-    c[45] = p->poison_mode;
+    c[32] = p->good_hand;
+    c[45] = p->good_hand;
 
     // These offsets don't agree with the later ones (41, 42, 43)
-    c[46] = p->base_chance_1_attack;
-    c[37] = p->base_chance_2_attack;
-    c[51] = p->base_chance_3_attack;
+    c[46] = p->magic_level;
+    c[37] = p->perception;
+    c[51] = p->magic_level;
 
     c[24] = x;
     c[25] = y;
@@ -115,10 +115,10 @@ int activate_monsters(int type, int nm, int x, int y)
     // pc->unknown39 = i; // always 60 I think
     pc->unknown39 = 60; // always 60 I think
     pc->unlit_torches = 10;
-    pc->good_hand = p->poison_mode;
-    pc->other_hand = p->base_chance_1_attack;
-    pc->perception = p->base_chance_2_attack;
-    pc->magic_level = p->base_chance_3_attack;
+    pc->good_hand = p->good_hand;
+    pc->other_hand = p->other_hand;
+    pc->perception = p->perception;
+    pc->magic_level = p->magic_level;
 
     pc->physical_strength = p->physical_strength;
 
@@ -230,9 +230,9 @@ int activate_monsters(int type, int nm, int x, int y)
     c[14] = p->spell_units;    
     c[50] = p->physical_strength;   /* physical strength */
     c[45] = p->poison_mode;   /* poison mode */
-    c[41] = p->base_chance_1_attack;   /* base chance #1 attack */
-    c[42] = p->base_chance_2_attack;   /* base chance #2 */
-    c[43] = p->base_chance_3_attack;   /* base chance #3 */
+    c[41] = p->attack_chance_all_out;   /* base chance #1 attack */
+    c[42] = p->attack_chance_standard;   /* base chance #2 */
+    c[43] = p->attack_chance_defensive;   /* base chance #3 */
     c[31] = p->intell_routine;   /* intell routine */
     c[44] = p->bane;   /* bane */
     
@@ -276,9 +276,9 @@ int activate_monsters(int type, int nm, int x, int y)
 
     new_c->physical_strength = p->physical_strength;   /* physical strength */
     new_c->poison_mode_2 = p->poison_mode;   /* poison mode */
-    new_c->base_chance_1_attack = p->base_chance_1_attack;   /* base chance #1 attack */
-    new_c->base_chance_2_attack = p->base_chance_2_attack;   /* base chance #2 */
-    new_c->base_chance_3_attack = p->base_chance_3_attack;   /* base chance #3 */
+    new_c->attack_chance_all_out = p->attack_chance_all_out;   /* base chance #1 attack */
+    new_c->attack_chance_standard = p->attack_chance_standard;   /* base chance #2 */
+    new_c->attack_chance_defensive = p->attack_chance_defensive;   /* base chance #3 */
     new_c->bane = p->bane;   /* bane */
     
     new_c->magic_mode_1 = p->magic_mode;   /* magic mode, can be hit by magic? */
@@ -319,7 +319,8 @@ int activate_monsters(int type, int nm, int x, int y)
   }
 
   // c[31] is intelligence_routine
-  if (j > 0 && c[31] < 4) {
+  // if (j > 0 && c[31] < 4) {
+  if (j > 0 && new_c->intelligence_routine < 4) {
     mode = 1;
     dorep();
   } else {

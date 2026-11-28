@@ -75,7 +75,7 @@ typedef struct {
   // 31
   uint8_t intelligence_routine;
   // 32
-  uint8_t poison_mode_1; // this one is assigned another value from a poison mode
+  uint8_t poison_mode_1; // this one is also assigned from permon.good_hand
   // 33
   uint8_t unknown33;
   // 34
@@ -84,20 +84,20 @@ typedef struct {
   uint8_t stink_lines;
   // 36
   uint8_t unknown36;
-  // 37
-  uint8_t perception; // Chance out of 100 to find a hidden object
+  // 37: Chance out of 100 to find a hidden object
+  uint8_t perception;
   // 38
   uint8_t controlled;
-  // 39
-  uint8_t unknown39; // 39 is "target" for monsters, but not for players (probably)
+  // 39: "target" for monsters, but not for players (probably)
+  uint8_t unknown39; 
   // 40
   uint8_t combat_stance;
-  // 41
-  uint8_t lit_torch_turns; // actually "turns left on current torch"
+  // 41: actually "turns left on current torch"
+  uint8_t lit_torch_turns; 
   // 42
   uint8_t unlit_torches;
   // 43
-  uint8_t unknown43;
+  uint8_t vorpal;
   // 44
   uint8_t arrows;
   // 45
@@ -231,7 +231,7 @@ typedef struct {
   uint8_t bane;
   // 45
   uint8_t poison_mode_2; // this one is specifically described as poison mode in comments
-  // 46
+  // 46: Ghosts have this stat set to non-zero
   uint8_t magic_mode_1;
   // 47
   uint8_t poisoned;

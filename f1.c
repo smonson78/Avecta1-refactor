@@ -83,8 +83,9 @@ int attack_out(int pc)
 
   attack(pc, new_t->monster.x, new_t->monster.y);
 
+  // Player attacking a magic creature
   //if (pc < 4 && t[46] && !a[43]) {
-  if (IS_CHARACTER(pc) && new_t->player.other_hand && !new_a->player.unknown43) {
+  if (IS_CHARACTER(pc) && new_t->monster.magic_mode_1 && !new_a->player.vorpal) {
     a[34] = -1;
     new_a->player.unknown34 = -1;
     
@@ -94,7 +95,8 @@ int attack_out(int pc)
   // if (pc < 4) {
   if (IS_CHARACTER(pc)) {
     // weapon_chance = weapon[a[45] - 40].chance + 20 * (a[43]);
-    weapon_chance = weapon[new_a->player.good_hand - 40].chance + (20 * new_a->player.unknown43);
+    weapon_t *w = &weapon[new_a->player.good_hand - 40];
+    weapon_chance = w->chance + (20 * new_a->player.vorpal);
   }
 
   // if (pc < 4 && a[51] > 5) {

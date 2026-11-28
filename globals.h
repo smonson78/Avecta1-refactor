@@ -70,11 +70,24 @@ typedef struct {
   // 15
   uint8_t physical_strength;
   // 16
-  uint8_t poison_mode;
   // 17-19
-  uint8_t base_chance_1_attack;
-  uint8_t base_chance_2_attack;
-  uint8_t base_chance_3_attack;
+  union {
+    // Probably shared because of an assumption that poisonous monsters don't have hands
+    int8_t poison_mode;
+    int8_t good_hand;    
+  };
+  union {
+    int8_t attack_chance_all_out;
+    int8_t other_hand;
+  };
+  union {
+    int8_t attack_chance_standard;
+    int8_t perception;
+  };
+  union {
+    int8_t attack_chance_defensive;
+    int8_t magic_level;
+  };
   // 20
   uint8_t intell_routine;
   // 21
@@ -378,11 +391,16 @@ enum {
 
 #define ROOM_LEVETH_MONOLOGUE 30
 #define ROOM_LEVETH_BEDROOM 29
+#define ROOM_UNKNOWN1 127 // Something to do with leaving Kilkaney
 
 // Function return values - around the wrong way by modern standards
 #define ERR_SUCCESS 1
 #define ERR_FAILURE 0
 #define ERR_EXIT -1
+
+#define ACTION_RESULT_COMPLETED 1
+#define ACTION_RESULT_INCOMPLETE 0
+#define ACTION_RESULT_INTERRUPTED -1
 
 #define IS_MONSTER(c) (c > 3)
 #define IS_CHARACTER(c) (c <= 3)

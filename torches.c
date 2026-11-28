@@ -42,7 +42,7 @@ int setlite(int pc, int dx, int dy)
 // Light a torch
 int litetrol(int x, int y, int s)
 {
-  int i,j,k,a,flag,l;
+  int i, j, k, a, flag, l;
 
   if (new_rumdata[crum].room_has_bg) { 
     /* if room is naturally lit */

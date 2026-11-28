@@ -245,7 +245,7 @@ void losespel(int pc)
         new_c->armour = new_c->original_stat;
         break;
       case MAGIC_EFFECT_VORPAL_BLADE:
-        new_c->unknown43 = new_c->original_stat;
+        new_c->vorpal = new_c->original_stat;
         break;
       case MAGIC_EFFECT_IMMUNITY:
         new_c->original_sprite_id = new_c->original_stat;
@@ -462,8 +462,8 @@ int cast_out(int pc)
       t[43] = 1;
       t[19] = 43;
       t[21] = 20 + 2 * c[51];
-      new_t->player.original_stat = new_t->player.unknown43; // this was a crash
-      new_t->player.unknown43 = 1;
+      new_t->player.original_stat = new_t->player.vorpal;
+      new_t->player.vorpal = 1;
       new_t->player.magic_effect = MAGIC_EFFECT_VORPAL_BLADE;
       new_t->player.magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
 

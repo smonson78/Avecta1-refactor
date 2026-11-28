@@ -16,26 +16,29 @@ int timetrol()
 	zline_t *z;
 	char *w;
 	int i, j, x, y;
-	curmon_t *new_c;
+	curmon2_t *new_c;
 
 	debug_printf("> timetrol\n");
    
 	// Both players and monsters
 	for (i = 0; i < 12; i++) {
     c = curmon[i];
-  	new_c = &new_curmon[i];
+  	new_c = &new_curmon2[i];
 
 		// Only if character is in use
-    if (c[0] == 0) {
+    // if (c[0] == 0) {
+    if (new_c->player.in_use == 0) {
        continue;
 		}
 
 		// Only for players in the current room
-    if (i < 4 && c[41] > 0 && c[30] == crum) { 
+    // if (i < 4 && c[41] > 0 && c[30] == crum) { 
+    if (IS_CHARACTER(i) && new_c->player.lit_torch_turns > 0 && new_c->player.current_room == crum) { 
 			c[41] -= 1; /* checks for burn out of torches */
-			new_c->base_chance_1_attack--;
+			new_c->player.lit_torch_turns--;
 
-			if (c[41] < 3) {
+			// if (c[41] < 3) {
+			if (new_c->player.lit_torch_turns < 3) {
 				if (i == 0) {
 					// The player
 					w = &pname[0];
@@ -45,32 +48,41 @@ int timetrol()
 				}
 
 				prnt("-> %s's torch flickers...", w);
-				litetrol(c[24], c[25],0);
-				litetrol(c[24], c[25],1);
+				litetrol(c[24], c[25], 0);
+				Vsync();
+				Vsync();
+				litetrol(c[24], c[25], 1);
 				if (c[41] == 0) {
+					Vsync();
+					Vsync();
 					prnt("-> ... and goes out!");
 					if (new_rumdata[crum].room_has_bg == 0)
-						litetrol(c[24], c[25],0);
+						litetrol(c[24], c[25], 0);
 				}
 			}
 		}
 
-    if (c[47] > 0 && c[30] == crum) { /* poisoning depends on constitution */
+    // if (c[47] > 0 && c[30] == crum) { /* poisoning depends on constitution */
+    if (new_c->monster.poisoned > 0 && new_c->monster.current_room == crum) { /* poisoning depends on constitution */
 			c[47] += 1;
-			new_c->poisoned++;
+			new_c->monster.poisoned++;
 
-			if ((c[47]) % 10 == 0) {
+			// if ((c[47]) % 10 == 0) {
+			if (new_c->monster.poisoned % 10 == 0) {
 				if (i == 0) {
 					// the player
 					w = &pname[0];
 				} else {
 					// An NPC
-					w = name[c[3]];
+					// w = name[c[3]];
+					w = name[new_c->monster.name_id];
 				}
 
 				j = (4 * c[47]) / c[2];
 				if (j > 0) {
-					if (i < 4 || c[58] == 16) {
+					// if (i < 4 || c[58] == 16) {
+					// if (IS_CHARACTER(i) || new_c->monster.monster_type == MONSTER_MELKTHROP) {
+					if (!NEEDS_DEFINITE_ARTICLE(i)) {
 						prnt("-> %s's level of poisoning is %s!", w, wordmod[j]);
 					} else {
 						prnt("-> The %s's level of poisoning is %s!", w, wordmod[j]);
@@ -78,7 +90,7 @@ int timetrol()
 					
 					if (c[47] >= c[2]) {
 						c[1] = c[2];
-						new_c->damage = new_c->max_health;
+						new_c->monster.damage = new_c->monster.max_health;
 
 						damage(i, 1 + c[12]);
 						return -1;
@@ -87,36 +99,38 @@ int timetrol()
 			}
 		}          
 
-    if (c[21] > 0) {
+    // if (c[21] > 0) {
+    if (new_c->monster.magic_effect_time_remaining > 0) {
 			/* checks for expiration of spells */
 			
 			c[21] -= 1;
-			new_c->magic_effect_time_remaining--;
+			new_c->monster.magic_effect_time_remaining--;
 
 			// if (c[21] == 0) {
-			if (new_c->magic_effect_time_remaining == 0) {
-				// FIXME how can I implement that?!?
+			if (new_c->monster.magic_effect_time_remaining == 0) {
+
+				// In the original implementation, c[19] was an offset into the array.
 				c[c[19]] = c[20];
 
 				// Return affected stats to their original value
-				switch (new_c->magic_effect) {
+				switch (new_c->monster.magic_effect) {
 					case MAGIC_EFFECT_SPEED:
-						new_c->speed = new_c->original_stat;
+						new_c->monster.speed = new_c->monster.original_stat;
 						break;
 					case MAGIC_EFFECT_ARMOUR:
-						new_c->armour = new_c->original_stat;
+						new_c->monster.armour = new_c->monster.original_stat;
 						break;
 					case MAGIC_EFFECT_VORPAL_BLADE:
-						new_c->base_chance_3_attack = new_c->original_stat;
+						new_c->player.vorpal = new_c->monster.original_stat;
 						break;
 					case MAGIC_EFFECT_IMMUNITY:
-						new_c->magic_mode_2 = new_c->original_stat;
+						new_c->monster.magic_mode_2 = new_c->monster.original_stat;
 						break;
 					case MAGIC_EFFECT_STRENGTH:
-						new_c->physical_strength = new_c->original_stat;
+						new_c->monster.physical_strength = new_c->monster.original_stat;
 						break;
 					default:
-						debug_printf("!!!!!!! weird logic in timetrol() %d\n", new_c->magic_effect);
+						debug_printf("!!!!!!! weird logic in timetrol() %d\n", new_c->monster.magic_effect);
 						Cconin();
 				}
 
