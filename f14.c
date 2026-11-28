@@ -71,13 +71,13 @@ int voice_out(int pc)
     c[38] = 0;
     new_c->monster.controlled = 0;
     // prnt("-> %s allows %s to make decisions!", pname, name[c[3]]);
-    prnt("-> %s allows %s to make decisions!", pname, name[new_c->monster.monster_name_id]);
+    prnt("-> %s allows %s to make decisions!", pname, name[new_c->monster.name_id]);
     return 1;
   }
 
   // Otherwise, put them under control
   // prnt("-> %s issues orders to %s!", pname, name[c[3]]);
-  prnt("-> %s issues orders to %s!", pname, name[new_c->monster.monster_name_id]);
+  prnt("-> %s issues orders to %s!", pname, name[new_c->monster.name_id]);
 
   // if (c[16] != 0) {
   if (new_c->player.time_until_next_move != 0) {

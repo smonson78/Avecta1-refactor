@@ -11,7 +11,7 @@ typedef struct {
   // 2
   uint8_t max_health;
   // 3
-  uint8_t monster_name_id;
+  uint8_t name_id;
   // 4
   uint8_t sprite_id;
   // 5 - the target location for a drag action, a spell cast
@@ -97,7 +97,7 @@ typedef struct {
   // 42
   uint8_t unlit_torches;
   // 43
-  uint8_t base_chance_3_attack;
+  uint8_t unknown43;
   // 44
   uint8_t arrows;
   // 45
@@ -141,7 +141,7 @@ typedef struct {
   // 2
   uint8_t max_health;
   // 3
-  uint8_t monster_name_id;
+  uint8_t name_id;
   // 4
   uint8_t sprite_id;
   // 5 - the target location for a drag action, a spell cast
@@ -222,11 +222,11 @@ typedef struct {
   // 40
   uint8_t combat_stance;
   // 41
-  uint8_t base_chance_1_attack; // All Out
+  uint8_t attack_chance_all_out; // All Out
   // 42
-  uint8_t base_chance_2_attack; // Standard
+  uint8_t attack_chance_standard; // Standard
   // 43
-  uint8_t base_chance_3_attack; // Defensive
+  uint8_t attack_chance_defensive; // Defensive
   // 44
   uint8_t bane;
   // 45

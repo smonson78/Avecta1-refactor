@@ -61,7 +61,7 @@ int move_in(int pc)
   check_curmon("i4");
   debug_printf("< i4()\n");
 
-  return 1;
+  return ERR_SUCCESS;
 }
 
 int move_out(int pc)
@@ -71,7 +71,9 @@ int move_out(int pc)
   curmon_t *new_c = &new_curmon[pc];
   zline_t *z;
   char id, *w;
-  int flag, xroll, yroll, i, xnow = c[24], ynow = c[25];
+  int flag, xroll, yroll, i;
+  // int xnow = c[24], ynow = c[25];
+  int xnow = new_c->x, ynow = new_c->y;
   int x = new_c->move_to_x;
   int y = new_c->move_to_y;
   int j;
@@ -86,7 +88,7 @@ int move_out(int pc)
   // if (z->unknown0 != 1 || (id < 41 && id > 0) || z->monster != 0) {
   if (z->unknown0 != 1 || (OBJECT_BLOCKS_MOVEMENT(id) && id > 0) || z->monster != 0) {
     // i = curmon[z->monster][3];
-    i = new_curmon2[z->monster].monster.monster_name_id;
+    i = new_curmon2[z->monster].monster.name_id;
 
     if (IS_CHARACTER(pc) && z->monster != 0 && pc != z->monster) {
       // Check for "the" prefix
@@ -98,15 +100,16 @@ int move_out(int pc)
       }
     }
 
-    return 1;
+    return ERR_SUCCESS;
   }
 
   // if (pc > 0 && z->monster == 0 && x == curmon[0][24] && y == curmon[0][25]) {
-  if (pc > 0 && z->monster == 0 && x == player->x && y == player->y) {
-    return 1;
+  if (!IS_PLAYER(pc) && z->monster == 0 && x == player->x && y == player->y) {
+    return ERR_SUCCESS;
   }
 
-  if (pc == 0) {
+  // if (pc == 0) {
+  if (IS_PLAYER(pc)) {
     if (c[18] != 4) {
       prnt("-> %s moves...", &pname[0]);
     }
@@ -147,7 +150,7 @@ int move_out(int pc)
       // zline[c[24]][c[25]].monster = pc;
       zline[new_c->x][new_c->y].monster = pc;
 
-      return 1;
+      return ERR_SUCCESS;
     }
   }
 
@@ -156,6 +159,7 @@ int move_out(int pc)
     y += yroll;
 
     if (outside) {
+      // Slow the game speed down by waiting for 3 VBLs instead of the usual 1
       for (j = 0; j < 2; j++) {
         Vsync();
       }
@@ -222,5 +226,7 @@ int move_out(int pc)
 
   check_curmon("move_out");
 
-  return 0; /* the move is not complete otherwise */
+  return ERR_FAILURE; /* the move is not complete otherwise */
+
+  // I think returning 0 here causes the game to keep making moves until reaching the destination.
 }

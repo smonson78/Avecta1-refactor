@@ -31,7 +31,7 @@
   #define endianness_fix(buf, words, length) {}
   #define SHIFTER_PALETTE ((volatile uint16_t *)0xFF8240)
 
-  #define debug_printf(fmt, ...) do{}while(0)
+  #define debug_printf(...) do{}while(0)
 #endif
 
 #endif

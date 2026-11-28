@@ -127,7 +127,7 @@ int rob_listen_out(int pc)
     flag = 1; 
     prnt("-> %s hears one or more %ss through the %s!", w,
         //name[permon[r[22]].unknown3],
-        name[permon[new_r->room_monster_type].monster_name_id],
+        name[permon[new_r->room_monster_type].name_id],
         // obj[o[0]],
         obj[o->object_id]);
   }

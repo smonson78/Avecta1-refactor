@@ -85,18 +85,18 @@ int intell(int npc)
           }
         break;
 
-      case 2:                           /* this sets up  the patrol actions */
+      case 2:                              /* this sets up  the patrol actions */
           if (target(npc) || settarg(npc)) {
             step = 1;
             if (type != 3) {
-              alert(npc);                 /* this changes patrol crew to berserk */
+              alert(npc);                  /* this changes patrol crew to berserk */
             }
             break;
           }
 
-          if (type != 3) {               /* don't want pickets to leave the room */
+          if (type != 3) {                 /* don't want pickets to leave the room */
             if (!setmove(npc, 2)) {
-              pass(npc);               /* else exit room */
+              pass(npc);                   /* else exit room */
             }
           } else{
             pass(npc);
@@ -104,7 +104,7 @@ int intell(int npc)
           done = 1;
           break;
 
-      case 3:                  /* this is a picket, i.e., stationary creatures */
+      case 3:                              /* this is a picket, i.e., stationary creatures */
         step = 2;
         break;
 
@@ -112,7 +112,7 @@ int intell(int npc)
         /* this is the accompanying friendly NPC's */
         done = 1;
         // if (npc < 4 && c[38] == 1) { /* under control of player */
-        if (npc < 4 && p->controlled == 1) { /* under control of player */          
+        if (IS_CHARACTER(npc) && p->controlled == 1) { /* under control of player */          
           break;
         }
 
@@ -231,7 +231,7 @@ int morale(int npc)
       // if (d[45] == c[44] || d[46] == c[44]) {
       if (new_d->good_hand == new_c->monster.bane || new_d->other_hand == new_c->monster.bane) {
         prnt("-> The %s is gripped by terror at the sight of the %s!",
-              name[new_c->monster.monster_name_id], 
+              name[new_c->monster.name_id], 
               obj[new_c->monster.bane]);
         damage(npc, c[12]);
         return 0;
@@ -303,8 +303,7 @@ int morale(int npc)
 
 int setflee(int npc)
 {
-  int i,x,y;
-  room_object_t *d;
+  int i, x, y;
   uint8_t *c = curmon[npc];
   curmon_t *new_c = &new_curmon[npc];
 
@@ -312,7 +311,9 @@ int setflee(int npc)
   new_c->flee = 1;
 
   for (i = 1; i < 14; i++) {
-    d = &crumobj[i];
+    room_object_t *d = &crumobj[i];
+
+    // Search for an exit door
     if (d->target != 0 && d->visible == 1 && d->hide != -2) {
 
       if (adjac(npc, d->x, d->y) ) { /* then we're at exit */
@@ -351,6 +352,8 @@ int setflee(int npc)
       c[18] = i;
       c[16] = (c[11] < 1 ? 1 : c[11]);
       new_c->command = ACTION_MOVE;
+      // In this case, unknown18 is a crumobj index! This corresponds with what we expect to 
+      // see in there during the stop-fleeing check.
       new_c->unknown18 = i;
       new_c->time_until_next_move = new_c->speed < 1 ? 1 : new_c->speed;
 
@@ -972,7 +975,7 @@ int friend(int npc)
     }
 
     if (!morale(npc)) {
-      if (!adjac(npc,x,y)) {
+      if (!adjac(npc, x, y)) {
         c[26] = x;
         c[27] = y;
         new_c->monster.dest_x = x;

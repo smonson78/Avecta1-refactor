@@ -38,7 +38,7 @@ int damage(int pc, int level)
 
   if (c[30] != crum) {
   //if (new_c->current_room != crum) {
-    return 1;
+    return ERR_SUCCESS;
   }
     
   int light = new_rumdata[crum].room_has_bg;
@@ -81,7 +81,7 @@ int damage(int pc, int level)
   }
 
   if (level == 0) {
-    return 1;
+    return ERR_SUCCESS;
   }
 
   if (pc > 3 && (c[31] > 3  || (c[38] && curmon[0][39] == pc)) && crum != 31) {
@@ -264,7 +264,7 @@ int damage(int pc, int level)
       memset(new_c, 0, sizeof(curmon_t));
          
       check_curmon("damage 1");
-      return 1;
+      return ERR_SUCCESS;
     } else {
       undorep();
       prnt("   -- ! %s IS PASSING OUT ! --", w);
@@ -280,6 +280,6 @@ int damage(int pc, int level)
   }
   
   check_curmon("damage 2");
-  return 1;
+  return ERR_SUCCESS;
 }
 

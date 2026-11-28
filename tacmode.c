@@ -70,7 +70,7 @@ int xmon(int room, int bit, int x, int y)
 }
 
 int tacmode() {
-  int flag, i, j = 0, k, l, n, p, timer = 0, x, y;
+  int flag, i, j = 0, k, n, p, timer = 0, x, y;
   int actlist[13];
   uint8_t *c;
   // uint8_t *o;
@@ -90,16 +90,16 @@ int tacmode() {
     memset(grflist, 0, sizeof(grflist));
     memset(actlist, 0, sizeof(grflist));
 
-    // Player is dead or not here
+    // Player is dead
     // if (curmon[0][0] == 0) {
     if (player->in_use == 0) {
       return -1;
     }
 
-    // Everyone is dead
+    // Player has left the room
     // if (curmon[0][30] != crum) {
     if (player->current_room != crum) {
-      return 0;
+      return ERR_FAILURE;
     }
 
     if (timer % 5 == 0) {
@@ -111,12 +111,14 @@ int tacmode() {
         flag = 0;
 
         if (pursuit[0] == 0 && (mode == 0 || pursuit[1] != 0) ) {
-          // All except the player
+
+          // All creatures except the player
           for (i = 1; i < 12; i++) {
             c = curmon[i];
             new_c = &new_curmon[i];
 
-            if (c[0] == 0 || c[30] != pursuit[2] || flag > 0 || c[31] > 3) {
+            // if (c[0] == 0 || c[30] != pursuit[2] || flag > 0 || c[31] > 3) {
+            if (new_c->in_use == 0 || new_c->current_room != pursuit[2] || flag > 0 || new_c->intelligence_routine > 3) {
               continue;
             }
 
@@ -143,7 +145,8 @@ int tacmode() {
                 }
 
                 zline[x][y].monster = i; 
-                xmon(c[30], c[4], c[24], c[25]);
+                // xmon(c[30], c[4], c[24], c[25]);
+                xmon(new_c->current_room, new_c->sprite_id, new_c->x, new_c->y);
                 c[24] = x;
                 c[25] = y;
                 c[16] = 1;
@@ -163,7 +166,8 @@ int tacmode() {
                 drawman(i, x, y);
                 dorep();
 
-                if (i > 3 && c[31] < 4) {
+                // if (i > 3 && c[31] < 4) {
+                if (IS_MONSTER(i) && new_c->intelligence_routine < 4) {
                   mode = 1;
                 }
 
@@ -173,6 +177,7 @@ int tacmode() {
                 if (pursuit[1] > 0) {
                   pursuit[0] += 2;
                 } else {
+                  // Turn OFF police pursuit
                   pursuit[0] = 0;
                   pursuit[1] = 0;
                   pursuit[2] = 0;
@@ -183,6 +188,7 @@ int tacmode() {
 
           if (i == 12 && flag == 0) {
             for (i = 0; i < 3; i++) {
+              // Turn OFF police pursuit
               pursuit[i] = 0;
             }
           }
@@ -213,7 +219,8 @@ int tacmode() {
         check_curmon("before creating monsters");
 
         //activate_monsters(o[22], o[23], o[24], o[25]);
-        activate_monsters(new_o->room_monster_type, new_o->room_monster_nm, new_o->room_monster_x, new_o->room_monster_y);
+        activate_monsters(new_o->room_monster_type, new_o->room_monster_nm, 
+          new_o->room_monster_x, new_o->room_monster_y);
 
         // check_curmon("after creating monsters");
         
@@ -250,7 +257,7 @@ int tacmode() {
         
         // If a monster:
         //if (i > 3 && c[31] < 4) {
-        if (i > 3 && new_c->intelligence_routine < 4) {
+        if (IS_MONSTER(i) && new_c->intelligence_routine < 4) {
           monster++;
           //if (c[38] == 0) {
           if (new_c->controlled == 0) {
@@ -275,14 +282,17 @@ int tacmode() {
 
     // check_curmon("tacmode loop position 1");
 
-    if (mode == 1 && monster < 2 && curmon[0][0] == 1 && curmon[0][30] == crum) { 
+    // Only 1 monster in the room at most
+    // if (mode == 1 && monster < 2 && curmon[0][0] == 1 && curmon[0][30] == crum) { 
+    if (mode == 1 && monster < 2 && player->in_use == 1 && player->current_room == crum) { 
       mode = 0;
       undorep();
     }
 
     // check_curmon("tacmode loop position 2");
 
-    if (monster > 1 && curmon[0][0] == 1 && curmon[0][30] == crum) {
+    // if (monster > 1 && curmon[0][0] == 1 && curmon[0][30] == crum) {
+    if (monster > 1 && player->in_use == 1 && player->current_room == crum) {
       mode = 1;
     }
 
@@ -290,7 +300,8 @@ int tacmode() {
 
     timer++;
 
-    if (actlist[0] == 0 || !curmon[0][0]) {
+    // if (actlist[0] == 0 || !curmon[0][0]) {
+    if (actlist[0] == 0 || !player->in_use) {
       continue;
     }
 
@@ -306,19 +317,22 @@ int tacmode() {
 
       // check_curmon("tacmode loop position 2.4");
 
-      // If character is in use and in the current room:
+      // If character is in use and in the current room, they will do the action that they planned to do now.
       //if (c[0] && c[30] == crum) {
       if (new_c->in_use && new_c->current_room == crum) {
         debug_printf("...calling outverb %d\n", new_c->command);
         // j = (*outverb[c[15]])(n);
         j = (*outverb[new_c->command - 1])(n);
+
+        // outverb() will normally return a 1.
       }
 
       // check_curmon("tacmode loop position 2.5");
 
       // Get a keyboard command from the keyboard and check if it's a space character
+      // n == might be Eirik
       // if ((n == 0 || (n == 1 && c[38])) && j == 0 && (p = Bconstat(2)) != 0) {
-      if ((n == 0 || (n == 1 && new_c->controlled)) && j == 0 && (p = Bconstat(2)) != 0) {
+      if ((IS_PLAYER(n) || (n == 1 && new_c->controlled)) && j == 0 && (p = Bconstat(2)) != 0) {
         p = Bconin(2) & 0xff;
         if (p == ' ') {
           c[16] = 0;
@@ -345,69 +359,90 @@ int tacmode() {
       // if (curmon[0][30] != crum) {
       if (player->current_room != crum) {
         debug_printf("...player has left current room, leaving tacmode()\n");
-        return 0;
+        return ERR_FAILURE;
       }
 
       if (j == -1 && n == 0) {
-        return 0;
+        return ERR_FAILURE;
       }
 
-      if (n > 3 || (n < 4 && n > 0 && c[38] == 0)) {
+      // if (n > 3 || (n < 4 && n > 0 && c[38] == 0)) {
+      if (IS_MONSTER(n) || (IS_CHARACTER(n) && !IS_PLAYER(n) && new_c->controlled == 0)) {
         intell(n);
         check_curmon("tacmode loop after intell()");
       } else {
-        if (c[16] == 0) {
+        // if (c[16] == 0) {
+        if (new_c->time_until_next_move == 0) {
+          
+          // Assume we're going to only do one pass. But then we'll go through again if something sets
+          // this to zero.
+          int exit_loop = 1;
+
           do {
             // check_curmon("tacmode c[16] do-loop");
-            l = 1;
+            // l = 1;
             if (j == 1) {
+              // Decide what to do on the next move
               k = input(n); 
 
               // check_curmon("tacmode c[16] do-loop after input()");
               
               if (k == 1 && !combat) {
-                l = 0;
+                // l = 0;
+                exit_loop = 0;
                 continue;
               }
 
               if (k == -1) {
                 if ((k = error(ERROR_ABORT_QUIT_FILE)) > 1) {
-                  if (k == 2) {
+                  if (k == RESPONSE_QUIT) {
                     return -2;
                   }
 
-                  if (k == 3 && !outside && !fromout) {
+                  if (k == RESPONSE_FILE && !outside && !fromout) {
                     k = error(ERROR_STOP_SAVE_LOAD);
 
-                    if (k == 1) {
-                      l = 0;
+                    if (k == 0 || k == RESPONSE_STOP) {
+                      // l = 0;
+                      exit_loop = 0;
                     }
 
-                    if (k == 2) {
+                    if (k == RESPONSE_SAVE) {
                       return -4;
                     }
 
-                    if (k == 3) {
+                    if (k == RESPONSE_LOAD) {
                       return -5;
                     }
                   } else {
-                    l = 0;
+                    // Abort
+                    // l = 0;
+                    exit_loop = 0;
                   }
                 } else {
-                  l = 0;
+                  // Abort
+                  // l = 0;
+                  exit_loop = 0;
                 }
               }
 
-              if (l == 1) {
+              // if (l == 1) {
+              if (exit_loop == 1) {
                 debug_printf("...calling inverb %d\n", k - 1);
-                l = (*inverb[k - 1])(n);
+                // l = (*inverb[k - 1])(n);
+                exit_loop = (*inverb[k - 1])(n);
+
+                // inverb would normally return 1.
+                // but move_out() will return a 0 if there are further moves coming - so the game loops
+                // until reaching the destination, unless blocked.
               }
 
-              if (l == -1) {
+              // Only f9 (exit_out) can cause this scenario
+              if (exit_loop == -1) {
                 return -1;
               }
             }
-          } while (l == 0);        
+          } while (!exit_loop);
         }
 
         check_curmon("tacmode loop position 4");

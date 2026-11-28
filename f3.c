@@ -146,7 +146,7 @@ int examine_out(int pc)
   type = c[10];
 
   // Player name or monster name
-  // w1 = (pc == 0 ? &pname[0] : name[new_c->monster_name_id]);
+  // w1 = (pc == 0 ? &pname[0] : name[new_c->name_id]);
   w1 = get_name(pc);
 
   if ((type == 3 && (object = c[8]) > 40) ||
@@ -208,7 +208,7 @@ int examine_out(int pc)
   if (type == 2) {
     // Get character name
     // w = name[t[3]];
-    w = name[new_t->monster_name_id];
+    w = name[new_t->name_id];
   } else {
     // Get object name
     // w = obj[t[0]];

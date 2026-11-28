@@ -74,27 +74,27 @@ int attack_out(int pc)
   int base, roll, dam, weapon_chance;
 
   if (new_t->monster.in_use == 0 || new_t->monster.current_room != crum) {
-    return 1;
+    return ERR_SUCCESS;
   }
 
   if (!adjac(pc, new_t->monster.x, new_t->monster.y)) {
-    return 1;
+    return ERR_SUCCESS;
   }
 
   attack(pc, new_t->monster.x, new_t->monster.y);
 
   //if (pc < 4 && t[46] && !a[43]) {
-  if (pc < 4 && new_t->player.other_hand && !new_a->player.base_chance_3_attack) {
+  if (IS_CHARACTER(pc) && new_t->player.other_hand && !new_a->player.unknown43) {
     a[34] = -1;
     new_a->player.unknown34 = -1;
     
-    return 1;
+    return ERR_SUCCESS;
   }
 
   // if (pc < 4) {
   if (IS_CHARACTER(pc)) {
     // weapon_chance = weapon[a[45] - 40].chance + 20 * (a[43]);
-    weapon_chance = weapon[new_a->player.good_hand - 40].chance + (20 * new_a->player.base_chance_3_attack);
+    weapon_chance = weapon[new_a->player.good_hand - 40].chance + (20 * new_a->player.unknown43);
   }
 
   // if (pc < 4 && a[51] > 5) {
@@ -128,7 +128,8 @@ int attack_out(int pc)
   base = weapon_chance + 3 * (new_a->monster.physical_strength - 
     10 + new_a->monster.speed - new_t->monster.speed);
 
-  if (pc < 4) {
+  // if (pc < 4) {
+  if (IS_CHARACTER(pc)) {
     // dam = weapon[a[45] - 40][1];
     dam = weapon[new_a->player.good_hand - 40].damage;
   } else {
@@ -137,34 +138,35 @@ int attack_out(int pc)
     dam = a[3 + 2 * (a[40])];
   }
 
-  if (pc > 3) {
+  // if (pc > 3) {
+  if (IS_MONSTER(pc)) {
     dam = 1 + rnd(dam);
   } else {
     dam += rnd(dam / 2);
   }
 
   // if (pc < 4 && t[31] > 3) {
-  if (pc < 4 && new_t->monster.intelligence_routine > 3) {
+  if (IS_CHARACTER(pc) && new_t->monster.intelligence_routine > 3) {
     base += 200;
     dam += 10;
   }
 
-  if (pc < 4) {
+  if (IS_CHARACTER(pc)) {
     a[8] = a[45];
     new_a->player.target_inventory = new_a->player.good_hand;
   }
 
   if (base > roll && dam > 0) {
     // if (pc > 3 && a[40] == a[45] && t[47] == 0) {
-    if (pc > 3 && new_a->monster.combat_stance == new_a->monster.poison_mode_2 
+    if (IS_MONSTER(pc) && new_a->monster.combat_stance == new_a->monster.poison_mode_2 
         && new_t->monster.poisoned == 0) {
       
       // w = (a[39] == 0 ? pname : name[curmon[a[39]][3]]);
       w = (new_a->monster.attack_target == 0 ? 
-        pname : name[new_curmon2[new_a->monster.attack_target].monster.monster_name_id]);
+        pname : name[new_curmon2[new_a->monster.attack_target].monster.name_id]);
 
       // if (a[39] < 4) {
-      if (new_a->monster.attack_target < 4) {
+      if (IS_CHARACTER(new_a->monster.attack_target)) {
         prnt("-> %s is envenomed!", w);
       } else {
         prnt("-> The %s is envenomed!", w);
@@ -188,5 +190,5 @@ int attack_out(int pc)
     }
   }
 
-  return 1;
+  return ERR_SUCCESS;
 }

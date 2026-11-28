@@ -53,13 +53,13 @@ typedef struct {
   uint8_t in_use;
   uint8_t damage;
   uint8_t max_health;
-  uint8_t monster_name_id;
+  uint8_t name_id;
   uint8_t sprite_id;
-  uint8_t unknown5;
-  uint8_t unknown6;
+  uint8_t action_dest_x;
+  uint8_t action_dest_y;
   uint8_t unknown7;
   uint8_t unknown8;
-  uint8_t unknown9;
+  uint8_t target_object;
   uint8_t unknown10;
   // 11
   uint8_t speed;
@@ -275,6 +275,14 @@ enum action_t {
 #define ERROR_DISK_SPACE 32
 #define ERROR_RESTORE_MISMATCH 33
 
+#define RESPONSE_ABORT 1
+#define RESPONSE_QUIT 2
+#define RESPONSE_FILE 3
+
+#define RESPONSE_STOP 1
+#define RESPONSE_SAVE 2
+#define RESPONSE_LOAD 3
+
 #define SPELL_CURE_LIGHT_WOUNDS 1
 #define SPELL_SEARCH 2
 #define SPELL_FREEZE 3
@@ -374,13 +382,14 @@ enum {
 // Function return values - around the wrong way by modern standards
 #define ERR_SUCCESS 1
 #define ERR_FAILURE 0
+#define ERR_EXIT -1
 
 #define IS_MONSTER(c) (c > 3)
 #define IS_CHARACTER(c) (c <= 3)
 #define IS_PLAYER(c) (c == 0)
 
 // Creature's name needs "the" prefix e.g. "the orc"
-#define NEEDS_DEFINITE_ARTICLE(c) (c >= 4 && new_curmon2[c].monster.monster_name_id != MONSTER_NAME_MELKTHROP)
+#define NEEDS_DEFINITE_ARTICLE(c) (c >= 4 && new_curmon2[c].monster.name_id != MONSTER_NAME_MELKTHROP)
 
 // All the objects with IDs lower than broadsword are big and block your movement.
 #define OBJECT_BLOCKS_MOVEMENT(id) (id < OBJECT_BROADSWORD)

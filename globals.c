@@ -99,6 +99,7 @@ long int saddr;
 
 int mode = 0, dismax;
 
+// [2] = room
 int pursuit[3] = {0, 0, 0};
 
 uint8_t trigval[80][6];
@@ -518,14 +519,14 @@ char *obj[] = {
 int outside, dungeon;
 
 char eats[] = {
-  0,0,0,0,0,
-  0,1,1,1,0,
-  1,0,0,1,0,
-  1,1,0,0,0,
-  0,0,0,0,0,
-  0,0,0,0,1,
-  1,0,0,0,0,
-  0,0,0,0,0,
+  0, 0, 0, 0, 0,
+  0, 1, 1, 1, 0,
+  1, 0, 0, 1, 0,
+  1, 1, 0, 0, 0,
+  0, 0, 0, 0, 0,
+  0, 0, 0, 0, 1,
+  1, 0, 0, 0, 0,
+  0, 0, 0, 0, 0,
   0
 };
 
@@ -538,5 +539,5 @@ char *get_name(int creature) {
     return pname;
   }
 
-  return name[new_curmon2[creature].monster.monster_name_id];
+  return name[new_curmon2[creature].monster.name_id];
 }

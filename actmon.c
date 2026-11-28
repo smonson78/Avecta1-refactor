@@ -44,6 +44,7 @@ int activate_monsters(int type, int nm, int x, int y)
     for (i = 0; i < 60; i++) {
       c[i] = 0;
     }
+
     // The new way:
     pc = &players[type];
     memset(pc, 0, sizeof(curmon_t));
@@ -57,13 +58,13 @@ int activate_monsters(int type, int nm, int x, int y)
     c[0] = p->in_use;
     c[1] = p->damage;
     c[2] = p->max_health;
-    c[3] = p->monster_name_id;
+    c[3] = p->name_id;
     c[4] = p->sprite_id;
-    c[5] = p->unknown5;
-    c[6] = p->unknown6;
+    c[5] = p->action_dest_x;
+    c[6] = p->action_dest_y;
     c[7] = p->unknown7;
     c[8] = p->unknown8;
-    c[9] = p->unknown9;
+    c[9] = p->target_object;
     c[10] = p->unknown10;
     c[11] = p->speed;
     c[12] = p->armour;
@@ -85,18 +86,19 @@ int activate_monsters(int type, int nm, int x, int y)
     c[15] = 8;
     c[16] = 1;
     c[30] = crum;
-    c[39] = i; // seems like this will always be 60 due to the loop above
+    // c[39] = i; // seems like this will always be 60 due to the loop above
+    c[39] = 60; // seems like this will always be 60 due to the loop above
 
     pc->in_use = p->in_use;
     pc->damage = p->damage;
     pc->max_health = p->max_health;
-    pc->monster_name_id = p->monster_name_id;
+    pc->name_id = p->name_id;
     pc->sprite_id = p->sprite_id;
-    pc->action_dest_x = p->unknown5;
-    pc->action_dest_y = p->unknown6;
+    pc->action_dest_x = p->action_dest_x;
+    pc->action_dest_y = p->action_dest_y;
     pc->target = p->unknown7;
     pc->target_inventory = p->unknown8;
-    pc->target_object = p->unknown9;
+    pc->target_object = p->target_object;
     pc->spell_cast = p->unknown10;
     pc->speed = p->speed;
     pc->armour = p->armour;
@@ -110,7 +112,8 @@ int activate_monsters(int type, int nm, int x, int y)
     pc->y = y;
     pc->current_room = crum;
     pc->poison_mode_1 = p->poison_mode;
-    pc->unknown39 = i; // always 60 I think
+    // pc->unknown39 = i; // always 60 I think
+    pc->unknown39 = 60; // always 60 I think
     pc->unlit_torches = 10;
     pc->good_hand = p->poison_mode;
     pc->other_hand = p->base_chance_1_attack;
@@ -213,13 +216,13 @@ int activate_monsters(int type, int nm, int x, int y)
     c[0] = p->in_use;
     c[1] = p->damage;
     c[2] = p->max_health;
-    c[3] = p->monster_name_id;
+    c[3] = p->name_id;
     c[4] = p->sprite_id;
-    c[5] = p->unknown5;
-    c[6] = p->unknown6;
+    c[5] = p->action_dest_x;
+    c[6] = p->action_dest_y;
     c[7] = p->unknown7;
     c[8] = p->unknown8;
-    c[9] = p->unknown9;
+    c[9] = p->target_object;
     c[10] = p->unknown10;
     c[11] = p->speed;
     c[12] = p->armour;
@@ -256,13 +259,13 @@ int activate_monsters(int type, int nm, int x, int y)
     new_c->in_use = p->in_use;
     new_c->damage = p->damage;
     new_c->max_health = p->max_health;
-    new_c->monster_name_id = p->monster_name_id;
+    new_c->name_id = p->name_id;
     new_c->sprite_id = p->sprite_id;
-    new_c->action_dest_x = p->unknown5;
-    new_c->action_dest_y = p->unknown6;
+    new_c->action_dest_x = p->action_dest_x;
+    new_c->action_dest_y = p->action_dest_y;
     new_c->target2 = p->unknown7;
     new_c->target_inventory = p->unknown8;
-    new_c->target_object = p->unknown9;
+    new_c->target_object = p->target_object;
     new_c->spell_cast = p->unknown10;
     new_c->speed = p->speed;
     new_c->armour = p->armour;

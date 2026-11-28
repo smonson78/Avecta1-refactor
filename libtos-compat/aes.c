@@ -268,7 +268,7 @@ void vr_recfl(int16_t handle, int16_t *pxyarray)
       filled_rect(pxyarray[0], pxyarray[1], 
         pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, 
         get_vdi_colour(0));
-      printf("(vr_recfl style 2 with pattern %d, style %d)\n", globals.video.interior_fill_type, globals.video.interior_fill_pattern);
+      // printf("(vr_recfl style 2 with pattern %d, style %d)\n", globals.video.interior_fill_type, globals.video.interior_fill_pattern);
       pattern_rect(pxyarray[0], pxyarray[1], 
         pxyarray[2] - pxyarray[0] + 1, pxyarray[3] - pxyarray[1] + 1, 
         (uint16_t *)predefined_fill_patterns[globals.video.interior_fill_pattern - 1], 0);

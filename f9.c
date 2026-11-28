@@ -182,7 +182,8 @@ int exit_out(int pc)
   c[30] = c[10];
   ch->player.current_room = ch->player.spell_cast;
 
-  if (pc != 0) {
+  // if (pc != 0) {
+  if (!IS_PLAYER(pc)) {
     z = &zline[c[26]][c[27]];
     // c[30] = crumobj[z[1]][3];
     c[30] = crumobj[z->visible].target;
@@ -192,11 +193,11 @@ int exit_out(int pc)
     if (mode) {
       dorep();
     }
-    return -1;
-  }
+    // return ERR_EXIT;
+  } else {
 
-  // Player
-  if (pc == 0) {
+  // // Player
+  // if (pc == 0) {
     c[34] = 0;
     ch->player.unknown34 = 0;
 
@@ -208,5 +209,5 @@ int exit_out(int pc)
     ch->player.unknown18 = ACTION_WAIT;
   }
 
-  return -1;
+  return ERR_EXIT;
 }

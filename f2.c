@@ -245,7 +245,7 @@ void losespel(int pc)
         new_c->armour = new_c->original_stat;
         break;
       case MAGIC_EFFECT_VORPAL_BLADE:
-        new_c->base_chance_3_attack = new_c->original_stat;
+        new_c->unknown43 = new_c->original_stat;
         break;
       case MAGIC_EFFECT_IMMUNITY:
         new_c->original_sprite_id = new_c->original_stat;
@@ -296,7 +296,7 @@ int cast_out(int pc)
   char *wt;
   uint8_t *t = NULL;
   room_object_t *object = NULL;
-  curmon_t *new_t = NULL;
+  curmon2_t *new_t = NULL;
   int k, m, flag = 0, dam, j, trap, num, target, i, x, y;
   char *w = get_name(pc);
 
@@ -323,7 +323,7 @@ int cast_out(int pc)
     target = new_c->attack_target;
     
     t = curmon[target];
-    new_t = &new_curmon[target];
+    new_t = &new_curmon2[target];
 
     if (!los(pc, t[24], t[25])) {
       flag = 1; 
@@ -347,8 +347,8 @@ int cast_out(int pc)
       debug_printf("! The target is character %d\n", target);
 
       t = curmon[target];
-      new_t = &new_curmon[target];
-      debug_printf("! spell target: new_t is new_curmon + %d\n", new_t - new_curmon);
+      new_t = &new_curmon2[target];
+      debug_printf("! spell target: new_t is new_curmon + %d\n", new_t - new_curmon2);
 
       if (!t[0] || t[30] != crum || !los(pc, t[24], t[25]))  {
         flag = 1;
@@ -385,16 +385,19 @@ int cast_out(int pc)
   }
   flash();
 
+  int randomness;
+
   switch (num) {
-    case 1:  /* cure light wounds but not poison */
+    case 1:
+      /* cure light wounds but not poison */
       // t is a curmon object
-      int randomness = rnd(20);
+      randomness = rnd(20);
       t[1] -= 5 + curmon[pc][51] + randomness;
-      new_t->damage -= 5 + new_curmon[pc].magic_level + randomness;
+      new_t->monster.damage -= 5 + new_curmon2[pc].monster.magic_level + randomness;
 
       if ((int8_t)t[1] < 0) {
         t[1] = 0;
-        new_t->damage = 0;
+        new_t->monster.damage = 0;
       }
 
       break;
@@ -432,23 +435,24 @@ int cast_out(int pc)
       t[21] = t[16] / 5;
 
       // Crash here:
-      printf("--> t is %p, new_t is %p\n", t, new_t);
-      new_t->time_until_next_move = 50 + (5 * new_c->magic_level);
-      new_t->magic_effect = MAGIC_EFFECT_NONE;
-      new_t->original_stat = 1;
-      new_t->magic_effect_time_remaining = new_t->time_until_next_move / 5; // Note we just set this value earlier
+      // printf("--> t is %p, new_t is %p\n", t, new_t);
+      new_t->monster.time_until_next_move = 50 + (5 * new_c->magic_level);
+      new_t->monster.magic_effect = MAGIC_EFFECT_NONE;
+      new_t->monster.original_stat = 1;
+      new_t->monster.magic_effect_time_remaining = new_t->monster.time_until_next_move / 5; // Note we just set this value earlier
 
       break;
 
     case 4:  /* the unvenom spell */
       // t is a curmon
       t[47] = 0;
-      new_t->poisoned = 0;
+      new_t->monster.poisoned = 0;
       break;
 
     case 5:  /* vorpal blade */
       // t is a curmon (player)
-      if (target > 3) {
+      // if (target > 3) {
+      if (IS_MONSTER(target)) {
         break;
       }
 
@@ -458,10 +462,10 @@ int cast_out(int pc)
       t[43] = 1;
       t[19] = 43;
       t[21] = 20 + 2 * c[51];
-      new_t->original_stat = new_t->base_chance_3_attack; // this was a crash
-      new_t->base_chance_3_attack = 1;
-      new_t->magic_effect = MAGIC_EFFECT_VORPAL_BLADE;
-      new_t->magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
+      new_t->player.original_stat = new_t->player.unknown43; // this was a crash
+      new_t->player.unknown43 = 1;
+      new_t->player.magic_effect = MAGIC_EFFECT_VORPAL_BLADE;
+      new_t->player.magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
 
       break;
 
@@ -473,10 +477,10 @@ int cast_out(int pc)
       t[11] = 1;
       t[19] = 11;
       t[21] = 20 + 2 * c[51];
-      new_t->original_stat = new_t->speed;
-      new_t->speed = 1;
-      new_t->magic_effect = MAGIC_EFFECT_SPEED;
-      new_t->magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
+      new_t->monster.original_stat = new_t->monster.speed;
+      new_t->monster.speed = 1;
+      new_t->monster.magic_effect = MAGIC_EFFECT_SPEED;
+      new_t->monster.magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
 
       break;
 
@@ -488,10 +492,10 @@ int cast_out(int pc)
       t[12] += c[51];
       t[19] = 12;
       t[21] = 20 + 2*(c[51]);
-      new_t->original_stat = new_t->armour;
-      new_t->armour += new_c->magic_level;
-      new_t->magic_effect = MAGIC_EFFECT_ARMOUR;
-      new_t->magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
+      new_t->monster.original_stat = new_t->monster.armour;
+      new_t->monster.armour += new_c->magic_level;
+      new_t->monster.magic_effect = MAGIC_EFFECT_ARMOUR;
+      new_t->monster.magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
 
       break;
 
@@ -575,10 +579,10 @@ int cast_out(int pc)
       t[36] = 1;
       t[19] = 36;
       t[21] = 40 + 2*(c[51]);
-      new_t->original_stat = new_t->flee;
-      new_t->flee = 1;
-      new_t->magic_effect = MAGIC_EFFECT_FEAR;
-      new_t->magic_effect_time_remaining = 40 + (2 * new_c->magic_level);
+      new_t->monster.original_stat = new_t->monster.flee;
+      new_t->monster.flee = 1;
+      new_t->monster.magic_effect = MAGIC_EFFECT_FEAR;
+      new_t->monster.magic_effect_time_remaining = 40 + (2 * new_c->magic_level);
 
       damage(target, 0);
       break;
@@ -594,7 +598,7 @@ int cast_out(int pc)
       y = t[25];
 
       t[35] = 0;
-      new_t->stink_lines = 0;
+      new_t->monster.stink_lines = 0;
 
       prnt("-> %s blinks out of reality for an instant!", wt);
       explode(x, y, 0);
@@ -604,8 +608,8 @@ int cast_out(int pc)
 
       t[24] = c[26];
       t[25] = c[27];
-      new_t->x = new_c->dest_x;
-      new_t->y = new_c->dest_y;
+      new_t->monster.x = new_c->dest_x;
+      new_t->monster.y = new_c->dest_y;
 
       zline[t[24]][t[25]].monster = target;
       
@@ -622,7 +626,7 @@ int cast_out(int pc)
       }
 
       t[15] = 8;
-      new_t->command = ACTION_WAIT;
+      new_t->monster.command = ACTION_WAIT;
 
       break;
 
@@ -655,8 +659,8 @@ int cast_out(int pc)
       // t is a curmon    
       t[1] = 0;
       t[47] = 0;
-      new_t->damage = 0;
-      new_t->poisoned = 0;
+      new_t->monster.damage = 0;
+      new_t->monster.poisoned = 0;
 
       break;
 
@@ -700,10 +704,10 @@ int cast_out(int pc)
       t[20] = 0;
       t[19] = 38;
       t[21] = 20 + 2 * c[51];
-      new_t->controlled = 1;
-      new_t->original_stat = 0;
-      new_t->magic_effect = MAGIC_EFFECT_CHARM;
-      new_t->magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
+      new_t->monster.controlled = 1;
+      new_t->monster.original_stat = 0;
+      new_t->monster.magic_effect = MAGIC_EFFECT_CHARM;
+      new_t->monster.magic_effect_time_remaining = 20 + (2 * new_c->magic_level);
 
       check_curmon("charm");
       dorep();
@@ -781,7 +785,7 @@ int cast_out(int pc)
       }
 
       t[0] = 0;
-      new_t->in_use = 0;
+      new_t->monster.in_use = 0;
 
       damage(target, 1 + t[2] + t[12]);
       break;
@@ -867,7 +871,7 @@ int savthrow(int npc, int mag)
 
     // Check to see if the prefix "the" will be applied
     // if (npc < 4 || curmon[npc][3] == 10) {
-    // if (IS_CHARACTER(npc) || new_curmon2[npc].monster.monster_name_id == MONSTER_NAME_MELKTHROP) {
+    // if (IS_CHARACTER(npc) || new_curmon2[npc].monster.name_id == MONSTER_NAME_MELKTHROP) {
     if (NEEDS_DEFINITE_ARTICLE(npc)) {
       prnt("-> The %s resists the spell!", w);
     } else {

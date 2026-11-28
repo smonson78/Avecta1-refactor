@@ -176,7 +176,7 @@ int drag_eat_in(int pc)
 }
 
 /*****************************************************************************/
-/* This is DRag/eat  out function.                                           */
+/* This is Drag/eat  out function.                                           */
 /*****************************************************************************/
 
 int drag_eat_out(int pc)
@@ -185,7 +185,7 @@ int drag_eat_out(int pc)
   zline_t *z;
   curmon2_t *ch = &new_curmon2[pc];
   // char *w, *w1 = (pc == 0 ? &pname[0] : name[c[3]]);
-  char *w, *w1 = (pc == 0 ? &pname[0] : name[ch->monster.monster_name_id]);
+  char *w, *w1 = (pc == 0 ? &pname[0] : name[ch->monster.name_id]);
   // int flag = 1, x1, y1, x2, y2, j = c[10], x = c[5], y = c[6], k;
   int flag = 1, x1, y1, x2, y2;
   int j = ch->player.spell_cast;

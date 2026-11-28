@@ -19,7 +19,7 @@ int wait_in(int pc)
 
   debug_printf("< wait_in()\n");
 
-  return 1;
+  return ERR_SUCCESS;
 }
 
 int wait_out(int pc)
@@ -35,5 +35,5 @@ int wait_out(int pc)
   }
 
   debug_printf("< wait_out()\n");
-  return 1;
+  return ERR_SUCCESS;
 }
